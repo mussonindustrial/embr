@@ -52,15 +52,15 @@ jobs:
     - name: Write certificate to file
       uses: timheuer/base64-to-file@v1.2
       with:
-        fileName: 'cert.pb7'
-        fileDir: '/home/runner/work/secrets'
+        fileName: 'cert.p7b'
+        fileDir: './secrets'
         encodedString: ${{ secrets.CERT }}
 
     - name: Write keystore to file
       uses: timheuer/base64-to-file@v1.2
       with:
         fileName: 'keystore.jks'
-        fileDir: '/home/runner/work/secrets'
+        fileDir: './secrets'
         encodedString: ${{ secrets.KEYSTORE }}
 
     - name: Make gradlew executable
