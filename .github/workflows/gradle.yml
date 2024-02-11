@@ -33,6 +33,20 @@ jobs:
     - name: Setup Gradle
       uses: gradle/actions/setup-gradle@ec92e829475ac0c2315ea8f9eced72db85bb337a # v3.0.0
 
+    - name: Add secrets to gradle.properties
+      env:
+          CERT_ALIAS: ${{ secrets.CERT_ALIAS }}
+          CERT_PASSWORD: ${{ secrets.CERT_PASSWORD }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+      run: |
+          echo ignition.signing.certAlias=$CERT_ALIAS >> gradle.properties
+          echo ignition.signing.certPassword=$CERT_PASSWORD >> gradle.properties
+          echo ignition.signing.keystorePassword=$KEYSTORE_PASSWORD >> gradle.properties
+      shell: bash
+
+    - name: Make gradlew executable
+      run: chmod +x ./gradlew
+
     - name: Build with Gradle Wrapper
       run: ./gradlew build
 
