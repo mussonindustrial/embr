@@ -1,16 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="CompilerConfiguration">
-    <bytecodeTargetLevel target="15">
-      <module name="example-perspective-component.common" target="21" />
-      <module name="example-perspective-component.common.main" target="21" />
-      <module name="example-perspective-component.common.test" target="21" />
-      <module name="example-perspective-component.designer" target="21" />
-      <module name="example-perspective-component.designer.main" target="21" />
-      <module name="example-perspective-component.designer.test" target="21" />
-      <module name="example-perspective-component.gateway" target="21" />
-      <module name="example-perspective-component.gateway.main" target="21" />
-      <module name="example-perspective-component.gateway.test" target="21" />
+    <bytecodeTargetLevel target="1.6">
+      <module name="convention-plugins.main" target="15" />
+      <module name="convention-plugins.test" target="15" />
+      <module name="embr.buildSrc" target="15" />
+      <module name="embr.buildSrc.main" target="15" />
+      <module name="embr.buildSrc.test" target="15" />
     </bytecodeTargetLevel>
   </component>
 </project>

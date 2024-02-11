@@ -1,6 +1,5 @@
 plugins {
-    `java-library`
-    alias(libs.plugins.kotlin)
+    id("embr.ignition-module-library-conventions")
 }
 
 kotlin {
@@ -9,6 +8,6 @@ kotlin {
 
 dependencies {
     compileOnly(libs.bundles.gateway)
-    compileOnly(libs.bundles.perspective-gateway)
+    compileOnly(libs.bundles.perspectiveFateway)
     compileOnly(projects.common)
 }
