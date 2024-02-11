@@ -10,6 +10,7 @@ modl = { id = "io.ia.sdk.modl", version = "0.1.1" }
 ktlint = { id = "org.jlleitschuh.gradle.ktlint", version = "12.0.3" }
 
 [libraries]
+kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 ignition-common = { group = "com.inductiveautomation.ignitionsdk", name = "ignition-common", version.ref = "ignition" }
 ignition-gateway-api = { group = "com.inductiveautomation.ignitionsdk", name = "gateway-api", version.ref = "ignition" }
 ignition-designer-api = { group = "com.inductiveautomation.ignitionsdk", name = "designer-api", version.ref = "ignition" }
@@ -43,14 +44,14 @@ client = [
     "ignition-client-api",
     "ignition-vision-client-api",
 ]
-perspective-common = [
+perspectiveCommon = [
     "ignition-perspective-common",
 ]
-perspective-designer = [
+perspectiveDesigner = [
     "ignition-perspective-common",
     "ignition-perspective-designer",
 ]
-perspective-gateway = [
+perspectiveFateway = [
     "ignition-perspective-common",
     "ignition-perspective-gateway",
 ]

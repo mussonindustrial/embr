@@ -3,6 +3,22 @@ plugins {
     id "com.github.node-gradle.node" version "7.0.1"
 }
 
+repositories {
+    ivy {
+        name = "Node.js"
+        setUrl("https://nodejs.org/dist/")
+        patternLayout {
+            artifact("v[revision]/[artifact](-v[revision]-[classifier]).[ext]")
+        }
+        metadataSources {
+            artifact()
+        }
+        content {
+            includeModule("org.nodejs", "node")
+        }
+    }
+}
+
 // configurations on which versions of Node, Npm, and Yarn the gradle build should use.  Configuration provided by/to
 // the gradle node plugin that"s applied above (com.moowork.node)
 node {

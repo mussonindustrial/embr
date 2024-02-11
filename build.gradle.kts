@@ -1,37 +1,16 @@
-plugins {
-    alias(libs.plugins.kotlin) apply false
+repositories {
+    mavenCentral()
+    mavenLocal()
+    google()
+    gradlePluginPortal()
 }
 
-allprojects {
-    group = "com.mussonindustrial.ignition"
-
-    repositories {
-        mavenLocal()
-        mavenCentral()
-
-        maven(url = "https://nexus.inductiveautomation.com/repository/public/")
-        maven(url = "https://nexus.inductiveautomation.com/repository/inductiveautomation-thirdparty/")
-        maven(url = "https://nexus.inductiveautomation.com/repository/inductiveautomation-releases/")
-        maven(url = "https://nexus.inductiveautomation.com/repository/inductiveautomation-snapshots/")
-
-        ivy {
-            name = "Node.js"
-            setUrl("https://nodejs.org/dist/")
-            patternLayout {
-                artifact("v[revision]/[artifact](-v[revision]-[classifier]).[ext]")
-            }
-            metadataSources {
-                artifact()
-            }
-            content {
-                includeModule("org.nodejs", "node")
-            }
-        }
-
-//    configurations.all {
-//        resolutionStrategy.cacheChangingModulesFor(0, "minutes")
-//    }
-
-    }
+tasks.register("buildAll") {
+    group = "build"
+    dependsOn(gradle.includedBuilds.mapNotNull { it.task(":build") })
 }
 
+tasks.register("cleanAll") {
+    group = "build"
+    dependsOn(gradle.includedBuilds.mapNotNull { it.task(":clean") })
+}

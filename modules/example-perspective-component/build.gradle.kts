@@ -2,21 +2,15 @@ import java.util.Date
 import java.text.SimpleDateFormat
 
 plugins {
-    alias(libs.plugins.kotlin)
-    alias(libs.plugins.modl)
+    id("embr.ignition-module-conventions")
 }
 
 fun buildTime(): String {
     return SimpleDateFormat("yyyyMMddHH").format(Date())
 }
 
-dependencies {
-    implementation(project(":web"))
-}
-
 allprojects {
     version = "${project.version}.${buildTime()}"
-    group = "com.mussonindustrial.ignition"
 }
 
 ignitionModule {
@@ -50,19 +44,19 @@ ignitionModule {
     )
 }
 
-tasks.register<Copy>("collectResources") {
-    from(layout.buildDirectory.dir("../../../web/packages/example-perspective-component/dist"))
-    into(layout.buildDirectory.dir("../gateway/src/main/resources/dist"))
-}
-
-tasks.register("cleanResources") {
-    delete(layout.buildDirectory.dir("../gateway/src/main/resources/dist"))
-}
-
-tasks.named("build") {
-    dependsOn("collectResources")
-}
-
-tasks.named("clean") {
-    dependsOn("cleanResources")
-}
+//tasks.register<Copy>("collectResources") {
+//    from(layout.buildDirectory.dir("../../../web/packages/example-perspective-component/dist"))
+//    into(layout.buildDirectory.dir("../gateway/src/main/resources/dist"))
+//}
+//
+//tasks.register("cleanResources") {
+//    delete(layout.buildDirectory.dir("../gateway/src/main/resources/dist"))
+//}
+//
+//tasks.named("build") {
+//    dependsOn("collectResources")
+//}
+//
+//tasks.named("clean") {
+//    dependsOn("cleanResources")
+//}
