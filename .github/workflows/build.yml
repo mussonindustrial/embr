@@ -45,7 +45,7 @@ jobs:
           echo "ignition.signing.keystorePassword=$KEYSTORE_PASSWORD" >> ./gradle.properties
       shell: bash
 
-    - name: Make secrests folder
+    - name: Make secrets folder
       run: |
           mkdir ./secrets
       shell: bash
