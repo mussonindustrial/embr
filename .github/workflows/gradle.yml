@@ -39,11 +39,16 @@ jobs:
           CERT_PASSWORD: ${{ secrets.CERT_PASSWORD }}
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
       run: |
-          echo ignition.signing.certAlias=$CERT_ALIAS >> gradle.properties
-          echo ignition.signing.certPassword=$CERT_PASSWORD >> gradle.properties
-          echo ignition.signing.keystorePassword=$KEYSTORE_PASSWORD >> gradle.properties
+          echo ignition.signing.certAlias=$CERT_ALIAS >> ./gradle.properties
+          echo ignition.signing.certPassword=$CERT_PASSWORD >> ./gradle.properties
+          echo ignition.signing.keystorePassword=$KEYSTORE_PASSWORD >> ./gradle.properties
       shell: bash
 
+    - name: Make secrests folder
+      run: |
+          mkdir ./secrets
+      shell: bash
+  
     - name: Write certificate to file
       uses: timheuer/base64-to-file@v1.2
       with:
