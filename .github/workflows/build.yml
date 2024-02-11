@@ -74,8 +74,8 @@ jobs:
       uses: svenstaro/upload-release-action@v2
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
-        file: target/release/mything
-        asset_name: ./modules/example-perspective-component/build/PerspectiveComponentExample.modl
+        file: ./modules/example-perspective-component/build/PerspectiveComponentExample.modl
+        asset_name: Perspective Component Example
         tag: ${{ github.ref }}
         overwrite: true
         body: "Hey, maybe this is working?"
