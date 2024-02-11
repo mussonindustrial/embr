@@ -44,6 +44,20 @@ jobs:
           echo ignition.signing.keystorePassword=$KEYSTORE_PASSWORD >> gradle.properties
       shell: bash
 
+    - name: Write certificate to file
+      uses: timheuer/base64-to-file@v1.2
+      with:
+        fileName: 'cert.pb7'
+        fileDir: './secrets/'
+        encodedString: ${{ secrets.CERT }}
+
+    - name: Write keystore to file
+      uses: timheuer/base64-to-file@v1.2
+      with:
+        fileName: 'keystore.jks'
+        fileDir: './secrets/'
+        encodedString: ${{ secrets.KEYSTORE }}
+
     - name: Make gradlew executable
       run: chmod +x ./gradlew
 
