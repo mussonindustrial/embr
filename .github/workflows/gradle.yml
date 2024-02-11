@@ -42,6 +42,7 @@ jobs:
           echo "ignition.signing.certAlias=$CERT_ALIAS" >> ./gradle.properties
           echo "ignition.signing.certPassword=$CERT_PASSWORD" >> ./gradle.properties
           echo "ignition.signing.keystorePassword=$KEYSTORE_PASSWORD" >> ./gradle.properties
+          less ./gradle.properties
       shell: bash
 
     - name: Make secrests folder
@@ -83,6 +84,9 @@ jobs:
       with:
         java-version: '21'
         distribution: 'temurin'
+
+    - name: Make gradlew executable
+      run: chmod +x ./gradlew
 
     # Generates and submits a dependency graph, enabling Dependabot Alerts for all project dependencies.
     # See: https://github.com/gradle/actions/blob/main/dependency-submission/README.md
