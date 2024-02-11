@@ -1,0 +1,62 @@
+[versions]
+java = "21"
+kotlin = "1.9.21"
+kotest = "5.8.0"
+ignition = "8.1.0"
+
+[plugins]
+kotlin = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+modl = { id = "io.ia.sdk.modl", version = "0.1.1" }
+ktlint = { id = "org.jlleitschuh.gradle.ktlint", version = "12.0.3" }
+
+[libraries]
+ignition-common = { group = "com.inductiveautomation.ignitionsdk", name = "ignition-common", version.ref = "ignition" }
+ignition-gateway-api = { group = "com.inductiveautomation.ignitionsdk", name = "gateway-api", version.ref = "ignition" }
+ignition-designer-api = { group = "com.inductiveautomation.ignitionsdk", name = "designer-api", version.ref = "ignition" }
+ignition-client-api = { group = "com.inductiveautomation.ignitionsdk", name = "client-api", version.ref = "ignition" }
+ignition-vision-client-api = { group = "com.inductiveautomation.ignitionsdk", name = "vision-client-api", version.ref = "ignition" }
+ignition-perspective-common = { group = "com.inductiveautomation.ignitionsdk", name = "perspective-common", version.ref = "ignition" }
+ignition-perspective-gateway = { group = "com.inductiveautomation.ignitionsdk", name = "perspective-gateway", version.ref = "ignition" }
+ignition-perspective-designer = { group = "com.inductiveautomation.ignitionsdk", name = "perspective-designer", version.ref = "ignition" }
+
+# test framework
+kotest-junit = { group = "io.kotest", name = "kotest-runner-junit5", version.ref = "kotest" }
+kotest-assertions-core = { group = "io.kotest", name = "kotest-assertions-core", version.ref = "kotest" }
+kotest-property = { group = "io.kotest", name = "kotest-property", version.ref = "kotest" }
+kotest-data = { group = "io.kotest", name = "kotest-framework-datatest", version.ref = "kotest" }
+mockk = { group = "io.mockk", name = "mockk", version = "1.13.8" }
+
+[bundles]
+common = [
+    "ignition-common",
+]
+gateway = [
+    "ignition-common",
+    "ignition-gateway-api",
+]
+designer = [
+    "ignition-common",
+    "ignition-designer-api",
+]
+client = [
+    "ignition-common",
+    "ignition-client-api",
+    "ignition-vision-client-api",
+]
+perspective-common = [
+    "ignition-perspective-common",
+]
+perspective-designer = [
+    "ignition-perspective-common",
+    "ignition-perspective-designer",
+]
+perspective-gateway = [
+    "ignition-perspective-common",
+    "ignition-perspective-gateway",
+]
+kotest = [
+    "kotest-assertions-core",
+    "kotest-data",
+    "kotest-junit",
+    "kotest-property",
+]
