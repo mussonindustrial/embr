@@ -26,7 +26,8 @@ jobs:
       uses: actions/setup-java@v4
       with:
         java-version: '21'
-        distribution: 'temurin'
+        distribution: 'zulu'
+        cache: 'gradle'
 
     - name: Set up Node 20
       uses: actions/setup-node@v4
@@ -93,7 +94,7 @@ jobs:
       uses: actions/setup-java@v4
       with:
         java-version: '21'
-        distribution: 'temurin'
+        distribution: 'zulu'
 
     - name: Make gradlew executable
       run: chmod +x ./gradlew
