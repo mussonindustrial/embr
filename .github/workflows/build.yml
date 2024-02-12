@@ -1,43 +1,34 @@
-# This workflow uses actions that are not certified by GitHub.
-# They are provided by a third-party and are governed by
-# separate terms of service, privacy policy, and support
-# documentation.
-# This workflow will build a Java project with Gradle and cache/restore any dependencies to improve the workflow execution time
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-gradle
-
-name: Java CI with Gradle
-
-on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
-
+name: Build
+on: [push, pull_request, workflow_dispatch]
 jobs:
   build:
-
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.config.os }}
+    strategy:
+      matrix:
+        config:
+          - {os: ubuntu-latest, params: "buildAll" }
+          - {os: windows-latest, params: "buildAll" }
+          - {os: macos-latest, params: "buildAll" }
     permissions:
       contents: write
 
     steps:
-    - uses: actions/checkout@v4
-    - name: Set up JDK 21
+    - name: Checkout Source Code
+      uses: actions/checkout@v4
+    - name: Install Java
       uses: actions/setup-java@v4
       with:
         java-version: '21'
         distribution: 'zulu'
-
-    - name: Set up Node 20
+    - name: Set up Node.js
       uses: actions/setup-node@v4
       with:
         node-version: 20
-
     - name: Setup Gradle
       uses: gradle/actions/setup-gradle@v3
       with:
-        gradle-version: wrapper
-        cache-disabled: true
+        cache-read-only: ${{ github.event_name == 'pull_request' }}
+
 
     - name: Restore gradle.properties
       env:
@@ -47,19 +38,16 @@ jobs:
         mkdir -p ~/.gradle/
         echo "GRADLE_USER_HOME=${HOME}/.gradle" >> $GITHUB_ENV
         echo "${GRADLE_PROPERTIES}" > ~/.gradle/gradle.properties
-
     - name: Make secrets folder
       run: |
           mkdir ./secrets
       shell: bash
-  
     - name: Write certificate to file
       uses: timheuer/base64-to-file@v1.2
       with:
         fileName: 'cert.p7b'
         fileDir: './secrets'
         encodedString: ${{ secrets.CERT }}
-
     - name: Write keystore to file
       uses: timheuer/base64-to-file@v1.2
       with:
@@ -70,8 +58,8 @@ jobs:
     - name: Make gradlew executable
       run: chmod +x ./gradlew
 
-    - name: Build with Gradle Wrapper
-      run: ./gradlew buildAll
+    - name: Build
+      run: ./gradlew --scan ${{ matrix.config.params }}
 
     - name: Upload Modules as Release
       uses: svenstaro/upload-release-action@v2
