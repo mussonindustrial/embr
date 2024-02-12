@@ -23,7 +23,7 @@ node {
     version = "20.11.0"
     yarnVersion = "1.22.19"
     npmVersion = "10.2.4"
-    download = false
+    download = true
     nodeProjectDir  = file(project.projectDir)
     distBaseUrl = null  // Base URL is configured in settings.gradle.kts
 }
@@ -55,7 +55,7 @@ task buildBundles(type: NpmTask) {
 
 }
 
-project.tasks.findByName("build").dependsOn(buildBundles)
+//project.tasks.findByName("build").dependsOn(buildBundles)
 
 configurations {
     example_perspective_component {
