@@ -10,7 +10,7 @@ import {
     SizeObject
 } from '@inductiveautomation/perspective-client';
 
-export const COMPONENT_TYPE = "mussonindustrial.display.simplecomponent";
+export const COMPONENT_TYPE = "mussonindustrial.display.example";
 
 interface SimpleComponentProps {
     text?: string;
@@ -37,12 +37,9 @@ export class SimpleComponent extends Component<ComponentProps<SimpleComponentPro
     render() {
         const { props, emit } = this.props;
 
-        // Note that the topmost piece of dom requires the application of an element reference, events, style and
-        // className as shown below otherwise the layout won't work, or any events configured will fail. See render
-        // of MessengerComponent in Messenger.tsx for more details.
         return (
             <div {...emit({ classes: ['simplecomponent'] })}>
-                <span>Simple Component</span>
+                <span>This is a simple component, with only a "text" prop: </span>
                 <span>{props.text}</span>
             </div>
 

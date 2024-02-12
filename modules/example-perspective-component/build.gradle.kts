@@ -5,8 +5,12 @@ plugins {
     id("embr.ignition-module-conventions")
 }
 
-fun buildTime(): String {
-    return SimpleDateFormat("yyyyMMddHH").format(Date())
+fun buildTime(): String { return SimpleDateFormat("yyyyMMddHH").format(Date()) }
+
+tasks {
+    named("clean") {
+        dependsOn(":gateway:clean", ":common:clean", ":designer:clean")
+    }
 }
 
 allprojects {
@@ -14,12 +18,13 @@ allprojects {
 }
 
 ignitionModule {
-    name.set("Perspective Component Example")
-    fileName.set("PerspectiveComponentExample.modl")
+    name.set("Example Perspective Component")
+    fileName.set("ExamplePerspectiveComponent.modl")
     id.set("com.mussonindustrial.ignition.perspective.example")
     moduleVersion.set("${project.version}")
+    freeModule.set(true)
 
-    moduleDescription.set("Example Perspective Module.")
+    moduleDescription.set("Example Perspective Component.")
     requiredIgnitionVersion.set(libs.versions.ignition)
 
     projectScopes.putAll(
@@ -32,7 +37,7 @@ ignitionModule {
 
     moduleDependencies.set(
         mapOf(
-            "com.inductiveautomation.perspective" to "G",
+            "com.inductiveautomation.perspective" to "GD",
         ),
     )
 
@@ -43,20 +48,3 @@ ignitionModule {
         ),
     )
 }
-
-//tasks.register<Copy>("collectResources") {
-//    from(layout.buildDirectory.dir("../../../web/packages/example-perspective-component/dist"))
-//    into(layout.buildDirectory.dir("../gateway/src/main/resources/dist"))
-//}
-//
-//tasks.register("cleanResources") {
-//    delete(layout.buildDirectory.dir("../gateway/src/main/resources/dist"))
-//}
-//
-//tasks.named("build") {
-//    dependsOn("collectResources")
-//}
-//
-//tasks.named("clean") {
-//    dependsOn("cleanResources")
-//}

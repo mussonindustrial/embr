@@ -20,17 +20,15 @@ pluginManagement {
     repositories {
         gradlePluginPortal()
         maven(url = "https://nexus.inductiveautomation.com/repository/public/")
-        maven(url = "https://nexus.inductiveautomation.com/repository/inductiveautomation-thirdparty/")
-        maven(url = "https://nexus.inductiveautomation.com/repository/inductiveautomation-releases/")
-        maven(url = "https://nexus.inductiveautomation.com/repository/inductiveautomation-snapshots/")
-    }
-    plugins {
-        id("io.ia.sdk.modl") version "0.1.1"
     }
 }
+
 
 include(":common")
 include(":gateway")
 include(":designer")
+
+include(":web")
+project(":web").projectDir = file("../../web")
 
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
