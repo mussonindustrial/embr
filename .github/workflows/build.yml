@@ -28,8 +28,11 @@ jobs:
         java-version: '21'
         distribution: 'temurin'
 
-    # Configure Gradle for optimal use in GiHub Actions, including caching of downloaded dependencies.
-    # See: https://github.com/gradle/actions/blob/main/setup-gradle/README.md
+    - name: Set up Node 20
+    - uses: actions/setup-node@v4
+      with:
+        node-version: 20
+
     - name: Setup Gradle
       uses: gradle/actions/setup-gradle@ec92e829475ac0c2315ea8f9eced72db85bb337a # v3.0.0
 
@@ -41,19 +44,6 @@ jobs:
         mkdir -p ~/.gradle/
         echo "GRADLE_USER_HOME=${HOME}/.gradle" >> $GITHUB_ENV
         echo "${GRADLE_PROPERTIES}" > ~/.gradle/gradle.properties
-
-    # - name: Add secrets to gradle.properties
-    #   env:
-    #       CERT_ALIAS: ${{ secrets.CERT_ALIAS }}
-    #       CERT_PASSWORD: ${{ secrets.CERT_PASSWORD }}
-    #       KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-    #   run: |
-    #       echo "" >> ./gradle.properties
-    #       echo "ignition.signing.certAlias=$CERT_ALIAS" >> ./gradle.properties
-    #       echo "ignition.signing.certPassword=$CERT_PASSWORD" >> ./gradle.properties
-    #       echo "ignition.signing.keystorePassword=$KEYSTORE_PASSWORD" >> ./gradle.properties
-    #       less ./gradle.properties
-    #   shell: bash
 
     - name: Make secrets folder
       run: |
@@ -79,11 +69,6 @@ jobs:
 
     - name: Build with Gradle Wrapper
       run: ./gradlew buildAll
-
-    - name: List output folder
-      run: |
-          ls ./modules/example-perspective-component/build/
-      shell: bash
 
     - name: Upload Modules as Release
       uses: svenstaro/upload-release-action@v2
