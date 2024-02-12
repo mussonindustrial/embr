@@ -47,7 +47,7 @@ class GatewayHook : AbstractGatewayModuleHook() {
     }
 
     override fun getMountedResourceFolder(): Optional<String>? {
-        return Optional.of("dist")
+        return Optional.of("web")
     }
 
     override fun getMountPathAlias(): Optional<String>? {

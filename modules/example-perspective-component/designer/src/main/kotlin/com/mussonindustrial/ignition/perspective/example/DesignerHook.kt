@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory
 @Suppress("unused")
 class DesignerHook : AbstractDesignerModuleHook() {
 
-    private val logger: Logger = LoggerFactory.getLogger("ExamplePerspectiveModule")
+    private val logger: Logger = LoggerFactory.getLogger("ExamplePerspectiveComponent")
 
     private lateinit var context: DesignerContext
     private lateinit var componentRegistry: DesignerComponentRegistry
@@ -21,7 +21,7 @@ class DesignerHook : AbstractDesignerModuleHook() {
 
 
     override fun startup(context: DesignerContext, activationState: LicenseState) {
-        logger.info("Perspective example module started.")
+        logger.info("Perspective example component module started.")
         this.context = context
 
         val pdi: PerspectiveDesignerInterface = PerspectiveDesignerInterface.get(context)
