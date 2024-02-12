@@ -27,7 +27,6 @@ jobs:
       with:
         java-version: '21'
         distribution: 'zulu'
-        cache: 'gradle'
 
     - name: Set up Node 20
       uses: actions/setup-node@v4
@@ -35,7 +34,10 @@ jobs:
         node-version: 20
 
     - name: Setup Gradle
-      uses: gradle/actions/setup-gradle@ec92e829475ac0c2315ea8f9eced72db85bb337a # v3.0.0
+      uses: gradle/actions/setup-gradle@v3
+      with:
+        gradle-version: wrapper
+        cache-disabled: true
 
     - name: Restore gradle.properties
       env:
