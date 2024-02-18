@@ -6,9 +6,9 @@ jobs:
     strategy:
       matrix:
         config:
-          - {os: ubuntu-latest, params: "buildAll" }
-          - {os: windows-latest, params: "buildAll" }
-          - {os: macos-latest, params: "buildAll" }
+          - {os: ubuntu-latest, params: "build" }
+          - {os: windows-latest, params: "build" }
+          - {os: macos-latest, params: "build" }
     permissions:
       contents: write
 
