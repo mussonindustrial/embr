@@ -1,10 +1,22 @@
-# embr [<img src="https://cdn.mussonindustrial.com/files/public/images/emblem.svg" alt="Musson Industrial Logo" width="90" height="40" align="right">][embr]
-<div><img alt="Build" src="https://github.com/mussonindustrial/pyro/actions/workflows/build.js.yml/badge.svg"/>
-<a href="https://github.com/mussonindustrial/pyro/blob/main/LICENSE">
-  <img src="https://img.shields.io/badge/License-MIT-yellow.svg" />
-</a></div><br>
+<div align="center">
+  <h1>
+    <i>Embr</i>
+</h1>
+<h3>Modules for Ignition by Inductive Automation 🔥</h3>
+  <a href="https://mussonindustrial.com">
+        <img src="https://cdn.mussonindustrial.com/files/public/images/emblem.svg" alt="Musson Industrial Logo" width="90" height="40">
+  </a>
+  <br><br>
+<p>
+  <img alt="Build" src="https://github.com/mussonindustrial/embr/actions/workflows/build.yml/badge.svg"/>
+  <a href="https://github.com/mussonindustrial/embr/blob/main/LICENSE">
+    <img src="https://img.shields.io/badge/License-MIT-yellow.svg" />
+  </a>
 
- Modules for Ignition by Inductive Automation 🔥
+</p>
+</div>
+
+ 
 
  ## Directory
 
