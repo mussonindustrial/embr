@@ -7,31 +7,25 @@ plugins {
 
 fun buildTime(): String { return SimpleDateFormat("yyyyMMddHH").format(Date()) }
 
-tasks {
-    named("clean") {
-        dependsOn(":gateway:clean", ":common:clean", ":designer:clean")
-    }
-}
-
 allprojects {
-    version = "${project.version}.${buildTime()}"
+    group = "com.mussonindustrial.embr"
+    version = "1.0.0"
 }
 
 ignitionModule {
     name.set("Example Perspective Component")
-    fileName.set("ExamplePerspectiveComponent.modl")
-    id.set("com.mussonindustrial.ignition.perspective.example")
-    moduleVersion.set("${project.version}")
-    freeModule.set(true)
-
     moduleDescription.set("Example Perspective Component.")
+    id.set("com.mussonindustrial.ignition.perspective.example")
+    fileName.set("ExamplePerspectiveComponent.modl")
+    moduleVersion.set("${project.version}.${buildTime()}")
+    freeModule.set(true)
     requiredIgnitionVersion.set(libs.versions.ignition)
 
     projectScopes.putAll(
         mapOf(
-            ":common" to "GD",
-            ":gateway" to "G",
-            ":designer" to "D",
+            ":modules:example-perspective-component:common" to "GD",
+            ":modules:example-perspective-component:gateway" to "G",
+            ":modules:example-perspective-component:designer" to "D",
         ),
     )
 

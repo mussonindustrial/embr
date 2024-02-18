@@ -4,7 +4,7 @@ plugins {
 
 dependencies {
     compileOnly(libs.bundles.gateway)
-    compileOnly(libs.bundles.perspectiveFateway)
-    compileOnly(projects.common)
-    modlWebResource(project(path = ":web", configuration = "example_perspective_component"))
+    compileOnly(libs.bundles.perspectiveGateway)
+    compileOnly(projects.modules.examplePerspectiveComponent.common)
+    modlImplementation(projects.js.packages.examplePerspectiveComponent)
 }

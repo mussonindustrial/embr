@@ -6,6 +6,7 @@ import com.inductiveautomation.ignition.designer.model.DesignerContext
 import com.inductiveautomation.perspective.designer.DesignerComponentRegistry
 import com.inductiveautomation.perspective.designer.api.ComponentDesignDelegateRegistry
 import com.inductiveautomation.perspective.designer.api.PerspectiveDesignerInterface
+import com.mussonindustrial.ignition.perspective.example.component.display.ExampleComponent
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -29,11 +30,11 @@ class DesignerHook : AbstractDesignerModuleHook() {
         componentRegistry = pdi.designerComponentRegistry
         delegateRegistry = pdi.componentDesignDelegateRegistry
 
-        componentRegistry.registerComponent(SimpleComponent.DESCRIPTOR)
+        componentRegistry.registerComponent(ExampleComponent.DESCRIPTOR)
     }
 
     override fun shutdown() {
         logger.info("Shutting down Component module and removing registered components.")
-        componentRegistry.removeComponent(SimpleComponent.COMPONENT_ID)
+        componentRegistry.removeComponent(ExampleComponent.COMPONENT_ID)
     }
 }

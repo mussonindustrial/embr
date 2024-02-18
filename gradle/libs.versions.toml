@@ -51,7 +51,7 @@ perspectiveDesigner = [
     "ignition-perspective-common",
     "ignition-perspective-designer",
 ]
-perspectiveFateway = [
+perspectiveGateway = [
     "ignition-perspective-common",
     "ignition-perspective-gateway",
 ]

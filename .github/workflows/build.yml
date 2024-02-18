@@ -7,8 +7,7 @@ jobs:
       matrix:
         config:
           - {os: ubuntu-latest, params: "build" }
-          - {os: windows-latest, params: "build" }
-          - {os: macos-latest, params: "build" }
+
     permissions:
       contents: write
 
@@ -27,12 +26,11 @@ jobs:
     - name: Initialize Node.js
       working-directory: ./js
       run: npm ci
-      
+
     - name: Setup Gradle
       uses: gradle/actions/setup-gradle@v3
       with:
         cache-read-only: ${{ github.event_name == 'pull_request' }}
-
 
     - name: Restore gradle.properties
       env:
@@ -64,17 +62,7 @@ jobs:
 
     - name: Build
       run: ./gradlew --scan ${{ matrix.config.params }}
-
-    - name: Upload Modules as Release
-      uses: svenstaro/upload-release-action@v2
-      with:
-        repo_token: ${{ secrets.GITHUB_TOKEN }}
-        file: ./modules/example-perspective-component/build/ExamplePerspectiveComponent.modl
-        asset_name: PerspectiveComponentExample.modl
-        tag: ${{ github.ref }}
-        overwrite: true
-        body: "Hey, maybe this is working?"
-
+      
 
   dependency-submission:
 
