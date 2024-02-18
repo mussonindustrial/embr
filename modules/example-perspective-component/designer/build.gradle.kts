@@ -5,5 +5,5 @@ plugins {
 dependencies {
     compileOnly(libs.bundles.designer)
     compileOnly(libs.bundles.perspectiveDesigner)
-    compileOnly(projects.common)
+    compileOnly(projects.modules.examplePerspectiveComponent.common)
 }
