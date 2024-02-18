@@ -24,6 +24,9 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: 20
+    - name: Initialize Node.js
+      working-directory: ./js
+      run: npm ci
     - name: Setup Gradle
       uses: gradle/actions/setup-gradle@v3
       with:
