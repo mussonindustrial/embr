@@ -68,10 +68,7 @@ jobs:
       - name: 'Make gradlew executable'
         run: chmod +x ./gradlew
 
-      - name: 'Build'
-        run: ./gradlew --scan ${{ matrix.config.params }}
-
-      - name: 'Release new version'
+      - name: 'Release new versions'
         id: release
         run: |
           ./gradlew release \
@@ -81,6 +78,11 @@ jobs:
       - name: 'Get current version'
         id: version
         run: echo "::set-output name=version::$(./gradlew -q -Prelease.quiet cV)"
+
+      - name: 'Publish new versions'
+        id: publish
+        run: |
+          ./gradlew publish
 
   dependency-submission:
     runs-on: ubuntu-latest

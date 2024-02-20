@@ -20,3 +20,29 @@ scmVersion {
         versionSeparator.set("-v")
     }
 }
+
+afterEvaluate {
+    publishing {
+        publications {
+            create<MavenPublication>("module") {
+                artifact(project.layout.buildDirectory.file(ignitionModule.fileName)) {
+                    builtBy(tasks.signModule)
+                }
+            }
+        }
+    }
+}
+
+
+publishing {
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/mussonindustrial/embr")
+            credentials {
+                username = project.findProperty("gpr.user") as String? ?: System.getenv("USERNAME")
+                password = project.findProperty("gpr.key") as String? ?: System.getenv("TOKEN")
+            }
+        }
+    }
+}
