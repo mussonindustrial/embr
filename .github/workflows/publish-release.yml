@@ -1,19 +1,14 @@
-# GitHub Actions workflow to automatically build and test Embr.
-name: 'Embr CI'
-
-on:
-  push:
-    branches: [ 'main' ]
-  pull_request:
-    branches: [ 'main' ]
+# GitHub Actions workflow to publish new releases.
+name: 'Publish releases'
+on: workflow_dispatch
 
 env:
   JAVA_VERSION: 21
   NODE_VERSION: 20
 
 jobs:
-  build:
-    name: 'Build with JDK ${{ env.JAVA_VERSION }}'
+  github:
+    name: 'GitHub'
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -75,3 +70,34 @@ jobs:
 
       - name: 'Build'
         run: ./gradlew --scan ${{ matrix.config.params }}
+
+      - name: 'Release new version'
+        id: release
+        run: |
+          ./gradlew release \
+          -Prelease.customUsername=${{ github.actor }} \
+          -Prelease.customPassword=${{ github.token }}
+
+      - name: 'Get current version'
+        id: version
+        run: echo "::set-output name=version::$(./gradlew -q -Prelease.quiet cV)"
+
+  dependency-submission:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: 'Set up Java ${{ env.JAVA_VERSION }}'
+        uses: actions/setup-java@v4
+        with:
+          java-version: '${{ env.JAVA_VERSION }}'
+          distribution: 'zulu'
+
+      - name: 'Make gradlew executable'
+        run: chmod +x ./gradlew
+
+      # Generates and submits a dependency graph, enabling Dependabot Alerts for all project dependencies.
+      # See: https://github.com/gradle/actions/blob/main/dependency-submission/README.md
+      - name: 'Generate and submit dependency graph'
+        uses: gradle/actions/dependency-submission@ec92e829475ac0c2315ea8f9eced72db85bb337a # v3.0.0
