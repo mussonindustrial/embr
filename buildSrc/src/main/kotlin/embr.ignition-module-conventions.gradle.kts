@@ -33,13 +33,18 @@ afterEvaluate {
                         builtBy(tasks.signModule)
                     })
                 )
-
-
-//                artifact(project.layout.buildDirectory.file(ignitionModule.fileName)) {
-//                    builtBy(tasks.signModule)
-//                }
             }
         }
+    }
+    githubRelease {
+        token(project.findProperty("gpr.key") as String? ?: System.getenv("GITHUB_TOKEN"))
+        owner("mussonindustrial")
+        repo("embr")
+        tagName("${project.name}-v${version}")
+        targetCommitish("main")
+        releaseName(version.toString())
+        generateReleaseNotes(true)
+        releaseAssets(listOf(file(project.layout.buildDirectory.file(ignitionModule.fileName))))
     }
 }
 
@@ -57,13 +62,3 @@ publishing {
     }
 }
 
-githubRelease {
-    token(project.findProperty("gpr.key") as String? ?: System.getenv("GITHUB_TOKEN"))
-    owner("mussonindustrial")
-    repo("embr")
-    tagName(version.toString())
-    targetCommitish("main")
-    releaseName(version.toString())
-    generateReleaseNotes(true)
-    releaseAssets(project.layout.buildDirectory.file(ignitionModule.fileName))
-}
