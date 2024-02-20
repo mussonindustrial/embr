@@ -11,7 +11,7 @@ repositories {
 }
 
 dependencies {
-    implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.21")
+    implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.22")
     implementation("com.github.node-gradle:gradle-node-plugin:7.0.2")
     implementation("gradle.plugin.io.ia.sdk:gradle-module-plugin:0.1.1")
     implementation("com.coditory.gradle:webjar-plugin:1.3.1")
