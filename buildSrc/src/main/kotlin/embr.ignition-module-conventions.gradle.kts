@@ -17,5 +17,6 @@ scmVersion {
     }
     tag {
         prefix.set(project.name)
+        versionSeparator.set(":")
     }
 }
