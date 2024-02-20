@@ -81,7 +81,7 @@ jobs:
         run: echo "::set-output name=version::$(./gradlew -q -Prelease.quiet cV)"
 
       - name: 'Publish new versions'
-        id: release
+        id: publish
         run: ./gradlew githubRelease
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
