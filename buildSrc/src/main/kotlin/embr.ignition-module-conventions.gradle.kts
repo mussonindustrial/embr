@@ -40,11 +40,11 @@ afterEvaluate {
         token(project.findProperty("gpr.key") as String? ?: System.getenv("GITHUB_TOKEN"))
         owner("mussonindustrial")
         repo("embr")
-        tagName("${project.name}-v${version}")
+        tagName("${project.name}-${version}")
         targetCommitish("main")
-        releaseName(version.toString())
+        releaseName("${ignitionModule.fileName} (${version})")
         generateReleaseNotes(true)
-        releaseAssets(listOf(file(project.layout.buildDirectory.file(ignitionModule.fileName))))
+        releaseAssets.from(tasks.signModule.get().signed)
     }
 }
 
@@ -62,3 +62,6 @@ publishing {
     }
 }
 
+tasks.githubRelease {
+    dependsOn(tasks.build)
+}
