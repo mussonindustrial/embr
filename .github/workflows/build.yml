@@ -13,7 +13,7 @@ env:
 
 jobs:
   build:
-    name: 'Build with JDK $JAVA_VERSION'
+    name: 'Build'
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -26,16 +26,16 @@ jobs:
       - name: 'Fetch git tags' # Required for axion-release-plugin
         run: git fetch --tags --unshallow
 
-      - name: Set up Java $JAVA_VERSION
+      - name: 'Set up Java ${{ env.JAVA_VERSION }}'
         uses: actions/setup-java@v3
         with:
-          java-version: $JAVA_VERSION
+          java-version: '${{ env.JAVA_VERSION }}'
           distribution: 'zulu'
 
       - name: 'Set up Node.js'
         uses: actions/setup-node@v4
         with:
-          node-version: $NODE_VERSION
+          node-version: '${{ env.NODE_VERSION }}'
       - name: 'Initialize Node.js'
         working-directory: ./js
         run: npm ci
