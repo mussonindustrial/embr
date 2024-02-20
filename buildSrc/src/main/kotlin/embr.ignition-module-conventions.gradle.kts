@@ -42,7 +42,7 @@ afterEvaluate {
         repo("embr")
         tagName("${project.name}-${version}")
         targetCommitish("main")
-        releaseName("${ignitionModule.fileName} (${version})")
+        releaseName("${ignitionModule.fileName.get()} (${version})")
         generateReleaseNotes(true)
         releaseAssets.from(tasks.signModule.get().signed)
     }

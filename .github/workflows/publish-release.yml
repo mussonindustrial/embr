@@ -69,12 +69,12 @@ jobs:
       - name: 'Make gradlew executable'
         run: chmod +x ./gradlew
 
-      - name: 'Release new versions'
-        id: release
-        run: |
-          ./gradlew release \
-          -Prelease.customUsername=${{ github.actor }} \
-          -Prelease.customPassword=${{ github.token }}
+#      - name: 'Release new versions'
+#        id: release
+#        run: |
+#          ./gradlew release \
+#          -Prelease.customUsername=${{ github.actor }} \
+#          -Prelease.customPassword=${{ github.token }}
 
       - name: 'Get current version'
         id: version
