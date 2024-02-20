@@ -3,7 +3,6 @@ plugins {
     id("io.ia.sdk.modl")
     id("pl.allegro.tech.build.axion-release")
     `maven-publish`
-    `java-library`
 }
 
 version = scmVersion.version
@@ -27,7 +26,6 @@ afterEvaluate {
         publications {
             create<MavenPublication>("module") {
                 version = scmVersion.version
-                from(components["java"])
                 artifact(project.layout.buildDirectory.file(ignitionModule.fileName)) {
                     builtBy(tasks.signModule)
                 }
