@@ -2,6 +2,7 @@ plugins {
     id("embr.base-conventions")
     id("io.ia.sdk.modl")
     id("pl.allegro.tech.build.axion-release")
+    id("com.github.breadmoirai.github-release")
     `maven-publish`
 }
 
@@ -26,9 +27,17 @@ afterEvaluate {
         publications {
             create<MavenPublication>("module") {
                 version = scmVersion.version
-                artifact(project.layout.buildDirectory.file(ignitionModule.fileName)) {
-                    builtBy(tasks.signModule)
-                }
+                artifactId = project.name
+                setArtifacts(listOf(
+                    artifact(project.layout.buildDirectory.file(ignitionModule.fileName)) {
+                        builtBy(tasks.signModule)
+                    })
+                )
+
+
+//                artifact(project.layout.buildDirectory.file(ignitionModule.fileName)) {
+//                    builtBy(tasks.signModule)
+//                }
             }
         }
     }
@@ -46,4 +55,15 @@ publishing {
             }
         }
     }
+}
+
+githubRelease {
+    token(project.findProperty("gpr.key") as String? ?: System.getenv("GITHUB_TOKEN"))
+    owner("mussonindustrial")
+    repo("embr")
+    tagName(version.toString())
+    targetCommitish("main")
+    releaseName(version.toString())
+    generateReleaseNotes(true)
+    releaseAssets(project.layout.buildDirectory.file(ignitionModule.fileName))
 }

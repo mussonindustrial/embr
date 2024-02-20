@@ -7,6 +7,10 @@
       <module name="convention-plugins.test" target="15" />
       <module name="conventions.main" target="15" />
       <module name="conventions.test" target="15" />
+      <module name="embr.modules.embr-chart-js.main" target="15" />
+      <module name="embr.modules.embr-chart-js.test" target="15" />
+      <module name="embr.modules.example-perspective-component.main" target="15" />
+      <module name="embr.modules.example-perspective-component.test" target="15" />
       <module name="example-perspective-component.common" target="11" />
       <module name="example-perspective-component.common.main" target="11" />
       <module name="example-perspective-component.common.test" target="11" />
