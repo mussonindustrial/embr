@@ -9,7 +9,6 @@ fun buildTime(): String { return SimpleDateFormat("yyyyMMddHH").format(Date()) }
 
 allprojects {
     group = "com.mussonindustrial.embr"
-    version = "0.0.1"
 }
 
 ignitionModule {
