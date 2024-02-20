@@ -81,8 +81,9 @@ jobs:
 
       - name: 'Publish new versions'
         id: publish
-        run: |
-          ./gradlew publish
+        run: ./gradlew publish
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   dependency-submission:
     runs-on: ubuntu-latest
