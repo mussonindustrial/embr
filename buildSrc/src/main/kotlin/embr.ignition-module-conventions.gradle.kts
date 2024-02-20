@@ -12,6 +12,9 @@ allprojects {
 }
 
 scmVersion {
+    checks {
+        uncommittedChanges.set(false)
+    }
     tag {
         prefix.set(project.name)
     }
