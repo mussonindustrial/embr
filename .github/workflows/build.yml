@@ -1,5 +1,5 @@
 # GitHub Actions workflow to automatically build and test Embr.
-name: 'Embr CI'
+name: 'build'
 
 on:
   push:

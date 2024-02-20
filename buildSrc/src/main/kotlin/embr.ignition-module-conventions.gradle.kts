@@ -25,6 +25,7 @@ afterEvaluate {
     publishing {
         publications {
             create<MavenPublication>("module") {
+                version = version
                 artifact(project.layout.buildDirectory.file(ignitionModule.fileName)) {
                     builtBy(tasks.signModule)
                 }
