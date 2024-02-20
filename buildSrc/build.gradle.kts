@@ -15,6 +15,7 @@ dependencies {
     implementation("com.github.node-gradle:gradle-node-plugin:7.0.2")
     implementation("gradle.plugin.io.ia.sdk:gradle-module-plugin:0.1.1")
     implementation("com.coditory.gradle:webjar-plugin:1.3.1")
+    implementation("pl.allegro.tech.build:axion-release-plugin:1.17.0")
 
 //    implementation(libs.kotlin.gradle.plugin)
 //    implementation(files(libs.javaClass.superclass.protectionDomain.codeSource.location))
