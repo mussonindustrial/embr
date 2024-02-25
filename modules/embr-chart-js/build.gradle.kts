@@ -9,13 +9,14 @@ fun buildTime(): String { return SimpleDateFormat("yyyyMMddHH").format(Date()) }
 
 allprojects {
     group = "com.mussonindustrial.embr"
+    version = "0.1.0"
 }
 
 ignitionModule {
-    name.set("Chart.js Component")
+    name.set("Chart.js Components")
     moduleDescription.set("Simple yet flexible JavaScript charting library for the modern web.")
     id.set("com.mussonindustrial.embr.chartjs")
-    fileName.set("EmbrChartjs.modl")
+    fileName.set("Embr-Chartjs-module.modl")
     moduleVersion.set("${project.version}.${buildTime()}")
     freeModule.set(true)
     requiredIgnitionVersion.set(libs.versions.ignition)

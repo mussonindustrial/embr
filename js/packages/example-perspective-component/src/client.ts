@@ -1,14 +1,14 @@
 import {
-  ComponentMeta,
-  ComponentRegistry,
-} from "@inductiveautomation/perspective-client";
+    ComponentMeta,
+    ComponentRegistry,
+} from '@inductiveautomation/perspective-client'
 import {
-  ExampleComponent,
-  ExampleComponentMeta,
-} from "./components/ExampleComponent";
+    ExampleComponent,
+    ExampleComponentMeta,
+} from './components/ExampleComponent'
 
-export { ExampleComponent };
+export { ExampleComponent }
 
-const components: Array<ComponentMeta> = [new ExampleComponentMeta()];
+const components: Array<ComponentMeta> = [new ExampleComponentMeta()]
 
-components.forEach((c: ComponentMeta) => ComponentRegistry.register(c));
+components.forEach((c: ComponentMeta) => ComponentRegistry.register(c))

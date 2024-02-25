@@ -7,19 +7,19 @@ import com.mussonindustrial.ignition.chartjs.Components
 import com.mussonindustrial.ignition.chartjs.Components.COMPONENT_CATEGORY
 import com.mussonindustrial.ignition.chartjs.Meta.MODULE_ID
 
-class ChartJs {
+class TagHistoryChart {
     companion object {
-        var COMPONENT_ID: String = "mussonindustrial.chart.chart-js"
+        var COMPONENT_ID: String = "mussonindustrial.chart.chart-js.tag-history-chart"
         var SCHEMA: JsonSchema = JsonSchema.parse(Components::class.java.getResourceAsStream("/chart-js.props.json"))
         var DESCRIPTOR: ComponentDescriptor = ComponentDescriptorImpl.ComponentBuilder.newBuilder()
             .setPaletteCategory(COMPONENT_CATEGORY)
             .setId(COMPONENT_ID)
             .setModuleId(MODULE_ID)
             .setSchema(SCHEMA)
-            .setName("Chart.js")
+            .setName("Tag History Chart")
 //            .setIcon(ImageIcon(Components::class.java.getResource("/icons/simplecomponent.png")))
-            .addPaletteEntry("", "Chart.js", "Chart.js Component", null, null)
-            .setDefaultMetaName("chart_js")
+            .addPaletteEntry("", "Tag History Chart", "Tag History Chart", null, null)
+            .setDefaultMetaName("Tag History Chart")
             .setResources(Components.BROWSER_RESOURCES)
             .build()
     }

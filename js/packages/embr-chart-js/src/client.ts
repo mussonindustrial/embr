@@ -1,11 +1,25 @@
 import {
-  ComponentMeta,
-  ComponentRegistry,
-} from "@inductiveautomation/perspective-client";
-import { ChartJSComponent, ChartJSComponentMeta } from "./components/ChartJS";
+    ComponentMeta,
+    ComponentRegistry,
+} from '@inductiveautomation/perspective-client'
+import { Chart, registerables } from 'chart.js'
+import ChartStreaming from '@robloche/chartjs-plugin-streaming'
+import zoomPlugin from 'chartjs-plugin-zoom'
+import {
+    TagHistoryChartComponent,
+    TagHistoryChartComponentMeta,
+} from './components/TagHistoryChart'
+import {
+    BaseChartComponent,
+    BaseChartComponentMeta,
+} from './components/BaseChartComponent'
 
-export { ChartJSComponent };
+Chart.register(...registerables, zoomPlugin, ChartStreaming)
 
-const components: Array<ComponentMeta> = [new ChartJSComponentMeta()];
+export { BaseChartComponent, TagHistoryChartComponent }
 
-components.forEach((c: ComponentMeta) => ComponentRegistry.register(c));
+const components: Array<ComponentMeta> = [
+    new BaseChartComponentMeta(),
+    new TagHistoryChartComponentMeta(),
+]
+components.forEach((c: ComponentMeta) => ComponentRegistry.register(c))

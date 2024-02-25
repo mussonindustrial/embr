@@ -10,7 +10,7 @@ import com.mussonindustrial.ignition.chartjs.Meta.MODULE_ID
 class ChartJs {
     companion object {
         var COMPONENT_ID: String = "mussonindustrial.chart.chart-js"
-        var SCHEMA: JsonSchema = JsonSchema.parse(Components::class.java.getResourceAsStream("/chart-js.props.json"))
+        var SCHEMA: JsonSchema = JsonSchema.parse(Components::class.java.getResourceAsStream("/chart-js.props2.json"))
         var DESCRIPTOR: ComponentDescriptor = ComponentDescriptorImpl.ComponentBuilder.newBuilder()
             .setPaletteCategory(COMPONENT_CATEGORY)
             .setId(COMPONENT_ID)
