@@ -1,4 +1,3 @@
-                ## 0.0.1 (2024-02-24)
+## 0.0.1 (2024-02-24)
 
-                y
-Test
+No release notes included in this release.
