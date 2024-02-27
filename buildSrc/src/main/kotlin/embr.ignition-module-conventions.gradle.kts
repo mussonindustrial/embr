@@ -18,7 +18,7 @@ scmVersion {
         versionSeparator.set("-")
     }
     useHighestVersion.set(true)
-    versionIncrementer("incrementPrerelease")
+    versionIncrementer("incrementPatch")
 }
 
 version = scmVersion.version
