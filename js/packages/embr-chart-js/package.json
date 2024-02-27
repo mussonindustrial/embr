@@ -1,5 +1,5 @@
 {
-  "name": "@embr/embr-chart-js",
+  "name": "@mussonindustrial/embr-chart-js",
   "private": true,
   "version": "0.0.0",
   "scripts": {
@@ -9,7 +9,8 @@
     "test": "",
     "preview": "vite preview",
     "lint": "eslint src/**/*.ts",
-    "lint:prettier": "prettier -c . --cache --ignore-path=../../.prettierignore"
+    "lint:prettier": "prettier -c . --cache --ignore-path=../../.prettierignore",
+    "genTypes": "npx typescript-json-schema .\\src\\components\\BaseChartComponentProps.ts ChartJSComponentProps -o=\"dist/chart-js.props.json\" --excludePrivate --constAsEnum --aliasRefs"
   },
   "dependencies": {
     "@faker-js/faker": "^8.4.1",
@@ -22,13 +23,15 @@
     "luxon": "^3.4.4",
     "react": "^18",
     "react-chartjs-2": "^5.2.0",
-    "react-dom": "^18"
+    "react-dom": "^18"    
   },
   "devDependencies": {
     "@mussonindustrial/embr-tsconfig": "*",
     "@mussonindustrial/eslint-config-embr": "*",
     "@types/react": "^18.2.56",
     "eslint": "^8.56.0",
+    "ts-json-schema-generator": "^1.5.0",
+    "typescript-json-schema": "^0.63.0",
     "typescript": "^5.3.3",
     "vite": "^5.0.10"
   }

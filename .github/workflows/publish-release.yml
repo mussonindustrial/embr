@@ -1,6 +1,9 @@
 # GitHub Actions workflow to publish new releases.
 name: 'Publish releases'
-on: workflow_dispatch
+on:
+  push:
+    branches:
+      - main
 
 env:
   JAVA_VERSION: 21
@@ -43,42 +46,29 @@ jobs:
 
       - name: 'Restore gradle.properties'
         env:
-          GRADLE_PROPERTIES: ${{ secrets.GRADLE_PROPERTIES }}
+          GRADLE_IGNITION_MODULE_SIGNING_PROPS: ${{ secrets.GRADLE_IGNITION_MODULE_SIGNING_PROPS }}
         shell: bash
         run: |
           mkdir -p ~/.gradle/
           echo "GRADLE_USER_HOME=${HOME}/.gradle" >> $GITHUB_ENV
-          echo "${GRADLE_PROPERTIES}" > ~/.gradle/gradle.properties
+          echo "${GRADLE_IGNITION_MODULE_SIGNING_PROPS}" > ~/.gradle/gradle.properties
       - name: 'Make secrets folder'
         run: |
           mkdir ./secrets
         shell: bash
       - name: 'Write certificate to file'
-        uses: timheuer/base64-to-file@v1.2
-        with:
-          fileName: 'cert.p7b'
-          fileDir: './secrets'
-          encodedString: ${{ secrets.CERT }}
+        run: |
+          echo -n "$IGNITION_MODULE_CERT_BASE64" | base64 --decode > ./secrets/cert.p7b
+        env:
+          IGNITION_MODULE_CERT_BASE64: ${{ secrets.IGNITION_MODULE_CERT_BASE64 }}
       - name: 'Write keystore to file'
-        uses: timheuer/base64-to-file@v1.2
-        with:
-          fileName: 'keystore.jks'
-          fileDir: './secrets'
-          encodedString: ${{ secrets.KEYSTORE }}
+        run: |
+          echo -n "$IGNITION_MODULE_KEYSTORE_BASE64" | base64 --decode > ./secrets/keystore.jks
+        env:
+          IGNITION_MODULE_KEYSTORE_BASE64: ${{ secrets.IGNITION_MODULE_KEYSTORE_BASE64 }}
 
       - name: 'Make gradlew executable'
         run: chmod +x ./gradlew
-
-#      - name: 'Release new versions'
-#        id: release
-#        run: |
-#          ./gradlew release \
-#          -Prelease.customUsername=${{ github.actor }} \
-#          -Prelease.customPassword=${{ github.token }}
-
-      - name: 'Get current version'
-        id: version
-        run: echo "::set-output name=version::$(./gradlew -q -Prelease.quiet cV)"
 
       - name: 'Publish new versions'
         id: publish
@@ -97,6 +87,9 @@ jobs:
         with:
           java-version: '${{ env.JAVA_VERSION }}'
           distribution: 'zulu'
+
+      - name: 'Fetch git tags' # Required for axion-release-plugin
+        run: git fetch --tags --unshallow
 
       - name: 'Make gradlew executable'
         run: chmod +x ./gradlew

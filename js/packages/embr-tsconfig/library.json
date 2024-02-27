@@ -1,0 +1,14 @@
+{
+    "extends": "./base.json",
+    "display": "TS Library",
+    "compilerOptions": {
+        "lib": ["ES2022"],
+        "target": "ES2022",
+        "skipLibCheck": true,
+        "resolveJsonModule": true,
+        "outDir": "dist",
+        "allowJs": true,
+        "declaration": true,
+        "declarationDir": "./types"
+    }
+}
