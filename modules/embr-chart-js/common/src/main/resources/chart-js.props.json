@@ -1,21 +1,322 @@
 {
-  "type": "object",
-  "properties": {
-    "text": {
-      "type": "string",
-      "description": "text to display",
-      "default": "Default Text"
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "definitions": {
+        "align": {
+            "enum": [ "start", "center", "end" ],
+            "type": "string"
+        },
+        "axis": {
+            "type": "string",
+            "enum": ["x", "y"]
+        },
+        "chart_area": {
+            "properties": {
+                "top": {
+                    "$ref": "urn:ignition-schema:schemas/css-length.schema.json"
+                },
+                "left": {
+                    "$ref": "urn:ignition-schema:schemas/css-length.schema.json"
+                },
+                "right": {
+                    "$ref": "urn:ignition-schema:schemas/css-length.schema.json"
+                },
+                "bottom": {
+                    "$ref": "urn:ignition-schema:schemas/css-length.schema.json"
+                },
+                "width": {
+                    "$ref": "urn:ignition-schema:schemas/css-length.schema.json"
+                },
+                "height": {
+                    "$ref": "urn:ignition-schema:schemas/css-length.schema.json"
+                }
+            }
+        },
+        "chart_data": {
+            "default": "",
+            "type": "string"
+        },
+        "chart_options": {
+            "properties": {
+                "datasets": {
+                    "type": "object"
+                },
+                "indexAxis": {
+                    "description": "The base axis of the chart. 'x' for vertical charts and 'y' for horizontal charts.",
+                    "$ref": "#/definitions/axis"
+                },
+                "clip": {
+                    "description": "How to clip relative to chartArea. Positive value allows overflow, negative value clips that many pixels inside chartArea. 0 = clip at chartArea. Clipping can also be configured per side: `clip: {left: 5, top: false, right: -2, bottom: 0}`",
+                    "anyOf": [
+                        {"type":  "number"},
+                        {"type":  "boolean"},
+                        {"$ref":  "#/definitions/chart_area"}
+                    ]
+                },
+                "color": {
+                    "description": "Base color",
+                    "$ref": "#/definitions/color"
+                },
+                "backgroundColor": {
+                    "description": "Base background color",
+                    "$ref": "#/definitions/color"
+                },
+                "borderColor": {
+                    "description": "Base border color",
+                    "$ref": "#/definitions/color"
+                },
+                "font": {
+                    "description": "Base font",
+                    "$ref": "#/definitions/font"
+                },
+                "responsive": {
+                    "default": true,
+                    "description": "Resizes the chart canvas when its container does.",
+                    "type": "boolean"
+                },
+                "maintainAspectRatio": {
+                    "default": false,
+                    "description": "Maintain the original canvas aspect ratio (width / height) when resizing.",
+                    "type": "boolean"
+                },
+                "resizeDelay": {
+                    "default": 0,
+                    "description": "Delay the resize update by give amount of milliseconds. This can ease the resize process by debouncing update of the elements.",
+                    "type": "number"
+                },
+                "aspectRatio": {
+                    "description": "Canvas aspect ratio (i.e. width / height, a value of 1 representing a square canvas). Note that this option is ignored if the height is explicitly defined either as attribute or via the style.",
+                    "type": "number"
+                },
+                "locale": {
+                    "description": "Locale used for number formatting (using `Intl.NumberFormat`).",
+                    "type": "string"
+                },
+                "devicePixelRatio": {
+                    "description": "Override the window's default devicePixelRatio.",
+                    "type": "number"
+                },
+                "plugins": {
+                    "default": {},
+                    "description": "Chart plugin options.",
+                    "$ref": "#/definitions/plugin_options"
+                }
+            }
+        },
+        "chart_plugins": {
+            "default": {},
+            "$ref": "#/definitions/plugin_options"
+        },
+        "chart_type": {
+            "default": "line",
+            "description": "Chart type.",
+            "enum": [
+                "bar",
+                "bubble",
+                "doughnut",
+                "line",
+                "pie",
+                "polarArea",
+                "radar",
+                "scatter"],
+            "type": "string"
+        },
+        "color": {
+            "type": ["string", "object"],
+            "format": "color"
+        },
+        "font": {
+            "type": "string"
+        },
+        "layout_position": {
+            "enum": [ "left", "top", "right", "bottom", "center", "chartArea" ],
+            "type": "string"
+        },
+        "plugin_options": {
+            "properties": {
+                "colors": {
+                    "$ref": "#/definitions/plugin_options_colors"
+                },
+                "decimation": {
+                    "$ref": "#/definitions/plugin_options_decimation"
+                },
+                "filler": {
+                    "$ref": "#/definitions/plugin_options_filler"
+                },
+                "legend": {
+                    "$ref": "#/definitions/plugin_options_legend"
+                },
+                "subtitle": {
+                    "$ref": "#/definitions/plugin_options_title"
+                },
+                "title": {
+                    "$ref": "#/definitions/plugin_options_title"
+                }
+            }
+        },
+        "plugin_options_colors": {
+            "properties": {
+                "enabled": {
+                    "description": "Enable the colors plugin.",
+                    "type": "boolean"
+                },
+                "forceOverride": {
+                    "type": "boolean"
+                }
+            },
+            "required": [ "enabled" ]
+        },
+        "plugin_options_decimation": {
+            "properties": {
+                "enabled": {
+                    "description": "Enable the decimation plugin.",
+                    "type": "boolean"
+                },
+                "threshold": {
+                    "description": "Decimation threshold.",
+                    "type": "number"
+                },
+                "algorithm": {
+                    "description": "Decimation algorithm.",
+                    "type": "string",
+                    "enum": [ "lttb", "min-max" ]
+                },
+                "samples": {
+                    "description": "Decimation samples.",
+                    "type": "number"
+                }
+            },
+            "required": [ "enabled", "threshold", "algorithm", "samples" ]
+        },
+        "plugin_options_filler": {
+            "properties": {
+                "drawTime": {
+                    "description": "Fill draw time.",
+                    "type": "string",
+                    "enum": [ "beforeDraw", "beforeDatasetDraw", "beforeDatasetsDraw" ]
+                },
+                "propagate": {
+                    "description": "Propagate fill.",
+                    "type": "boolean"
+                }
+            },
+            "required": [ "drawTime", "propagate" ]
+        },
+        "plugin_options_legend": {
+            "properties": {
+                "display": {
+                    "default": true,
+                    "description": "Is the legend shown?",
+                    "type": "boolean"
+                },
+                "position": {
+                    "default": "top",
+                    "description": "Position of the legend.",
+                    "$ref": "#/definitions/layout_position"
+                },
+                "align": {
+                    "default": "center",
+                    "description": "Alignment of the legend.",
+                    "$ref": "#/definitions/align"
+                },
+                "maxHeight": {
+                    "description": "Maximum height of the legend, in pixels.",
+                    "type": "number"
+                },
+                "maxWidth": {
+                    "description": "Maximum width of the legend, in pixels.",
+                    "type": "number"
+                },
+                "fullSize": {
+                    "default": true,
+                    "description": "Marks that this box should take the full width/height of the canvas (moving other boxes). This is unlikely to need to be changed in day-to-day use.",
+                    "type": "boolean"
+                },
+                "reverse": {
+                    "default": false,
+                    "description": "Legend will show datasets in reverse order.",
+                    "type": "boolean"
+                },
+                "labels": {
+                    "properties": {
+                        "boxWidth": {
+                            "default": 40,
+                            "description": "Width of colored box.",
+                            "type": "number"
+                        },
+                        "boxHeight": {
+                            "default": 20,
+                            "description": "Width of colored box.",
+                            "type": "number"
+                        }
+                    }
+                }
+            },
+            "required": [ "display", "position", "align" ]
+        },
+        "plugin_options_title": {
+            "properties": {
+                "align": {
+                    "default": "center",
+                    "description": "Alignment of the title.",
+                    "$ref": "#/definitions/align"
+                },
+                "display": {
+                    "default": true,
+                    "description": "Is the title shown?",
+                    "type": "boolean"
+                },
+                "position": {
+                    "default": "top",
+                    "description": "Position of the title.",
+                    "$ref": "#/definitions/layout_position"
+                },
+                "color": {
+                    "description": "Color of text.",
+                    "$ref": "#/definitions/color"
+                },
+                "font": {
+                    "description": "Text font.",
+                    "$ref": "#/definitions/font"
+                },
+                "fullSize": {
+                    "default": true,
+                    "description": "Marks that this box should take the full width/height of the canvas (moving other boxes). If set to `false`, places the box above/beside the chart area.",
+                    "type": "boolean"
+                },
+                "padding": {
+                    "description": " Adds padding above and below the title text if a single number is specified. It is also possible to change top and bottom padding separately.",
+                    "type": "number"
+                },
+                "text": {
+                    "description": "Title text to display. If specified as an array, text is rendered on multiple lines.",
+                    "type": ["string", "array"]
+                }
+            },
+            "required": [ "display", "text", "align" ]
+        },
+        "point": {
+            "properties": {
+                "x": {
+                    "type": "number"
+                },
+                "y": {
+                    "type": "number"
+                }
+            }
+        }
+
     },
-    "value": {
-      "type": "number",
-      "description": "test value",
-      "default": 0
+    "properties": {
+        "type": {
+            "$ref": "#/definitions/chart_type"
+        },
+        "data": {
+            "$ref": "#/definitions/chart_data"
+        },
+        "options": {
+            "$ref": "#/definitions/chart_options"
+        }
     },
-    "style": {
-      "$ref": "urn:ignition-schema:schemas/style-properties.schema.json",
-      "default": {
-        "classes": ""
-      }
-    }
-  }
+    "type": "object",
+    "required": ["type", "data", "options"]
 }

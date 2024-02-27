@@ -1,67 +1,67 @@
+import java.text.SimpleDateFormat
+import java.util.*
+
 plugins {
-    id("embr.base-conventions")
+    id("embr.kotlin-library-conventions")
     id("io.ia.sdk.modl")
     id("pl.allegro.tech.build.axion-release")
     id("com.github.breadmoirai.github-release")
-    `maven-publish`
 }
 
-version = scmVersion.version
-
-allprojects {
-    project.version = version
-}
-
+fun buildTime(): String { return SimpleDateFormat("yyyyMMddHH").format(Date()) }
 scmVersion {
     checks {
         uncommittedChanges.set(false)
     }
     tag {
         prefix.set(project.name)
-        versionSeparator.set("-v")
+        versionSeparator.set("-")
+    }
+    useHighestVersion.set(true)
+    versionIncrementer("incrementPatch")
+}
+
+version = scmVersion.version
+
+allprojects {
+    group = "com.mussonindustrial.embr"
+
+    // Give a friendly error when building project and git tags aren't available.
+    if (version == "0.1.0-SNAPSHOT") {
+        throw IllegalStateException("Version is not set, please run 'git fetch --tags' command to fetch tags from main repository.")
     }
 }
 
+subprojects {
+    version = project.parent?.version!!
+}
+
+ignitionModule {
+    moduleVersion.set(if (version.toString().contains("-SNAPSHOT")) {
+        version.toString().replace("-SNAPSHOT", ".${buildTime()}-SNAPSHOT")
+    } else {
+        "${version}.${buildTime()}"
+    })
+}
+
 afterEvaluate {
-    publishing {
-        publications {
-            create<MavenPublication>("module") {
-                version = scmVersion.version
-                artifactId = project.name
-                setArtifacts(listOf(
-                    artifact(project.layout.buildDirectory.file(ignitionModule.fileName)) {
-                        builtBy(tasks.signModule)
-                    })
-                )
-            }
-        }
-    }
     githubRelease {
         token(project.findProperty("gpr.key") as String? ?: System.getenv("GITHUB_TOKEN"))
         owner("mussonindustrial")
         repo("embr")
-        tagName("${project.name}-${version}")
         targetCommitish("main")
-        releaseName("${ignitionModule.fileName.get()} (${version})")
+        tagName("${project.name}-${version}")
+        releaseName("${project.name}-${version}")
         generateReleaseNotes(true)
         releaseAssets.from(tasks.signModule.get().signed)
-    }
-}
-
-
-publishing {
-    repositories {
-        maven {
-            name = "GitHubPackages"
-            url = uri("https://maven.pkg.github.com/mussonindustrial/embr")
-            credentials {
-                username = project.findProperty("gpr.user") as String? ?: System.getenv("GITHUB_ACTOR")
-                password = project.findProperty("gpr.key") as String? ?: System.getenv("GITHUB_TOKEN")
-            }
-        }
+        overwrite.set(true)
     }
 }
 
 tasks.githubRelease {
     dependsOn(tasks.build)
+}
+
+tasks.deployModl {
+    hostGateway = "http://localhost:8088"
 }

@@ -1,22 +1,12 @@
-import java.util.Date
-import java.text.SimpleDateFormat
-
 plugins {
     id("embr.ignition-module-conventions")
 }
 
-fun buildTime(): String { return SimpleDateFormat("yyyyMMddHH").format(Date()) }
-
-allprojects {
-    group = "com.mussonindustrial.embr"
-}
-
 ignitionModule {
-    name.set("Chart.js Component")
+    name.set("Chart.js Components")
     moduleDescription.set("Simple yet flexible JavaScript charting library for the modern web.")
     id.set("com.mussonindustrial.embr.chartjs")
-    fileName.set("EmbrChartjs.modl")
-    moduleVersion.set("${project.version}.${buildTime()}")
+    fileName.set("Embr-Chartjs-module.modl")
     freeModule.set(true)
     requiredIgnitionVersion.set(libs.versions.ignition)
 
