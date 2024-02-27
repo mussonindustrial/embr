@@ -70,4 +70,4 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: 'Build'
-        run: ./gradlew --scan ${{ matrix.config.params }}
+        run: ./gradlew --scan build
