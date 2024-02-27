@@ -320,4 +320,3 @@
     "type": "object",
     "required": ["type", "data", "options"]
 }
-

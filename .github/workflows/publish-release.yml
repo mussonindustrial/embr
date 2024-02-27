@@ -26,7 +26,7 @@ jobs:
         run: git fetch --tags --unshallow
 
       - name: 'Set up Java ${{ env.JAVA_VERSION }}'
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           java-version: '${{ env.JAVA_VERSION }}'
           distribution: 'zulu'
@@ -46,12 +46,12 @@ jobs:
 
       - name: 'Restore gradle.properties'
         env:
-          GRADLE_PROPERTIES: ${{ secrets.GRADLE_IGNITION_MODULE_SIGNING_PROPS }}
+          GRADLE_IGNITION_MODULE_SIGNING_PROPS: ${{ secrets.GRADLE_IGNITION_MODULE_SIGNING_PROPS }}
         shell: bash
         run: |
           mkdir -p ~/.gradle/
           echo "GRADLE_USER_HOME=${HOME}/.gradle" >> $GITHUB_ENV
-          echo "${GRADLE_PROPERTIES}" > ~/.gradle/gradle.properties
+          echo "${GRADLE_IGNITION_MODULE_SIGNING_PROPS}" > ~/.gradle/gradle.properties
       - name: 'Make secrets folder'
         run: |
           mkdir ./secrets
@@ -64,12 +64,11 @@ jobs:
       - name: 'Write keystore to file'
         run: |
           echo -n "$IGNITION_MODULE_KEYSTORE_BASE64" | base64 --decode > ./secrets/keystore.jks
+        env:
+          IGNITION_MODULE_KEYSTORE_BASE64: ${{ secrets.IGNITION_MODULE_KEYSTORE_BASE64 }}
+
       - name: 'Make gradlew executable'
         run: chmod +x ./gradlew
-
-      - name: 'Get current version'
-        id: version
-        run: echo "::set-output name=version::$(./gradlew -q -Prelease.quiet cV)"
 
       - name: 'Publish new versions'
         id: publish
@@ -88,6 +87,9 @@ jobs:
         with:
           java-version: '${{ env.JAVA_VERSION }}'
           distribution: 'zulu'
+
+      - name: 'Fetch git tags' # Required for axion-release-plugin
+        run: git fetch --tags --unshallow
 
       - name: 'Make gradlew executable'
         run: chmod +x ./gradlew

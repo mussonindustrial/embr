@@ -18,7 +18,7 @@ scmVersion {
         versionSeparator.set("-")
     }
     useHighestVersion.set(true)
-    versionIncrementer("incrementPrerelease")
+    versionIncrementer("incrementPatch")
 }
 
 version = scmVersion.version
@@ -54,6 +54,7 @@ afterEvaluate {
         releaseName("${project.name}-${version}")
         generateReleaseNotes(true)
         releaseAssets.from(tasks.signModule.get().signed)
+        overwrite.set(true)
     }
 }
 
