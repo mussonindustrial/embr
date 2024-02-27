@@ -43,7 +43,7 @@ jobs:
 
       - name: 'Restore gradle.properties'
         env:
-          GRADLE_PROPERTIES: ${{ secrets.GRADLE_PROPERTIES }}
+          GRADLE_PROPERTIES: ${{ secrets.GRADLE_IGNITION_MODULE_SIGNING_PROPS }}
         shell: bash
         run: |
           mkdir -p ~/.gradle/
@@ -58,13 +58,13 @@ jobs:
         with:
           fileName: 'cert.p7b'
           fileDir: './secrets'
-          encodedString: ${{ secrets.CERT }}
+          encodedString: ${{ secrets.IGNITION_MODULE_CERT }}
       - name: 'Write keystore to file'
         uses: timheuer/base64-to-file@v1.2
         with:
           fileName: 'keystore.jks'
           fileDir: './secrets'
-          encodedString: ${{ secrets.KEYSTORE }}
+          encodedString: ${{ secrets.IGNITION_MODULE_KEYSTORE }}
 
       - name: 'Make gradlew executable'
         run: chmod +x ./gradlew
