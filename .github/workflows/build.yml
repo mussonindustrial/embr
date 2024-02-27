@@ -55,14 +55,14 @@ jobs:
         shell: bash
       - name: 'Write certificate to file'
         run: |
-          echo -n IGNITION_MODULE_CERT | base64 --decode > ./secrets/cert.p7b
+          echo -n "$IGNITION_MODULE_CERT_BASE64" | base64 --decode > ./secrets/cert.p7b
         env:
-          IGNITION_MODULE_CERT: ${{ secrets.IGNITION_MODULE_CERT }}
+          IGNITION_MODULE_CERT_BASE64: ${{ secrets.IGNITION_MODULE_CERT_BASE64 }}
       - name: 'Write keystore to file'
         run: |
-          echo -n IGNITION_MODULE_KEYSTORE | base64 --decode > ./secrets/cert.p7b
+          echo -n "$IGNITION_MODULE_KEYSTORE_BASE64" | base64 --decode > ./secrets/keystore.jks
         env:
-          IGNITION_MODULE_KEYSTORE: ${{ secrets.IGNITION_MODULE_KEYSTORE }}
+          IGNITION_MODULE_KEYSTORE_BASE64: ${{ secrets.IGNITION_MODULE_KEYSTORE_BASE64 }}
 
       - name: 'Make gradlew executable'
         run: chmod +x ./gradlew
