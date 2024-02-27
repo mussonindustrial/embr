@@ -44,3 +44,5 @@ tasks.create<Delete>("cleanDist") {
 tasks.clean {
     dependsOn("cleanDist")
 }
+
+version = "0.1.0"
