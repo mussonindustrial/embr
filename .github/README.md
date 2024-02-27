@@ -3,18 +3,21 @@
     <i>Embr</i>
 </h1>
 <h3>Modules for Ignition by Inductive Automation 🔥</h3>
+  <br>
   <a href="https://mussonindustrial.com">
         <img src="https://cdn.mussonindustrial.com/files/public/images/emblem.svg" alt="Musson Industrial Logo" width="90" height="40">
   </a>
   <br><br>
 <p>
-  <img alt="Build" src="https://github.com/mussonindustrial/embr/actions/workflows/build.yml/badge.svg"/>
-  <a href="https://github.com/mussonindustrial/embr/blob/main/LICENSE">
-    <img src="https://img.shields.io/badge/License-MIT-yellow.svg" />
-  </a>
+  
+[![Build](https://github.com/mussonindustrial/embr/actions/workflows/build.yml/badge.svg)]()
+[![Kotlin](https://img.shields.io/badge/kotlin-1.9.22-blue.svg?logo=kotlin)](http://kotlinlang.org)
+[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/mussonindustrial/embr/blob/main/LICENSE)
 
 </p>
 </div>
+
+
 
  
 
@@ -28,7 +31,7 @@
 </div>
 
 
-## Installation / Building
+## Install / Build
 
 ```sh
 git clone https://github.com/mussonindustrial/embr
