@@ -1,481 +1,81 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema#",
     "definitions": {
-        "AnimationsSpec": {
-            "$ref": "#/definitions/__type_6"
+        "align": {
+            "enum": [ "start", "center", "end" ],
+            "type": "string"
         },
-        "Array": {
-            "items": {
-                "anyOf": [
-                    {
-                        "items": [
-                            {
-                                "type": "number"
-                            },
-                            {
-                                "type": "number"
-                            }
-                        ],
-                        "maxItems": 2,
-                        "minItems": 2,
-                        "type": "array"
-                    },
-                    {
-                        "$ref": "#/definitions/Point"
-                    },
-                    {
-                        "$ref": "#/definitions/BubbleDataPoint"
-                    },
-                    {
-                        "type": "number"
-                    }
-                ]
-            },
-            "type": "array"
+        "axis": {
+            "type": "string",
+            "enum": ["x", "y"]
         },
-        "BubbleDataPoint": {
+        "chart_area": {
             "properties": {
-                "r": {
-                    "description": "Bubble radius in pixels (not scaled).",
-                    "type": "number"
+                "top": {
+                    "$ref": "urn:ignition-schema:schemas/css-length.schema.json"
                 },
-                "x": {
-                    "type": "number"
+                "left": {
+                    "$ref": "urn:ignition-schema:schemas/css-length.schema.json"
                 },
-                "y": {
-                    "type": "number"
+                "right": {
+                    "$ref": "urn:ignition-schema:schemas/css-length.schema.json"
+                },
+                "bottom": {
+                    "$ref": "urn:ignition-schema:schemas/css-length.schema.json"
+                },
+                "width": {
+                    "$ref": "urn:ignition-schema:schemas/css-length.schema.json"
+                },
+                "height": {
+                    "$ref": "urn:ignition-schema:schemas/css-length.schema.json"
                 }
-            },
-            "type": "object"
+            }
         },
-        "ChartDatasetProperties.TData": {
-            "$ref": "#/definitions/Array"
-        },
-        "ChartType": {
-            "enum": [
-                "bar",
-                "bubble",
-                "doughnut",
-                "line",
-                "pie",
-                "polarArea",
-                "radar",
-                "scatter"
-            ],
+        "chart_data": {
+            "default": "",
             "type": "string"
         },
-        "Color": {
-            "anyOf": [
-                {
-                    "$ref": "#/definitions/_DeepPartialObject_1"
-                },
-                {
-                    "$ref": "#/definitions/_DeepPartialObject_2"
-                },
-                {
-                    "items": {
-                        "anyOf": [
-                            {
-                                "$ref": "#/definitions/_DeepPartialObject_1"
-                            },
-                            {
-                                "$ref": "#/definitions/_DeepPartialObject_2"
-                            },
-                            {
-                                "type": "string"
-                            }
-                        ]
-                    },
-                    "type": "array"
-                },
-                {
-                    "type": [
-                        "string",
-                        "object"
-                    ]
-                }
-            ]
-        },
-        "CoreInteractionOptions": {
-            "$ref": "#/definitions/__type_7"
-        },
-        "InteractionAxis": {
-            "enum": [
-                "r",
-                "x",
-                "xy",
-                "y"
-            ],
-            "type": "string"
-        },
-        "InteractionMode": {
-            "enum": [
-                "dataset",
-                "index",
-                "nearest",
-                "point",
-                "x",
-                "y"
-            ],
-            "type": "string"
-        },
-        "PChartData": {
-            "$ref": "#/definitions/__type_12"
-        },
-        "PChartDataset": {
+        "chart_options": {
             "properties": {
-                "backgroundColor": {
-                    "$ref": "#/definitions/Color"
-                },
-                "borderColor": {
-                    "$ref": "#/definitions/Color"
-                },
-                "borderWidth": {
-                    "anyOf": [
-                        {
-                            "items": {
-                                "type": "number"
-                            },
-                            "type": "array"
-                        },
-                        {
-                            "$ref": "#/definitions/_DeepPartialObject_6"
-                        },
-                        {
-                            "items": {
-                                "anyOf": [
-                                    {
-                                        "$ref": "#/definitions/_DeepPartialObject_6"
-                                    },
-                                    {
-                                        "type": "number"
-                                    }
-                                ]
-                            },
-                            "type": "array"
-                        },
-                        {
-                            "type": [
-                                "number",
-                                "object"
-                            ]
-                        }
-                    ],
-                    "default": 0,
-                    "description": "Width of the border, number for all sides, object to specify width for each side specifically"
-                },
-                "clip": {
-                    "anyOf": [
-                        {
-                            "$ref": "#/definitions/_DeepPartialObject_3"
-                        },
-                        {
-                            "const": false,
-                            "type": "boolean"
-                        },
-                        {
-                            "type": "number"
-                        }
-                    ],
-                    "description": "How to clip relative to chartArea. Positive value allows overflow, negative value clips that many pixels inside chartArea. 0 = clip at chartArea. Clipping can also be configured per side: `clip: {left: 5, top: false, right: -2, bottom: 0}`"
-                },
-                "data": {
-                    "$ref": "#/definitions/ChartDatasetProperties.TData"
-                },
-                "hidden": {
-                    "default": false,
-                    "description": "Configures the visibility state of the dataset. Set it to true, to hide the dataset from the chart.",
-                    "type": "boolean"
-                },
-                "hoverBackgroundColor": {
-                    "$ref": "#/definitions/Color"
-                },
-                "hoverBorderColor": {
-                    "$ref": "#/definitions/Color"
-                },
-                "hoverBorderWidth": {
-                    "anyOf": [
-                        {
-                            "items": {
-                                "type": "number"
-                            },
-                            "type": "array"
-                        },
-                        {
-                            "type": [
-                                "number",
-                                "object"
-                            ]
-                        }
-                    ]
+                "datasets": {
+                    "type": "object"
                 },
                 "indexAxis": {
-                    "default": "'x'",
                     "description": "The base axis of the chart. 'x' for vertical charts and 'y' for horizontal charts.",
-                    "enum": [
-                        "x",
-                        "y"
-                    ],
-                    "type": "string"
-                },
-                "label": {
-                    "description": "The label for the dataset which appears in the legend and tooltips.",
-                    "type": "string"
-                },
-                "normalized": {
-                    "description": "Chart.js is fastest if you provide data with indices that are unique, sorted, and consistent across datasets and provide the normalized: true option to let Chart.js know that you have done so.",
-                    "type": "boolean"
-                },
-                "order": {
-                    "description": "The drawing order of dataset. Also affects order for stacking, tooltip and legend.",
-                    "type": "number"
-                },
-                "parsing": {
-                    "anyOf": [
-                        {
-                            "$ref": "#/definitions/_DeepPartialObject_7"
-                        },
-                        {
-                            "const": false,
-                            "type": "boolean"
-                        }
-                    ],
-                    "description": "How to parse the dataset. The parsing can be disabled by specifying parsing: false at chart options or dataset. If parsing is disabled, data must be sorted and in the formats the associated chart type and scales use internally."
-                },
-                "stack": {
-                    "description": "The ID of the group to which this dataset belongs to (when stacked, each group will be a separate stack).",
-                    "type": "string"
-                },
-                "type": {
-                    "$ref": "#/definitions/key"
-                }
-            },
-            "type": "object"
-        },
-        "PChartOptions": {
-            "$ref": "#/definitions/__type"
-        },
-        "Partial": {
-            "$ref": "#/definitions/__type_5"
-        },
-        "Partial_1": {
-            "$ref": "#/definitions/__type_8"
-        },
-        "Point": {
-            "properties": {
-                "x": {
-                    "type": "number"
-                },
-                "y": {
-                    "type": "number"
-                }
-            },
-            "type": "object"
-        },
-        "Record": {
-            "$ref": "#/definitions/__type_15"
-        },
-        "Scriptable": {
-            "type": [
-                "number",
-                "object"
-            ]
-        },
-        "Scriptable_1": {
-            "anyOf": [
-                {
-                    "enum": [
-                        "easeInBack",
-                        "easeInBounce",
-                        "easeInCirc",
-                        "easeInCubic",
-                        "easeInElastic",
-                        "easeInExpo",
-                        "easeInOutBack",
-                        "easeInOutBounce",
-                        "easeInOutCirc",
-                        "easeInOutCubic",
-                        "easeInOutElastic",
-                        "easeInOutExpo",
-                        "easeInOutQuad",
-                        "easeInOutQuart",
-                        "easeInOutQuint",
-                        "easeInOutSine",
-                        "easeInQuad",
-                        "easeInQuart",
-                        "easeInQuint",
-                        "easeInSine",
-                        "easeOutBack",
-                        "easeOutBounce",
-                        "easeOutCirc",
-                        "easeOutCubic",
-                        "easeOutElastic",
-                        "easeOutExpo",
-                        "easeOutQuad",
-                        "easeOutQuart",
-                        "easeOutQuint",
-                        "easeOutSine",
-                        "linear"
-                    ],
-                    "type": "string"
-                },
-                {
-                    "type": "object"
-                }
-            ]
-        },
-        "Scriptable_2": {
-            "type": [
-                "object",
-                "boolean"
-            ]
-        },
-        "Scriptable_3": {
-            "anyOf": [
-                {
-                    "$ref": "#/definitions/_DeepPartialObject_1"
-                },
-                {
-                    "$ref": "#/definitions/_DeepPartialObject_2"
-                },
-                {
-                    "type": [
-                        "string",
-                        "object"
-                    ]
-                }
-            ]
-        },
-        "Scriptable_4": {
-            "anyOf": [
-                {
-                    "$ref": "#/definitions/_DeepPartialObject_4"
-                },
-                {
-                    "$ref": "#/definitions/_DeepPartialObject_5"
-                },
-                {
-                    "type": [
-                        "number",
-                        "object"
-                    ]
-                }
-            ]
-        },
-        "TransitionsSpec": {
-            "$ref": "#/definitions/__type_11"
-        },
-        "_DeepPartialObject": {
-            "$ref": "#/definitions/__type_1"
-        },
-        "_DeepPartialObject<{[key:string]:ScaleOptionsByType<\"radialLinear\"|keyofCartesianScaleTypeRegistry>;}>": {
-            "type": "object"
-        },
-        "_DeepPartialObject_1": {
-            "$ref": "#/definitions/__type_2"
-        },
-        "_DeepPartialObject_2": {
-            "$ref": "#/definitions/__type_3"
-        },
-        "_DeepPartialObject_3": {
-            "$ref": "#/definitions/__type_4"
-        },
-        "_DeepPartialObject_4": {
-            "$ref": "#/definitions/__type_9"
-        },
-        "_DeepPartialObject_5": {
-            "$ref": "#/definitions/__type_10"
-        },
-        "_DeepPartialObject_6": {
-            "$ref": "#/definitions/__type_13"
-        },
-        "_DeepPartialObject_7": {
-            "$ref": "#/definitions/__type_14"
-        },
-        "__type": {
-            "properties": {
-                "animation": {
-                    "anyOf": [
-                        {
-                            "$ref": "#/definitions/_DeepPartialObject"
-                        },
-                        {
-                            "const": false,
-                            "type": "boolean"
-                        }
-                    ]
-                },
-                "animations": {
-                    "$ref": "#/definitions/AnimationsSpec"
-                },
-                "aspectRatio": {
-                    "default": 2,
-                    "description": "Canvas aspect ratio (i.e. width / height, a value of 1 representing a square canvas). Note that this option is ignored if the height is explicitly defined either as attribute or via the style.",
-                    "type": "number"
-                },
-                "backgroundColor": {
-                    "$ref": "#/definitions/Scriptable_3",
-                    "description": "base background color"
-                },
-                "borderColor": {
-                    "$ref": "#/definitions/Scriptable_3",
-                    "description": "base border color"
+                    "$ref": "#/definitions/axis"
                 },
                 "clip": {
+                    "description": "How to clip relative to chartArea. Positive value allows overflow, negative value clips that many pixels inside chartArea. 0 = clip at chartArea. Clipping can also be configured per side: `clip: {left: 5, top: false, right: -2, bottom: 0}`",
                     "anyOf": [
-                        {
-                            "$ref": "#/definitions/_DeepPartialObject_3"
-                        },
-                        {
-                            "const": false,
-                            "type": "boolean"
-                        },
-                        {
-                            "type": "number"
-                        }
-                    ],
-                    "description": "How to clip relative to chartArea. Positive value allows overflow, negative value clips that many pixels inside chartArea. 0 = clip at chartArea. Clipping can also be configured per side: `clip: {left: 5, top: false, right: -2, bottom: 0}`"
+                        {"type":  "number"},
+                        {"type":  "boolean"},
+                        {"$ref":  "#/definitions/chart_area"}
+                    ]
                 },
                 "color": {
-                    "$ref": "#/definitions/Scriptable_3",
-                    "description": "base color"
+                    "description": "Base color",
+                    "$ref": "#/definitions/color"
                 },
-                "devicePixelRatio": {
-                    "default": "window.devicePixelRatio",
-                    "description": "Override the window's default devicePixelRatio.",
-                    "type": "number"
+                "backgroundColor": {
+                    "description": "Base background color",
+                    "$ref": "#/definitions/color"
+                },
+                "borderColor": {
+                    "description": "Base border color",
+                    "$ref": "#/definitions/color"
                 },
                 "font": {
-                    "$ref": "#/definitions/Partial",
-                    "description": "base font"
+                    "description": "Base font",
+                    "$ref": "#/definitions/font"
                 },
-                "hover": {
-                    "$ref": "#/definitions/CoreInteractionOptions"
-                },
-                "indexAxis": {
-                    "default": "'x'",
-                    "description": "The base axis of the chart. 'x' for vertical charts and 'y' for horizontal charts.",
-                    "enum": [
-                        "x",
-                        "y"
-                    ],
-                    "type": "string"
-                },
-                "layout": {
-                    "$ref": "#/definitions/Partial_1"
-                },
-                "locale": {
-                    "default": "user's browser setting",
-                    "description": "Locale used for number formatting (using `Intl.NumberFormat`).",
-                    "type": "string"
-                },
-                "maintainAspectRatio": {
+                "responsive": {
                     "default": true,
-                    "description": "Maintain the original canvas aspect ratio (width / height) when resizing. For this option to work properly the chart must be in its own dedicated container.",
+                    "description": "Resizes the chart canvas when its container does.",
                     "type": "boolean"
                 },
-                "normalized": {
-                    "description": "Chart.js is fastest if you provide data with indices that are unique, sorted, and consistent across datasets and provide the normalized: true option to let Chart.js know that you have done so.",
+                "maintainAspectRatio": {
+                    "default": false,
+                    "description": "Maintain the original canvas aspect ratio (width / height) when resizing.",
                     "type": "boolean"
                 },
                 "resizeDelay": {
@@ -483,266 +83,32 @@
                     "description": "Delay the resize update by give amount of milliseconds. This can ease the resize process by debouncing update of the elements.",
                     "type": "number"
                 },
-                "responsive": {
-                    "default": true,
-                    "description": "Resizes the chart canvas when its container does (important note...).",
-                    "type": "boolean"
-                },
-                "scales": {
-                    "$ref": "#/definitions/_DeepPartialObject<{[key:string]:ScaleOptionsByType<\"radialLinear\"|keyofCartesianScaleTypeRegistry>;}>"
-                },
-                "transitions": {
-                    "$ref": "#/definitions/TransitionsSpec"
-                }
-            },
-            "type": "object"
-        },
-        "__type_1": {
-            "properties": {
-                "delay": {
-                    "$ref": "#/definitions/Scriptable",
-                    "default": 0,
-                    "description": "Delay before starting the animations."
-                },
-                "duration": {
-                    "$ref": "#/definitions/Scriptable",
-                    "default": 1000,
-                    "description": "The number of milliseconds an animation takes."
-                },
-                "easing": {
-                    "$ref": "#/definitions/Scriptable_1",
-                    "default": "'easeOutQuart'",
-                    "description": "Easing function to use"
-                },
-                "loop": {
-                    "$ref": "#/definitions/Scriptable_2",
-                    "default": false,
-                    "description": "If set to true, the animations loop endlessly."
-                },
-                "onComplete": {
-                    "description": "Callback called when all animations are completed.",
-                    "type": "object"
-                },
-                "onProgress": {
-                    "description": "Callback called on each step of an animation.",
-                    "type": "object"
-                }
-            },
-            "type": "object"
-        },
-        "__type_10": {
-            "properties": {
-                "bottom": {
+                "aspectRatio": {
+                    "description": "Canvas aspect ratio (i.e. width / height, a value of 1 representing a square canvas). Note that this option is ignored if the height is explicitly defined either as attribute or via the style.",
                     "type": "number"
                 },
-                "left": {
-                    "type": "number"
-                },
-                "right": {
-                    "type": "number"
-                },
-                "top": {
-                    "type": "number"
-                }
-            },
-            "type": "object"
-        },
-        "__type_11": {
-            "type": "object"
-        },
-        "__type_12": {
-            "properties": {
-                "datasets": {
-                    "items": {
-                        "$ref": "#/definitions/PChartDataset"
-                    },
-                    "type": "array"
-                },
-                "labels": {
-                    "items": {
-                        "type": "string"
-                    },
-                    "type": "array"
-                },
-                "xLabels": {
-                    "items": {
-                        "type": "string"
-                    },
-                    "type": "array"
-                },
-                "yLabels": {
-                    "items": {
-                        "type": "string"
-                    },
-                    "type": "array"
-                }
-            },
-            "type": "object"
-        },
-        "__type_13": {
-            "properties": {
-                "bottom": {
-                    "type": "number"
-                },
-                "left": {
-                    "type": "number"
-                },
-                "right": {
-                    "type": "number"
-                },
-                "top": {
-                    "type": "number"
-                }
-            },
-            "type": "object"
-        },
-        "__type_14": {
-            "type": "object"
-        },
-        "__type_15": {
-            "type": "object"
-        },
-        "__type_2": {
-            "properties": {
-                "addColorStop": {
-                    "type": "object"
-                }
-            },
-            "type": "object"
-        },
-        "__type_3": {
-            "properties": {
-                "setTransform": {
-                    "type": "object"
-                }
-            },
-            "type": "object"
-        },
-        "__type_4": {
-            "properties": {
-                "bottom": {
-                    "type": "number"
-                },
-                "height": {
-                    "type": "number"
-                },
-                "left": {
-                    "type": "number"
-                },
-                "right": {
-                    "type": "number"
-                },
-                "top": {
-                    "type": "number"
-                },
-                "width": {
-                    "type": "number"
-                }
-            },
-            "type": "object"
-        },
-        "__type_5": {
-            "properties": {
-                "family": {
-                    "default": "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
-                    "description": "Default font family for all text, follows CSS font-family options.",
+                "locale": {
+                    "description": "Locale used for number formatting (using `Intl.NumberFormat`).",
                     "type": "string"
                 },
-                "lineHeight": {
-                    "default": 1.2,
-                    "description": "Height of an individual line of text (see MDN).",
-                    "type": [
-                        "string",
-                        "number"
-                    ]
-                },
-                "size": {
-                    "default": 12,
-                    "description": "Default font size (in px) for text. Does not apply to radialLinear scale point labels.",
+                "devicePixelRatio": {
+                    "description": "Override the window's default devicePixelRatio.",
                     "type": "number"
                 },
-                "style": {
-                    "default": "'normal'",
-                    "description": "Default font style. Does not apply to tooltip title or footer. Does not apply to chart title. Follows CSS font-style options (i.e. normal, italic, oblique, initial, inherit)",
-                    "enum": [
-                        "inherit",
-                        "initial",
-                        "italic",
-                        "normal",
-                        "oblique"
-                    ],
-                    "type": "string"
-                },
-                "weight": {
-                    "anyOf": [
-                        {
-                            "enum": [
-                                "bold",
-                                "bolder",
-                                "lighter",
-                                "normal"
-                            ],
-                            "type": "string"
-                        },
-                        {
-                            "type": "number"
-                        }
-                    ],
-                    "description": "Default font weight (boldness). (see MDN)."
+                "plugins": {
+                    "default": {},
+                    "description": "Chart plugin options.",
+                    "$ref": "#/definitions/plugin_options"
                 }
-            },
-            "type": "object"
+            }
         },
-        "__type_6": {
-            "type": "object"
+        "chart_plugins": {
+            "default": {},
+            "$ref": "#/definitions/plugin_options"
         },
-        "__type_7": {
-            "properties": {
-                "axis": {
-                    "$ref": "#/definitions/InteractionAxis",
-                    "description": "Defines which directions are used in calculating distances. Defaults to 'x' for 'index' mode and 'xy' in dataset and 'nearest' modes."
-                },
-                "includeInvisible": {
-                    "default": false,
-                    "description": "if true, the invisible points that are outside of the chart area will also be included when evaluating interactions.",
-                    "type": "boolean"
-                },
-                "intersect": {
-                    "default": true,
-                    "description": "if true, the hover mode only applies when the mouse position intersects an item on the chart.",
-                    "type": "boolean"
-                },
-                "mode": {
-                    "$ref": "#/definitions/InteractionMode",
-                    "default": "'nearest'",
-                    "description": "Sets which elements appear in the tooltip. See Interaction Modes for details."
-                }
-            },
-            "type": "object"
-        },
-        "__type_8": {
-            "properties": {
-                "autoPadding": {
-                    "type": "boolean"
-                },
-                "padding": {
-                    "$ref": "#/definitions/Scriptable_4"
-                }
-            },
-            "type": "object"
-        },
-        "__type_9": {
-            "properties": {
-                "x": {
-                    "type": "number"
-                },
-                "y": {
-                    "type": "number"
-                }
-            },
-            "type": "object"
-        },
-        "key": {
+        "chart_type": {
+            "default": "line",
+            "description": "Chart type.",
             "enum": [
                 "bar",
                 "bubble",
@@ -751,25 +117,207 @@
                 "pie",
                 "polarArea",
                 "radar",
-                "scatter"
-            ],
+                "scatter"],
             "type": "string"
+        },
+        "color": {
+            "type": ["string", "object"],
+            "format": "color"
+        },
+        "font": {
+            "type": "string"
+        },
+        "layout_position": {
+            "enum": [ "left", "top", "right", "bottom", "center", "chartArea" ],
+            "type": "string"
+        },
+        "plugin_options": {
+            "properties": {
+                "colors": {
+                    "$ref": "#/definitions/plugin_options_colors"
+                },
+                "decimation": {
+                    "$ref": "#/definitions/plugin_options_decimation"
+                },
+                "filler": {
+                    "$ref": "#/definitions/plugin_options_filler"
+                },
+                "legend": {
+                    "$ref": "#/definitions/plugin_options_legend"
+                },
+                "subtitle": {
+                    "$ref": "#/definitions/plugin_options_title"
+                },
+                "title": {
+                    "$ref": "#/definitions/plugin_options_title"
+                }
+            }
+        },
+        "plugin_options_colors": {
+            "properties": {
+                "enabled": {
+                    "description": "Enable the colors plugin.",
+                    "type": "boolean"
+                },
+                "forceOverride": {
+                    "type": "boolean"
+                }
+            },
+            "required": [ "enabled" ]
+        },
+        "plugin_options_decimation": {
+            "properties": {
+                "enabled": {
+                    "description": "Enable the decimation plugin.",
+                    "type": "boolean"
+                },
+                "threshold": {
+                    "description": "Decimation threshold.",
+                    "type": "number"
+                },
+                "algorithm": {
+                    "description": "Decimation algorithm.",
+                    "type": "string",
+                    "enum": [ "lttb", "min-max" ]
+                },
+                "samples": {
+                    "description": "Decimation samples.",
+                    "type": "number"
+                }
+            },
+            "required": [ "enabled", "threshold", "algorithm", "samples" ]
+        },
+        "plugin_options_filler": {
+            "properties": {
+                "drawTime": {
+                    "description": "Fill draw time.",
+                    "type": "string",
+                    "enum": [ "beforeDraw", "beforeDatasetDraw", "beforeDatasetsDraw" ]
+                },
+                "propagate": {
+                    "description": "Propagate fill.",
+                    "type": "boolean"
+                }
+            },
+            "required": [ "drawTime", "propagate" ]
+        },
+        "plugin_options_legend": {
+            "properties": {
+                "display": {
+                    "default": true,
+                    "description": "Is the legend shown?",
+                    "type": "boolean"
+                },
+                "position": {
+                    "default": "top",
+                    "description": "Position of the legend.",
+                    "$ref": "#/definitions/layout_position"
+                },
+                "align": {
+                    "default": "center",
+                    "description": "Alignment of the legend.",
+                    "$ref": "#/definitions/align"
+                },
+                "maxHeight": {
+                    "description": "Maximum height of the legend, in pixels.",
+                    "type": "number"
+                },
+                "maxWidth": {
+                    "description": "Maximum width of the legend, in pixels.",
+                    "type": "number"
+                },
+                "fullSize": {
+                    "default": true,
+                    "description": "Marks that this box should take the full width/height of the canvas (moving other boxes). This is unlikely to need to be changed in day-to-day use.",
+                    "type": "boolean"
+                },
+                "reverse": {
+                    "default": false,
+                    "description": "Legend will show datasets in reverse order.",
+                    "type": "boolean"
+                },
+                "labels": {
+                    "properties": {
+                        "boxWidth": {
+                            "default": 40,
+                            "description": "Width of colored box.",
+                            "type": "number"
+                        },
+                        "boxHeight": {
+                            "default": 20,
+                            "description": "Width of colored box.",
+                            "type": "number"
+                        }
+                    }
+                }
+            },
+            "required": [ "display", "position", "align" ]
+        },
+        "plugin_options_title": {
+            "properties": {
+                "align": {
+                    "default": "center",
+                    "description": "Alignment of the title.",
+                    "$ref": "#/definitions/align"
+                },
+                "display": {
+                    "default": true,
+                    "description": "Is the title shown?",
+                    "type": "boolean"
+                },
+                "position": {
+                    "default": "top",
+                    "description": "Position of the title.",
+                    "$ref": "#/definitions/layout_position"
+                },
+                "color": {
+                    "description": "Color of text.",
+                    "$ref": "#/definitions/color"
+                },
+                "font": {
+                    "description": "Text font.",
+                    "$ref": "#/definitions/font"
+                },
+                "fullSize": {
+                    "default": true,
+                    "description": "Marks that this box should take the full width/height of the canvas (moving other boxes). If set to `false`, places the box above/beside the chart area.",
+                    "type": "boolean"
+                },
+                "padding": {
+                    "description": " Adds padding above and below the title text if a single number is specified. It is also possible to change top and bottom padding separately.",
+                    "type": "number"
+                },
+                "text": {
+                    "description": "Title text to display. If specified as an array, text is rendered on multiple lines.",
+                    "type": ["string", "array"]
+                }
+            },
+            "required": [ "display", "text", "align" ]
+        },
+        "point": {
+            "properties": {
+                "x": {
+                    "type": "number"
+                },
+                "y": {
+                    "type": "number"
+                }
+            }
         }
+
     },
     "properties": {
+        "type": {
+            "$ref": "#/definitions/chart_type"
+        },
         "data": {
-            "$ref": "#/definitions/PChartData"
+            "$ref": "#/definitions/chart_data"
         },
         "options": {
-            "$ref": "#/definitions/PChartOptions"
-        },
-        "plugins": {
-            "$ref": "#/definitions/Record"
-        },
-        "type": {
-            "$ref": "#/definitions/ChartType"
+            "$ref": "#/definitions/chart_options"
         }
     },
-    "type": "object"
+    "type": "object",
+    "required": ["type", "data", "options"]
 }
 

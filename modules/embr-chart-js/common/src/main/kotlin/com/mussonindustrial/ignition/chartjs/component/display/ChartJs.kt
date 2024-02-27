@@ -16,10 +16,10 @@ class ChartJs {
             .setId(COMPONENT_ID)
             .setModuleId(MODULE_ID)
             .setSchema(SCHEMA)
-            .setName("Chart.js")
+            .setName("Chart.js Chart")
 //            .setIcon(ImageIcon(Components::class.java.getResource("/icons/simplecomponent.png")))
             .addPaletteEntry("", "Chart.js", "Chart.js Component", null, null)
-            .setDefaultMetaName("Chart.js")
+            .setDefaultMetaName("Chartjs Chart")
             .setResources(Components.BROWSER_RESOURCES)
             .build()
     }
