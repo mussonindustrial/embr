@@ -3,6 +3,7 @@ import {
     ComponentRegistry,
 } from '@inductiveautomation/perspective-client'
 import { Chart, registerables } from 'chart.js'
+import 'chartjs-adapter-luxon'
 import ChartStreaming from '@robloche/chartjs-plugin-streaming'
 import zoomPlugin from 'chartjs-plugin-zoom'
 import {

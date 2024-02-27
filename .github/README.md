@@ -23,7 +23,7 @@
   
 | Module                                                                     | Description                                                         | Release Notes                                                                                                                                                     |
 | --------------------------------------------------------------------------- | ------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [embr-chart-js](modules/embr-chart-js)                 | Chart.js based Perspective components.        |    [![version](https://img.shields.io/github/v/release/mussonindustrial/embr?filter=*chart-js*&label=%20)](modules/embr-chart-js/CHANGELOG.md)             |
+| [embr-chart-js](../modules/embr-chart-js)                 | Chart.js based Perspective components.        |    [![version](https://img.shields.io/github/v/release/mussonindustrial/embr?filter=*chart-js*&label=%20)](modules/embr-chart-js/CHANGELOG.md)             |
 
 </div>
 
@@ -40,7 +40,7 @@ cd embr
 
 ## Links
 
--   [License (MIT)](LICENSE)
+-   [License (MIT)](../LICENSE)
 -   [Musson Industrial](https://mussonindustrial.com/)
 -   [Inductive Automation](https://inductiveautomation.com/)
 

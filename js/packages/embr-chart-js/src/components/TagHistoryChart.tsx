@@ -1,3 +1,4 @@
+import * as React from 'react'
 import {
     ComponentMeta,
     ComponentProps,
@@ -5,88 +6,46 @@ import {
     PropertyTree,
     SizeObject,
 } from '@inductiveautomation/perspective-client'
-import {
-    Chart,
-    CategoryScale,
-    LinearScale,
-    PointElement,
-    LineElement,
-    Title,
-    Tooltip,
-    Legend,
-    ChartOptions,
-    // ChartTypeRegistry,
-    // ChartTypeRegistry,
-} from 'chart.js'
-import 'chartjs-adapter-luxon'
-import React, { useState } from 'react'
-import { Line } from 'react-chartjs-2'
+import { Chart as ChartJS } from 'chart.js'
+import { Chart, ChartProps } from 'react-chartjs-2'
+import { useEffect, useRef, useState } from 'react'
 import ChartStreaming from '@robloche/chartjs-plugin-streaming'
-import zoomPlugin from 'chartjs-plugin-zoom'
 
 export const COMPONENT_TYPE =
     'mussonindustrial.chart.chart-js.tag-history-chart'
+export type ChartJSComponentProps = ChartProps
 
-type TagHistoryChartComponentProps = {
-    type: 'line'
-    text?: string
-    value?: number
-    plugins: []
-    options?: {
-        scales: {
-            x: {
-                type: string
-                realtime: {
-                    delay: number
-                    duration: number
-                    ttl: number
-                    frameRate: number
-                }
-            }
-        }
-    }
-}
-
-Chart.register(
-    CategoryScale,
-    LinearScale,
-    PointElement,
-    LineElement,
-    Title,
-    Tooltip,
-    Legend,
-    zoomPlugin,
-    ChartStreaming
-)
-
-// const zoomOptions = {
-//     pan: {
-//         enabled: true, // Enable panning
-//         mode: 'x', // Allow panning in the x direction
-//     },
-//     zoom: {
-//         pinch: {
-//             enabled: true, // Enable pinch zooming
-//         },
-//         wheel: {
-//             enabled: true, // Enable wheel zooming
-//         },
-//         mode: 'x', // Allow zooming in the x direction
-//     },
-//     limits: {
-//         x: {
-//             min: 1000, // Min value of the delay option
-//             max: 60000, // Max value of the delay option
-//             minRange: 1000,
-//         },
-//     },
-// } as const
-
-let previousValue = 0
+ChartJS.register(ChartStreaming)
 
 export function TagHistoryChartComponent(
-    component: ComponentProps<TagHistoryChartComponentProps>
+    props: ComponentProps<ChartJSComponentProps>
 ) {
+    const [previousValues, setPreviousValues] = useState<number[]>([])
+    const chartRef = useRef<ChartJS>(null)
+
+    // Subscribe to value changes
+    useEffect(() => {
+        return props.store.props.subscribe((tree: PropertyTree) => {
+            const currentValues = tree.readArray('values', [])
+            let modified = false
+            for (let i = 0; i < currentValues.length; i++) {
+                if (currentValues[i] !== previousValues[i]) {
+                    chartRef.current?.config.data.datasets[i].data.push({
+                        x: Date.now(),
+                        y: currentValues[i],
+                    })
+                    modified = true
+                }
+                previousValues[i] = currentValues[i]
+                setPreviousValues(previousValues)
+            }
+            if (modified) {
+                props.store.props.write('data', chartRef.current?.config.data)
+            }
+            chartRef.current?.update('quiet')
+        })
+    }, [])
+
     const [data] = useState({
         datasets: [
             {
@@ -105,60 +64,16 @@ export function TagHistoryChartComponent(
         ],
     })
 
-    // const [options] = useState({
-    //     plugins: {
-    //         zoom: zoomOptions,
-    //         tooltip: {
-    //             mode: 'nearest' as const,
-    //             intersect: false,
-    //         },
-    //     },
-    //     scales: {
-    //         x: {
-    //             type: 'realtime' as const,
-    //             realtime: {
-    //                 // onRefresh: function (chart: Chart) {
-    //                 //   chart.data.datasets[0].data.push({
-    //                 //     x: Date.now(),
-    //                 //     y: component.store.props.readNumber("value", 0),
-    //                 //   });
-    //                 //   console.log(
-    //                 //     `refreshing with value: ${component.store.props.readNumber("value", 0)}`,
-    //                 //   );
-    //                 // },
-    //                 delay: 2000,
-    //                 duration: 30000,
-    //                 ttl: 100000000,
-    //                 frameRate: 120,
-    //             },
-    //         },
-    //     },
-    // })
-
-    component.store.props.subscribe((tree: PropertyTree) => {
-        const newValue = tree.readNumber('value', 0)
-        if (previousValue !== newValue) {
-            previousValue = newValue
-            component.def?.propConfig
-            chart.props.data.datasets[0].data.push({
-                x: Date.now(),
-                y: component.store.props.readNumber('value', 0),
-            })
-            chart.props.update('silent')
-        }
-    })
-
-    const options = component.store.props.read(
-        'options'
-    ) as ChartOptions<'line'>
-
-    const chart = (
-        <div {...component.emit()}>
-            <Line data={data} options={options} />
+    return (
+        <div {...props.emit()}>
+            <Chart
+                type={props.store.props.read('type')}
+                options={props.store.props.read('options')}
+                data={data}
+                ref={chartRef}
+            />
         </div>
     )
-
-    return chart
 }
 
 export class TagHistoryChartComponentMeta implements ComponentMeta {
@@ -173,11 +88,12 @@ export class TagHistoryChartComponentMeta implements ComponentMeta {
         }
     }
 
-    getPropsReducer(tree: PropertyTree): TagHistoryChartComponentProps {
+    getPropsReducer(tree: PropertyTree): ChartJSComponentProps {
         return {
-            text: tree.readString('text', 'Default Text!'),
-            value: tree.readNumber('value', 0),
-        } as TagHistoryChartComponentProps
+            type: tree.readString('type') as never,
+            options: tree.read('options'),
+            data: tree.readArray('data') as never,
+        }
     }
 
     getViewComponent(): PComponent {
