@@ -6,21 +6,17 @@ import {
     PropertyTree,
     SizeObject,
 } from '@inductiveautomation/perspective-client'
-import { Chart } from 'react-chartjs-2'
-import { ChartJSComponentProps } from './BaseChartComponentProps'
+import { Chart, ChartProps } from 'react-chartjs-2'
 
 export const COMPONENT_TYPE = 'mussonindustrial.chart.chart-js'
 
-export function BaseChartComponent(
-    props: ComponentProps<ChartJSComponentProps>
-) {
+export function BaseChartComponent(props: ComponentProps<ChartProps>) {
     return (
         <div {...props.emit()}>
             <Chart
-                type={props.store.props.read('type')}
-                options={props.store.props.read('options')}
-                data={props.store.props.read('data')}
-                plugins={props.store.props.read('plugins')}
+                type={props.props.type}
+                options={props.props.options}
+                data={props.props.data}
             />
         </div>
     )
@@ -38,12 +34,12 @@ export class BaseChartComponentMeta implements ComponentMeta {
         }
     }
 
-    getPropsReducer(tree: PropertyTree): ChartJSComponentProps {
+    getPropsReducer(tree: PropertyTree): ChartProps {
         return {
             type: tree.readString('type'),
-            options: tree.read('options'),
-            data: tree.readArray('data'),
-            plugins: tree.readArray('plugins'),
+            options: tree.read('options', {}),
+            data: tree.read('data', {}),
+            plugins: tree.readArray('plugins', []),
         } as never
     }
 

@@ -87,6 +87,7 @@ jobs:
         with:
           java-version: '${{ env.JAVA_VERSION }}'
           distribution: 'zulu'
+
       - name: 'Fetch git tags' # Required for axion-release-plugin
         run: git fetch --tags --unshallow
 
