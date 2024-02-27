@@ -1,6 +1,9 @@
 # GitHub Actions workflow to publish new releases.
 name: 'Publish releases'
-on: workflow_dispatch
+on:
+  push:
+    branches:
+      - main
 
 env:
   JAVA_VERSION: 21
@@ -54,27 +57,15 @@ jobs:
           mkdir ./secrets
         shell: bash
       - name: 'Write certificate to file'
-        uses: timheuer/base64-to-file@v1.2
-        with:
-          fileName: 'cert.p7b'
-          fileDir: './secrets'
-          encodedString: ${{ secrets.IGNITION_MODULE_CERT }}
+        run: |
+          echo -n "$IGNITION_MODULE_CERT_BASE64" | base64 --decode > ./secrets/cert.p7b
+        env:
+          IGNITION_MODULE_CERT_BASE64: ${{ secrets.IGNITION_MODULE_CERT_BASE64 }}
       - name: 'Write keystore to file'
-        uses: timheuer/base64-to-file@v1.2
-        with:
-          fileName: 'keystore.jks'
-          fileDir: './secrets'
-          encodedString: ${{ secrets.IGNITION_MODULE_KEYSTORE }}
-
+        run: |
+          echo -n "$IGNITION_MODULE_KEYSTORE_BASE64" | base64 --decode > ./secrets/keystore.jks
       - name: 'Make gradlew executable'
         run: chmod +x ./gradlew
-
-#      - name: 'Release new versions'
-#        id: release
-#        run: |
-#          ./gradlew release \
-#          -Prelease.customUsername=${{ github.actor }} \
-#          -Prelease.customPassword=${{ github.token }}
 
       - name: 'Get current version'
         id: version
