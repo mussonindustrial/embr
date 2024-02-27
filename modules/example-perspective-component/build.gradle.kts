@@ -2,43 +2,35 @@ import java.util.Date
 import java.text.SimpleDateFormat
 
 plugins {
-    alias(libs.plugins.kotlin)
-    alias(libs.plugins.modl)
+    id("embr.ignition-module-conventions")
 }
 
-fun buildTime(): String {
-    return SimpleDateFormat("yyyyMMddHH").format(Date())
-}
-
-dependencies {
-    implementation(project(":web"))
-}
+fun buildTime(): String { return SimpleDateFormat("yyyyMMddHH").format(Date()) }
 
 allprojects {
-    version = "${project.version}.${buildTime()}"
-    group = "com.mussonindustrial.ignition"
+    group = "com.mussonindustrial.embr"
 }
 
 ignitionModule {
-    name.set("Perspective Component Example")
-    fileName.set("PerspectiveComponentExample.modl")
+    name.set("Example Perspective Component")
+    moduleDescription.set("Example Perspective Component.")
     id.set("com.mussonindustrial.ignition.perspective.example")
-    moduleVersion.set("${project.version}")
-
-    moduleDescription.set("Example Perspective Module.")
+    fileName.set("ExamplePerspectiveComponent.modl")
+    moduleVersion.set("${project.version}.${buildTime()}")
+    freeModule.set(true)
     requiredIgnitionVersion.set(libs.versions.ignition)
 
     projectScopes.putAll(
         mapOf(
-            ":common" to "GD",
-            ":gateway" to "G",
-            ":designer" to "D",
+            ":modules:example-perspective-component:common" to "GD",
+            ":modules:example-perspective-component:gateway" to "G",
+            ":modules:example-perspective-component:designer" to "D",
         ),
     )
 
     moduleDependencies.set(
         mapOf(
-            "com.inductiveautomation.perspective" to "G",
+            "com.inductiveautomation.perspective" to "GD",
         ),
     )
 
@@ -48,21 +40,4 @@ ignitionModule {
             "com.mussonindustrial.ignition.perspective.example.DesignerHook" to "D",
         ),
     )
-}
-
-tasks.register<Copy>("collectResources") {
-    from(layout.buildDirectory.dir("../../../web/packages/example-perspective-component/dist"))
-    into(layout.buildDirectory.dir("../gateway/src/main/resources/dist"))
-}
-
-tasks.register("cleanResources") {
-    delete(layout.buildDirectory.dir("../gateway/src/main/resources/dist"))
-}
-
-tasks.named("build") {
-    dependsOn("collectResources")
-}
-
-tasks.named("clean") {
-    dependsOn("cleanResources")
 }

@@ -1,14 +1,9 @@
 plugins {
-    `java-library`
-    alias(libs.plugins.kotlin)
-}
-
-kotlin {
-    jvmToolchain(libs.versions.java.map(String::toInt).get())
+    id("embr.ignition-module-library-conventions")
 }
 
 dependencies {
     compileOnly(libs.bundles.designer)
-    compileOnly(libs.bundles.perspective-designer)
-    compileOnly(projects.common)
+    compileOnly(libs.bundles.perspectiveDesigner)
+    compileOnly(projects.modules.examplePerspectiveComponent.common)
 }
