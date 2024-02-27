@@ -55,12 +55,12 @@ jobs:
         shell: bash
       - name: 'Write certificate to file'
         run: |
-          echo -n IGNITION_MODULE_CERT | base64 -d -o ./secrets/cert.p7b
+          echo -n IGNITION_MODULE_CERT | base64 --decode > ./secrets/cert.p7b
         env:
           IGNITION_MODULE_CERT: ${{ secrets.IGNITION_MODULE_CERT }}
       - name: 'Write keystore to file'
         run: |
-          echo -n IGNITION_MODULE_KEYSTORE | base64 -d -o ./secrets/cert.p7b
+          echo -n IGNITION_MODULE_KEYSTORE | base64 --decode > ./secrets/cert.p7b
         env:
           IGNITION_MODULE_KEYSTORE: ${{ secrets.IGNITION_MODULE_KEYSTORE }}
 
