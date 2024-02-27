@@ -54,7 +54,7 @@ afterEvaluate {
         releaseName("${project.name}-${version}")
         generateReleaseNotes(true)
         releaseAssets.from(tasks.signModule.get().signed)
-        overwrite.set(version.toString().contains("-SNAPSHOT"))
+        overwrite.set(true)
     }
 }
 
