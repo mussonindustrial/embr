@@ -10,6 +10,7 @@
             "enum": ["x", "y"]
         },
         "chart_area": {
+            "type": "object",
             "properties": {
                 "top": {
                     "$ref": "urn:ignition-schema:schemas/css-length.schema.json"
@@ -32,14 +33,41 @@
             }
         },
         "chart_data": {
-            "default": "",
-            "type": "string"
+            "default": {
+                "labels": [],
+                "datasets": []
+            },
+            "type": "object",
+            "properties": {
+                "labels": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "xLabels": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "yLabels": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "datasets": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dataset"
+                    }
+                }
+            }
         },
         "chart_options": {
+            "type": "object",
             "properties": {
-                "datasets": {
-                    "type": "object"
-                },
                 "indexAxis": {
                     "description": "The base axis of the chart. 'x' for vertical charts and 'y' for horizontal charts.",
                     "$ref": "#/definitions/axis"
@@ -99,10 +127,21 @@
                     "default": {},
                     "description": "Chart plugin options.",
                     "$ref": "#/definitions/plugin_options"
+                },
+                "scales": {
+                    "default": {},
+                    "description": "Chart scale options.",
+                    "$ref": "#/definitions/scale_options"
+                },
+                "datasets": {
+                    "default": {},
+                    "description": "Chart dataset options.",
+                    "$ref": "#/definitions/dataset_options"
                 }
             }
         },
         "chart_plugins": {
+            "type": "object",
             "default": {},
             "$ref": "#/definitions/plugin_options"
         },
@@ -124,6 +163,85 @@
             "type": ["string", "object"],
             "format": "color"
         },
+        "dataset": {
+            "type": "object",
+            "anyOf": [
+                { "$ref": "#/definitions/dataset_options_bar" },
+                { "$ref": "#/definitions/dataset_options_bubble" },
+                { "$ref": "#/definitions/dataset_options_doughnut" },
+                { "$ref": "#/definitions/dataset_options_line" },
+                { "$ref": "#/definitions/dataset_options_pie" },
+                { "$ref": "#/definitions/dataset_options_polarArea" },
+                { "$ref": "#/definitions/dataset_options_radar" },
+                { "$ref": "#/definitions/dataset_options_scatter" }
+            ],
+            "default": {
+                "data": [],
+                "label": "Dataset"
+            }
+        },
+        "dataset_options": {
+            "type": "object",
+            "properties": {
+                "bar": {
+                    "$ref": "#/definitions/dataset_options_bar"
+                },
+                "bubble": {
+                    "$ref": "#/definitions/dataset_options_bubble"
+                },
+                "doughnut": {
+                    "$ref": "#/definitions/dataset_options_doughnut"
+                },
+                "line": {
+                    "$ref": "#/definitions/dataset_options_line"
+                },
+                "pie": {
+                    "$ref": "#/definitions/dataset_options_pie"
+                },
+                "polarArea": {
+                    "$ref": "#/definitions/dataset_options_polarArea"
+                },
+                "radar": {
+                    "$ref": "#/definitions/dataset_options_radar"
+                },
+                "scatter": {
+                    "$ref": "#/definitions/dataset_options_scatter"
+                }
+            }
+        },
+        "dataset_options_controller": {
+            "type": "object",
+            "allOf": [{ "$ref": "#/definitions/parsing_options" }],
+            "properties": {
+                "indexAxis": {
+                    "default": "x",
+                    "description": "The base axis of the chart. 'x' for vertical charts and 'y' for horizontal charts.",
+                    "$ref": "#/definitions/axis"
+                },
+                "clip": {
+                    "anyOf": [
+                        {"type":  "number"},
+                        {"type":  "boolean"},
+                        {"$ref":  "#/definitions/chart_area"}
+                    ],
+                    "description": "How to clip relative to chartArea. Positive value allows overflow, negative value clips that many pixels inside chartArea. 0 = clip at chartArea. Clipping can also be configured per side: `clip: {left: 5, top: false, right: -2, bottom: 0}`"
+                },
+                "label": {
+                    "description": "The label for the dataset which appears in the legend and tooltips.",
+                    "type": "string"
+                },
+                "order": {
+                    "description": "The drawing order of dataset. Also affects order for stacking, tooltip and legend.",
+                    "type": "number"
+                },
+                "stack": {
+                    "description": "The ID of the group to which this dataset belongs to (when stacked, each group will be a separate stack).",
+                    "type": "string"
+                },
+                "hidden": {
+                }
+            }
+        },
         "font": {
             "type": "string"
         },
@@ -131,7 +249,21 @@
             "enum": [ "left", "top", "right", "bottom", "center", "chartArea" ],
             "type": "string"
         },
+        "parsing_options": {
+            "type": "object",
+            "properties": {
+                "parsing": {
+                    "description": "How to parse the dataset. The parsing can be disabled by specifying parsing: false at chart options or dataset. If parsing is disabled, data must be sorted and in the formats the associated chart type and scales use internally.",
+                    "type": ["object", "boolean"]
+                },
+                "normalized": {
+                    "description": "Chart.js is fastest if you provide data with indices that are unique, sorted, and consistent across datasets and provide the normalized: true option to let Chart.js know that you have done so.",
+                    "type": "boolean"
+                }
+            }
+        },
         "plugin_options": {
+            "type": "object",
             "properties": {
                 "colors": {
                     "$ref": "#/definitions/plugin_options_colors"
@@ -154,6 +286,10 @@
             }
         },
         "plugin_options_colors": {
+            "type": "object",
+            "default": {
+                "enabled": true
+            },
             "properties": {
                 "enabled": {
                     "description": "Enable the colors plugin.",
@@ -166,6 +302,13 @@
             "required": [ "enabled" ]
         },
         "plugin_options_decimation": {
+            "type": "object",
+            "default": {
+                "enabled": false,
+                "threshold": null,
+                "algorithm": "lttb",
+                "samples": 100
+            },
             "properties": {
                 "enabled": {
                     "description": "Enable the decimation plugin.",
@@ -188,6 +331,11 @@
             "required": [ "enabled", "threshold", "algorithm", "samples" ]
         },
         "plugin_options_filler": {
+            "type": "object",
+            "default": {
+                "drawTime": "beforeDraw",
+                "propagate": false
+            },
             "properties": {
                 "drawTime": {
                     "description": "Fill draw time.",
@@ -202,6 +350,12 @@
             "required": [ "drawTime", "propagate" ]
         },
         "plugin_options_legend": {
+            "type": "object",
+            "default": {
+                "display": true,
+                "position": "top",
+                "align": "center"
+            },
             "properties": {
                 "display": {
                     "default": true,
@@ -254,6 +408,13 @@
             "required": [ "display", "position", "align" ]
         },
         "plugin_options_title": {
+            "type": "object",
+            "default": {
+                "align": "center",
+                "display": true,
+                "position": "top",
+                "text": "Title"
+            },
             "properties": {
                 "align": {
                     "default": "center",
@@ -295,6 +456,7 @@
             "required": [ "display", "text", "align" ]
         },
         "point": {
+            "type": "object",
             "properties": {
                 "x": {
                     "type": "number"
@@ -303,18 +465,87 @@
                     "type": "number"
                 }
             }
+        },
+        "scale_options": {
+            "type": "object",
+            "additionalProperties": false,
+            "patternProperties": {
+                "^.*$": {
+                    "type": "object",
+                    "required": [
+                        "display"
+                    ],
+                    "properties": {
+                        "display": {
+                            "default": true,
+                            "description": "Controls the axis global visibility (visible when true, hidden when false). When display: 'auto', the axis is visible only if at least one associated dataset is visible.",
+                            "type": ["boolean", "string"]
+                        },
+                        "alignToPixels": {
+                            "description": "Align pixel values to device pixels.",
+                            "type": "boolean"
+                        },
+                        "backgroundColor": {
+                            "description": "Background color of the scale area.",
+                            "$ref": "#/definitions/color"
+                        },
+                        "reverse": {
+                            "default": false,
+                            "description": "Reverse the scale.",
+                            "type": "boolean"
+                        },
+                        "clip": {
+                            "default": true,
+                            "description": "Clip the dataset drawing against the size of the scale instead of chart area.",
+                            "type": "boolean"
+                        },
+                        "weight": {
+                            "default": 1,
+                            "description": "The weight used to sort the axis. Higher weights are further away from the chart area.",
+                            "type": "number"
+                        },
+                        "min": {
+                            "description": "User defined minimum value for the scale, overrides minimum value from data.",
+                            "type": ["string", "number"]
+                        },
+                        "max": {
+                            "description": "User defined maximum value for the scale, overrides maximum value from data.",
+                            "type": ["string", "number"]
+                        },
+                        "suggestedMin": {
+                            "description": "Adjustment used when calculating the maximum data value.",
+                            "type": ["string", "number"]
+                        },
+                        "suggestedMax": {
+                            "description": "Adjustment used when calculating the minimum data value.",
+                            "type": ["string", "number"]
+                        }
+                    }
+                }
+            }
         }
-
     },
     "properties": {
         "type": {
+            "default": "line",
+            "description": "Chart type.",
             "$ref": "#/definitions/chart_type"
         },
         "data": {
+            "default": {},
+            "description": "Chart data.",
             "$ref": "#/definitions/chart_data"
         },
         "options": {
+            "default": {},
+            "description": "Chart options.",
             "$ref": "#/definitions/chart_options"
+        },
+        "style": {
+            "$ref": "urn:ignition-schema:schemas/style-properties.schema.json",
+            "default": {
+                "classes": ""
+            }
         }
     },
     "type": "object",
