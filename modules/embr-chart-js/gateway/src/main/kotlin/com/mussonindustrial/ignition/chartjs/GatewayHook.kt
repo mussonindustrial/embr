@@ -8,6 +8,7 @@ import com.inductiveautomation.perspective.gateway.api.ComponentModelDelegateReg
 import com.inductiveautomation.perspective.gateway.api.PerspectiveContext
 import com.mussonindustrial.ignition.chartjs.Meta.SHORT_MODULE_ID
 import com.mussonindustrial.ignition.chartjs.component.display.ChartJs
+import com.mussonindustrial.ignition.chartjs.component.display.RealtimeChart
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.util.*
@@ -30,22 +31,24 @@ class GatewayHook : AbstractGatewayModuleHook() {
     override fun startup(activationState: LicenseState) {
         logger.info("Chart.js module started.")
 
-        this.perspectiveContext = PerspectiveContext.get(this.gatewayContext)
-        this.componentRegistry = perspectiveContext.componentRegistry
-        this.modelDelegateRegistry = perspectiveContext.componentModelDelegateRegistry
+        perspectiveContext = PerspectiveContext.get(this.gatewayContext)
+        componentRegistry = perspectiveContext.componentRegistry
+        modelDelegateRegistry = perspectiveContext.componentModelDelegateRegistry
 
         logger.info("Registering components...")
-        this.componentRegistry.registerComponent(ChartJs.DESCRIPTOR)
+        componentRegistry.registerComponent(ChartJs.DESCRIPTOR)
+        componentRegistry.registerComponent(RealtimeChart.DESCRIPTOR)
 
         logger.info("Registering model delegates...")
-        this.modelDelegateRegistry.register(ChartJs.COMPONENT_ID, ::ChartJsComponentModelDelegate)
+        modelDelegateRegistry.register(ChartJs.COMPONENT_ID, ::ChartJsComponentModelDelegate)
 
     }
 
     override fun shutdown() {
         logger.info("Shutting down Chart.js module and removing registered components.")
-        this.componentRegistry.removeComponent(ChartJs.COMPONENT_ID)
-        this.modelDelegateRegistry.remove(ChartJs.COMPONENT_ID)
+        componentRegistry.removeComponent(ChartJs.COMPONENT_ID)
+        componentRegistry.removeComponent(RealtimeChart.COMPONENT_ID)
+        modelDelegateRegistry.remove(ChartJs.COMPONENT_ID)
     }
 
     override fun getMountedResourceFolder(): Optional<String>? {
