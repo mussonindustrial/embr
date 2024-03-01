@@ -18,20 +18,20 @@ import java.util.*
 class GatewayHook : AbstractGatewayModuleHook() {
 
     private val logger: Logger = LoggerFactory.getLogger("Chartjs")
-    private lateinit var gatewayContext: GatewayContext
+    private lateinit var context: GatewayContext
     private lateinit var perspectiveContext: PerspectiveContext
     private lateinit var componentRegistry: ComponentRegistry
     private lateinit var modelDelegateRegistry: ComponentModelDelegateRegistry
 
 
     override fun setup(context: GatewayContext) {
-        this.gatewayContext = context
+        this.context = context
     }
 
     override fun startup(activationState: LicenseState) {
         logger.info("Chart.js module started.")
 
-        perspectiveContext = PerspectiveContext.get(this.gatewayContext)
+        perspectiveContext = PerspectiveContext.get(this.context)
         componentRegistry = perspectiveContext.componentRegistry
         modelDelegateRegistry = perspectiveContext.componentModelDelegateRegistry
 
@@ -40,7 +40,7 @@ class GatewayHook : AbstractGatewayModuleHook() {
         componentRegistry.registerComponent(RealtimeChart.DESCRIPTOR)
 
         logger.info("Registering model delegates...")
-        modelDelegateRegistry.register(ChartJs.COMPONENT_ID, ::ChartJsComponentModelDelegate)
+        modelDelegateRegistry.register(ChartJs.COMPONENT_ID, TagHistoryComponentModelDelegateFactory(context))
 
     }
 

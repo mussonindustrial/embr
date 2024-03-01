@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { useRef, useState } from 'react'
+import { useState } from 'react'
 import {
     ComponentMeta,
     ComponentProps,
@@ -32,7 +32,6 @@ export type RealtimeChartProps = ChartProps & {
 export function RealtimeChartComponent(
     props: ComponentProps<RealtimeChartProps>
 ) {
-    const chartRef = useRef(null)
     const [realtimeData, setRealtimeData] = useState<RealtimeData[]>([])
 
     const onRefresh = () => {
@@ -76,12 +75,7 @@ export function RealtimeChartComponent(
 
     return (
         <div {...props.emit()}>
-            <Chart
-                type={props.props.type}
-                options={options}
-                data={data}
-                ref={chartRef}
-            />
+            <Chart type={props.props.type} options={options} data={data} />
         </div>
     )
 }
