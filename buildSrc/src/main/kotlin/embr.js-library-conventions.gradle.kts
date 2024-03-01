@@ -23,8 +23,8 @@ repositories {
 node {
     version.set("20.11.0")
     yarnVersion.set("1.22.19")
-    npmVersion.set("10.2.4")
-    download.set(false)
+    npmVersion.set("10.5.0")
+    download.set(true)
     workDir = file("${rootProject.projectDir}/.gradle/nodejs")
     npmWorkDir = file("${rootProject.projectDir}/.gradle/npm")
     yarnWorkDir = file("${rootProject.projectDir}/.gradle/yarn")

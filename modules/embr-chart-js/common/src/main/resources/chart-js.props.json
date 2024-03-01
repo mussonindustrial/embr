@@ -532,12 +532,22 @@
             "$ref": "#/definitions/chart_type"
         },
         "data": {
-            "default": {},
+            "default": {
+                "datasets": [
+                    {
+                        "data": [],
+                        "label": "Dataset 1"
+                    }
+                ]
+            },
             "description": "Chart data.",
             "$ref": "#/definitions/chart_data"
         },
         "options": {
-            "default": {},
+            "default": {
+                "responsive": true,
+                "maintainAspectRatio": false
+            },
             "description": "Chart options.",
             "$ref": "#/definitions/chart_options"
         },
