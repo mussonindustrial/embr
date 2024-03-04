@@ -7,6 +7,7 @@ import com.inductiveautomation.perspective.common.api.ComponentRegistry
 import com.inductiveautomation.perspective.gateway.api.ComponentModelDelegateRegistry
 import com.inductiveautomation.perspective.gateway.api.PerspectiveContext
 import com.mussonindustrial.ignition.chartjs.Meta.SHORT_MODULE_ID
+import com.mussonindustrial.ignition.chartjs.component.TagHistoryComponentModelDelegateFactory
 import com.mussonindustrial.ignition.chartjs.component.display.ChartJs
 import com.mussonindustrial.ignition.chartjs.component.display.RealtimeChart
 import com.mussonindustrial.ignition.chartjs.component.display.TagHistoryChart

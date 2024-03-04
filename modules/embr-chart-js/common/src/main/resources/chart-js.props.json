@@ -13,22 +13,22 @@
             "type": "object",
             "properties": {
                 "top": {
-                    "$ref": "urn:ignition-schema:schemas/css-length.schema.json"
+                    "type": "number"
                 },
                 "left": {
-                    "$ref": "urn:ignition-schema:schemas/css-length.schema.json"
+                    "type": "number"
                 },
                 "right": {
-                    "$ref": "urn:ignition-schema:schemas/css-length.schema.json"
+                    "type": "number"
                 },
                 "bottom": {
-                    "$ref": "urn:ignition-schema:schemas/css-length.schema.json"
+                    "type": "number"
                 },
                 "width": {
-                    "$ref": "urn:ignition-schema:schemas/css-length.schema.json"
+                    "type": "number"
                 },
                 "height": {
-                    "$ref": "urn:ignition-schema:schemas/css-length.schema.json"
+                    "type": "number"
                 }
             }
         },

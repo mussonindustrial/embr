@@ -40,33 +40,45 @@ export type TagHistoryDataMessage = {
     values: number[]
 }
 
+type ChartReference = typeof Chart | null
+
 type TagHistoryDelegateState = {
+    chart: ChartReference
+    setChart: (chart: ChartReference) => void
     data: RealtimeData[]
 }
 
 export class TagHistoryGatewayDelegate extends ComponentStoreDelegate {
-    public data: RealtimeData[] = []
+    public state: TagHistoryDelegateState = {
+        setChart: (chart) => (this.state.chart = chart),
+        chart: null,
+        data: [],
+    }
 
     mapStateToProps(): TagHistoryDelegateState {
-        return {
-            data: this.data,
-        }
+        return this.state
     }
 
     public dataReceived(eventObject: TagHistoryDataMessage): void {
         const now = Date.now()
 
-        this.data.forEach((tagHistory, index) => {
-            tagHistory.push({
+        eventObject.values.forEach((newValue, index) => {
+            if (!this.state.data[index]) {
+                this.state.data[index] = []
+            }
+            this.state.data[index].push({
                 x: now,
-                y: eventObject.values[index],
+                y: newValue,
             })
         })
+
+        if (typeof this.state.chart !== 'function') {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            ;(this.state.chart as any).update('quiet')
+        }
     }
 
     handleEvent(eventName: string, eventObject: JsObject): void {
-        logger.info(() => `Received '${eventName}' event!`)
-
         switch (eventName) {
             case TagEvents.MESSAGE_DATA_NEW:
                 this.dataReceived(eventObject as TagHistoryDataMessage)
@@ -77,15 +89,19 @@ export class TagHistoryGatewayDelegate extends ComponentStoreDelegate {
                         `No delegate event handler found for event: ${eventName} in TagHistoryChartComponentGatewayDelegate`
                 )
         }
-        throw new Error('Method not implemented.')
     }
 }
 
 export function TagHistoryChartComponent(
     props: ComponentProps<TagHistoryChartProps, TagHistoryDelegateState>
 ) {
+    const chartRef = React.useRef<typeof Chart>(null)
+    if (props.delegate) {
+        props.delegate.setChart(chartRef.current)
+    }
+
     const data = props.props.data
-    ;(props.store.delegate as TagHistoryGatewayDelegate).data.forEach(
+    ;(props.store.delegate as TagHistoryGatewayDelegate).state.data.forEach(
         (tagHistory, index) => {
             if (data.datasets[index]) {
                 data.datasets[index].data = tagHistory
@@ -103,7 +119,12 @@ export function TagHistoryChartComponent(
 
     return (
         <div {...props.emit()}>
-            <Chart type={props.props.type} options={options} data={data} />
+            <Chart
+                type={props.props.type}
+                options={options}
+                data={data}
+                ref={chartRef as never}
+            />
         </div>
     )
 }
