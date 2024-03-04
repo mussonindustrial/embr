@@ -26,7 +26,7 @@ kotest-junit = { group = "io.kotest", name = "kotest-runner-junit5", version.ref
 kotest-assertions-core = { group = "io.kotest", name = "kotest-assertions-core", version.ref = "kotest" }
 kotest-property = { group = "io.kotest", name = "kotest-property", version.ref = "kotest" }
 kotest-data = { group = "io.kotest", name = "kotest-framework-datatest", version.ref = "kotest" }
-mockk = { group = "io.mockk", name = "mockk", version = "1.13.9" }
+mockk = { group = "io.mockk", name = "mockk", version = "1.13.10" }
 
 [bundles]
 common = [
