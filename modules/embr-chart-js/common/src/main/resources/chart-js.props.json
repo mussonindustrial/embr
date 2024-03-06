@@ -1,6 +1,6 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema#",
-    "definitions": {
+    "$defs": {
         "align": {
             "enum": [ "start", "center", "end" ],
             "type": "string"
@@ -60,7 +60,7 @@
                 "datasets": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/dataset"
+                        "$ref": "#/$defs/dataset"
                     }
                 }
             }
@@ -70,31 +70,31 @@
             "properties": {
                 "indexAxis": {
                     "description": "The base axis of the chart. 'x' for vertical charts and 'y' for horizontal charts.",
-                    "$ref": "#/definitions/axis"
+                    "$ref": "#/$defs/axis"
                 },
                 "clip": {
                     "description": "How to clip relative to chartArea. Positive value allows overflow, negative value clips that many pixels inside chartArea. 0 = clip at chartArea. Clipping can also be configured per side: `clip: {left: 5, top: false, right: -2, bottom: 0}`",
                     "anyOf": [
                         {"type":  "number"},
                         {"type":  "boolean"},
-                        {"$ref":  "#/definitions/chart_area"}
+                        {"$ref":  "#/$defs/chart_area"}
                     ]
                 },
                 "color": {
                     "description": "Base color",
-                    "$ref": "#/definitions/color"
+                    "$ref": "#/$defs/color"
                 },
                 "backgroundColor": {
                     "description": "Base background color",
-                    "$ref": "#/definitions/color"
+                    "$ref": "#/$defs/color"
                 },
                 "borderColor": {
                     "description": "Base border color",
-                    "$ref": "#/definitions/color"
+                    "$ref": "#/$defs/color"
                 },
                 "font": {
                     "description": "Base font",
-                    "$ref": "#/definitions/font"
+                    "$ref": "#/$defs/font"
                 },
                 "responsive": {
                     "default": true,
@@ -126,24 +126,32 @@
                 "plugins": {
                     "default": {},
                     "description": "Chart plugin options.",
-                    "$ref": "#/definitions/plugin_options"
+                    "$ref": "#/$defs/plugin_options"
                 },
                 "scales": {
                     "default": {},
                     "description": "Chart scale options.",
-                    "$ref": "#/definitions/scale_options"
+                    "type": "object",
+                    "properties": {
+                        "x": {
+                            "$ref": "#/$defs/scale_options"
+                        },
+                        "y": {
+                            "$ref": "#/$defs/scale_options"
+                        }
+                    }
                 },
                 "datasets": {
                     "default": {},
                     "description": "Chart dataset options.",
-                    "$ref": "#/definitions/dataset_options"
+                    "$ref": "#/$defs/dataset_options"
                 }
             }
         },
         "chart_plugins": {
             "type": "object",
             "default": {},
-            "$ref": "#/definitions/plugin_options"
+            "$ref": "#/$defs/plugin_options"
         },
         "chart_type": {
             "default": "line",
@@ -160,20 +168,13 @@
             "type": "string"
         },
         "color": {
-            "type": ["string", "object"],
+            "type": "string",
             "format": "color"
         },
         "dataset": {
             "type": "object",
             "anyOf": [
-                { "$ref": "#/definitions/dataset_options_bar" },
-                { "$ref": "#/definitions/dataset_options_bubble" },
-                { "$ref": "#/definitions/dataset_options_doughnut" },
-                { "$ref": "#/definitions/dataset_options_line" },
-                { "$ref": "#/definitions/dataset_options_pie" },
-                { "$ref": "#/definitions/dataset_options_polarArea" },
-                { "$ref": "#/definitions/dataset_options_radar" },
-                { "$ref": "#/definitions/dataset_options_scatter" }
+                { "$ref": "#/$defs/dataset_options_controller" }
             ],
             "default": {
                 "data": [],
@@ -184,45 +185,45 @@
             "type": "object",
             "properties": {
                 "bar": {
-                    "$ref": "#/definitions/dataset_options_bar"
+                    "$ref": "#/$defs/dataset_options_bar"
                 },
                 "bubble": {
-                    "$ref": "#/definitions/dataset_options_bubble"
+                    "$ref": "#/$defs/dataset_options_bubble"
                 },
                 "doughnut": {
-                    "$ref": "#/definitions/dataset_options_doughnut"
+                    "$ref": "#/$defs/dataset_options_doughnut"
                 },
                 "line": {
-                    "$ref": "#/definitions/dataset_options_line"
+                    "$ref": "#/$defs/dataset_options_line"
                 },
                 "pie": {
-                    "$ref": "#/definitions/dataset_options_pie"
+                    "$ref": "#/$defs/dataset_options_pie"
                 },
                 "polarArea": {
-                    "$ref": "#/definitions/dataset_options_polarArea"
+                    "$ref": "#/$defs/dataset_options_polarArea"
                 },
                 "radar": {
-                    "$ref": "#/definitions/dataset_options_radar"
+                    "$ref": "#/$defs/dataset_options_radar"
                 },
                 "scatter": {
-                    "$ref": "#/definitions/dataset_options_scatter"
+                    "$ref": "#/$defs/dataset_options_scatter"
                 }
             }
         },
         "dataset_options_controller": {
             "type": "object",
-            "allOf": [{ "$ref": "#/definitions/parsing_options" }],
+            "allOf": [{ "$ref": "#/$defs/parsing_options" }],
             "properties": {
                 "indexAxis": {
                     "default": "x",
                     "description": "The base axis of the chart. 'x' for vertical charts and 'y' for horizontal charts.",
-                    "$ref": "#/definitions/axis"
+                    "$ref": "#/$defs/axis"
                 },
                 "clip": {
                     "anyOf": [
                         {"type":  "number"},
                         {"type":  "boolean"},
-                        {"$ref":  "#/definitions/chart_area"}
+                        {"$ref":  "#/$defs/chart_area"}
                     ],
                     "description": "How to clip relative to chartArea. Positive value allows overflow, negative value clips that many pixels inside chartArea. 0 = clip at chartArea. Clipping can also be configured per side: `clip: {left: 5, top: false, right: -2, bottom: 0}`"
                 },
@@ -239,6 +240,8 @@
                     "type": "string"
                 },
                 "hidden": {
+                    "type": "boolean",
+                    "default": false
                 }
             }
         },
@@ -248,6 +251,9 @@
         "layout_position": {
             "enum": [ "left", "top", "right", "bottom", "center", "chartArea" ],
             "type": "string"
+        },
+        "padding": {
+            "type": [ "number", "object" ]
         },
         "parsing_options": {
             "type": "object",
@@ -266,22 +272,22 @@
             "type": "object",
             "properties": {
                 "colors": {
-                    "$ref": "#/definitions/plugin_options_colors"
+                    "$ref": "#/$defs/plugin_options_colors"
                 },
                 "decimation": {
-                    "$ref": "#/definitions/plugin_options_decimation"
+                    "$ref": "#/$defs/plugin_options_decimation"
                 },
                 "filler": {
-                    "$ref": "#/definitions/plugin_options_filler"
+                    "$ref": "#/$defs/plugin_options_filler"
                 },
                 "legend": {
-                    "$ref": "#/definitions/plugin_options_legend"
+                    "$ref": "#/$defs/plugin_options_legend"
                 },
                 "subtitle": {
-                    "$ref": "#/definitions/plugin_options_title"
+                    "$ref": "#/$defs/plugin_options_title"
                 },
                 "title": {
-                    "$ref": "#/definitions/plugin_options_title"
+                    "$ref": "#/$defs/plugin_options_title"
                 }
             }
         },
@@ -365,12 +371,12 @@
                 "position": {
                     "default": "top",
                     "description": "Position of the legend.",
-                    "$ref": "#/definitions/layout_position"
+                    "$ref": "#/$defs/layout_position"
                 },
                 "align": {
                     "default": "center",
                     "description": "Alignment of the legend.",
-                    "$ref": "#/definitions/align"
+                    "$ref": "#/$defs/align"
                 },
                 "maxHeight": {
                     "description": "Maximum height of the legend, in pixels.",
@@ -419,7 +425,7 @@
                 "align": {
                     "default": "center",
                     "description": "Alignment of the title.",
-                    "$ref": "#/definitions/align"
+                    "$ref": "#/$defs/align"
                 },
                 "display": {
                     "default": true,
@@ -429,15 +435,15 @@
                 "position": {
                     "default": "top",
                     "description": "Position of the title.",
-                    "$ref": "#/definitions/layout_position"
+                    "$ref": "#/$defs/layout_position"
                 },
                 "color": {
                     "description": "Color of text.",
-                    "$ref": "#/definitions/color"
+                    "$ref": "#/$defs/color"
                 },
                 "font": {
                     "description": "Text font.",
-                    "$ref": "#/definitions/font"
+                    "$ref": "#/$defs/font"
                 },
                 "fullSize": {
                     "default": true,
@@ -445,7 +451,7 @@
                     "type": "boolean"
                 },
                 "padding": {
-                    "description": " Adds padding above and below the title text if a single number is specified. It is also possible to change top and bottom padding separately.",
+                    "description": "Adds padding above and below the title text if a single number is specified. It is also possible to change top and bottom padding separately.",
                     "type": "number"
                 },
                 "text": {
@@ -468,59 +474,213 @@
         },
         "scale_options": {
             "type": "object",
-            "additionalProperties": false,
-            "patternProperties": {
-                "^.*$": {
-                    "type": "object",
-                    "required": [
-                        "display"
-                    ],
-                    "properties": {
-                        "display": {
-                            "default": true,
-                            "description": "Controls the axis global visibility (visible when true, hidden when false). When display: 'auto', the axis is visible only if at least one associated dataset is visible.",
-                            "type": ["boolean", "string"]
-                        },
-                        "alignToPixels": {
-                            "description": "Align pixel values to device pixels.",
-                            "type": "boolean"
-                        },
-                        "backgroundColor": {
-                            "description": "Background color of the scale area.",
-                            "$ref": "#/definitions/color"
-                        },
-                        "reverse": {
-                            "default": false,
-                            "description": "Reverse the scale.",
-                            "type": "boolean"
-                        },
-                        "clip": {
-                            "default": true,
-                            "description": "Clip the dataset drawing against the size of the scale instead of chart area.",
-                            "type": "boolean"
-                        },
-                        "weight": {
-                            "default": 1,
-                            "description": "The weight used to sort the axis. Higher weights are further away from the chart area.",
-                            "type": "number"
-                        },
-                        "min": {
-                            "description": "User defined minimum value for the scale, overrides minimum value from data.",
-                            "type": ["string", "number"]
-                        },
-                        "max": {
-                            "description": "User defined maximum value for the scale, overrides maximum value from data.",
-                            "type": ["string", "number"]
-                        },
-                        "suggestedMin": {
-                            "description": "Adjustment used when calculating the maximum data value.",
-                            "type": ["string", "number"]
-                        },
-                        "suggestedMax": {
-                            "description": "Adjustment used when calculating the minimum data value.",
-                            "type": ["string", "number"]
-                        }
+            "default": {
+                "display": true,
+                "min": null,
+                "max": null
+            },
+            "properties": {
+                "type": {
+                    "description": "Type of scale being employed. Custom scales can be created and registered with a string key. This allows changing the type of an axis for a chart.",
+                    "type": "string"
+                },
+                "alignToPixels": {
+                    "description": "Align pixel values to device pixels.",
+                    "type": "boolean"
+                },
+                "backgroundColor": {
+                    "description": "Background color of the scale area.",
+                    "$ref": "#/$defs/color"
+                },
+                "border": {
+                    "description": "Border configuration.",
+                    "$ref": "#/$defs/scale_options_border"
+                },
+                "display": {
+                    "default": true,
+                    "description": "Controls the axis global visibility (visible when true, hidden when false). When display: 'auto', the axis is visible only if at least one associated dataset is visible.",
+                    "type": [ "boolean", "string" ]
+                },
+                "grid": {
+                    "description": "Grid line configuration.",
+                    "$ref": "#/$defs/scale_options_grid"
+                },
+                "min": {
+                    "description": "User defined minimum value for the scale, overrides minimum value from data.",
+                    "type": [ "string", "number" ]
+                },
+                "max": {
+                    "description": "User defined maximum value for the scale, overrides maximum value from data.",
+                    "type": [ "string", "number" ]
+                },
+                "reverse": {
+                    "default": false,
+                    "description": "Reverse the scale.",
+                    "type": "boolean"
+                },
+                "stacked": {
+                    "default": false,
+                    "description": "Should the data be stacked.",
+                    "type": [ "boolean", "string" ]
+                },
+                "suggestedMin": {
+                    "description": "Adjustment used when calculating the maximum data value.",
+                    "type": ["string", "number"]
+                },
+                "suggestedMax": {
+                    "description": "Adjustment used when calculating the minimum data value.",
+                    "type": ["string", "number"]
+                },
+                "ticks": {
+                    "description": "Tick configuration.",
+                    "$ref": "#/$defs/scale_options_ticks"
+                },
+                "weight": {
+                    "default": 0,
+                    "description": "The weight used to sort the axis. Higher weights are further away from the chart area.",
+                    "type": "number"
+                }
+            }
+        },
+        "scale_options_border": {
+            "type": "object",
+            "default": {
+                "display": true,
+                "width": 1,
+                "dash": [],
+                "dashOffset": 0.0,
+                "z": 0
+            },
+            "properties": {
+                "display": {
+                    "default": true,
+                    "description": "If true, draw a border at the edge between the axis and the chart area.",
+                    "type": "boolean"
+                },
+                "color": {
+                    "description": "The color of the border line.",
+                    "$ref": "#/$defs/color"
+                },
+                "width": {
+                    "default": 1,
+                    "description": "The width of the border line.",
+                    "type": "number"
+                },
+                "dash": {
+                    "default": [],
+                    "description": "Length and spacing of dashes on grid lines.",
+                    "type": "array",
+                    "items": {
+                        "type": "number"
                     }
+                },
+                "dashOffset": {
+                    "default": 0.0,
+                    "description": "Offset for line dashes.",
+                    "type": "number"
+                },
+                "z": {
+                    "default": 0,
+                    "description": "z-index of the border layer. Values <= 0 are drawn under datasets, > 0 on top.",
+                    "type": "number"
+                }
+            }
+        },
+        "scale_options_grid": {
+            "type": "object",
+            "default": {
+                "circular": false,
+                "color": null,
+                "display": true,
+                "drawOnChartArea": true,
+                "drawTicks": true,
+                "lineWidth": 1,
+                "offset": false,
+                "tickBorderDash": [],
+                "tickLength": 8,
+                "z": -1
+            },
+            "properties": {
+                "color": {
+                    "$ref": "#/$defs/color"
+                }
+            }
+        },
+        "scale_options_ticks": {
+            "type": "object",
+            "default": {
+                "backdropColor": "rgba(255, 255, 255, 0.75)",
+                "backdropPadding": 2,
+                "display": true,
+                "major": {},
+                "padding": 3,
+                "showLabelBackdrop": false,
+                "textStrokeColor": "",
+                "textStrokeWidth": 0,
+                "z": 0
+            },
+            "properties": {
+                "backdropColor": {
+                    "description": "Color of label backdrops.",
+                    "$ref": "#/$defs/color"
+                },
+                "backdropPadding": {
+                    "description": "Padding of label backdrop.",
+                    "$ref": "#/$defs/padding"
+                },
+                "display": {
+                    "default": true,
+                    "description": "If true, show tick labels.",
+                    "type": "boolean"
+                },
+                "color": {
+                    "description": "Color of ticks.",
+                    "$ref": "#/$defs/color"
+                },
+                "font": {
+                    "description": "Label font.",
+                    "$ref": "#/$defs/font"
+                },
+                "major": {
+                    "default": {},
+                    "description": "Major ticks configuration.",
+                    "$ref": "#/$defs/scale_options_ticks_major"
+                },
+                "padding": {
+                    "description": "Sets the offset of the tick labels from the axis.",
+                    "$ref": "#/$defs/padding"
+                },
+                "showLabelBackdrop": {
+                    "default": true,
+                    "description": "If true, draw a background behind the tick labels.",
+                    "type": "boolean"
+                },
+                "textStrokeColor": {
+                    "description": 	"The color of the stroke around the text.",
+                    "$ref": "#/$defs/color"
+                },
+                "textStrokeWidth": {
+                    "default": 0,
+                    "description": "Stroke width around the text.",
+                    "type": "number"
+                },
+                "x": {
+                    "default": 0,
+                    "description": "z-index of tick layer. Useful when ticks are drawn on chart area. Values <= 0 are drawn under datasets, > 0 on top.",
+                    "type": "number"
+                }
+            }
+        },
+        "scale_options_ticks_major": {
+            "type": "object",
+            "default": {
+                "enabled": false
+            },
+            "properties": {
+                "enabled": {
+                    "default": false,
+                    "description": "If true, major ticks are generated. A major tick will affect autoskipping and major will be defined on ticks in the scriptable options context.",
+                    "type": "boolean"
                 }
             }
         }
@@ -529,7 +689,7 @@
         "type": {
             "default": "line",
             "description": "Chart type.",
-            "$ref": "#/definitions/chart_type"
+            "$ref": "#/$defs/chart_type"
         },
         "data": {
             "default": {
@@ -541,15 +701,19 @@
                 ]
             },
             "description": "Chart data.",
-            "$ref": "#/definitions/chart_data"
+            "$ref": "#/$defs/chart_data"
         },
         "options": {
             "default": {
                 "responsive": true,
-                "maintainAspectRatio": false
+                "maintainAspectRatio": false,
+                "scales": {
+                    "x": {},
+                    "y": {}
+                }
             },
             "description": "Chart options.",
-            "$ref": "#/definitions/chart_options"
+            "$ref": "#/$defs/chart_options"
         },
         "style": {
             "$ref": "urn:ignition-schema:schemas/style-properties.schema.json",
