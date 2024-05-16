@@ -13,7 +13,7 @@ repositories {
 dependencies {
     implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.23")
     implementation("com.github.node-gradle:gradle-node-plugin:7.0.2")
-    implementation("gradle.plugin.io.ia.sdk:gradle-module-plugin:0.1.1")
+    implementation("gradle.plugin.io.ia.sdk:gradle-module-plugin:0.3.0")
     implementation("com.coditory.gradle:webjar-plugin:1.3.1")
     implementation("pl.allegro.tech.build:axion-release-plugin:1.17.0")
     implementation("com.github.breadmoirai:github-release:2.4.1")
