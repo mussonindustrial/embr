@@ -7,27 +7,14 @@ import 'chartjs-adapter-luxon'
 import AnnotationPlugin from 'chartjs-plugin-annotation'
 import ZoomPlugin from 'chartjs-plugin-zoom'
 import ChartStreaming from '@robloche/chartjs-plugin-streaming'
-
 import {
     BaseChartComponent,
     BaseChartComponentMeta,
 } from './components/BaseChartComponent'
-import {
-    RealtimeChartComponent,
-    RealtimeChartComponentMeta,
-} from './components/RealtimeChartComponent'
-import {
-    TagHistoryChartComponent,
-    TagHistoryChartComponentMeta,
-} from './components/TagHistoryChartComponent'
 
 Chart.register(...registerables, AnnotationPlugin, ZoomPlugin, ChartStreaming)
 
-export { BaseChartComponent, RealtimeChartComponent, TagHistoryChartComponent }
+export { BaseChartComponent }
 
-const components: Array<ComponentMeta> = [
-    new BaseChartComponentMeta(),
-    new RealtimeChartComponentMeta(),
-    new TagHistoryChartComponentMeta(),
-]
+const components: Array<ComponentMeta> = [new BaseChartComponentMeta()]
 components.forEach((c: ComponentMeta) => ComponentRegistry.register(c))
