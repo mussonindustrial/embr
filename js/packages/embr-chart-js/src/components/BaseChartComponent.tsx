@@ -25,17 +25,35 @@ function recursiveMap<T>(obj: T, callback: (obj: unknown) => unknown): unknown {
     return callback(obj)
 }
 
-function transformFunctionString(script: string): OptionScript | string {
-    if (script.includes('return ')) {
-        return new Function('context', 'options', script) as OptionScript
+function transformFunctionString(property: string): OptionScript | string {
+    if (property.includes('return ')) {
+        return new Function('context', 'options', property) as OptionScript
     }
-    return script
+    return property
+}
+
+function transformCSSVariableString(property: string): OptionScript | string {
+    if (property.startsWith('var(--')) {
+        const propertyName = property.match(/(?<=var\()[\w-]+/)
+        if (propertyName === null) {
+            return property
+        }
+        return new Function(
+            'context',
+            'options',
+            `return window.getComputedStyle(context.chart.canvas.parentElement).getPropertyValue('${propertyName[0]}')`
+        ) as OptionScript
+    }
+    return property
 }
 
 function transformProps(props: ChartProps) {
     return recursiveMap(props, (object) => {
         if (typeof object === 'string') {
-            return transformFunctionString(object)
+            object = transformCSSVariableString(object)
+            if (typeof object === 'string') {
+                object = transformFunctionString(object)
+            }
         }
         return object
     })
