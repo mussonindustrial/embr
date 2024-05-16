@@ -47,7 +47,9 @@
             "properties": {
                 "properties": {
                     "type": "array",
-                    "items": ["string"],
+                    "items": {
+                        "type": "string"
+                    },
                     "default": [],
                     "description": "The property names this configuration applies to. Defaults to the key name of this object."
                 },
@@ -62,12 +64,12 @@
                     ]
                 },
                 "from": {
-                    "type": [ "number", "color", "boolean" ],
+                    "type": [ "number", "string", "boolean" ],
                     "default": null,
                     "description": "Start value for the animation. Current value is used when undefined."
                 },
                 "to": {
-                    "type": [ "number", "color", "boolean" ],
+                    "type": [ "number", "string", "boolean" ],
                     "default": null,
                     "description": "End value for the animation. Updated value is used when undefined."
                 }
