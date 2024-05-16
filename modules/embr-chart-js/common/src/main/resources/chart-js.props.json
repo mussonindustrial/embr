@@ -611,12 +611,13 @@
             "default": {
                 "display": true,
                 "min": null,
-                "max": null
+                "max": null,
+                "type": "linear"
             },
             "properties": {
                 "type": {
                     "description": "Type of scale being employed. Custom scales can be created and registered with a string key. This allows changing the type of an axis for a chart.",
-                    "type": "string"
+                    "$ref": "#/$defs/scale_type"
                 },
                 "alignToPixels": {
                     "description": "Align pixel values to device pixels.",
@@ -817,6 +818,18 @@
                     "type": "boolean"
                 }
             }
+        },
+        "scale_type": {
+            "type": "string",
+            "default": "linear",
+            "suggestions": [
+                "linear",
+                "logarithmic",
+                "category",
+                "radialLinear",
+                "time",
+                "timeseries"
+            ]
         }
     },
     "properties": {
@@ -842,8 +855,12 @@
                 "responsive": true,
                 "maintainAspectRatio": false,
                 "scales": {
-                    "x": {},
-                    "y": {}
+                    "x": {
+                        "type": "linear"
+                    },
+                    "y": {
+                        "type": "linear"
+                    }
                 }
             },
             "description": "Chart options.",
