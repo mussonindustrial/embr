@@ -32,7 +32,7 @@ See [ChartJs Documentation - Scriptable Options](https://www.chartjs.org/docs/la
     {
       "data": [...],
       "label": "Dataset",
-      "backgroundColor": "return context.dataIndex > 1 ? 'red' : 'blue'
+      "backgroundColor": "return context.dataIndex > 1 ? 'red' : 'blue'"
     }
   ]
 }
