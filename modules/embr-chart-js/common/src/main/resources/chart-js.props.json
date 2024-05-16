@@ -5,6 +5,74 @@
             "enum": [ "start", "center", "end" ],
             "type": "string"
         },
+        "animation": {
+            "type": "object",
+            "default": {
+                "duration": 1000,
+                "easing": "easeOutQuart",
+                "delay": null,
+                "loop": null
+            },
+            "properties": {
+                "duration": {
+                    "default": 1000,
+                    "description": "The number of milliseconds an animation takes.",
+                    "type": "number"
+                },
+                "easing": {
+                    "default": "easeOutQuart",
+                    "description": "Easing function to use.",
+                    "$ref": "#/$defs/easing"
+                },
+                "delay": {
+                    "default": null,
+                    "description": "Delay before starting the animations.",
+                    "type": "number"
+                },
+                "loop": {
+                    "default": null,
+                    "description": "If set to true, the animations loop endlessly.",
+                    "type": "boolean"
+                }
+            }
+        },
+        "animations": {
+            "type": "object",
+            "default": {
+                "properties": [],
+                "type": "color",
+                "from": null,
+                "to": null
+            },
+            "properties": {
+                "properties": {
+                    "type": "array",
+                    "items": ["string"],
+                    "default": [],
+                    "description": "The property names this configuration applies to. Defaults to the key name of this object."
+                },
+                "type": {
+                    "type": "string",
+                    "description": "Type of property, determines the interpolator used. Possible values: 'number', 'color' and 'boolean'. Only really needed for 'color', because typeof does not get that right.",
+                    "default": "color",
+                    "enum": [
+                        "number",
+                        "color",
+                        "boolean"
+                    ]
+                },
+                "from": {
+                    "type": [ "number", "color", "boolean" ],
+                    "default": null,
+                    "description": "Start value for the animation. Current value is used when undefined."
+                },
+                "to": {
+                    "type": [ "number", "color", "boolean" ],
+                    "default": null,
+                    "description": "End value for the animation. Updated value is used when undefined."
+                }
+            }
+        },
         "axis": {
             "type": "string",
             "enum": ["x", "y"]
@@ -145,6 +213,33 @@
                     "default": {},
                     "description": "Chart dataset options.",
                     "$ref": "#/$defs/dataset_options"
+                },
+                "animation": {
+                    "default": {
+                        "duration": 1000,
+                        "easing": "easeOutQuart",
+                        "delay": null,
+                        "loop": null
+                    },
+                    "description": "Chart animation options.",
+                    "$ref": "#/$defs/animation"
+                },
+                "animations": {
+                    "default": {
+                        "numbers": {
+                            "properties": [ "x", "y", "borderWidth", "radius", "tension" ],
+                            "type": "number"
+                        },
+                        "colors": {
+                            "properties": [ "color", "borderColor", "backgroundColor" ],
+                            "type": "color"
+                        }
+                    },
+                    "description": "Animations options configures which element properties are animated and how.",
+                    "type": "object",
+                    "additionalProperties": {
+                        "$ref": "#/$defs/animations"
+                    }
                 }
             }
         },
@@ -244,6 +339,43 @@
                     "default": false
                 }
             }
+        },
+        "easing": {
+            "description": "Easing function to use.",
+            "enum": [
+                "linear",
+                "easeInQuad",
+                "easeOutQuad",
+                "easeInOutQuad",
+                "easeInCubic",
+                "easeOutCubic",
+                "easeInOutCubic",
+                "easeInQuart",
+                "easeOutQuart",
+                "easeInOutQuart",
+                "easeInQuint",
+                "easeOutQuint",
+                "easeInOutQuint",
+                "easeInSine",
+                "easeOutSine",
+                "easeInOutSine",
+                "easeInExpo",
+                "easeOutExpo",
+                "easeInOutExpo",
+                "easeInCirc",
+                "easeOutCirc",
+                "easeInOutCirc",
+                "easeInElastic",
+                "easeOutElastic",
+                "easeInOutElastic",
+                "easeInBack",
+                "easeOutBack",
+                "easeInOutBack",
+                "easeInBounce",
+                "easeOutBounce",
+                "easeInOutBounce"
+            ],
+            "type": "string"
         },
         "font": {
             "type": "string"
