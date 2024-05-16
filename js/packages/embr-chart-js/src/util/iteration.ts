@@ -39,3 +39,15 @@ export function zipLong<S1, S2>(
 
     return zipped
 }
+
+export function recursiveMap<T>(
+    obj: T,
+    callback: (obj: unknown) => unknown
+): unknown {
+    if (Array.isArray(obj)) return obj.map((v) => recursiveMap(v, callback))
+    if (obj && typeof obj === 'object')
+        return Object.fromEntries(
+            Object.entries(obj).map(([k, v]) => [k, recursiveMap(v, callback)])
+        )
+    return callback(obj)
+}

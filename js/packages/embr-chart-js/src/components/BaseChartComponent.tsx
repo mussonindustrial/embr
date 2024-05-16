@@ -6,8 +6,13 @@ import {
     PropertyTree,
     SizeObject,
 } from '@inductiveautomation/perspective-client'
-import { Chart, ChartProps } from 'react-chartjs-2'
-import { ChartTypeRegistry, ScriptableContext } from 'chart.js'
+import { Chart as Chartjs, ChartProps } from 'react-chartjs-2'
+import { Chart, ChartTypeRegistry, ScriptableContext } from 'chart.js'
+import { recursiveMap } from '../util/iteration'
+import {
+    parseChartFunctionString,
+    parseContextFunctionString,
+} from '../util/user-functions'
 
 export const COMPONENT_TYPE = 'mussonindustrial.chart.chart-js'
 
@@ -15,58 +20,83 @@ export type OptionScript = (
     context: ScriptableContext<keyof ChartTypeRegistry>,
     options: object
 ) => unknown
+export type ScriptableOption = OptionScript | string
+const ContextScriptableProps = ['options', 'data', 'plugins'] as const
+const ChartScriptableProps = ['events'] as const
 
-function recursiveMap<T>(obj: T, callback: (obj: unknown) => unknown): unknown {
-    if (Array.isArray(obj)) return obj.map((v) => recursiveMap(v, callback))
-    if (obj && typeof obj === 'object')
-        return Object.fromEntries(
-            Object.entries(obj).map(([k, v]) => [k, recursiveMap(v, callback)])
-        )
-    return callback(obj)
-}
-
-function transformFunctionString(property: string): OptionScript | string {
-    if (property.includes('return ')) {
-        return new Function('context', 'options', property) as OptionScript
+function processRawProps(props: PerspectiveChartProps) {
+    for (const key of ContextScriptableProps) {
+        props[key] = recursiveMap(props[key], (value) => {
+            switch (typeof value) {
+                case 'string':
+                    return parseContextFunctionString(value)
+                default:
+                    return value
+            }
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        }) as any
     }
-    return property
-}
 
-function transformCSSVariableString(property: string): OptionScript | string {
-    if (property.startsWith('var(--')) {
-        const propertyName = property.match(/(?<=var\()[\w-]+/)
-        if (propertyName === null) {
-            return property
-        }
-        return new Function(
-            'context',
-            'options',
-            `return window.getComputedStyle(context.chart.canvas.parentElement).getPropertyValue('${propertyName[0]}')`
-        ) as OptionScript
+    for (const key of ChartScriptableProps) {
+        props[key] = recursiveMap(props[key], (value) => {
+            switch (typeof value) {
+                case 'string':
+                    return parseChartFunctionString(value)
+                default:
+                    return value
+            }
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        }) as any
     }
-    return property
+    return props
 }
 
-function transformProps(props: ChartProps) {
-    return recursiveMap(props, (object) => {
-        if (typeof object === 'string') {
-            object = transformCSSVariableString(object)
-            if (typeof object === 'string') {
-                object = transformFunctionString(object)
+type PerspectiveChart = Chart
+
+type ChartEvent = (chart: PerspectiveChart | undefined) => void
+
+type PerspectiveChartProps = ChartProps & {
+    events?: PerspectiveChartEvents
+}
+
+type PerspectiveChartEvents = {
+    beforeRender?: ChartEvent
+}
+
+function callUserChartEvent(
+    chart: PerspectiveChart | undefined,
+    props: PerspectiveChartProps,
+    event: keyof PerspectiveChartEvents
+) {
+    if (chart !== undefined) {
+        if (props.events !== undefined) {
+            const userFunction = props.events[event]
+            if (
+                userFunction !== undefined &&
+                typeof userFunction == 'function'
+            ) {
+                userFunction(chart)
             }
         }
-        return object
-    })
+    }
 }
 
-export function BaseChartComponent(props: ComponentProps<ChartProps>) {
-    props.props = transformProps(props.props) as ChartProps
+export function BaseChartComponent(
+    props: ComponentProps<PerspectiveChartProps>
+) {
+    const chartRef: React.MutableRefObject<PerspectiveChart | undefined> =
+        React.useRef(undefined)
+
+    props.props = processRawProps(props.props) as PerspectiveChartProps
+    callUserChartEvent(chartRef.current, props.props, 'beforeRender')
+
     return (
         <div {...props.emit()}>
-            <Chart
+            <Chartjs
                 type={props.props.type}
                 options={props.props.options}
                 data={props.props.data}
+                ref={chartRef}
             />
         </div>
     )
@@ -84,12 +114,13 @@ export class BaseChartComponentMeta implements ComponentMeta {
         }
     }
 
-    getPropsReducer(tree: PropertyTree): ChartProps {
+    getPropsReducer(tree: PropertyTree): PerspectiveChartProps {
         return {
             type: tree.readString('type'),
             options: tree.read('options', {}),
             data: tree.read('data', {}),
             plugins: tree.readArray('plugins', []),
+            events: tree.read('events', {}),
         } as never
     }
 

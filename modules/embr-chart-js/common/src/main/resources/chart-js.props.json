@@ -135,6 +135,23 @@
                 }
             }
         },
+        "chart_event": {
+            "description": "A JavaScript chart event. The `chart` object is provided.",
+            "type": "string",
+            "default": ""
+        },
+        "chart_events": {
+            "description": "JavaScript chart events. The `chart` object is provided.",
+            "properties": {
+                "beforeRender": {
+                    "description": "Runs before the chart renders.",
+                    "$ref": "#/$defs/chart_event"
+                }
+            },
+            "default": {
+                "beforeRender": ""
+            }
+        },
         "chart_options": {
             "type": "object",
             "properties": {
@@ -422,6 +439,9 @@
                 },
                 "title": {
                     "$ref": "#/$defs/plugin_options_title"
+                },
+                "zoom": {
+                    "$ref": "#/$defs/plugin_options_zoom"
                 }
             }
         },
@@ -594,6 +614,54 @@
                 }
             },
             "required": [ "display", "text", "align" ]
+        },
+        "plugin_options_zoom": {
+            "type": "object",
+            "properties": {
+                "pan": {
+
+                }
+            },
+            "default": {
+                "pan": {
+                    "enabled": "true",
+                    "mode": "x",
+                    "modifierKey": "ctrl"
+                },
+                "zoom": {
+                    "mode": "x",
+                    "drag": {
+                        "enabled": "true"
+                    },
+                    "wheel": {
+                        "enabled": "true"
+                    }
+                }
+            }
+        },
+        "plugin_option_zoom_mode": {
+            "type": "string",
+            "default": "x",
+            "enum": [
+                "x",
+                "y",
+                "xy"
+            ]
+        },
+        "plugin_option_zoom_pan": {
+            "type": "object",
+            "properties": {
+                "enabled": {
+                    "default": true,
+                    "description": "Enable panning.",
+                    "type": "boolean"
+                }
+            },
+            "default": {
+                "enabled": "true",
+                "mode": "x",
+                "modifierKey": "ctrl"
+            }
         },
         "point": {
             "type": "object",
@@ -861,10 +929,22 @@
                     "y": {
                         "type": "linear"
                     }
+                },
+                "plugins": {
+                    "zoom": {
+
+                    }
                 }
             },
             "description": "Chart options.",
             "$ref": "#/$defs/chart_options"
+        },
+        "events": {
+            "default": {
+                "beforeRender": ""
+            },
+            "description": "JavaScript chart events. The `chart` object is provided.",
+            "$ref": "#/$defs/chart_events"
         },
         "style": {
             "$ref": "urn:ignition-schema:schemas/style-properties.schema.json",
