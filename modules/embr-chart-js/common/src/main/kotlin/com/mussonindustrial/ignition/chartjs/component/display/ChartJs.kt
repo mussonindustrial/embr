@@ -4,22 +4,23 @@ import com.inductiveautomation.ignition.common.jsonschema.JsonSchema
 import com.inductiveautomation.perspective.common.api.ComponentDescriptorImpl
 import com.inductiveautomation.perspective.common.api.ComponentDescriptor
 import com.mussonindustrial.ignition.chartjs.Components
-import com.mussonindustrial.ignition.chartjs.Components.COMPONENT_CATEGORY
 import com.mussonindustrial.ignition.chartjs.Meta.MODULE_ID
+import javax.imageio.ImageIO
+import javax.swing.ImageIcon
 
 class ChartJs {
     companion object {
         var COMPONENT_ID: String = "mussonindustrial.chart.chart-js"
         var SCHEMA: JsonSchema = JsonSchema.parse(Components::class.java.getResourceAsStream("/chart-js.props.json"))
         var DESCRIPTOR: ComponentDescriptor = ComponentDescriptorImpl.ComponentBuilder.newBuilder()
-            .setPaletteCategory(COMPONENT_CATEGORY)
+            .setPaletteCategory("chart")
             .setId(COMPONENT_ID)
             .setModuleId(MODULE_ID)
             .setSchema(SCHEMA)
             .setName("Chart.js Chart")
-//            .setIcon(ImageIcon(Components::class.java.getResource("/icons/simplecomponent.png")))
-            .addPaletteEntry("", "Chart.js", "Chart.js Component", null, null)
-            .setDefaultMetaName("Chartjs Chart")
+            .setIcon(ImageIcon(Components::class.java.getResource("/icons/chartjs_16.png")))
+            .addPaletteEntry("", "Chart.js", "A simple yet flexible JavaScript charting library for the modern web.", ImageIO.read(Components::class.java.getResource("/icons/chartjs_thumbnail.png")), null)
+            .setDefaultMetaName("Chartjs")
             .setResources(Components.BROWSER_RESOURCES)
             .build()
     }
