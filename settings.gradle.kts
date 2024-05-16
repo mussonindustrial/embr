@@ -8,6 +8,8 @@ pluginManagement {
 }
 
 include(
+    ":",
+
     ":js:packages:example-perspective-component",
     ":js:packages:embr-chart-js",
 
