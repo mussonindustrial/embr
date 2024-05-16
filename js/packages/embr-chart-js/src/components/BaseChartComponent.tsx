@@ -1,5 +1,4 @@
 import * as React from 'react'
-import { useRef } from 'react'
 import {
     ComponentMeta,
     ComponentProps,
@@ -12,15 +11,12 @@ import { Chart, ChartProps } from 'react-chartjs-2'
 export const COMPONENT_TYPE = 'mussonindustrial.chart.chart-js'
 
 export function BaseChartComponent(props: ComponentProps<ChartProps>) {
-    const chartRef = useRef(null)
-
     return (
         <div {...props.emit()}>
             <Chart
                 type={props.props.type}
                 options={props.props.options}
                 data={props.props.data}
-                ref={chartRef}
             />
         </div>
     )

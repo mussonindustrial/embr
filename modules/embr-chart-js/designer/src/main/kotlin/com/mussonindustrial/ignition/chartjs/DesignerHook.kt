@@ -8,6 +8,7 @@ import com.inductiveautomation.perspective.designer.api.ComponentDesignDelegateR
 import com.inductiveautomation.perspective.designer.api.PerspectiveDesignerInterface
 import com.mussonindustrial.ignition.chartjs.component.display.ChartJs
 import com.mussonindustrial.ignition.chartjs.component.display.RealtimeChart
+import com.mussonindustrial.ignition.chartjs.component.display.TagHistoryChart
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -33,11 +34,13 @@ class DesignerHook : AbstractDesignerModuleHook() {
 
         componentRegistry.registerComponent(ChartJs.DESCRIPTOR)
         componentRegistry.registerComponent(RealtimeChart.DESCRIPTOR)
+        componentRegistry.registerComponent(TagHistoryChart.DESCRIPTOR)
     }
 
     override fun shutdown() {
         logger.info("Shutting down Chart.js module and removing registered components.")
         componentRegistry.removeComponent(ChartJs.COMPONENT_ID)
         componentRegistry.removeComponent(RealtimeChart.COMPONENT_ID)
+        componentRegistry.removeComponent(TagHistoryChart.COMPONENT_ID)
     }
 }

@@ -16,13 +16,18 @@ import {
     RealtimeChartComponent,
     RealtimeChartComponentMeta,
 } from './components/RealtimeChartComponent'
+import {
+    TagHistoryChartComponent,
+    TagHistoryChartComponentMeta,
+} from './components/TagHistoryChartComponent'
 
 Chart.register(...registerables, AnnotationPlugin, ZoomPlugin, ChartStreaming)
 
-export { BaseChartComponent, RealtimeChartComponent }
+export { BaseChartComponent, RealtimeChartComponent, TagHistoryChartComponent }
 
 const components: Array<ComponentMeta> = [
     new BaseChartComponentMeta(),
     new RealtimeChartComponentMeta(),
+    new TagHistoryChartComponentMeta(),
 ]
 components.forEach((c: ComponentMeta) => ComponentRegistry.register(c))
