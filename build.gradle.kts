@@ -1,3 +1,7 @@
+plugins {
+    base
+}
+
 repositories {
     mavenCentral()
     mavenLocal()

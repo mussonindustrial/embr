@@ -2,7 +2,8 @@
 java = "21"
 kotlin = "1.9.22"
 kotest = "5.8.0"
-ignition = "8.1.0"
+ignition = "8.1.30"
+ia-gson = "2.10.1"
 
 [plugins]
 kotlin = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
@@ -12,7 +13,9 @@ axion-release = { id = "pl.allegro.tech.build.axion-release", version = "1.17.0"
 
 [libraries]
 kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
+kotlin-stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib", version.ref = "kotlin"}
 ignition-common = { group = "com.inductiveautomation.ignitionsdk", name = "ignition-common", version.ref = "ignition" }
+ignition-gson = { group = "com.inductiveautomation.ignition", name = "ia-gson", version.ref = "ia-gson"}
 ignition-gateway-api = { group = "com.inductiveautomation.ignitionsdk", name = "gateway-api", version.ref = "ignition" }
 ignition-designer-api = { group = "com.inductiveautomation.ignitionsdk", name = "designer-api", version.ref = "ignition" }
 ignition-client-api = { group = "com.inductiveautomation.ignitionsdk", name = "client-api", version.ref = "ignition" }
@@ -31,13 +34,16 @@ mockk = { group = "io.mockk", name = "mockk", version = "1.13.10" }
 [bundles]
 common = [
     "ignition-common",
+    "ignition-gson"
 ]
 gateway = [
     "ignition-common",
+    "ignition-gson",
     "ignition-gateway-api",
 ]
 designer = [
     "ignition-common",
+    "ignition-gson",
     "ignition-designer-api",
 ]
 client = [
