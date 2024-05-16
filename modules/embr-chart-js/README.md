@@ -9,6 +9,58 @@ An Ignition module that adds [Chart.js] powered charting components for Ignition
 1. Download the [latest version] from [releases].
 2. Install the module through the Ignition Gateway web interface.
 
+## Features
+
+### Scriptable Options
+#### CSS Custom Property
+Any component property value starting with `var(--` will use the corresponding CSS variable's value at render time.
+
+> **_NOTE:_** The property value is only evaluated during the render. Changing the property value will have no effect until the chart is re-rendered.
+
+##### CSS Custom Property Example
+```js
+// Use var(--my-background-color) custom property
+{
+  "datasets": [
+    {
+      "data": [...],
+      "label": "Dataset",
+      "backgroundColor": "var(--my-background-color)"
+    }
+  ]
+}
+```
+
+
+#### JavaScript Function
+Any component property value containing a `return` statement will be converted into a JavaScript function.
+The function has access to two parameters:
+1. `context` - The context object is used to give contextual information when resolving options and currently only applies to scriptable options. The object is preserved, so it can be used to store and pass information between calls.
+    - There are multiple levels of context objects.
+      - `chart -> dataset -> data`
+      - `chart -> scale -> (tick, pointLabel)`
+      - `chart -> toolip`
+    - Each level inherits its parent(s) and any contextual information stored in the parent is available through the child.
+2. `options` - A resolver that can be used to access other options in the same context.
+
+See [ChartJs Documentation - Scriptable Options](https://www.chartjs.org/docs/latest/general/options.html#scriptable-options) for full details.
+
+##### JavaScript Function Example
+```js
+// Conditionally change the background color for a series. 
+{
+  "datasets": [
+    {
+      "data": [...],
+      "label": "Dataset",
+      "backgroundColor": "return context.dataIndex > 1 ? 'red' : 'blue'"
+    }
+  ]
+}
+```
+
+
+
 ## Module Documentation
 - `#TODO` [Complete module documentation][documentation]
 - [Chart.js documentation][Chart.js documentation]
