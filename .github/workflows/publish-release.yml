@@ -1,9 +1,6 @@
 # GitHub Actions workflow to publish new releases.
 name: 'Publish releases'
-on:
-  push:
-    branches:
-      - main
+on: workflow_dispatch
 
 env:
   JAVA_VERSION: 21
