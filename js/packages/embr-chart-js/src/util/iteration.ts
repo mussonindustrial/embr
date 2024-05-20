@@ -46,7 +46,7 @@ export function recursiveMap<T>(
     obj: T,
     callback: (obj: unknown) => unknown
 ): unknown {
-    if (isDate(obj)) return obj
+    if (isDate(obj)) return callback(obj)
     if (Array.isArray(obj)) return obj.map((v) => recursiveMap(v, callback))
     if (obj && typeof obj === 'object')
         return Object.fromEntries(
