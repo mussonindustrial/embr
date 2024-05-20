@@ -24,9 +24,9 @@
  ## Directory
 <div align="center">
   
-| Module                                                                     | Description                                                         | Release Notes                                                                                                                                                     |
-| --------------------------------------------------------------------------- | ------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [embr-chart-js](../modules/embr-chart-js)                 | Chart.js based Perspective components.        |    [![version](https://img.shields.io/github/v/release/mussonindustrial/embr?filter=*chart-js*&label=%20)](modules/embr-chart-js/CHANGELOG.md)             |
+| Module                                | Description                                                                            | Release Notes                                                                                                                           |
+|---------------------------------------|----------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------|
+| [embr-charts](../modules/embr-charts) | An Ignition module that adds a collection of enhanced Perspective charting components. | [![version](https://img.shields.io/github/v/release/mussonindustrial/embr?filter=*charts*&label=%20)](modules/embr-charts/CHANGELOG.md) |
 
 </div>
 
