@@ -1,0 +1,34 @@
+{
+  "type": "doughnut",
+  "data": {
+    "labels": [
+      "A",
+      "B",
+      "C"
+    ],
+    "datasets": [
+      {
+        "data": [
+          50,
+          20,
+          75
+        ],
+        "label": "Dataset 1"
+      },
+      {
+        "data": [
+          20,
+          80,
+          10
+        ],
+        "label": "Dataset 2"
+      }
+    ]
+  },
+  "options": {
+    "responsive": true,
+    "maintainAspectRatio": false,
+    "plugins": {},
+    "scales": {}
+  }
+}

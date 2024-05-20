@@ -1,0 +1,1216 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$defs": {
+        "align": {
+            "enum": [ "start", "center", "end" ],
+            "type": "string"
+        },
+        "animation": {
+            "type": "object",
+            "default": {
+                "duration": 1000,
+                "easing": "easeOutQuart",
+                "delay": null,
+                "loop": null
+            },
+            "properties": {
+                "duration": {
+                    "default": 1000,
+                    "description": "The number of milliseconds an animation takes.",
+                    "type": "number"
+                },
+                "easing": {
+                    "default": "easeOutQuart",
+                    "description": "Easing function to use.",
+                    "$ref": "#/$defs/easing"
+                },
+                "delay": {
+                    "default": null,
+                    "description": "Delay before starting the animations.",
+                    "type": "number"
+                },
+                "loop": {
+                    "default": null,
+                    "description": "If set to true, the animations loop endlessly.",
+                    "type": "boolean"
+                }
+            }
+        },
+        "animations": {
+            "type": "object",
+            "default": {
+                "properties": [],
+                "type": "color",
+                "from": null,
+                "to": null
+            },
+            "properties": {
+                "properties": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "default": [],
+                    "description": "The property names this configuration applies to. Defaults to the key name of this object."
+                },
+                "type": {
+                    "type": "string",
+                    "description": "Type of property, determines the interpolator used. Possible values: 'number', 'color' and 'boolean'. Only really needed for 'color', because typeof does not get that right.",
+                    "default": "color",
+                    "enum": [
+                        "number",
+                        "color",
+                        "boolean"
+                    ]
+                },
+                "from": {
+                    "type": [ "number", "string", "boolean" ],
+                    "default": null,
+                    "description": "Start value for the animation. Current value is used when undefined."
+                },
+                "to": {
+                    "type": [ "number", "string", "boolean" ],
+                    "default": null,
+                    "description": "End value for the animation. Updated value is used when undefined."
+                }
+            }
+        },
+        "axis": {
+            "type": "string",
+            "enum": ["x", "y"]
+        },
+        "chart_area": {
+            "type": "object",
+            "properties": {
+                "top": {
+                    "type": "number"
+                },
+                "left": {
+                    "type": "number"
+                },
+                "right": {
+                    "type": "number"
+                },
+                "bottom": {
+                    "type": "number"
+                },
+                "width": {
+                    "type": "number"
+                },
+                "height": {
+                    "type": "number"
+                }
+            }
+        },
+        "chart_data": {
+            "default": {
+                "labels": [],
+                "datasets": []
+            },
+            "type": "object",
+            "properties": {
+                "labels": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "xLabels": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "yLabels": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "datasets": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/$defs/dataset"
+                    }
+                }
+            }
+        },
+        "chart_event": {
+            "description": "A JavaScript chart event. The `chart` object is provided.",
+            "type": "string",
+            "default": ""
+        },
+        "chart_events": {
+            "description": "JavaScript chart events. The `chart` object is provided.",
+            "properties": {
+                "beforeRender": {
+                    "description": "Runs before the chart renders.",
+                    "$ref": "#/$defs/chart_event"
+                }
+            },
+            "default": {
+                "beforeRender": ""
+            }
+        },
+        "chart_options": {
+            "type": "object",
+            "properties": {
+                "indexAxis": {
+                    "description": "The base axis of the chart. 'x' for vertical charts and 'y' for horizontal charts.",
+                    "$ref": "#/$defs/axis"
+                },
+                "clip": {
+                    "description": "How to clip relative to chartArea. Positive value allows overflow, negative value clips that many pixels inside chartArea. 0 = clip at chartArea. Clipping can also be configured per side: `clip: {left: 5, top: false, right: -2, bottom: 0}`",
+                    "anyOf": [
+                        {"type":  "number"},
+                        {"type":  "boolean"},
+                        {"$ref":  "#/$defs/chart_area"}
+                    ]
+                },
+                "color": {
+                    "description": "Base color",
+                    "$ref": "#/$defs/color"
+                },
+                "backgroundColor": {
+                    "description": "Base background color",
+                    "$ref": "#/$defs/color"
+                },
+                "borderColor": {
+                    "description": "Base border color",
+                    "$ref": "#/$defs/color"
+                },
+                "font": {
+                    "description": "Base font",
+                    "$ref": "#/$defs/font"
+                },
+                "responsive": {
+                    "default": true,
+                    "description": "Resizes the chart canvas when its container does.",
+                    "type": "boolean"
+                },
+                "maintainAspectRatio": {
+                    "default": false,
+                    "description": "Maintain the original canvas aspect ratio (width / height) when resizing.",
+                    "type": "boolean"
+                },
+                "resizeDelay": {
+                    "default": 0,
+                    "description": "Delay the resize update by give amount of milliseconds. This can ease the resize process by debouncing update of the elements.",
+                    "type": "number"
+                },
+                "aspectRatio": {
+                    "description": "Canvas aspect ratio (i.e. width / height, a value of 1 representing a square canvas). Note that this option is ignored if the height is explicitly defined either as attribute or via the style.",
+                    "type": "number"
+                },
+                "locale": {
+                    "description": "Locale used for number formatting (using `Intl.NumberFormat`).",
+                    "type": "string"
+                },
+                "devicePixelRatio": {
+                    "description": "Override the window's default devicePixelRatio.",
+                    "type": "number"
+                },
+                "plugins": {
+                    "default": {},
+                    "description": "Chart plugin options.",
+                    "$ref": "#/$defs/plugins"
+                },
+                "scales": {
+                    "default": {},
+                    "description": "Chart scale options.",
+                    "type": "object",
+                    "properties": {
+                        "x": {
+                            "required": false,
+                            "$ref": "#/$defs/scale_options"
+                        },
+                        "y": {
+                            "required": false,
+                            "$ref": "#/$defs/scale_options"
+                        }
+                    }
+                },
+                "datasets": {
+                    "default": {},
+                    "description": "Chart dataset options.",
+                    "$ref": "#/$defs/dataset_options"
+                },
+                "animation": {
+                    "default": {
+                        "duration": 1000,
+                        "easing": "easeOutQuart",
+                        "delay": null,
+                        "loop": null
+                    },
+                    "description": "Chart animation options.",
+                    "$ref": "#/$defs/animation"
+                },
+                "animations": {
+                    "default": {
+                        "numbers": {
+                            "properties": [ "x", "y", "borderWidth", "radius", "tension" ],
+                            "type": "number"
+                        },
+                        "colors": {
+                            "properties": [ "color", "borderColor", "backgroundColor" ],
+                            "type": "color"
+                        }
+                    },
+                    "description": "Animations options configures which element properties are animated and how.",
+                    "type": "object",
+                    "additionalProperties": {
+                        "$ref": "#/$defs/animations"
+                    }
+                }
+            }
+        },
+        "chart_plugins": {
+            "type": "object",
+            "default": {},
+            "$ref": "#/$defs/plugins"
+        },
+        "chart_type": {
+            "default": "line",
+            "description": "Chart type.",
+            "enum": [
+                "bar",
+                "boxplot",
+                "bubble",
+                "dendrogram",
+                "doughnut",
+                "forceDirectedGraph",
+                "graph",
+                "line",
+                "matrix",
+                "pcp",
+                "pie",
+                "polarArea",
+                "radar",
+                "scatter",
+                "sankey",
+                "tree",
+                "treemap",
+                "violin"
+            ],
+            "type": "string"
+        },
+        "color": {
+            "type": "string",
+            "format": "color"
+        },
+        "dataset_options": {
+            "type": "object",
+            "properties": {
+                "bar": {
+                    "$ref": "#/$defs/dataset_options_bar"
+                },
+                "bubble": {
+                    "$ref": "#/$defs/dataset_options_bubble"
+                },
+                "doughnut": {
+                    "$ref": "#/$defs/dataset_options_doughnut"
+                },
+                "line": {
+                    "$ref": "#/$defs/dataset_options_line"
+                },
+                "pie": {
+                    "$ref": "#/$defs/dataset_options_pie"
+                },
+                "polarArea": {
+                    "$ref": "#/$defs/dataset_options_polarArea"
+                },
+                "radar": {
+                    "$ref": "#/$defs/dataset_options_radar"
+                },
+                "scatter": {
+                    "$ref": "#/$defs/dataset_options_scatter"
+                }
+            }
+        },
+        "dataset": {
+            "type": "object",
+            "default": {
+                "data": [],
+                "label": "Dataset",
+                "parsing": true,
+                "normalized": false,
+                "hidden": false
+            },
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "default": [],
+                    "description": "Dataset data.",
+                    "required": true,
+                    "items": {
+                        "$ref": "#/$defs/dataset_data"
+                    }
+                },
+                "label": {
+                    "type": "string",
+                    "default": "Label",
+                    "description": "The label for the dataset which appears in the legend and tooltips."
+                },
+                "clip": {
+                    "type": ["number", "object"],
+                    "default": 0,
+                    "description": "How to clip relative to chartArea. Positive value allows overflow, negative value clips that many pixels inside chartArea. 0 = clip at chartArea. Clipping can also be configured per side: `clip: {left: 5, top: false, right: -2, bottom: 0}`"
+                },
+                "order": {
+                    "type": "number",
+                    "description": "The drawing order of dataset. Also affects order for stacking, tooltip and legend."
+                },
+                "stack": {
+                    "type": "string",
+                    "description": "The ID of the group to which this dataset belongs to (when stacked, each group will be a separate stack). Defaults to dataset type."
+                },
+                "parsing": {
+                    "type": ["boolean", "object"],
+                    "default": false,
+                    "description": "How to parse the dataset. The parsing can be disabled by specifying parsing: false at chart options or dataset. If parsing is disabled, data must be sorted and in the formats the associated chart type and scales use internally."
+                },
+                "normalized": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Chart.js is fastest if you provide data with indices that are unique, sorted, and consistent across datasets and provide the normalized: true option to let Chart.js know that you have done so."
+                },
+                "hidden": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Configure the visibility of the dataset. Using hidden: true will hide the dataset from being rendered in the Chart."
+                }
+            }
+        },
+        "dataset_data": {
+            "type": ["object", "number", "string", "array"],
+            "default": {
+                "x": null,
+                "y": null
+            },
+            "description": "Data entry.",
+            "additionalProperties": {
+                "$ref": "#/$defs/dataset_data_key"
+            },
+            "properties": {
+                "x": {
+                    "required": false,
+                    "$ref": "#/$defs/dataset_data_key"
+                },
+                "y": {
+                    "required": false,
+                    "$ref": "#/$defs/dataset_data_key"
+                }
+            }
+        },
+        "dataset_data_key": {
+            "type": ["number", "string", "null"],
+            "default": null,
+            "description": "Data value."
+        },
+        "easing": {
+            "description": "Easing function to use.",
+            "enum": [
+                "linear",
+                "easeInQuad",
+                "easeOutQuad",
+                "easeInOutQuad",
+                "easeInCubic",
+                "easeOutCubic",
+                "easeInOutCubic",
+                "easeInQuart",
+                "easeOutQuart",
+                "easeInOutQuart",
+                "easeInQuint",
+                "easeOutQuint",
+                "easeInOutQuint",
+                "easeInSine",
+                "easeOutSine",
+                "easeInOutSine",
+                "easeInExpo",
+                "easeOutExpo",
+                "easeInOutExpo",
+                "easeInCirc",
+                "easeOutCirc",
+                "easeInOutCirc",
+                "easeInElastic",
+                "easeOutElastic",
+                "easeInOutElastic",
+                "easeInBack",
+                "easeOutBack",
+                "easeInOutBack",
+                "easeInBounce",
+                "easeOutBounce",
+                "easeInOutBounce"
+            ],
+            "type": "string"
+        },
+        "font": {
+            "type": "string"
+        },
+        "layout_position": {
+            "enum": [ "left", "top", "right", "bottom", "center", "chartArea" ],
+            "type": "string"
+        },
+        "padding": {
+            "type": [ "number", "object" ]
+        },
+        "plugins": {
+            "type": "object",
+            "properties": {
+                "colors": {
+                    "$ref": "#/$defs/plugin_colors"
+                },
+                "decimation": {
+                    "$ref": "#/$defs/plugin_decimation"
+                },
+                "filler": {
+                    "$ref": "#/$defs/plugin_filler"
+                },
+                "legend": {
+                    "$ref": "#/$defs/plugin_legend"
+                },
+                "subtitle": {
+                    "$ref": "#/$defs/plugin_title"
+                },
+                "title": {
+                    "$ref": "#/$defs/plugin_title"
+                },
+                "zoom": {
+                    "$ref": "#/$defs/plugin_zoom"
+                }
+            }
+        },
+        "plugin_colors": {
+            "type": "object",
+            "default": {
+                "enabled": true
+            },
+            "properties": {
+                "enabled": {
+                    "description": "Enable the colors plugin.",
+                    "type": "boolean"
+                },
+                "forceOverride": {
+                    "type": "boolean"
+                }
+            },
+            "required": [ "enabled" ]
+        },
+        "plugin_decimation": {
+            "type": "object",
+            "default": {
+                "enabled": false,
+                "threshold": null,
+                "algorithm": "lttb",
+                "samples": 100
+            },
+            "properties": {
+                "enabled": {
+                    "description": "Enable the decimation plugin.",
+                    "type": "boolean"
+                },
+                "threshold": {
+                    "description": "Decimation threshold.",
+                    "type": "number"
+                },
+                "algorithm": {
+                    "description": "Decimation algorithm.",
+                    "type": "string",
+                    "enum": [ "lttb", "min-max" ]
+                },
+                "samples": {
+                    "description": "Decimation samples.",
+                    "type": "number"
+                }
+            },
+            "required": [ "enabled", "threshold", "algorithm", "samples" ]
+        },
+        "plugin_filler": {
+            "type": "object",
+            "default": {
+                "drawTime": "beforeDraw",
+                "propagate": false
+            },
+            "properties": {
+                "drawTime": {
+                    "description": "Fill draw time.",
+                    "type": "string",
+                    "enum": [ "beforeDraw", "beforeDatasetDraw", "beforeDatasetsDraw" ]
+                },
+                "propagate": {
+                    "description": "Propagate fill.",
+                    "type": "boolean"
+                }
+            },
+            "required": [ "drawTime", "propagate" ]
+        },
+        "plugin_legend": {
+            "type": "object",
+            "default": {
+                "display": true,
+                "position": "top",
+                "align": "center"
+            },
+            "properties": {
+                "display": {
+                    "default": true,
+                    "description": "Is the legend shown?",
+                    "type": "boolean"
+                },
+                "position": {
+                    "default": "top",
+                    "description": "Position of the legend.",
+                    "$ref": "#/$defs/layout_position"
+                },
+                "align": {
+                    "default": "center",
+                    "description": "Alignment of the legend.",
+                    "$ref": "#/$defs/align"
+                },
+                "maxHeight": {
+                    "description": "Maximum height of the legend, in pixels.",
+                    "type": "number"
+                },
+                "maxWidth": {
+                    "description": "Maximum width of the legend, in pixels.",
+                    "type": "number"
+                },
+                "fullSize": {
+                    "default": true,
+                    "description": "Marks that this box should take the full width/height of the canvas (moving other boxes). This is unlikely to need to be changed in day-to-day use.",
+                    "type": "boolean"
+                },
+                "reverse": {
+                    "default": false,
+                    "description": "Legend will show datasets in reverse order.",
+                    "type": "boolean"
+                },
+                "labels": {
+                    "properties": {
+                        "boxWidth": {
+                            "default": 40,
+                            "description": "Width of colored box.",
+                            "type": "number"
+                        },
+                        "boxHeight": {
+                            "default": 20,
+                            "description": "Width of colored box.",
+                            "type": "number"
+                        }
+                    }
+                }
+            },
+            "required": [ "display", "position", "align" ]
+        },
+        "plugin_title": {
+            "type": "object",
+            "default": {
+                "align": "center",
+                "display": true,
+                "position": "top",
+                "text": "Title"
+            },
+            "properties": {
+                "align": {
+                    "default": "center",
+                    "description": "Alignment of the title.",
+                    "$ref": "#/$defs/align"
+                },
+                "display": {
+                    "default": true,
+                    "description": "Is the title shown?",
+                    "type": "boolean"
+                },
+                "position": {
+                    "default": "top",
+                    "description": "Position of the title.",
+                    "$ref": "#/$defs/layout_position"
+                },
+                "color": {
+                    "description": "Color of text.",
+                    "$ref": "#/$defs/color"
+                },
+                "font": {
+                    "description": "Text font.",
+                    "$ref": "#/$defs/font"
+                },
+                "fullSize": {
+                    "default": true,
+                    "description": "Marks that this box should take the full width/height of the canvas (moving other boxes). If set to `false`, places the box above/beside the chart area.",
+                    "type": "boolean"
+                },
+                "padding": {
+                    "description": "Adds padding above and below the title text if a single number is specified. It is also possible to change top and bottom padding separately.",
+                    "type": "number"
+                },
+                "text": {
+                    "description": "Title text to display. If specified as an array, text is rendered on multiple lines.",
+                    "type": ["string", "array"]
+                }
+            },
+            "required": [ "display", "text", "align" ]
+        },
+        "plugin_zoom": {
+            "type": "object",
+            "properties": {
+                "limits": {
+                    "$ref": "#/$defs/plugin_zoom_limits"
+                },
+                "pan": {
+                    "$ref": "#/$defs/plugin_zoom_pan"
+                },
+                "zoom": {
+                    "$ref": "#/$defs/plugin_zoom_zoom"
+                }
+            },
+            "default": {
+                "pan": {
+                    "enabled": true,
+                    "mode": "x",
+                    "modifierKey": "ctrl"
+                },
+                "zoom": {
+                    "mode": "x",
+                    "drag": {
+                        "enabled": true,
+                        "modifierKey": "ctrl"
+                    },
+                    "pinch": {
+                        "enabled": true
+                    },
+                    "wheel": {
+                        "enabled": true,
+                        "modifierKey": "ctrl"
+                    }
+                }
+            }
+        },
+        "plugin_zoom_drag": {
+            "type": "object",
+            "default": {
+                "enabled": false,
+                "backgroundColor":  "#ffffff4d",
+                "borderColor": "#ffffff",
+                "borderWidth": 0,
+                "drawTime": "beforeDatasetsDraw",
+                "threshold": 0,
+                "modifierKey": "ctrl"
+            },
+            "properties": {
+                "enabled": {
+                    "default": true,
+                    "description": "Enable drag-to-zoom",
+                    "type": "boolean"
+                },
+                "backgroundColor": {
+                    "default": "#ffffff4d",
+                    "description": "Fill color",
+                    "$ref": "#/$defs/color"
+                },
+                "borderColor": {
+                    "default": "#ffffff",
+                    "description": "Stroke color",
+                    "$ref": "#/$defs/color"
+                },
+                "borderWidth": {
+                    "default": 0,
+                    "description": "Stroke width",
+                    "type": "number"
+                },
+                "drawTime": {
+                    "default": "beforeDatasetsDraw",
+                    "description": "When the dragging box is drawn on the chart",
+                    "$ref": "#/$defs/plugin_zoom_draw_time"
+                },
+                "threshold": {
+                    "default": 0,
+                    "description": "Minimal zoom distance required before actually applying zoom",
+                    "type": "number"
+                },
+                "modifierKey": {
+                    "default": "",
+                    "description": "Modifier key required for drag-to-zoom",
+                    "$ref": "#/$defs/plugin_zoom_modifier_key"
+                }
+            }
+        },
+        "plugin_zoom_draw_time": {
+            "type": "string",
+            "description": "The drawTime option for zooming determines where in the chart lifecycle the drag box drawing occurs.",
+            "enum": [
+                "beforeDraw",
+                "beforeDatasetsDraw",
+                "afterDatasetsDraw",
+                "afterDraws"
+            ]
+        },
+        "plugin_zoom_mode": {
+            "type": "string",
+            "default": "x",
+            "enum": [
+                "x",
+                "y",
+                "xy"
+            ]
+        },
+        "plugin_zoom_modifier_key": {
+            "type": ["null", "string"],
+            "default": "",
+            "enum": [
+                null,
+                "ctrl",
+                "alt",
+                "shift",
+                "meta"
+            ]
+        },
+        "plugin_zoom_scale_limits": {
+            "type": "object",
+            "properties": {
+                "min": {
+                    "default": "original",
+                    "description": "Minimum allowed value for scale.min",
+                    "type": ["string", "number"]
+                },
+                "max": {
+                    "default": "original",
+                    "description": "Maximum allowed value for scale.min",
+                    "type": ["string", "number"]
+                },
+                "minRange": {
+                    "default": null,
+                    "description": "Minimum allowed range (max - min). This defines the max zoom level.",
+                    "type": ["number", "null"]
+                }
+            }
+        },
+        "plugin_zoom_limits": {
+            "type": "object",
+            "defaults": {
+                "x": {},
+                "y": {}
+            },
+            "properties": {
+                "x": {
+                    "description": "Limits for x-axis",
+                    "$ref": "#/$defs/plugin_zoom_scale_limits"
+                },
+                "y": {
+                    "description": "Limits for x-axis",
+                    "$ref": "#/$defs/plugin_zoom_scale_limits"
+                }
+            }
+        },
+        "plugin_zoom_pan": {
+            "type": "object",
+            "default": {
+                "enabled": true,
+                "mode": "x",
+                "modifierKey": "ctrl"
+            },
+            "properties": {
+                "enabled": {
+                    "default": true,
+                    "description": "Enable panning",
+                    "type": "boolean"
+                },
+                "mode": {
+                    "description": "Allowed panning directions",
+                    "$ref": "#/$defs/plugin_zoom_mode"
+                },
+                "modifierKey": {
+                    "default": "ctrl",
+                    "description" : "Modifier key required for panning with mouse",
+                    "$ref": "#/$defs/plugin_zoom_modifier_key"
+                },
+                "scaleMode": {
+                    "description": "Enable panning over a scale for that axis (regardless of mode)",
+                    "$ref": "#/$defs/plugin_zoom_mode"
+                },
+                "threshold": {
+                    "default": 10,
+                    "description": "Minimal pan distance required before actually applying pan",
+                    "type": "number"
+                }
+            }
+        },
+        "plugin_zoom_pinch": {
+            "type": "object",
+            "default": {
+                "enabled": true
+            },
+            "properties": {
+                "enabled": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Enable zooming via pitch"
+                }
+            }
+        },
+        "plugin_zoom_wheel": {
+            "type": "object",
+            "default": {
+                "enabled": true,
+                "speed": "0.1",
+                "modifierKey": null
+            },
+            "properties": {
+                "enabled": {
+                    "default": true,
+                    "description": "Enable zooming via mouse wheel",
+                    "type": "boolean"
+                },
+                "speed": {
+                    "default": 0.1,
+                    "description": "Factor of zoom speed via mouse wheel",
+                    "type": "number"
+                },
+                "modifierKey": {
+                    "default": "ctrl",
+                    "description": "Modifier key required for zooming via mouse wheel",
+                    "$ref": "#/$defs/plugin_zoom_modifier_key"
+                }
+            }
+        },
+        "plugin_zoom_zoom": {
+            "type": "object",
+            "default": {
+                "enabled": true,
+                "mode": "x",
+                "modifierKey": "ctrl"
+            },
+            "properties": {
+                "wheel": {
+                    "description": "Options of the mouse wheel behavior",
+                    "$ref": "#/$defs/plugin_zoom_wheel"
+                },
+                "drag": {
+                    "description": "Options of the drag-to-zoom behavior",
+                    "$ref": "#/$defs/plugin_zoom_drag"
+                },
+                "pinch": {
+                    "description": "Options of the pinch behavior",
+                    "$ref": "#/$defs/plugin_zoom_pinch"
+                },
+                "mode": {
+                    "description": "Allowed zoom directions",
+                    "$ref": "#/$defs/plugin_zoom_mode"
+                },
+                "scaleMode": {
+                    "description": "Which of the enabled zooming directions should only be available when the mouse cursor is over a scale for that axis",
+                    "$ref": "#/$defs/plugin_zoom_mode"
+                }
+            }
+        },
+        "point": {
+            "type": "object",
+            "properties": {
+                "x": {
+                    "type": "number"
+                },
+                "y": {
+                    "type": "number"
+                }
+            }
+        },
+        "scale_options": {
+            "type": "object",
+            "default": {
+                "display": true,
+                "min": null,
+                "max": null,
+                "type": "linear"
+            },
+            "properties": {
+                "type": {
+                    "description": "Type of scale being employed. Custom scales can be created and registered with a string key. This allows changing the type of an axis for a chart.",
+                    "$ref": "#/$defs/scale_type"
+                },
+                "alignToPixels": {
+                    "default": true,
+                    "description": "Align pixel values to device pixels.",
+                    "type": "boolean"
+                },
+                "backgroundColor": {
+                    "description": "Background color of the scale area.",
+                    "$ref": "#/$defs/color"
+                },
+                "border": {
+                    "description": "Border configuration.",
+                    "$ref": "#/$defs/scale_options_border"
+                },
+                "display": {
+                    "default": true,
+                    "description": "Controls the axis global visibility (visible when true, hidden when false). When display: 'auto', the axis is visible only if at least one associated dataset is visible.",
+                    "type": [ "boolean", "string" ]
+                },
+                "grid": {
+                    "description": "Grid line configuration.",
+                    "$ref": "#/$defs/scale_options_grid"
+                },
+                "min": {
+                    "description": "User defined minimum value for the scale, overrides minimum value from data.",
+                    "type": [ "string", "number", "null" ]
+                },
+                "max": {
+                    "description": "User defined maximum value for the scale, overrides maximum value from data.",
+                    "type": [ "string", "number", "null" ]
+                },
+                "reverse": {
+                    "default": false,
+                    "description": "Reverse the scale.",
+                    "type": "boolean"
+                },
+                "stacked": {
+                    "default": false,
+                    "description": "Should the data be stacked.",
+                    "type": [ "boolean", "string" ]
+                },
+                "suggestedMin": {
+                    "description": "Adjustment used when calculating the maximum data value.",
+                    "type": ["string", "number"]
+                },
+                "suggestedMax": {
+                    "description": "Adjustment used when calculating the minimum data value.",
+                    "type": ["string", "number"]
+                },
+                "ticks": {
+                    "description": "Tick configuration.",
+                    "$ref": "#/$defs/scale_options_ticks"
+                },
+                "weight": {
+                    "default": 0,
+                    "description": "The weight used to sort the axis. Higher weights are further away from the chart area.",
+                    "type": "number"
+                }
+            }
+        },
+        "scale_options_border": {
+            "type": "object",
+            "default": {
+                "display": true,
+                "width": 1,
+                "dash": [],
+                "dashOffset": 0.0,
+                "z": 0
+            },
+            "properties": {
+                "display": {
+                    "default": true,
+                    "description": "If true, draw a border at the edge between the axis and the chart area.",
+                    "type": "boolean"
+                },
+                "color": {
+                    "description": "The color of the border line.",
+                    "$ref": "#/$defs/color"
+                },
+                "width": {
+                    "default": 1,
+                    "description": "The width of the border line.",
+                    "type": "number"
+                },
+                "dash": {
+                    "default": [],
+                    "description": "Length and spacing of dashes on grid lines.",
+                    "type": "array",
+                    "items": {
+                        "type": "number"
+                    }
+                },
+                "dashOffset": {
+                    "default": 0.0,
+                    "description": "Offset for line dashes.",
+                    "type": "number"
+                },
+                "z": {
+                    "default": 0,
+                    "description": "z-index of the border layer. Values <= 0 are drawn under datasets, > 0 on top.",
+                    "type": "number"
+                }
+            }
+        },
+        "scale_options_grid": {
+            "type": "object",
+            "default": {
+                "circular": false,
+                "color": null,
+                "display": true,
+                "drawOnChartArea": true,
+                "drawTicks": true,
+                "lineWidth": 1,
+                "offset": false,
+                "tickBorderDash": [],
+                "tickLength": 8,
+                "z": -1
+            },
+            "properties": {
+                "color": {
+                    "$ref": "#/$defs/color"
+                }
+            }
+        },
+        "scale_options_ticks": {
+            "type": "object",
+            "default": {
+                "backdropColor": "rgba(255, 255, 255, 0.75)",
+                "backdropPadding": 2,
+                "display": true,
+                "major": {},
+                "padding": 3,
+                "showLabelBackdrop": false,
+                "textStrokeColor": "",
+                "textStrokeWidth": 0,
+                "z": 0
+            },
+            "properties": {
+                "backdropColor": {
+                    "description": "Color of label backdrops.",
+                    "$ref": "#/$defs/color"
+                },
+                "backdropPadding": {
+                    "description": "Padding of label backdrop.",
+                    "$ref": "#/$defs/padding"
+                },
+                "display": {
+                    "default": true,
+                    "description": "If true, show tick labels.",
+                    "type": "boolean"
+                },
+                "color": {
+                    "description": "Color of ticks.",
+                    "$ref": "#/$defs/color"
+                },
+                "font": {
+                    "description": "Label font.",
+                    "$ref": "#/$defs/font"
+                },
+                "major": {
+                    "default": {},
+                    "description": "Major ticks configuration.",
+                    "$ref": "#/$defs/scale_options_ticks_major"
+                },
+                "padding": {
+                    "description": "Sets the offset of the tick labels from the axis.",
+                    "$ref": "#/$defs/padding"
+                },
+                "showLabelBackdrop": {
+                    "default": true,
+                    "description": "If true, draw a background behind the tick labels.",
+                    "type": "boolean"
+                },
+                "textStrokeColor": {
+                    "description": 	"The color of the stroke around the text.",
+                    "$ref": "#/$defs/color"
+                },
+                "textStrokeWidth": {
+                    "default": 0,
+                    "description": "Stroke width around the text.",
+                    "type": "number"
+                },
+                "x": {
+                    "default": 0,
+                    "description": "z-index of tick layer. Useful when ticks are drawn on chart area. Values <= 0 are drawn under datasets, > 0 on top.",
+                    "type": "number"
+                }
+            }
+        },
+        "scale_options_ticks_major": {
+            "type": "object",
+            "default": {
+                "enabled": false
+            },
+            "properties": {
+                "enabled": {
+                    "default": false,
+                    "description": "If true, major ticks are generated. A major tick will affect autoskipping and major will be defined on ticks in the scriptable options context.",
+                    "type": "boolean"
+                }
+            }
+        },
+        "scale_type": {
+            "type": "string",
+            "default": "linear",
+            "suggestions": [
+                "category",
+                "hierarchical",
+                "linear",
+                "logarithmic",
+                "radialLinear",
+                "time",
+                "timeseries"
+            ]
+        }
+    },
+    "properties": {
+        "type": {
+            "default": "line",
+            "description": "Chart type.",
+            "$ref": "#/$defs/chart_type"
+        },
+        "data": {
+            "default": {
+                "datasets": [
+                    {
+                        "data": [],
+                        "label": "Dataset 1"
+                    }
+                ]
+            },
+            "description": "Chart data.",
+            "$ref": "#/$defs/chart_data"
+        },
+        "options": {
+            "default": {
+                "responsive": true,
+                "maintainAspectRatio": false,
+                "scales": {},
+                "plugins": {
+                    "autocolors": {
+                        "enabled": false
+                    },
+                    "datalabels": {
+                        "display": false
+                    },
+                    "zoom": {
+                        "pan": {
+                            "enabled": true,
+                            "mode": "x",
+                            "modifierKey": "ctrl"
+                        },
+                        "zoom": {
+                            "mode": "x",
+                            "drag": {
+                                "enabled": true,
+                                "modifierKey": "ctrl"
+                            },
+                            "pinch": {
+                                "enabled": true
+                            },
+                            "wheel": {
+                                "enabled": true,
+                                "modifierKey": "ctrl"
+                            }
+                        }
+                    }
+                }
+            },
+            "description": "Chart options.",
+            "$ref": "#/$defs/chart_options"
+        },
+        "events": {
+            "default": {
+                "beforeRender": ""
+            },
+            "description": "JavaScript chart events. The `chart` object is provided.",
+            "$ref": "#/$defs/chart_events"
+        },
+        "style": {
+            "$ref": "urn:ignition-schema:schemas/style-properties.schema.json",
+            "default": {
+                "classes": ""
+            }
+        }
+    },
+    "type": "object",
+    "required": ["type", "data", "options"]
+}
