@@ -13,9 +13,9 @@ include(
     ":js:packages:example-perspective-component",
     ":js:packages:embr-chart-js",
 
-    ":modules:embr-chart-js:common",
-    ":modules:embr-chart-js:designer",
-    ":modules:embr-chart-js:gateway",
+    ":modules:embr-charts:common",
+    ":modules:embr-charts:designer",
+    ":modules:embr-charts:gateway",
 
     ":modules:example-perspective-component:common",
     ":modules:example-perspective-component:designer",
