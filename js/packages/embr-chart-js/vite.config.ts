@@ -19,11 +19,13 @@ export default defineConfig({
                 'react',
                 'react-dom',
                 '@inductiveautomation/perspective-client',
+                'moment',
             ],
             output: {
                 globals: {
                     react: 'React',
                     'react-dom': 'ReactDOM',
+                    moment: 'moment',
                     '@inductiveautomation/perspective-client':
                         'PerspectiveClient',
                 },
