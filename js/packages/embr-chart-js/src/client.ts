@@ -3,7 +3,7 @@ import {
     ComponentRegistry,
 } from '@inductiveautomation/perspective-client'
 import { Chart, registerables } from 'chart.js'
-import 'chartjs-adapter-luxon'
+import 'chartjs-adapter-moment'
 import AnnotationPlugin from 'chartjs-plugin-annotation'
 import ZoomPlugin from 'chartjs-plugin-zoom'
 import ChartStreaming from '@robloche/chartjs-plugin-streaming'
@@ -34,7 +34,7 @@ import {
 } from 'chartjs-chart-pcp'
 import { SankeyController, Flow } from 'chartjs-chart-sankey'
 import ChartjsPluginStacked100 from 'chartjs-plugin-stacked100'
-import gradient from 'chartjs-plugin-gradient'
+import Gradient from 'chartjs-plugin-gradient'
 import { TreemapController, TreemapElement } from 'chartjs-chart-treemap'
 import ChartDataLabels from 'chartjs-plugin-datalabels'
 import { HierarchicalScale } from 'chartjs-plugin-hierarchical'
@@ -61,7 +61,7 @@ Chart.register(
     Flow,
     ForceDirectedGraphController,
     ForceDirectedGraphChart,
-    gradient,
+    Gradient,
     GraphChart,
     GraphController,
     HierarchicalScale,
