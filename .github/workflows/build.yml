@@ -1,7 +1,7 @@
 # GitHub Actions workflow to automatically build and test Embr.
 name: 'build'
 
-on: ['pull_request', 'push']
+on: ['pull_request', 'push', 'workflow_call']
 
 env:
   JAVA_VERSION: 21
