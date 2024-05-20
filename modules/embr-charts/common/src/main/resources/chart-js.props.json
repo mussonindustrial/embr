@@ -403,7 +403,7 @@
             }
         },
         "dataset_data_key": {
-            "type": ["number", "string", "null"],
+            "type": ["number", "string", "null", "object"],
             "default": null,
             "description": "Data value."
         },

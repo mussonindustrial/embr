@@ -38,7 +38,6 @@ function callUserChartEvent(
     if (chart !== undefined) {
         if (props.events !== undefined) {
             const userFunction = props.events[event]
-            console.log(userFunction)
             if (
                 userFunction !== undefined &&
                 typeof userFunction == 'function'
