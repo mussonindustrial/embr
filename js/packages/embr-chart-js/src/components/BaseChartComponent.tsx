@@ -12,6 +12,7 @@ import { recursiveMap } from '../util/iteration'
 import {
     ChartScript,
     ContextScript,
+    asCSSVar,
     asChartScript,
     asContextScript,
 } from '../util/scriptableOptions'
@@ -63,7 +64,11 @@ export function BaseChartComponent(
         processedProps.props[key] = recursiveMap(
             processedProps.props[key],
             (value) => {
-                return asContextScript(value, { self: props }) as ContextScript
+                let v = asContextScript(value, {
+                    self: props,
+                })
+                v = asCSSVar(chartRef.current?.canvas.parentElement, v)
+                return v as ContextScript
             }
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
         ) as any

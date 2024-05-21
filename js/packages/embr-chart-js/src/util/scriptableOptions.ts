@@ -1,4 +1,9 @@
-import { isFunction, toFunction } from '@mussonindustrial/embr-utils'
+import {
+    isFunction,
+    toFunction,
+    readCSSVar,
+    isCSSVar,
+} from '@mussonindustrial/embr-utils'
 
 export type ChartScript = (chart: unknown) => void
 export type ContextScript = (context: unknown, options: unknown) => unknown
@@ -9,9 +14,10 @@ export function asChartScript(
     extraContext: object = {}
 ): ScriptableOption<ChartScript> {
     if (typeof property === 'string' && isFunction(property)) {
-        return (chart: unknown) =>
-            toFunction(property)({ chart, ...extraContext })
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        return (chart: any) => toFunction(property)({ chart, ...extraContext })
     }
+
     return property
 }
 
@@ -22,6 +28,22 @@ export function asContextScript(
     if (typeof property === 'string' && isFunction(property)) {
         return (context: unknown, options: unknown) =>
             toFunction(property)({ context, options, ...extraContext })
+    }
+    return property
+}
+
+export function asCSSVar(
+    element: Element | null | undefined,
+    property: unknown
+): unknown {
+    if (
+        element !== null &&
+        element !== undefined &&
+        typeof property === 'string' &&
+        isCSSVar(property)
+    ) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        return readCSSVar(element, property)
     }
     return property
 }
