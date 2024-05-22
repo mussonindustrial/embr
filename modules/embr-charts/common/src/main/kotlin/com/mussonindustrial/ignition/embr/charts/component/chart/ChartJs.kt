@@ -1,6 +1,7 @@
 package com.mussonindustrial.ignition.embr.charts.component.chart
 
 import com.inductiveautomation.ignition.common.jsonschema.JsonSchema
+import com.inductiveautomation.perspective.common.api.ComponentDescriptor
 import com.inductiveautomation.perspective.common.api.ComponentDescriptorImpl
 import com.mussonindustrial.ignition.embr.charts.Components
 import com.mussonindustrial.ignition.embr.charts.Meta.MODULE_ID
@@ -53,7 +54,7 @@ class ChartJs {
             "A violin plot depicts distributions of numeric data for one or more groups using density curves. The width of each curve corresponds with the approximate frequency of data points in each region."
         )
 
-        var DESCRIPTOR = ComponentDescriptorImpl.ComponentBuilder.newBuilder()
+        var DESCRIPTOR: ComponentDescriptor = ComponentDescriptorImpl.ComponentBuilder.newBuilder()
             .setPaletteCategory("chart")
             .setId(COMPONENT_ID)
             .setModuleId(MODULE_ID)

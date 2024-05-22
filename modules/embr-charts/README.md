@@ -13,7 +13,7 @@ An Ignition module that adds a collection of enhanced Perspective charting compo
 
 ### [Chart.js] Component
 
-![chart-js.png](./common/src/main/resources/images/examples/chart-js.png)
+![chart-js.png](./docs/examples/chart-js.png)
 
 #### Plugin Support
 The Chart.js community has developed many addons and plugins. A selection of these addons are bundled with the module.

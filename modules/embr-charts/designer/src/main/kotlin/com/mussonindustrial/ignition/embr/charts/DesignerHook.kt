@@ -3,11 +3,10 @@ package com.mussonindustrial.ignition.embr.charts
 import com.inductiveautomation.ignition.common.licensing.LicenseState
 import com.inductiveautomation.ignition.designer.model.AbstractDesignerModuleHook
 import com.inductiveautomation.ignition.designer.model.DesignerContext
-import com.inductiveautomation.ignition.designer.navtree.icon.InteractiveSvgIcon
 import com.inductiveautomation.perspective.designer.DesignerComponentRegistry
 import com.inductiveautomation.perspective.designer.api.ComponentDesignDelegateRegistry
 import com.inductiveautomation.perspective.designer.api.PerspectiveDesignerInterface
-import com.mussonindustrial.ignition.embr.charts.component.DesignerComponentDescriptor
+import com.mussonindustrial.ignition.embr.charts.component.asDesignerDescriptor
 import com.mussonindustrial.ignition.embr.charts.component.chart.ChartJs
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -32,7 +31,7 @@ class DesignerHook : AbstractDesignerModuleHook() {
         componentRegistry = pdi.designerComponentRegistry
         delegateRegistry = pdi.componentDesignDelegateRegistry
 
-        componentRegistry.registerComponent(DesignerComponentDescriptor(ChartJs.DESCRIPTOR))
+        componentRegistry.registerComponent(ChartJs.DESCRIPTOR.asDesignerDescriptor())
     }
 
     override fun shutdown() {
