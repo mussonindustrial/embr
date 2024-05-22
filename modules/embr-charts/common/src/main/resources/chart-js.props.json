@@ -272,7 +272,7 @@
         "chart_type": {
             "default": "line",
             "description": "Chart type.",
-            "enum": [
+            "suggestions": [
                 "bar",
                 "boxplot",
                 "bubble",
@@ -295,7 +295,7 @@
             "type": "string"
         },
         "color": {
-            "type": "string",
+            "type": ["string", "null"],
             "format": "color"
         },
         "dataset_options": {
@@ -447,6 +447,20 @@
         "font": {
             "type": "string"
         },
+        "function": {
+            "type": ["string", "null"]
+        },
+        "interaction_mode": {
+            "type": ["string", "null"],
+            "suggestions": [
+                "index",
+                "dataset",
+                "nearest",
+                "point",
+                "x",
+                "y"
+            ]
+        },
         "layout_position": {
             "enum": [ "left", "top", "right", "bottom", "center", "chartArea" ],
             "type": "string"
@@ -474,6 +488,9 @@
                 },
                 "title": {
                     "$ref": "#/$defs/plugin_title"
+                },
+                "tooltip": {
+                    "$ref": "#/$defs/plugin_tooltip"
                 },
                 "zoom": {
                     "$ref": "#/$defs/plugin_zoom"
@@ -649,6 +666,305 @@
                 }
             },
             "required": [ "display", "text", "align" ]
+        },
+        "plugin_tooltip": {
+            "type": "object",
+            "properties": {
+                "enabled": {
+                    "type": "boolean",
+                    "description": "Are on-canvas tooltips enabled?",
+                    "default": true
+                },
+                "external": {
+                    "type": ["string", "null"],
+                    "description": "External tooltips allow you to hook into the tooltip rendering process so that you can render the tooltip in your own custom way. Generally this is used to create an HTML tooltip instead of an on-canvas tooltip. The external option takes a function which is passed a context parameter containing the chart and tooltip.",
+                    "default": null
+                },
+                "mode": {
+                    "description": "Sets which elements appear in the tooltip.",
+                    "$ref": "#/$defs/interaction_mode",
+                    "default": null
+                },
+                "intersect": {
+                    "type": ["boolean", "null"],
+                    "description": "If true, the tooltip mode applies only when the mouse position intersects with an element. If false, the mode will be applied at all times.",
+                    "default": null
+                },
+                "position": {
+                    "description": "The mode for positioning the tooltip.",
+                    "$ref": "#/$defs/plugin_tooltip_mode",
+                    "default": "average"
+                },
+                "callbacks": {
+                    "description": "Optional value providing callbacks. If the callback returns `undefined`, the default callback will be used. If the callback returns an empty string, the item will be removed from the tooltip.",
+                    "$ref": "#/$defs/plugin_tooltip_callbacks"
+                },
+                "itemSort": {
+                    "description": "Function used to sort tooltip items.",
+                    "$ref": "#/$defs/function",
+                    "default": null
+                },
+                "filter": {
+                    "description": "Function used to filter tooltip items.",
+                    "$ref": "#/$defs/function",
+                    "default": null
+                },
+                "backgroundColor": {
+                    "description": "Background color of the tooltip.",
+                    "$ref": "#/$defs/color",
+                    "default": "#000000cc"
+                },
+                "titleColor": {
+                    "description": "Color of title text.",
+                    "$ref": "#/$defs/color",
+                    "default": "#fff"
+                },
+                "titleFont": {
+                    "description": "Font of title text.",
+                    "$ref": "#/$defs/font"
+                },
+                "titleAlign": {
+                    "description": "Horizontal alignment of the title text lines.",
+                    "$ref": "#/$defs/plugin_tooltip_text_alignment"
+                },
+                "titleSpacing": {
+                    "type": ["number", "null"],
+                    "description": "Spacing to add to top and bottom of each title line.",
+                    "default": 2
+                },
+                "titleMarginBottom": {
+                    "type": ["number", "null"],
+                    "description": "Margin to add on bottom of title section.",
+                    "default": 6
+                },
+                "bodyColor": {
+                    "description": "Color of body text.",
+                    "$ref": "#/$defs/color",
+                    "default": "#fff"
+                },
+                "bodyFont": {
+                    "description": "Font of body text.",
+                    "$ref": "#/$defs/font"
+                },
+                "bodyAlign": {
+                    "description": "Horizontal alignment of the body text lines.",
+                    "$ref": "#/$defs/plugin_tooltip_text_alignment"
+                },
+                "bodySpacing": {
+                    "type": ["number", "null"],
+                    "description": "Spacing to add to top and bottom of each tooltip item.",
+                    "default": 2
+                },
+                "footerColor": {
+                    "description": "Color of footer text.",
+                    "$ref": "#/$defs/color",
+                    "default": "#fff"
+                },
+                "footerFont": {
+                    "description": "Font of footer text.",
+                    "$ref": "#/$defs/font"
+                },
+                "footerAlign": {
+                    "description": "Horizontal alignment of the footer text lines.",
+                    "$ref": "#/$defs/plugin_tooltip_text_alignment"
+                },
+                "footerSpacing": {
+                    "type": ["number", "null"],
+                    "description": "Spacing to add to top and bottom of each footer line.",
+                    "default": 2
+                },
+                "footerMarginTop": {
+                    "type": ["number", "null"],
+                    "description": "Margin to add before drawing the footer.",
+                    "default": 6
+                },
+                "padding": {
+                    "description": "Padding inside the tooltip.",
+                    "$ref": "#/$defs/padding",
+                    "default": 6
+                },
+                "caretPadding": {
+                    "type": ["number", "null"],
+                    "description": "Extra distance to move the end of the tooltip arrow away from the tooltip point.",
+                    "default": 2
+                },
+                "caretSize": {
+                    "type": ["number", "null"],
+                    "description": "Size, in px, of the tooltip arrow.",
+                    "default": 5
+                },
+                "cornerRadius": {
+                    "type": ["number", "object"],
+                    "description": "Radius of tooltip corner curves.",
+                    "default": 6
+                },
+                "multiKeyBackground": {
+                    "description": "Color to draw behind the colored boxes when multiple items are in the tooltip.",
+                    "$ref": "#/$defs/color",
+                    "default": "#fff"
+                },
+                "displayColors": {
+                    "type": ["boolean", "null"],
+                    "description": "If true, color boxes are shown in the tooltip.",
+                    "default": true
+                },
+                "boxWidth": {
+                    "type": ["number", "null"],
+                    "description": "Width of the color box if displayColors is true.",
+                    "default": null
+                },
+                "boxHeight": {
+                    "type": ["number", "null"],
+                    "description": "Height of the color box if displayColors is true.",
+                    "default": null
+                },
+                "boxPadding": {
+                    "type": ["number", "null"],
+                    "description": "Padding between the color box and the text.",
+                    "default": null
+                },
+                "usePointStyle": {
+                    "type": ["boolean", "null"],
+                    "description": "Use the corresponding point style (from dataset options) instead of color boxes, ex: star, triangle etc. (size is based on the minimum value between boxWidth and boxHeight).",
+                    "default": null
+                },
+                "borderColor": {
+                    "description": "Color of the border.",
+                    "$ref": "#/$defs/color",
+                    "default": "#000"
+                },
+                "borderWidth": {
+                    "type": ["number", "null"],
+                    "description": "Size of the border.",
+                    "default": 0
+                },
+                "rtl": {
+                    "type": ["boolean", "null"],
+                    "description": "true for rendering the tooltip from right to left.",
+                    "default": null
+                },
+                "textDirection": {
+                    "type": ["string", "null"],
+                    "description": "Color of the border.",
+                    "enum": [
+                        "rtl",
+                        "ltr"
+                    ],
+                    "default": "rtl"
+                },
+                "xAlign": {
+                    "type": ["string", "null"],
+                    "description": "Position of the tooltip caret in the X direction.",
+                    "default": null
+                },
+                "yAlign": {
+                    "type": ["string", "null"],
+                    "description": "Position of the tooltip caret in the Y direction.",
+                    "default": null
+                }
+            }
+        },
+        "plugin_tooltip_callbacks": {
+            "beforeTitle": {
+                "required": false,
+                "default": null,
+                "$ref": "#/$defs/function",
+                "description": "Returns the text to render before the title."
+            },
+            "title": {
+                "required": false,
+                "default": null,
+                "$ref": "#/$defs/function",
+                "description": "Returns text to render as the title of the tooltip."
+            },
+            "afterTitle": {
+                "required": false,
+                "default": null,
+                "$ref": "#/$defs/function",
+                "description": "Returns text to render after the title."
+            },
+            "beforeBody": {
+                "required": false,
+                "default": null,
+                "$ref": "#/$defs/function",
+                "description": "Returns text to render before the body section."
+            },
+            "beforeLabel": {
+                "required": false,
+                "default": null,
+                "$ref": "#/$defs/function",
+                "description": "Returns text to render before an individual label. This will be called for each item in the tooltip."
+            },
+            "label": {
+                "required": false,
+                "default": null,
+                "$ref": "#/$defs/function",
+                "description": "Returns text to render for an individual item in the tooltip."
+            },
+            "labelColor": {
+                "required": false,
+                "default": null,
+                "$ref": "#/$defs/function",
+                "description": "Returns the colors to render for the tooltip item."
+            },
+            "labelTextColor": {
+                "required": false,
+                "default": null,
+                "$ref": "#/$defs/function",
+                "description": "Returns the colors for the text of the label for the tooltip item."
+            },
+            "labelPointStyle": {
+                "required": false,
+                "default": null,
+                "$ref": "#/$defs/function",
+                "description": "Returns the point style to use instead of color boxes if usePointStyle is true (object with values pointStyle and rotation). Default implementation uses the point style from the dataset points."
+            },
+            "afterLabel": {
+                "required": false,
+                "default": null,
+                "$ref": "#/$defs/function",
+                "description": "Returns text to render after an individual label."
+            },
+            "afterBody": {
+                "required": false,
+                "default": null,
+                "$ref": "#/$defs/function",
+                "description": "Returns text to render after the body section."
+            },
+            "beforeFooter": {
+                "required": false,
+                "default": null,
+                "$ref": "#/$defs/function",
+                "description": "Returns text to render before the footer section."
+            },
+            "footer": {
+                "required": false,
+                "default": null,
+                "$ref": "#/$defs/function",
+                "description": "Returns text to render as the footer of the tooltip."
+            },
+            "afterFooter": {
+                "required": false,
+                "default": null,
+                "$ref": "#/$defs/function",
+                "description": "Text to render after the footer section."
+            }
+        },
+        "plugin_tooltip_mode": {
+            "type": ["string", "null"],
+            "suggestions": [
+                "average",
+                "nearest"
+            ]
+        },
+        "plugin_tooltip_text_alignment": {
+            "type": "string",
+            "default": "left",
+            "enum": [
+                "left",
+                "right",
+                "center"
+            ]
         },
         "plugin_zoom": {
             "type": "object",
