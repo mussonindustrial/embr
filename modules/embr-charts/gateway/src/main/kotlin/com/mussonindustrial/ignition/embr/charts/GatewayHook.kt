@@ -16,7 +16,7 @@ import java.util.*
 @Suppress("unused")
 class GatewayHook : AbstractGatewayModuleHook() {
 
-    private val logger: Logger = LoggerFactory.getLogger("Embr-Charts")
+    private val logger: Logger = LoggerFactory.getLogger(SHORT_MODULE_ID)
     private lateinit var context: GatewayContext
     private lateinit var perspectiveContext: PerspectiveContext
     private lateinit var componentRegistry: ComponentRegistry
@@ -35,7 +35,7 @@ class GatewayHook : AbstractGatewayModuleHook() {
         modelDelegateRegistry = perspectiveContext.componentModelDelegateRegistry
 
         logger.info("Registering components...")
-        componentRegistry.registerComponent(ChartJs.DESCRIPTOR_BUILDER.build())
+        componentRegistry.registerComponent(ChartJs.DESCRIPTOR)
     }
 
     override fun shutdown() {
