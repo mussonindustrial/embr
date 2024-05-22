@@ -7,6 +7,7 @@ import com.inductiveautomation.ignition.designer.navtree.icon.InteractiveSvgIcon
 import com.inductiveautomation.perspective.designer.DesignerComponentRegistry
 import com.inductiveautomation.perspective.designer.api.ComponentDesignDelegateRegistry
 import com.inductiveautomation.perspective.designer.api.PerspectiveDesignerInterface
+import com.mussonindustrial.ignition.embr.charts.component.DesignerComponentDescriptor
 import com.mussonindustrial.ignition.embr.charts.component.chart.ChartJs
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -31,10 +32,7 @@ class DesignerHook : AbstractDesignerModuleHook() {
         componentRegistry = pdi.designerComponentRegistry
         delegateRegistry = pdi.componentDesignDelegateRegistry
 
-        val chartJsDescriptor = ChartJs.DESCRIPTOR_BUILDER
-            .setIcon(InteractiveSvgIcon(Components::class.java, "images/svgicons/chart-js.svg"))
-
-        componentRegistry.registerComponent(chartJsDescriptor.build())
+        componentRegistry.registerComponent(DesignerComponentDescriptor(ChartJs.DESCRIPTOR))
     }
 
     override fun shutdown() {

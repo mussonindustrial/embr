@@ -35,7 +35,7 @@ class GatewayHook : AbstractGatewayModuleHook() {
         modelDelegateRegistry = perspectiveContext.componentModelDelegateRegistry
 
         logger.info("Registering components...")
-        componentRegistry.registerComponent(ChartJs.DESCRIPTOR_BUILDER.build())
+        componentRegistry.registerComponent(ChartJs.DESCRIPTOR)
     }
 
     override fun shutdown() {
