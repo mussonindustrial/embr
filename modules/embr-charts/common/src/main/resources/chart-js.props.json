@@ -6,13 +6,7 @@
             "type": "string"
         },
         "animation": {
-            "type": "object",
-            "default": {
-                "duration": 1000,
-                "easing": "easeOutQuart",
-                "delay": null,
-                "loop": null
-            },
+            "type": ["object", "boolean"],
             "properties": {
                 "duration": {
                     "default": 1000,
@@ -25,12 +19,12 @@
                     "$ref": "#/$defs/easing"
                 },
                 "delay": {
-                    "default": null,
+                    "default": 0,
                     "description": "Delay before starting the animations.",
                     "type": "number"
                 },
                 "loop": {
-                    "default": null,
+                    "default": false,
                     "description": "If set to true, the animations loop endlessly.",
                     "type": "boolean"
                 }
@@ -75,9 +69,35 @@
                 }
             }
         },
+        "area_fill": {
+            "type": ["string", "number", "boolean", "object"],
+            "default": false,
+            "suggestions": [
+                false,
+                "origin",
+                "stack",
+                "start",
+                "end",
+                1,
+                "+1"
+            ]
+        },
         "axis": {
             "type": "string",
-            "enum": ["x", "y"]
+            "suggestions": ["x", "y", "xy", "r"]
+        },
+        "border": {
+            "type": ["string", "boolean"],
+            "suggestions": [
+                "start",
+                "end",
+                "middle",
+                "bottom",
+                "left",
+                "top",
+                "right",
+                false
+            ]
         },
         "chart_area": {
             "type": "object",
@@ -159,6 +179,46 @@
                     "description": "The base axis of the chart. 'x' for vertical charts and 'y' for horizontal charts.",
                     "$ref": "#/$defs/axis"
                 },
+                "maintainAspectRatio": {
+                    "default": false,
+                    "description": "Maintain the original canvas aspect ratio (width / height) when resizing.",
+                    "type": "boolean"
+                },
+                "resizeDelay": {
+                    "default": 0,
+                    "description": "Delay the resize update by give amount of milliseconds. This can ease the resize process by debouncing update of the elements.",
+                    "type": "number"
+                },
+                "responsive": {
+                    "default": true,
+                    "description": "Resizes the chart canvas when its container does.",
+                    "type": "boolean"
+                },
+                "animation": {
+                    "description": "Chart animation options.",
+                    "$ref": "#/$defs/animation"
+                },
+                "animations": {
+                    "default": {
+                        "numbers": {
+                            "properties": [ "x", "y", "borderWidth", "radius", "tension" ],
+                            "type": "number"
+                        },
+                        "colors": {
+                            "properties": [ "color", "borderColor", "backgroundColor" ],
+                            "type": "color"
+                        }
+                    },
+                    "description": "Animations options configures which element properties are animated and how.",
+                    "type": "object",
+                    "additionalProperties": {
+                        "$ref": "#/$defs/animations"
+                    }
+                },
+                "aspectRatio": {
+                    "description": "Canvas aspect ratio (i.e. width / height, a value of 1 representing a square canvas). Note that this option is ignored if the height is explicitly defined either as attribute or via the style.",
+                    "type": "number"
+                },
                 "clip": {
                     "description": "How to clip relative to chartArea. Positive value allows overflow, negative value clips that many pixels inside chartArea. 0 = clip at chartArea. Clipping can also be configured per side: `clip: {left: 5, top: false, right: -2, bottom: 0}`",
                     "anyOf": [
@@ -179,42 +239,47 @@
                     "description": "Base border color",
                     "$ref": "#/$defs/color"
                 },
+                "datasets": {
+                    "default": {},
+                    "description": "Chart dataset options.",
+                    "$ref": "#/$defs/dataset_options"
+                },
+                "devicePixelRatio": {
+                    "description": "Override the window's default devicePixelRatio.",
+                    "type": "number"
+                },
+                "elements": {
+                    "$ref": "#/$defs/elements"
+                },
                 "font": {
                     "description": "Base font",
                     "$ref": "#/$defs/font"
                 },
-                "responsive": {
-                    "default": true,
-                    "description": "Resizes the chart canvas when its container does.",
-                    "type": "boolean"
+                "interaction": {
+                    "$ref": "#/$defs/interaction"
                 },
-                "maintainAspectRatio": {
-                    "default": false,
-                    "description": "Maintain the original canvas aspect ratio (width / height) when resizing.",
-                    "type": "boolean"
-                },
-                "resizeDelay": {
-                    "default": 0,
-                    "description": "Delay the resize update by give amount of milliseconds. This can ease the resize process by debouncing update of the elements.",
-                    "type": "number"
-                },
-                "aspectRatio": {
-                    "description": "Canvas aspect ratio (i.e. width / height, a value of 1 representing a square canvas). Note that this option is ignored if the height is explicitly defined either as attribute or via the style.",
-                    "type": "number"
+                "layout": {
+                    "$ref": "#/$defs/layout"
                 },
                 "locale": {
                     "description": "Locale used for number formatting (using `Intl.NumberFormat`).",
                     "type": "string"
                 },
-                "devicePixelRatio": {
-                    "description": "Override the window's default devicePixelRatio.",
-                    "type": "number"
+
+                "onClick": {
+                    "description": "Called if the event is of type 'mouseup', 'click' or 'contextmenu' over chartArea. Passed the event, an array of active elements, and the chart.",
+                    "$ref": "#/$defs/function"
+                },
+                "onHover": {
+                    "description": "Called when any of the events fire over chartArea. Passed the event, an array of active elements (bars, points, etc), and the chart.",
+                    "$ref": "#/$defs/function"
                 },
                 "plugins": {
                     "default": {},
                     "description": "Chart plugin options.",
                     "$ref": "#/$defs/plugins"
                 },
+
                 "scales": {
                     "default": {},
                     "description": "Chart scale options.",
@@ -228,38 +293,6 @@
                             "required": false,
                             "$ref": "#/$defs/scale_options"
                         }
-                    }
-                },
-                "datasets": {
-                    "default": {},
-                    "description": "Chart dataset options.",
-                    "$ref": "#/$defs/dataset_options"
-                },
-                "animation": {
-                    "default": {
-                        "duration": 1000,
-                        "easing": "easeOutQuart",
-                        "delay": null,
-                        "loop": null
-                    },
-                    "description": "Chart animation options.",
-                    "$ref": "#/$defs/animation"
-                },
-                "animations": {
-                    "default": {
-                        "numbers": {
-                            "properties": [ "x", "y", "borderWidth", "radius", "tension" ],
-                            "type": "number"
-                        },
-                        "colors": {
-                            "properties": [ "color", "borderColor", "backgroundColor" ],
-                            "type": "color"
-                        }
-                    },
-                    "description": "Animations options configures which element properties are animated and how.",
-                    "type": "object",
-                    "additionalProperties": {
-                        "$ref": "#/$defs/animations"
                     }
                 }
             }
@@ -278,7 +311,9 @@
                 "bubble",
                 "dendrogram",
                 "doughnut",
+                "euler",
                 "forceDirectedGraph",
+                "funnel",
                 "graph",
                 "line",
                 "matrix",
@@ -290,7 +325,9 @@
                 "sankey",
                 "tree",
                 "treemap",
-                "violin"
+                "venn",
+                "violin",
+                "wordCloud"
             ],
             "type": "string"
         },
@@ -403,7 +440,7 @@
             }
         },
         "dataset_data_key": {
-            "type": ["number", "string", "null", "object"],
+            "type": ["number", "string", "null", "object", "array"],
             "default": null,
             "description": "Data value."
         },
@@ -444,11 +481,300 @@
             ],
             "type": "string"
         },
+        "elements": {
+            "type": "object",
+            "properties": {
+                "point": {
+                    "$ref": "#/$defs/elements_point"
+                },
+                "line": {
+                    "$ref": "#/$defs/elements_line"
+                },
+                "bar": {
+                    "$ref": "#/$defs/elements_bar"
+                },
+                "arc": {
+                    "$ref": "#/$defs/elements_arc"
+                }
+            }
+        },
+        "elements_arc": {
+            "type": "object",
+            "description": "Arcs are used in the polar area, doughnut and pie charts.",
+            "default": {},
+            "properties": {
+                "angle": {
+                    "type": ["number", "null"],
+                    "default": null,
+                    "description": "Arc angle to cover."
+                },
+                "backgroundColor": {
+                    "description": "Arc fill color.",
+                    "$ref": "#/$defs/color"
+                },
+                "borderAlign": {
+                    "type": "string",
+                    "description": "Arc stroke alignment",
+                    "default": "center",
+                    "enum": [
+                        "center",
+                        "inner"
+                    ]
+                },
+                "borderColor": {
+                    "description": "Arc stroke color.",
+                    "$ref": "#/$defs/color",
+                    "default": "#ffffff"
+                },
+                "borderDash": {
+                    "description": "Arc line style.",
+                    "$ref": "#/$defs/line_dash",
+                    "default": []
+                },
+                "borderDashOffset": {
+                    "type": "number",
+                    "description": "Arc line dash offset.",
+                    "default": 0.0
+                },
+                "borderJoinStyle": {
+                    "description": "Line join style.",
+                    "$ref": "#/$defs/line_join",
+                    "default": "miter"
+                },
+                "borderWidth": {
+                    "type": "number",
+                    "default": 2,
+                    "description": "Arc stroke width."
+                },
+                "circular": {
+                    "type": "boolean",
+                    "description": "`By default the Arc is curved. If `circular: false` the Arc will be flat.",
+                    "default": true
+                }
+            }
+        },
+        "elements_bar": {
+            "type": "object",
+            "description": "Bar elements are used to represent the bars in a bar chart.",
+            "default": {},
+            "properties": {
+                "backgroundColor": {
+                    "description": "Bar fill color.",
+                    "$ref": "#/$defs/color"
+                },
+                "borderWidth": {
+                    "type": "number",
+                    "default": 0,
+                    "description": "Bar stroke width."
+                },
+                "borderColor": {
+                    "description": "Bar stroke color.",
+                    "$ref": "#/$defs/color"
+                },
+                "borderSkipped": {
+                    "description": "Skipped (excluded) border.",
+                    "$ref": "#/$defs/border"
+                },
+                "borderRadius": {
+                    "type": ["number", "object"],
+                    "default": 0,
+                    "description": "Point radius."
+                },
+                "inflateAmount": {
+                    "type": ["number", "string"],
+                    "default": "auto",
+                    "description": "The amount of pixels to inflate the bar rectangle(s) when drawing."
+                },
+                "pointStyle": {
+                    "$ref": "#/$defs/point_style",
+                    "default": "circle",
+                    "description": "Point style."
+                }
+            }
+        },
+        "elements_line": {
+            "type": "object",
+            "description": "Line elements are used to represent the line in a line chart.",
+            "default": {},
+            "properties": {
+                "tension": {
+                    "type": "number",
+                    "default": 0,
+                    "description": "Bézier curve tension (0 for no Bézier curves)."
+                },
+                "backgroundColor": {
+                    "description": "Line fill color.",
+                    "$ref": "#/$defs/color"
+                },
+                "borderWidth": {
+                    "type": "number",
+                    "default": 3,
+                    "description": "Line stroke width."
+                },
+                "borderColor": {
+                    "description": "Line stroke color.",
+                    "$ref": "#/$defs/color"
+                },
+                "borderCapStyle": {
+                    "description": "Line cap style.",
+                    "$ref": "#/$defs/line_cap",
+                    "default": "butt"
+                },
+                "borderDash": {
+                    "description": "Line cap style.",
+                    "$ref": "#/$defs/line_dash",
+                    "default": []
+                },
+                "borderDashOffset": {
+                    "type": "number",
+                    "description": "Line dash offset.",
+                    "default": 0.0
+                },
+                "borderJoinStyle": {
+                    "description": "Line join style.",
+                    "$ref": "#/$defs/line_join",
+                    "default": "miter"
+                },
+                "capBezierPoints": {
+                    "type": "boolean",
+                    "description": "`true` to keep Bézier control inside the chart, `false` for no restriction.",
+                    "default": true
+                },
+                "cubicInterpolationMode": {
+                    "description": "Line join style.",
+                    "default": "default",
+                    "$ref": "#/$defs/interpolation_cubic_mode"
+                },
+                "fill": {
+                    "description": "How to fill the area under the line.",
+                    "default": false,
+                    "$ref": "#/$defs/area_fill"
+                },
+                "stepped": {
+                    "type": "boolean",
+                    "description": "`true` to show the line as a stepped line (`tension` will be ignored).",
+                    "default": false
+                }
+            }
+        },
+        "elements_point": {
+            "type": "object",
+            "description": "Point elements are used to represent the points in a line, radar or bubble chart.",
+            "default": {},
+            "properties": {
+                "radius": {
+                    "type": "number",
+                    "default": 3,
+                    "description": "Point radius."
+                },
+                "pointStyle": {
+                    "$ref": "#/$defs/point_style",
+                    "default": "circle",
+                    "description": "Point style."
+                },
+                "rotation": {
+                    "type": "number",
+                    "default": 0,
+                    "description": "Point rotation (in degrees)."
+                },
+                "backgroundColor": {
+                    "description": "Point fill color.",
+                    "$ref": "#/$defs/color"
+                },
+                "borderWidth": {
+                    "type": "number",
+                    "default": 1,
+                    "description": "Point stroke width."
+                },
+                "borderColor": {
+                    "description": "Point stroke color.",
+                    "$ref": "#/$defs/color"
+                },
+                "hitRadius": {
+                    "type": "number",
+                    "default": 1,
+                    "description": "Extra radius added to point radius for hit detection."
+                },
+                "hoverRadius": {
+                    "type": "number",
+                    "default": 4,
+                    "description": "Point radius when hovered"
+                },
+                "hoverBorderWidth": {
+                    "type": "number",
+                    "default": 1,
+                    "description": "Stroke width when hovered."
+                }
+            }
+        },
         "font": {
-            "type": "string"
+            "type": ["string", "object"],
+            "required": ["size", "style", "weight"],
+            "default": {
+                "size": 12,
+                "style": "normal",
+                "weight": "normal"
+            },
+            "properties": {
+                "family": {
+                    "type": "string",
+                    "description": "Default font family for text, follows CSS font-family options.",
+                    "default": "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif"
+                },
+                "size": {
+                    "type": ["string", "number"],
+                    "description": "Default font size (in px) for text.",
+                    "default": 12
+                },
+                "style": {
+                    "type": "string",
+                    "description": "Default font style. Does not apply to tooltip title or footer. Does not apply to chart title. Follows CSS font-style options (i.e. normal, italic, oblique, initial, inherit).",
+                    "default": "normal"
+                },
+                "weight": {
+                    "type": ["string", "number"],
+                    "description": "Font weight.",
+                    "suggestions": [
+                        "normal",
+                        "bold",
+                        "lighter",
+                        "bolder"
+                    ],
+                    "default": "normal"
+                },
+                "lineHeight": {
+                    "type": ["string", "number"],
+                    "description": "Height of an individual line of text.",
+                    "default": 1.2
+                }
+            }
         },
         "function": {
             "type": ["string", "null"]
+        },
+        "interaction": {
+            "type": "object",
+            "properties": {
+                "mode": {
+                    "default": "nearest",
+                    "description": "Sets which elements appear in the interaction.",
+                    "$ref": "#/$defs/interaction_mode"
+                },
+                "intersect": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "If true, the interaction mode only applies when the mouse position intersects an item on the chart."
+                },
+                "axis": {
+                    "default": "x",
+                    "$ref": "#/$defs/axis"
+                },
+                "includeInvisible": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "If true, the invisible points that are outside of the chart area will also be included when evaluating interactions."
+                }
+            }
         },
         "interaction_mode": {
             "type": ["string", "null"],
@@ -461,9 +787,54 @@
                 "y"
             ]
         },
+        "interpolation_cubic_mode": {
+            "type": "string",
+            "default": "default",
+            "enum": [
+                "default",
+                "monotone"
+            ]
+        },
+        "layout": {
+            "type": "object",
+            "properties": {
+                "autoPadding": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Apply automatic padding so visible elements are completely drawn."
+                },
+                "padding": {
+                    "description": "The padding to add inside the chart.",
+                    "default": 0,
+                    "$ref": "#/$defs/padding"
+                }
+            }
+        },
         "layout_position": {
             "enum": [ "left", "top", "right", "bottom", "center", "chartArea" ],
             "type": "string"
+        },
+        "line_cap": {
+            "type": "string",
+            "suggestions": [
+                "butt",
+                "round",
+                "square"
+            ]
+        },
+        "line_dash": {
+            "type": "array",
+            "items": {
+                "type": "number"
+            }
+        },
+        "line_join": {
+            "type": "string",
+            "suggestions": [
+                "round",
+                "bevel",
+                "miter"
+            ]
         },
         "padding": {
             "type": [ "number", "object" ]
@@ -471,8 +842,24 @@
         "plugins": {
             "type": "object",
             "properties": {
+                "annotation": {
+                    "default": false,
+                    "$ref": "#/$defs/plugin_annotation"
+                },
+                "autocolors": {
+                    "default": false,
+                    "$ref": "#/$defs/plugin_autocolors"
+                },
                 "colors": {
                     "$ref": "#/$defs/plugin_colors"
+                },
+                "crosshair": {
+                    "default": false,
+                    "$ref": "#/$defs/plugin_crosshair"
+                },
+                "datalabels": {
+                    "default": false,
+                    "$ref": "#/$defs/plugin_datalabels"
                 },
                 "decimation": {
                     "$ref": "#/$defs/plugin_decimation"
@@ -497,8 +884,16 @@
                 }
             }
         },
+        "plugin_annotation": {
+            "type": ["object", "boolean"],
+            "default": false
+        },
+        "plugin_autocolors": {
+            "type": ["object", "boolean"],
+            "default": false
+        },
         "plugin_colors": {
-            "type": "object",
+            "type": ["object", "boolean"],
             "default": {
                 "enabled": true
             },
@@ -513,11 +908,19 @@
             },
             "required": [ "enabled" ]
         },
+        "plugin_crosshair": {
+            "type": ["object", "boolean"],
+            "default": false
+        },
+        "plugin_datalabels": {
+            "type": ["object", "boolean"],
+            "default": false
+        },
         "plugin_decimation": {
-            "type": "object",
+            "type": ["object", "boolean"],
             "default": {
                 "enabled": false,
-                "threshold": null,
+                "threshold": 50,
                 "algorithm": "lttb",
                 "samples": 100
             },
@@ -543,7 +946,7 @@
             "required": [ "enabled", "threshold", "algorithm", "samples" ]
         },
         "plugin_filler": {
-            "type": "object",
+            "type": ["object", "boolean"],
             "default": {
                 "drawTime": "beforeDraw",
                 "propagate": false
@@ -562,7 +965,7 @@
             "required": [ "drawTime", "propagate" ]
         },
         "plugin_legend": {
-            "type": "object",
+            "type": ["object", "boolean"],
             "default": {
                 "display": true,
                 "position": "top",
@@ -597,12 +1000,33 @@
                     "description": "Marks that this box should take the full width/height of the canvas (moving other boxes). This is unlikely to need to be changed in day-to-day use.",
                     "type": "boolean"
                 },
+                "onClick": {
+                    "default": "",
+                    "description": "A callback that is called when a click event is registered on a label item.",
+                    "$ref": "#/$defs/function"
+                },
+                "onHover": {
+                    "default": "",
+                    "description": "A callback that is called when a 'mousemove' event is registered on top of a label item. ",
+                    "$ref": "#/$defs/function"
+                },
+                "onLeave": {
+                    "default": "",
+                    "description": "A callback that is called when a 'mousemove' event is registered outside of a previously hovered label item.",
+                    "$ref": "#/$defs/function"
+                },
                 "reverse": {
                     "default": false,
                     "description": "Legend will show datasets in reverse order.",
                     "type": "boolean"
                 },
                 "labels": {
+                    "type": "object",
+                    "default": {
+                        "boxWidth": 40,
+                        "boxHeight": 12,
+                        "color": null
+                    },
                     "properties": {
                         "boxWidth": {
                             "default": 40,
@@ -610,9 +1034,95 @@
                             "type": "number"
                         },
                         "boxHeight": {
-                            "default": 20,
+                            "default": 12,
                             "description": "Width of colored box.",
                             "type": "number"
+                        },
+                        "color": {
+                            "description": "Color of label and the strikethrough.",
+                            "$ref": "#/$defs/color"
+                        },
+                        "font": {
+                            "$ref": "#/$defs/font"
+                        },
+                        "padding": {
+                            "type": "number",
+                            "default": 10,
+                            "description": "Padding between rows of colored boxes."
+                        },
+                        "filter": {
+                            "description": "Filters legend items out of the legend.",
+                            "$ref": "#/$defs/function"
+                        },
+                        "sort": {
+                            "description": "Sorts legend items. ",
+                            "$ref": "#/$defs/function"
+                        },
+                        "pointStyle": {
+                            "default": "circle",
+                            "description": "If specified, this style of point is used for the legend. Only used if usePointStyle is true.",
+                            "$ref": "#/$defs/point_style"
+                        },
+                        "textAlign": {
+                            "description": "Horizontal alignment of the label text.",
+                            "default": "center",
+                            "$ref": "#/$defs/text_alignment"
+                        },
+                        "usePointStyle": {
+                            "type": "boolean",
+                            "default": false,
+                            "description": "Label style will match corresponding point style (size is based on pointStyleWidth or the minimum value between boxWidth and font.size)."
+                        },
+                        "pointStyleWidth": {
+                            "type": "number",
+                            "default": 16,
+                            "description": "If usePointStyle is true, the width of the point style used for the legend."
+                        },
+                        "useBorderRadius": {
+                            "type": "boolean",
+                            "default": false,
+                            "description": "Label borderRadius will match corresponding borderRadius."
+                        },
+                        "borderRadius": {
+                            "type": "number",
+                            "default": 5,
+                            "description": "Override the borderRadius to use."
+                        }
+                    }
+                },
+                "rtl": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "true for rendering the legends from right to left."
+                },
+                "textDirection": {
+                    "type": "string",
+                    "$ref": "#/$defs/text_direction"
+                },
+                "title": {
+                    "type": "object",
+                    "properties": {
+                        "color": {
+                            "type": "string",
+                            "description": "Color of text.",
+                            "$ref": "#/$defs/color"
+                        },
+                        "display": {
+                            "type": "boolean",
+                            "default": false,
+                            "description": "Is the legend title displayed?"
+                        },
+                        "font": {
+                            "$ref": "#/$defs/font"
+                        },
+                        "padding": {
+                            "description": "Padding around the title.",
+                            "$ref": "#/$defs/padding"
+                        },
+                        "text": {
+                            "type": "string",
+                            "default": "",
+                            "description": "The string title."
                         }
                     }
                 }
@@ -620,7 +1130,7 @@
             "required": [ "display", "position", "align" ]
         },
         "plugin_title": {
-            "type": "object",
+            "type": ["object", "boolean"],
             "default": {
                 "align": "center",
                 "display": true,
@@ -668,7 +1178,22 @@
             "required": [ "display", "text", "align" ]
         },
         "plugin_tooltip": {
-            "type": "object",
+            "type": ["object", "boolean"],
+            "default": {
+                "enabled": true,
+                "position": "average",
+                "backgroundColor": "#000000cc",
+                "titleColor": "#ffffff",
+                "titleAlign": "left",
+                "bodyColor": "#ffffff",
+                "bodyAlign": "left",
+                "footerColor": "#ffffff",
+                "footerAlign": "left",
+                "padding": 6,
+                "displayColors": true,
+                "borderColor": "#000000",
+                "borderWidth": 0
+            },
             "properties": {
                 "enabled": {
                     "type": "boolean",
@@ -676,17 +1201,20 @@
                     "default": true
                 },
                 "external": {
-                    "type": ["string", "null"],
+                    "type": "string",
+                    "required": false,
                     "description": "External tooltips allow you to hook into the tooltip rendering process so that you can render the tooltip in your own custom way. Generally this is used to create an HTML tooltip instead of an on-canvas tooltip. The external option takes a function which is passed a context parameter containing the chart and tooltip.",
                     "default": null
                 },
                 "mode": {
                     "description": "Sets which elements appear in the tooltip.",
                     "$ref": "#/$defs/interaction_mode",
-                    "default": null
+                    "default": "index",
+                    "required": false
                 },
                 "intersect": {
-                    "type": ["boolean", "null"],
+                    "type": "boolean",
+                    "required": true,
                     "description": "If true, the tooltip mode applies only when the mouse position intersects with an element. If false, the mode will be applied at all times.",
                     "default": null
                 },
@@ -697,17 +1225,21 @@
                 },
                 "callbacks": {
                     "description": "Optional value providing callbacks. If the callback returns `undefined`, the default callback will be used. If the callback returns an empty string, the item will be removed from the tooltip.",
-                    "$ref": "#/$defs/plugin_tooltip_callbacks"
+                    "$ref": "#/$defs/plugin_tooltip_callbacks",
+                    "required": false,
+                    "default": {}
                 },
                 "itemSort": {
                     "description": "Function used to sort tooltip items.",
                     "$ref": "#/$defs/function",
-                    "default": null
+                    "default": null,
+                    "required": false
                 },
                 "filter": {
                     "description": "Function used to filter tooltip items.",
                     "$ref": "#/$defs/function",
-                    "default": null
+                    "default": null,
+                    "required": false
                 },
                 "backgroundColor": {
                     "description": "Background color of the tooltip.",
@@ -717,66 +1249,74 @@
                 "titleColor": {
                     "description": "Color of title text.",
                     "$ref": "#/$defs/color",
-                    "default": "#fff"
+                    "default": "#ffffff"
                 },
                 "titleFont": {
                     "description": "Font of title text.",
-                    "$ref": "#/$defs/font"
+                    "$ref": "#/$defs/font",
+                    "required": false
                 },
                 "titleAlign": {
                     "description": "Horizontal alignment of the title text lines.",
-                    "$ref": "#/$defs/plugin_tooltip_text_alignment"
+                    "$ref": "#/$defs/text_alignment"
                 },
                 "titleSpacing": {
-                    "type": ["number", "null"],
+                    "type": "number",
                     "description": "Spacing to add to top and bottom of each title line.",
-                    "default": 2
+                    "default": 2,
+                    "required": false
                 },
                 "titleMarginBottom": {
-                    "type": ["number", "null"],
+                    "type": "number",
                     "description": "Margin to add on bottom of title section.",
-                    "default": 6
+                    "default": 6,
+                    "required": false
                 },
                 "bodyColor": {
                     "description": "Color of body text.",
                     "$ref": "#/$defs/color",
-                    "default": "#fff"
+                    "default": "#ffffff"
                 },
                 "bodyFont": {
                     "description": "Font of body text.",
-                    "$ref": "#/$defs/font"
+                    "$ref": "#/$defs/font",
+                    "required": false
                 },
                 "bodyAlign": {
                     "description": "Horizontal alignment of the body text lines.",
-                    "$ref": "#/$defs/plugin_tooltip_text_alignment"
+                    "$ref": "#/$defs/text_alignment"
                 },
                 "bodySpacing": {
-                    "type": ["number", "null"],
+                    "type": "number",
                     "description": "Spacing to add to top and bottom of each tooltip item.",
-                    "default": 2
+                    "default": 2,
+                    "required": false
                 },
                 "footerColor": {
                     "description": "Color of footer text.",
                     "$ref": "#/$defs/color",
-                    "default": "#fff"
+                    "default": "#ffffff"
                 },
                 "footerFont": {
                     "description": "Font of footer text.",
-                    "$ref": "#/$defs/font"
+                    "$ref": "#/$defs/font",
+                    "required": false
                 },
                 "footerAlign": {
                     "description": "Horizontal alignment of the footer text lines.",
-                    "$ref": "#/$defs/plugin_tooltip_text_alignment"
+                    "$ref": "#/$defs/text_alignment"
                 },
                 "footerSpacing": {
-                    "type": ["number", "null"],
+                    "type": "number",
                     "description": "Spacing to add to top and bottom of each footer line.",
-                    "default": 2
+                    "default": 2,
+                    "required": false
                 },
                 "footerMarginTop": {
-                    "type": ["number", "null"],
+                    "type": "number",
                     "description": "Margin to add before drawing the footer.",
-                    "default": 6
+                    "default": 6,
+                    "required": false
                 },
                 "padding": {
                     "description": "Padding inside the tooltip.",
@@ -784,85 +1324,115 @@
                     "default": 6
                 },
                 "caretPadding": {
-                    "type": ["number", "null"],
+                    "type": "number",
                     "description": "Extra distance to move the end of the tooltip arrow away from the tooltip point.",
-                    "default": 2
+                    "default": 2,
+                    "required": false
                 },
                 "caretSize": {
-                    "type": ["number", "null"],
+                    "type": "number",
                     "description": "Size, in px, of the tooltip arrow.",
-                    "default": 5
+                    "default": 5,
+                    "required": false
                 },
                 "cornerRadius": {
-                    "type": ["number", "object"],
+                    "type": "number",
                     "description": "Radius of tooltip corner curves.",
-                    "default": 6
+                    "default": 6,
+                    "required": false
                 },
                 "multiKeyBackground": {
                     "description": "Color to draw behind the colored boxes when multiple items are in the tooltip.",
                     "$ref": "#/$defs/color",
-                    "default": "#fff"
+                    "default": "#ffffff",
+                    "required": false
                 },
                 "displayColors": {
-                    "type": ["boolean", "null"],
+                    "type": "boolean",
                     "description": "If true, color boxes are shown in the tooltip.",
                     "default": true
                 },
                 "boxWidth": {
-                    "type": ["number", "null"],
+                    "type": "number",
                     "description": "Width of the color box if displayColors is true.",
-                    "default": null
+                    "default": 16,
+                    "required": false
                 },
                 "boxHeight": {
-                    "type": ["number", "null"],
+                    "type": "number",
                     "description": "Height of the color box if displayColors is true.",
-                    "default": null
+                    "default": 16,
+                    "required": false
                 },
                 "boxPadding": {
-                    "type": ["number", "null"],
+                    "type": "number",
                     "description": "Padding between the color box and the text.",
-                    "default": null
+                    "default": 1,
+                    "required": false
                 },
                 "usePointStyle": {
-                    "type": ["boolean", "null"],
+                    "type": "boolean",
                     "description": "Use the corresponding point style (from dataset options) instead of color boxes, ex: star, triangle etc. (size is based on the minimum value between boxWidth and boxHeight).",
-                    "default": null
+                    "default": false,
+                    "required": false
                 },
                 "borderColor": {
                     "description": "Color of the border.",
                     "$ref": "#/$defs/color",
-                    "default": "#000"
+                    "default": "#000000"
                 },
                 "borderWidth": {
-                    "type": ["number", "null"],
+                    "type": "number",
                     "description": "Size of the border.",
-                    "default": 0
+                    "default": 0,
+                    "required": false
                 },
                 "rtl": {
-                    "type": ["boolean", "null"],
+                    "type": "boolean",
                     "description": "true for rendering the tooltip from right to left.",
-                    "default": null
+                    "default": false,
+                    "required": false
                 },
                 "textDirection": {
-                    "type": ["string", "null"],
-                    "description": "Color of the border.",
-                    "enum": [
-                        "rtl",
-                        "ltr"
-                    ],
-                    "default": "rtl"
+                    "type": "string",
+                    "description": "This will force the text direction 'rtl' or 'ltr' on the canvas for rendering the tooltips, regardless of the css specified on the canvas.",
+                    "$ref": "#/$defs/text_direction",
+                    "default": "rtl",
+                    "required": false
                 },
                 "xAlign": {
-                    "type": ["string", "null"],
+                    "type": "string",
                     "description": "Position of the tooltip caret in the X direction.",
-                    "default": null
+                    "$ref": "#/$defs/plugin_tooltip_alignment_x",
+                    "default": "center",
+                    "required": false
                 },
                 "yAlign": {
-                    "type": ["string", "null"],
+                    "type": "string",
                     "description": "Position of the tooltip caret in the Y direction.",
-                    "default": null
+                    "$ref": "#/$defs/plugin_tooltip_alignment_y",
+                    "default": "center",
+                    "required": false
                 }
             }
+        },
+        "plugin_tooltip_alignment_x": {
+            "type": "string",
+            "default": "left",
+            "enum": [
+                "left",
+                "center",
+                "right"
+            ]
+        },
+        "plugin_tooltip_alignment_y": {
+            "type": "string",
+            "default": "top",
+            "enum": [
+                "top",
+                "center",
+                "bottom"
+            ]
         },
         "plugin_tooltip_callbacks": {
             "beforeTitle": {
@@ -952,22 +1522,14 @@
         },
         "plugin_tooltip_mode": {
             "type": ["string", "null"],
+            "description": "'average' mode will place the tooltip at the average position of the items displayed in the tooltip. 'nearest' will place the tooltip at the position of the element closest to the event position.",
             "suggestions": [
                 "average",
                 "nearest"
             ]
         },
-        "plugin_tooltip_text_alignment": {
-            "type": "string",
-            "default": "left",
-            "enum": [
-                "left",
-                "right",
-                "center"
-            ]
-        },
         "plugin_zoom": {
-            "type": "object",
+            "type": ["object", "boolean"],
             "properties": {
                 "limits": {
                     "$ref": "#/$defs/plugin_zoom_limits"
@@ -1229,6 +1791,22 @@
                 }
             }
         },
+        "point_style": {
+            "type": ["string", "boolean"],
+            "enum": [
+                "circle",
+                "cross",
+                "crossRot",
+                "dash",
+                "line",
+                "rect",
+                "rectRounded",
+                "rectRot",
+                "star",
+                "triangle",
+                false
+            ]
+        },
         "scale_options": {
             "type": "object",
             "default": {
@@ -1455,6 +2033,25 @@
                 "time",
                 "timeseries"
             ]
+        },
+        "text_alignment": {
+            "type": "string",
+            "default": "left",
+            "enum": [
+                "left",
+                "center",
+                "right"
+            ]
+        },
+        "text_direction": {
+            "type": "string",
+            "description": "This will force the text direction 'rtl' or 'ltr' on the canvas for rendering the tooltips, regardless of the css specified on the canvas.",
+            "enum": [
+                "rtl",
+                "ltr"
+            ],
+            "default": "rtl",
+            "required": false
         }
     },
     "properties": {
@@ -1481,11 +2078,24 @@
                 "maintainAspectRatio": false,
                 "scales": {},
                 "plugins": {
-                    "autocolors": {
-                        "enabled": false
-                    },
-                    "datalabels": {
-                        "display": false
+                    "annotation": false,
+                    "autocolors": false,
+                    "crosshair": false,
+                    "datalabels": false,
+                    "tooltip": {
+                        "enabled": true,
+                        "position": "average",
+                        "backgroundColor": "#000000cc",
+                        "titleColor": "#ffffff",
+                        "titleAlign": "left",
+                        "bodyColor": "#ffffff",
+                        "bodyAlign": "left",
+                        "footerColor": "#ffffff",
+                        "footerAlign": "left",
+                        "padding": 6,
+                        "displayColors": true,
+                        "borderColor": "#000000",
+                        "borderWidth": 0
                     },
                     "zoom": {
                         "pan": {

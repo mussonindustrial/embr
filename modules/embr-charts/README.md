@@ -2,12 +2,13 @@
 
 An Ignition module that adds a collection of enhanced Perspective charting components.
 
-> [!IMPORTANT]
-> This repo is currently in active development, and breaking changes are to be expected.
-
 ## Getting Started
 1. Download the [latest version] from [releases].
 2. Install the module through the Ignition Gateway web interface.
+
+## Module Documentation
+- `#TODO` [Module documentation][documentation]
+- [Chart.js documentation][Chart.js documentation]
 
 ## Features
 
@@ -15,51 +16,45 @@ An Ignition module that adds a collection of enhanced Perspective charting compo
 
 ![chart-js.png](./docs/examples/chart-js.png)
 
+This module provides a [Chart.js] Perspective component.
+
+Chart.js renders chart elements on an HTML5 canvas unlike several others, mostly D3.js-based, charting libraries that render as SVG. Canvas rendering makes Chart.js very performant, especially for large datasets and complex visualizations that would otherwise require thousands of SVG nodes in the DOM tree.
+
+#### Component Configuration
+
+Details on how to configure the component can be found on the [Chart.js documentation site][Chart.js documentation].
+All configurations properties supported by Chart.js will work on the Perspective component.
+
 #### Plugin Support
 The Chart.js community has developed many addons and plugins. A selection of these addons are bundled with the module.
 
-Details on configuring each plugin are outside the scope of this module's documentation. Please consult the plugin's documentation for complete details.
+Details on configuring each plugin are outside the scope of this module's documentation. Please consult the plugin's own documentation for complete details.
 
-##### Chart Types
-| Name                                                               | Description                                             | Included     |
-|--------------------------------------------------------------------|---------------------------------------------------------|--------------|
-| [boxplot](https://github.com/sgratzl/chartjs-chart-boxplot)        | Adds boxplot and violin plot chart type                 | ✅            |
-| [error-bars](https://github.com/sgratzl/chartjs-chart-error-bars)  | Adds diverse error bar variants of standard chart types | 📋 (planned) |
-| [funnel](https://github.com/sgratzl/chartjs-chart-funnel)          | Adds funnel chart type                                  | 📋 (planned) |
-| [graph](https://github.com/sgratzl/chartjs-chart-graph)            | Adds graph chart types such as a force directed graph   | ✅            |
-| [matrix](https://github.com/kurkle/chartjs-chart-matrix)           | Adds matrix chart type                                  | ✅            |
-| [pcp](https://github.com/sgratzl/chartjs-chart-pcp)                | Adds parallel coordinates plot chart type               | ✅            |
-| [sankey](https://github.com/kurkle/chartjs-chart-sankey)           | Adds sankey diagram chart type                          | ✅            |
-| [stacked100](https://github.com/y-takey/chartjs-plugin-stacked100) | Draws 100% stacked bar chart                            | ✅            |
-| [treemap](https://github.com/kurkle/chartjs-chart-treemap)         | Adds treemap chart type                                 | ✅            |
-| [venn](https://github.com/upsetjs/chartjs-chart-venn)              | Adds venn and euler chart type                          | 📋 (planned) |
-| [word-cloud](https://github.com/sgratzl/chartjs-chart-wordcloud)   | Adds word-cloud chart type                              | 📋 (planned) |
+##### Extra Chart Types
+| Name                                                               | Description                                             | Included/Tested |
+|--------------------------------------------------------------------|---------------------------------------------------------|-----------------|
+| [boxplot](https://github.com/sgratzl/chartjs-chart-boxplot)        | Adds boxplot and violin plot chart type                 | ✅               |
+| [funnel](https://github.com/sgratzl/chartjs-chart-funnel)          | Adds funnel chart type                                  | ✅               |
+| [graph](https://github.com/sgratzl/chartjs-chart-graph)            | Adds graph chart types such as a force directed graph   | ✅               |
+| [matrix](https://github.com/kurkle/chartjs-chart-matrix)           | Adds matrix chart type                                  | ✅               |
+| [pcp](https://github.com/sgratzl/chartjs-chart-pcp)                | Adds parallel coordinates plot chart type               | ✅               |
+| [sankey](https://github.com/kurkle/chartjs-chart-sankey)           | Adds sankey diagram chart type                          | ✅               |
+| [stacked100](https://github.com/y-takey/chartjs-plugin-stacked100) | Draws 100% stacked bar chart                            | ✅               |
+| [treemap](https://github.com/kurkle/chartjs-chart-treemap)         | Adds treemap chart type                                 | ✅               |
+| [venn](https://github.com/upsetjs/chartjs-chart-venn)              | Adds venn and euler chart type                          | ✅               |
+| [word-cloud](https://github.com/sgratzl/chartjs-chart-wordcloud)   | Adds word-cloud chart type                              | ✅               |
 
 ##### Plugins
-###### Styling
 
-| Name                                                              | Description                | Included     |
-|-------------------------------------------------------------------|----------------------------|--------------| 
-| [autocolors](https://github.com/kurkle/chartjs-plugin-autocolors) | Automatic color generation | 📋 (planned) |
-| [gradient](https://github.com/kurkle/chartjs-plugin-gradient)     | Easy gradients             | ✅            |
+| Name                                                                           | Description                                                                 | Included/Tested |
+|--------------------------------------------------------------------------------|-----------------------------------------------------------------------------|-----------------|
+| [annotation](https://github.com/chartjs/chartjs-plugin-annotation)             | Draws lines, boxes, points, labels, polygons and ellipses on the chart area | ✅               |
+| [autocolors](https://github.com/kurkle/chartjs-plugin-autocolors)              | Automatic color generation                                                  | ✅               |
+| [crosshair](https://github.com/abelheinsbroek/chartjs-plugin-crosshair)        | Adds a data crosshair to line and scatter charts                            | ✅               |
+| [datalabels](https://github.com/chartjs/chartjs-plugin-datalabels)             | Displays labels on data for any type of charts                              | ✅               |
+| [hierarchical](https://github.com/sgratzl/chartjs-plugin-hierarchical)         | Adds hierarchical scales that can be collapsed, expanded, and focused       | ✅               |
+| [zoom](https://github.com/chartjs/chartjs-plugin-zoom)                         | Enables zooming and panning on charts                                       | ✅               |
 
-###### Features
-
-| Name                                                                    | Description                                                                 | Included          |
-|-------------------------------------------------------------------------|-----------------------------------------------------------------------------|-------------------|
-| [annotation](https://github.com/chartjs/chartjs-plugin-annotation)      | Draws lines, boxes, points, labels, polygons and ellipses on the chart area | ✅                 |
-| [crosshair](https://github.com/abelheinsbroek/chartjs-plugin-crosshair) | Adds a data crosshair to line and scatter charts                            | ❌                 |
-| [datalabels](https://github.com/chartjs/chartjs-plugin-datalabels)      | Displays labels on data for any type of charts                              | ✅                 |
-| [hierarchical](https://github.com/sgratzl/chartjs-plugin-hierarchical)  | Adds hierarchical scales that can be collapsed, expanded, and focused       | ✅                 |
-| [image-label](https://github.com/yunusemrejs/chartjs-image-label)       | Displays image labels on data for doughnut charts                           | 📋 (planned)      |
-
-##### Interactions
-
-| Name                                                                           | Description                                                   | Included     |
-|--------------------------------------------------------------------------------|---------------------------------------------------------------|--------------|
-| [a11y-legend](https://github.com/julianna-langston/chartjs-plugin-a11y-legend) | Provides keyboard accessibility for chart legends             | 📋 (planned) |
-| [deferred](https://github.com/chartjs/chartjs-plugin-deferred)                 | Defers initial chart update until chart scrolls into viewport | 📋 (planned) |
-| [zoom](https://github.com/chartjs/chartjs-plugin-zoom)                         | Enables zooming and panning on charts                         | ✅            |
 
 #### Scriptable Options
 ##### CSS Custom Property
@@ -111,13 +106,6 @@ See [ChartJs Documentation - Scriptable Options](https://www.chartjs.org/docs/la
   ]
 }
 ```
-
-
-
-## Module Documentation
-- `#TODO` [Complete module documentation][documentation]
-- [Chart.js documentation][Chart.js documentation]
-
 ## Changelog
 
 The [changelog](https://github.com/mussonindustrial/embr/blob/main/modules/embr-chart-js/CHANGELOG.md) is regularly updated to reflect what's changed in each new release.
