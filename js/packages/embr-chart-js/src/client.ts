@@ -2,11 +2,20 @@ import {
     ComponentMeta,
     ComponentRegistry,
 } from '@inductiveautomation/perspective-client'
-import { Chart, registerables } from 'chart.js'
 import 'chartjs-adapter-moment'
+
+import { Chart, registerables } from 'chart.js'
+Chart.register(...registerables)
+
 import AnnotationPlugin from 'chartjs-plugin-annotation'
+Chart.register(AnnotationPlugin)
+
 import ZoomPlugin from 'chartjs-plugin-zoom'
+Chart.register(ZoomPlugin)
+
 import ChartStreaming from '@robloche/chartjs-plugin-streaming'
+Chart.register(ChartStreaming)
+
 import {
     BoxPlotController,
     ViolinController,
@@ -14,6 +23,14 @@ import {
     Violin,
     ViolinChart,
 } from '@sgratzl/chartjs-chart-boxplot'
+Chart.register(
+    BoxPlotController,
+    ViolinController,
+    BoxAndWiskers,
+    Violin,
+    ViolinChart
+)
+
 import {
     ForceDirectedGraphController,
     EdgeLine,
@@ -25,61 +42,68 @@ import {
     GraphChart,
     GraphController,
 } from 'chartjs-chart-graph'
+Chart.register(
+    ForceDirectedGraphController,
+    EdgeLine,
+    DendogramChart,
+    DendogramController,
+    DendrogramChart,
+    DendrogramController,
+    ForceDirectedGraphChart,
+    GraphChart,
+    GraphController
+)
+
 import { MatrixController, MatrixElement } from 'chartjs-chart-matrix'
+Chart.register(MatrixController, MatrixElement)
+
 import {
     LinearAxis,
     LineSegment,
     ParallelCoordinatesController,
     PCPScale,
 } from 'chartjs-chart-pcp'
+Chart.register(LineSegment, ParallelCoordinatesController, PCPScale)
+Chart.registry.addElements(LinearAxis)
+
 import { SankeyController, Flow } from 'chartjs-chart-sankey'
+Chart.register(SankeyController, Flow)
+
 import ChartjsPluginStacked100 from 'chartjs-plugin-stacked100'
-import Gradient from 'chartjs-plugin-gradient'
+Chart.register(ChartjsPluginStacked100)
+
 import { TreemapController, TreemapElement } from 'chartjs-chart-treemap'
+Chart.register(TreemapController, TreemapElement)
+
 import ChartDataLabels from 'chartjs-plugin-datalabels'
+Chart.register(ChartDataLabels)
+
 import { HierarchicalScale } from 'chartjs-plugin-hierarchical'
+Chart.registry.addElements(HierarchicalScale)
+
 import Autocolors from 'chartjs-plugin-autocolors'
+Chart.register(Autocolors)
+
+import { CrosshairPlugin } from 'chartjs-plugin-crosshair'
+Chart.register(CrosshairPlugin)
+
+import { FunnelController, TrapezoidElement } from 'chartjs-chart-funnel'
+Chart.register(FunnelController, TrapezoidElement)
+
+import {
+    VennDiagramController,
+    ArcSlice,
+    EulerDiagramController,
+} from 'chartjs-chart-venn'
+Chart.register(VennDiagramController, ArcSlice, EulerDiagramController)
+
+import { WordCloudController, WordElement } from 'chartjs-chart-wordcloud'
+Chart.register(WordCloudController, WordElement)
+
 import {
     BaseChartComponent,
     BaseChartComponentMeta,
 } from './components/BaseChartComponent'
-
-Chart.register(
-    ...registerables,
-    AnnotationPlugin,
-    Autocolors,
-    BoxPlotController,
-    BoxAndWiskers,
-    ChartDataLabels,
-    ChartStreaming,
-    ChartjsPluginStacked100,
-    DendogramChart,
-    DendogramController,
-    DendrogramChart,
-    DendrogramController,
-    EdgeLine,
-    Flow,
-    ForceDirectedGraphController,
-    ForceDirectedGraphChart,
-    Gradient,
-    GraphChart,
-    GraphController,
-    HierarchicalScale,
-    LinearAxis,
-    LineSegment,
-    MatrixController,
-    MatrixElement,
-    ParallelCoordinatesController,
-    PCPScale,
-    SankeyController,
-    TreemapController,
-    TreemapElement,
-    Violin,
-    ViolinChart,
-    ViolinController,
-    ZoomPlugin
-)
-Chart.registry.addElements(LinearAxis, HierarchicalScale)
 
 export { BaseChartComponent }
 

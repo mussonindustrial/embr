@@ -6,3 +6,4 @@ export {
     type UserScript,
     type UserScriptParams,
 } from './toFunction'
+export { default as transformProps, type PropTransform } from './transformProps'

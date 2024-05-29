@@ -1,2 +1,2 @@
 export * from './iteration'
-export * from './scriptableOptions'
+export * from './propTransforms'
