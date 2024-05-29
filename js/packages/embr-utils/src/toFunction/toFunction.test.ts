@@ -15,6 +15,28 @@ describe('toFunction', () => {
         expect(result).toBe('testResult')
     })
 
+    it('parse a function without parameters but called with parameters', async () => {
+        const result = toFunction(`() => return 'testResult'`)({
+            param1: 'value1',
+            param2: 'value2',
+        })
+        expect(result).toBe('testResult')
+    })
+
+    it('parse a function without parameters and global parameters', async () => {
+        const result = toFunction(`() => return self`, {
+            self: 'selfValue',
+        })()
+        expect(result).toBe('selfValue')
+    })
+
+    it('parse a function without parameters and unused global parameters', async () => {
+        const result = toFunction(`() => return 'test'`, {
+            self: 'selfValue',
+        })()
+        expect(result).toBe('test')
+    })
+
     it('parse a function with multiple parameters', async () => {
         const script = toFunction(
             `(param1, param2, param3) => return param1 + ' ' + param2 + ' ' + param3;`

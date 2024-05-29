@@ -10,27 +10,26 @@ An Ignition module that adds a collection of enhanced Perspective charting compo
 - `#TODO` [Module documentation][documentation]
 - [Chart.js documentation][Chart.js documentation]
 
-## Features
-
-### [Chart.js] Component
+## [Chart.js] Component
 
 ![chart-js.png](./docs/examples/chart-js.png)
 
 This module provides a [Chart.js] Perspective component.
 
-Chart.js renders chart elements on an HTML5 canvas unlike several others, mostly D3.js-based, charting libraries that render as SVG. Canvas rendering makes Chart.js very performant, especially for large datasets and complex visualizations that would otherwise require thousands of SVG nodes in the DOM tree.
+Chart.js renders chart elements on an HTML5 canvas unlike other D3.js-based charting libraries that render as SVG. 
+Canvas rendering makes Chart.js very performant, especially for large datasets and complex visualizations that would otherwise require thousands of SVG nodes in the DOM tree.
 
-#### Component Configuration
+### Component Configuration
 
 Details on how to configure the component can be found on the [Chart.js documentation site][Chart.js documentation].
-All configurations properties supported by Chart.js will work on the Perspective component.
+All configurations supported by Chart.js are supported on the Perspective component.
 
-#### Plugin Support
+### Plugin Support
 The Chart.js community has developed many addons and plugins. A selection of these addons are bundled with the module.
 
 Details on configuring each plugin are outside the scope of this module's documentation. Please consult the plugin's own documentation for complete details.
 
-##### Extra Chart Types
+#### Extra Chart Types
 | Name                                                               | Description                                             | Included/Tested |
 |--------------------------------------------------------------------|---------------------------------------------------------|-----------------|
 | [boxplot](https://github.com/sgratzl/chartjs-chart-boxplot)        | Adds boxplot and violin plot chart type                 | ✅               |
@@ -44,7 +43,7 @@ Details on configuring each plugin are outside the scope of this module's docume
 | [venn](https://github.com/upsetjs/chartjs-chart-venn)              | Adds venn and euler chart type                          | ✅               |
 | [word-cloud](https://github.com/sgratzl/chartjs-chart-wordcloud)   | Adds word-cloud chart type                              | ✅               |
 
-##### Plugins
+#### Plugins
 
 | Name                                                                           | Description                                                                 | Included/Tested |
 |--------------------------------------------------------------------------------|-----------------------------------------------------------------------------|-----------------|
@@ -55,14 +54,13 @@ Details on configuring each plugin are outside the scope of this module's docume
 | [hierarchical](https://github.com/sgratzl/chartjs-plugin-hierarchical)         | Adds hierarchical scales that can be collapsed, expanded, and focused       | ✅               |
 | [zoom](https://github.com/chartjs/chartjs-plugin-zoom)                         | Enables zooming and panning on charts                                       | ✅               |
 
-
-#### Scriptable Options
-##### CSS Custom Property
+---
+### CSS Custom Properties
 Any component property value starting with `var(--` will use the corresponding CSS variable's value at render time.
 
 > **_NOTE:_** The property value is only evaluated during the render. Changing the property value will have no effect until the chart is re-rendered.
 
-###### CSS Custom Property Example
+#### CSS Custom Property Example
 ```js
 // Use var(--my-background-color) custom property
 {
@@ -76,36 +74,45 @@ Any component property value starting with `var(--` will use the corresponding C
 }
 ```
 
+---
+### Scriptable Options
+Chart.js scriptable options are supported.
 
-##### JavaScript Function
-Any component property value beginning with a `<script>` statement will be converted into a JavaScript function.
-> **_NOTE:_** The ending script tag (`</script>`) is optional. 
+Any component property value containing an arrow function `() =>` statement will be converted into a JavaScript function.
+> **_NOTE:_** The converted functions do not support implicit return values. The `return` keyword must be used.
 
-The function has access to two parameters:
-1. `context` - The context object is used to give contextual information when resolving options and currently only applies to scriptable options. The object is preserved, so it can be used to store and pass information between calls.
-    - There are multiple levels of context objects.
-      - `chart -> dataset -> data`
-      - `chart -> scale -> (tick, pointLabel)`
-      - `chart -> toolip`
-    - Each level inherits its parent(s) and any contextual information stored in the parent is available through the child.
-2. `options` - A resolver that can be used to access other options in the same context.
-3. `self` - A reference to the Perspective component props. This allows access to all properties on the Perspective component (i.e. `self.custom.myCustomProperty`).
-
+The function will have access to all parameters listed in the [Chart.js documentation].
 See [ChartJs Documentation - Scriptable Options](https://www.chartjs.org/docs/latest/general/options.html#scriptable-options) for full details.
 
-##### JavaScript Function Example
+#### Global Parameters
+In additional to the parameters provided by Chart.js, several Perspective specific global objects can be accessed in scriptable options.
+This global objects are implicitly available and do not need to be specified as function arguments.
+
+1. `self` 
+      - A reference to the Perspective component props. 
+      - Allows access to all properties on the Perspective component (i.e. `self.custom.myCustomProperty`).
+2. `client` 
+      - A reference to the root Perspective client store. 
+      - Allows access to Perspective client properties (i.e. `client.projectName`).
+
+
+#### Scriptable Option Example
 ```js
-// Conditionally change the background color for a series. 
+// Conditionally change the background color for a series depending on the y value.
+// If the parsed y value is greater than 30 use red; otherwise, use blue.
+// For non-data contexts (i.e. the color used for the legend), use green.
 {
   "datasets": [
     {
       "data": [...],
       "label": "Dataset",
-      "backgroundColor": "<script> return context.dataIndex > 1 ? 'red' : 'blue'"
+      "backgroundColor": "(context) => if (context.type == 'data') return context.parsed.y > 30 ? 'red' : 'blue'; else return 'green'; "
     }
   ]
 }
 ```
+
+---
 ## Changelog
 
 The [changelog](https://github.com/mussonindustrial/embr/blob/main/modules/embr-chart-js/CHANGELOG.md) is regularly updated to reflect what's changed in each new release.

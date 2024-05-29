@@ -5,16 +5,26 @@ export default function toFunction(string: string, globals = {}) {
     const regex = /^\s*\(([^)]*)\)\s*=>\s*(.*)$/
     const match = string.match(regex)
     if (match) {
-        const signature = match[1].split(',').map((param) => param.trim())
+        let signature: string[] = []
+        if (match[1].length > 0) {
+            signature = match[1].split(',').map((param) => param.trim())
+        }
         const body = match[2].trim()
 
         return (params: UserScriptParams = {}) => {
-            params.length === signature.length
-            return Function(
-                ...signature,
-                ...Object.keys(globals),
-                body
-            )(...Object.values(params), ...Object.values(globals))
+            if (signature.length == 0) {
+                return Function(
+                    ...Object.keys(globals),
+                    body
+                )(...Object.values(globals))
+            } else {
+                params.length === signature.length
+                return Function(
+                    ...signature,
+                    ...Object.keys(globals),
+                    body
+                )(...Object.values(params), ...Object.values(globals))
+            }
         }
     }
     return () => {

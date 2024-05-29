@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React, { MutableRefObject, useRef } from 'react'
 import {
     ComponentMeta,
     ComponentProps,
@@ -8,14 +8,9 @@ import {
 } from '@inductiveautomation/perspective-client'
 import { Chart as Chartjs, ChartProps } from 'react-chartjs-2'
 import { Chart } from 'chart.js'
-import { recursiveMap } from '../util/iteration'
-import {
-    ChartScript,
-    ContextScript,
-    asCSSVar,
-    asChartScript,
-    asContextScript,
-} from '../util/scriptableOptions'
+import { getCSSTransform, getScriptTransform } from '../util/propTransforms'
+import { transformProps } from '@mussonindustrial/embr-utils'
+import { unset, cloneDeep } from 'lodash'
 
 export const COMPONENT_TYPE = 'embr.chart.chart-js'
 
@@ -49,49 +44,38 @@ function callUserChartEvent(
     }
 }
 
-const ContextScriptableProps = ['options', 'data', 'plugins'] as const
-const ChartScriptableProps = ['events'] as const
-
 export function BaseChartComponent(
     props: ComponentProps<PerspectiveChartProps>
 ) {
-    const chartRef: React.MutableRefObject<PerspectiveChart | undefined> =
-        React.useRef(undefined)
+    const chartRef: MutableRefObject<PerspectiveChart | undefined> =
+        useRef(undefined)
 
-    const processedProps = props
+    const localProps = cloneDeep(props.props)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const data: any[] = []
 
-    ContextScriptableProps.forEach((key) => {
-        processedProps.props[key] = recursiveMap(
-            processedProps.props[key],
-            (value) => {
-                let v = asContextScript(value, {
-                    self: props,
-                })
-                v = asCSSVar(chartRef.current?.canvas.parentElement, v)
-                return v as ContextScript
-            }
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        ) as any
+    localProps.data.datasets.forEach((dataset) => {
+        data.push(dataset.data)
+        unset(dataset, 'data')
     })
 
-    ChartScriptableProps.forEach((key) => {
-        processedProps.props[key] = recursiveMap(
-            processedProps.props[key],
-            (value) => {
-                return asChartScript(value, { self: props }) as ChartScript
-            }
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        ) as any
+    const transformedProps = transformProps(localProps, [
+        getScriptTransform({ self: props, client: window.__client }),
+        getCSSTransform(chartRef.current?.canvas.parentElement),
+    ]) as PerspectiveChartProps
+
+    data.forEach((data, index) => {
+        transformedProps.data.datasets[index].data = data
     })
 
-    callUserChartEvent(chartRef.current, processedProps.props, 'beforeRender')
+    callUserChartEvent(chartRef.current, transformedProps, 'beforeRender')
 
     return (
         <div {...props.emit()}>
             <Chartjs
-                type={processedProps.props.type}
-                options={processedProps.props.options}
-                data={processedProps.props.data}
+                type={transformedProps.type}
+                options={transformedProps.options}
+                data={transformedProps.data}
                 ref={chartRef}
             />
         </div>

@@ -1,0 +1,38 @@
+import {
+    isFunction,
+    toFunction,
+    readCSSVar,
+    isCSSVar,
+    PropTransform,
+} from '@mussonindustrial/embr-utils'
+
+export function getCSSTransform(
+    element: Element | null | undefined
+): PropTransform<unknown, unknown> {
+    return (prop: unknown) => {
+        if (
+            element !== null &&
+            element !== undefined &&
+            typeof prop === 'string' &&
+            isCSSVar(prop)
+        ) {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            return readCSSVar(element, prop)
+        }
+        return prop
+    }
+}
+
+export function getScriptTransform(
+    extraContext: object = {}
+): PropTransform<unknown, string | CallableFunction> {
+    const transform = (prop: unknown) => {
+        if (typeof prop === 'string' && isFunction(prop)) {
+            return (...args: unknown[]) =>
+                toFunction(prop, extraContext)({ ...args })
+        }
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        return prop as any
+    }
+    return transform
+}
