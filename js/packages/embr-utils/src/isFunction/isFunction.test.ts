@@ -15,6 +15,13 @@ describe('isFunction', () => {
         expect(isFunction('    () => arrow function here          ')).toBe(true)
     })
 
+    it('true if arrow function with new lines', async () => {
+        expect(
+            isFunction(`    () => arrow 
+        function here          `)
+        ).toBe(true)
+    })
+
     it('true if arrow function parameters', async () => {
         expect(
             isFunction(
