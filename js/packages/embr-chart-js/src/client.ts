@@ -13,9 +13,6 @@ Chart.register(AnnotationPlugin)
 import ZoomPlugin from 'chartjs-plugin-zoom'
 Chart.register(ZoomPlugin)
 
-import ChartStreaming from '@robloche/chartjs-plugin-streaming'
-Chart.register(ChartStreaming)
-
 import {
     BoxPlotController,
     ViolinController,
