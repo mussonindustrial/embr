@@ -6,7 +6,6 @@ import { Chart, registerables } from 'chart.js'
 import 'chartjs-adapter-moment'
 import AnnotationPlugin from 'chartjs-plugin-annotation'
 import ZoomPlugin from 'chartjs-plugin-zoom'
-import ChartStreaming from '@robloche/chartjs-plugin-streaming'
 import {
     BoxPlotController,
     ViolinController,
@@ -51,7 +50,6 @@ Chart.register(
     BoxPlotController,
     BoxAndWiskers,
     ChartDataLabels,
-    ChartStreaming,
     ChartjsPluginStacked100,
     DendogramChart,
     DendogramController,
