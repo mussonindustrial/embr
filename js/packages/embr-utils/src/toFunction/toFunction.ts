@@ -11,19 +11,14 @@ export default function toFunction(string: string, globals = {}) {
         }
         const body = match[2].trim()
 
-        return (params: UserScriptParams = {}) => {
-            if (signature.length == 0) {
-                return Function(
-                    ...Object.keys(globals),
-                    body
-                )(...Object.values(globals))
-            } else {
+        if (signature.length == 0) {
+            const f = Function(...Object.keys(globals), body)
+            return () => f(...Object.values(globals))
+        } else {
+            const f = Function(...signature, ...Object.keys(globals), body)
+            return (params: UserScriptParams = {}) => {
                 params.length === signature.length
-                return Function(
-                    ...signature,
-                    ...Object.keys(globals),
-                    body
-                )(...Object.values(params), ...Object.values(globals))
+                return f(...Object.values(params), ...Object.values(globals))
             }
         }
     }
