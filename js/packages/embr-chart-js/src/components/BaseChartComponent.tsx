@@ -76,6 +76,7 @@ export function BaseChartComponent(
                 type={transformedProps.type}
                 options={transformedProps.options}
                 data={transformedProps.data}
+                plugins={transformedProps.plugins}
                 ref={chartRef}
             />
         </div>

@@ -156,7 +156,6 @@
             }
         },
         "chart_event": {
-            "description": "A JavaScript chart event. The `chart` object is provided.",
             "type": "string",
             "default": ""
         },
@@ -168,9 +167,7 @@
                     "$ref": "#/$defs/chart_event"
                 }
             },
-            "default": {
-                "beforeRender": ""
-            }
+            "default": {}
         },
         "chart_options": {
             "type": "object",
@@ -265,7 +262,6 @@
                     "description": "Locale used for number formatting (using `Intl.NumberFormat`).",
                     "type": "string"
                 },
-
                 "onClick": {
                     "description": "Called if the event is of type 'mouseup', 'click' or 'contextmenu' over chartArea. Passed the event, an array of active elements, and the chart.",
                     "$ref": "#/$defs/function"
@@ -277,9 +273,8 @@
                 "plugins": {
                     "default": {},
                     "description": "Chart plugin options.",
-                    "$ref": "#/$defs/plugins"
+                    "$ref": "#/$defs/plugins_options"
                 },
-
                 "scales": {
                     "default": {},
                     "description": "Chart scale options.",
@@ -298,9 +293,11 @@
             }
         },
         "chart_plugins": {
-            "type": "object",
-            "default": {},
-            "$ref": "#/$defs/plugins"
+            "type": "array",
+            "default": [],
+            "items": {
+                "$ref": "#/$defs/plugin"
+            }
         },
         "chart_type": {
             "default": "line",
@@ -839,7 +836,167 @@
         "padding": {
             "type": [ "number", "object" ]
         },
-        "plugins": {
+        "plugin": {
+            "type": "object",
+            "description": "A plugin definition",
+            "required": ["id"],
+            "properties": {
+                "defaults": {
+                    "type": "object",
+                    "description": "Default options used in the plugin."
+                },
+                "events": {
+                    "type": "array",
+                    "description": "The events option defines the browser events that the plugin should listen.",
+                    "items": "string",
+                    "default": [
+                        "mousemove", "mouseout", "click", "touchstart", "touchmove"
+                    ]
+                },
+                "id": {
+                    "type": "string",
+                    "default": "",
+                    "description": "Unique plugin id."
+                },
+                "afterBuildTicks": {
+                    "$ref": "#/$defs/function",
+                    "description": "Called after scale has build its ticks. This hook is called separately for each scale in the chart."
+                },
+                "afterDataLimits": {
+                    "$ref": "#/$defs/function",
+                    "description": "Called after scale data limits are calculated. This hook is called separately for each scale in the chart."
+                },
+                "afterDatasetDraw": {
+                    "$ref": "#/$defs/function",
+                    "description": "Called after the chart datasets at the given args.index have been drawn (datasets are drawn in the reverse order). Note that this hook will not be called if the datasets drawing has been previously cancelled."
+                },
+                "afterDatasetUpdate": {
+                    "$ref": "#/$defs/function",
+                    "description": "Called after the chart datasets at the given args.index has been updated. Note that this hook will not be called if the datasets update has been previously cancelled."
+                },
+                "afterDatasetsDraw": {
+                    "$ref": "#/$defs/function",
+                    "description": "Called after the chart datasets have been drawn. Note that this hook will not be called if the datasets drawing has been previously cancelled."
+                },
+                "afterDatasetsUpdate": {
+                    "$ref": "#/$defs/function",
+                    "description": "Called after the chart datasets have been updated. Note that this hook will not be called if the datasets update has been previously cancelled."
+                },
+                "afterDestroy": {
+                    "$ref": "#/$defs/function",
+                    "description": "Called after the chart has been destroyed."
+                },
+                "afterDraw": {
+                    "$ref": "#/$defs/function",
+                    "description": "Called after the chart has been drawn. Note that this hook will not be called if the drawing has been previously cancelled."
+                },
+                "afterEvent": {
+                    "$ref": "#/$defs/function",
+                    "description": "Called after the event has been consumed. Note that this hook will not be called if the event has been previously discarded."
+                },
+                "afterInit": {
+                    "$ref": "#/$defs/function",
+                    "description": "Called after chart has been initialized and before the first update."
+                },
+                "afterLayout": {
+                    "$ref": "#/$defs/function",
+                    "description": "Called after the chart has been laid out. Note that this hook will not be called if the layout update has been previously cancelled."
+                },
+                "afterRender": {
+                    "$ref": "#/$defs/function",
+                    "description": "Called after the chart has been fully rendered (and animation completed). Note that this hook will not be called if the rendering has been previously cancelled."
+                },
+                "afterTooltipDraw": {
+                    "$ref": "#/$defs/function",
+                    "description": "Called after drawing the tooltip. Note that this hook will not be called if the tooltip drawing has been previously cancelled."
+                },
+                "afterUpdate": {
+                    "$ref": "#/$defs/function",
+                    "description": "Called after chart has been updated and before rendering. Note that this hook will not be called if the chart update has been previously cancelled."
+                },
+                "beforeBuildTicks": {
+                    "$ref": "#/$defs/function",
+                    "description": "Called before scale builds its ticks. This hook is called separately for each scale in the chart."
+                },
+                "beforeDataLimits": {
+                    "$ref": "#/$defs/function",
+                    "description": "Called before scale data limits are calculated. This hook is called separately for each scale in the chart."
+                },
+                "beforeDatasetDraw": {
+                    "$ref": "#/$defs/function",
+                    "description": "Called before drawing the chart dataset at the given args.index (datasets are drawn in the reverse order). If any plugin returns false, the datasets drawing is cancelled until another render is triggered."
+                },
+                "beforeDatasetUpdate": {
+                    "$ref": "#/$defs/function",
+                    "description": "Called before updating the chart dataset at the given args.index. If any plugin returns false, the datasets update is cancelled until another update is triggered."
+                },
+                "beforeDatasetsDraw": {
+                    "$ref": "#/$defs/function",
+                    "description": "Called before drawing the chart datasets. If any plugin returns false, the datasets drawing is cancelled until another render is triggered."
+                },
+                "beforeDestroy": {
+                    "$ref": "#/$defs/function",
+                    "description": "Called before the chart is being destroyed."
+                },
+                "beforeDraw": {
+                    "$ref": "#/$defs/function",
+                    "description": "Called before drawing chart at every animation frame. If any plugin returns false, the frame drawing is cancelled untilanother render is triggered."
+                },
+                "beforeElementsUpdate": {
+                    "$ref": "#/$defs/function",
+                    "description": "Called during the update process, before any chart elements have been created. This can be used for data decimation by changing the data array inside a dataset."
+                },
+                "beforeEvent": {
+                    "$ref": "#/$defs/function",
+                    "description": "Called before processing the specified event. If any plugin returns false, the event will be discarded."
+                },
+                "beforeInit": {
+                    "$ref": "#/$defs/function",
+                    "description": "Called before initializing chart."
+                },
+                "beforeLayout": {
+                    "$ref": "#/$defs/function",
+                    "description": "Called before laying out chart. If any plugin returns false, the layout update is cancelled until another update is triggered."
+                },
+                "beforeRender": {
+                    "$ref": "#/$defs/function",
+                    "description": "Called before rendering chart. If any plugin returns false, the rendering is cancelled until another render is triggered."
+                },
+                "beforeTooltipDraw": {
+                    "$ref": "#/$defs/function",
+                    "description": "Called before drawing the tooltip. If any plugin returns false, the tooltip drawing is cancelled until another render is triggered."
+                },
+                "beforeUpdate": {
+                    "$ref": "#/$defs/function",
+                    "description": "Called before updating chart. If any plugin returns false, the update is cancelled (and thus subsequent render(s)) until another update is triggered."
+                },
+                "install": {
+                    "$ref": "#/$defs/function",
+                    "description": "Called when plugin is installed for this chart instance. This hook is also invoked for disabled plugins (options === false)."
+                },
+                "reset": {
+                    "$ref": "#/$defs/function",
+                    "description": "Called during chart reset"
+                },
+                "resize": {
+                    "$ref": "#/$defs/function",
+                    "description": "Called after the chart as been resized."
+                },
+                "start": {
+                    "$ref": "#/$defs/function",
+                    "description": "Called when a plugin is starting. This happens when chart is created or plugin is enabled."
+                },
+                "stop": {
+                    "$ref": "#/$defs/function",
+                    "description": "Called when a plugin stopping. This happens when chart is destroyed or plugin is disabled."
+                },
+                "uninstall": {
+                    "$ref": "#/$defs/function",
+                    "description": "Called after chart is destroyed on all plugins that were installed for that chart. This hook is also invoked for disabled plugins (options === false)."
+                }
+            }
+        },
+        "plugins_options": {
             "type": "object",
             "properties": {
                 "annotation": {
@@ -920,9 +1077,9 @@
             "type": ["object", "boolean"],
             "default": {
                 "enabled": false,
-                "threshold": 50,
+                "threshold": 1,
                 "algorithm": "lttb",
-                "samples": 100
+                "samples": 2000
             },
             "properties": {
                 "enabled": {
@@ -931,7 +1088,8 @@
                 },
                 "threshold": {
                     "description": "Decimation threshold.",
-                    "type": "number"
+                    "type": "number",
+                    "required": false
                 },
                 "algorithm": {
                     "description": "Decimation algorithm.",
@@ -940,10 +1098,11 @@
                 },
                 "samples": {
                     "description": "Decimation samples.",
-                    "type": "number"
+                    "type": "number",
+                    "required": false
                 }
             },
-            "required": [ "enabled", "threshold", "algorithm", "samples" ]
+            "required": [ "enabled", "algorithm" ]
         },
         "plugin_filler": {
             "type": ["object", "boolean"],
@@ -2124,11 +2283,12 @@
             "$ref": "#/$defs/chart_options"
         },
         "events": {
-            "default": {
-                "beforeRender": ""
-            },
             "description": "JavaScript chart events. The `chart` object is provided.",
             "$ref": "#/$defs/chart_events"
+        },
+        "plugins": {
+            "description": "Manually registered plugins.",
+            "$ref": "#/$defs/chart_plugins"
         },
         "style": {
             "$ref": "urn:ignition-schema:schemas/style-properties.schema.json",
