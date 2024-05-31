@@ -262,6 +262,11 @@
                     "description": "Locale used for number formatting (using `Intl.NumberFormat`).",
                     "type": "string"
                 },
+                "normalized": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Chart.js is fastest if you provide data with indices that are unique, sorted, and consistent across datasets and provide the normalized: true option to let Chart.js know that you have done so."
+                },
                 "onClick": {
                     "description": "Called if the event is of type 'mouseup', 'click' or 'contextmenu' over chartArea. Passed the event, an array of active elements, and the chart.",
                     "$ref": "#/$defs/function"
@@ -270,8 +275,12 @@
                     "description": "Called when any of the events fire over chartArea. Passed the event, an array of active elements (bars, points, etc), and the chart.",
                     "$ref": "#/$defs/function"
                 },
+                "parsing": {
+                    "type": ["boolean", "object"],
+                    "default": false,
+                    "description": "How to parse the dataset. The parsing can be disabled by specifying parsing: false at chart options or dataset. If parsing is disabled, data must be sorted and in the formats the associated chart type and scales use internally."
+                },
                 "plugins": {
-                    "default": {},
                     "description": "Chart plugin options.",
                     "$ref": "#/$defs/plugins_options"
                 },
@@ -363,13 +372,6 @@
         },
         "dataset": {
             "type": "object",
-            "default": {
-                "data": [],
-                "label": "Dataset",
-                "parsing": true,
-                "normalized": false,
-                "hidden": false
-            },
             "properties": {
                 "data": {
                     "type": "array",
@@ -382,12 +384,11 @@
                 },
                 "label": {
                     "type": "string",
-                    "default": "Label",
+                    "default": "Dataset",
                     "description": "The label for the dataset which appears in the legend and tooltips."
                 },
                 "clip": {
                     "type": ["number", "object"],
-                    "default": 0,
                     "description": "How to clip relative to chartArea. Positive value allows overflow, negative value clips that many pixels inside chartArea. 0 = clip at chartArea. Clipping can also be configured per side: `clip: {left: 5, top: false, right: -2, bottom: 0}`"
                 },
                 "order": {
@@ -400,12 +401,10 @@
                 },
                 "parsing": {
                     "type": ["boolean", "object"],
-                    "default": false,
                     "description": "How to parse the dataset. The parsing can be disabled by specifying parsing: false at chart options or dataset. If parsing is disabled, data must be sorted and in the formats the associated chart type and scales use internally."
                 },
                 "normalized": {
                     "type": "boolean",
-                    "default": false,
                     "description": "Chart.js is fastest if you provide data with indices that are unique, sorted, and consistent across datasets and provide the normalized: true option to let Chart.js know that you have done so."
                 },
                 "hidden": {
@@ -1075,25 +1074,22 @@
         },
         "plugin_decimation": {
             "type": ["object", "boolean"],
-            "default": {
-                "enabled": false,
-                "threshold": 1,
-                "algorithm": "lttb",
-                "samples": 2000
-            },
             "properties": {
                 "enabled": {
                     "description": "Enable the decimation plugin.",
-                    "type": "boolean"
+                    "type": "boolean",
+                    "default": true
                 },
                 "threshold": {
                     "description": "Decimation threshold.",
                     "type": "number",
+                    "default": 1,
                     "required": false
                 },
                 "algorithm": {
                     "description": "Decimation algorithm.",
                     "type": "string",
+                    "default": "lttb",
                     "enum": [ "lttb", "min-max" ]
                 },
                 "samples": {
@@ -1292,7 +1288,7 @@
             "type": ["object", "boolean"],
             "default": {
                 "align": "center",
-                "display": true,
+                "display": false,
                 "position": "top",
                 "text": "Title"
             },
@@ -2220,65 +2216,10 @@
             "$ref": "#/$defs/chart_type"
         },
         "data": {
-            "default": {
-                "datasets": [
-                    {
-                        "data": [],
-                        "label": "Dataset 1"
-                    }
-                ]
-            },
             "description": "Chart data.",
             "$ref": "#/$defs/chart_data"
         },
         "options": {
-            "default": {
-                "responsive": true,
-                "maintainAspectRatio": false,
-                "scales": {},
-                "plugins": {
-                    "annotation": false,
-                    "autocolors": false,
-                    "crosshair": false,
-                    "datalabels": false,
-                    "tooltip": {
-                        "enabled": true,
-                        "position": "average",
-                        "backgroundColor": "#000000cc",
-                        "titleColor": "#ffffff",
-                        "titleAlign": "left",
-                        "bodyColor": "#ffffff",
-                        "bodyAlign": "left",
-                        "footerColor": "#ffffff",
-                        "footerAlign": "left",
-                        "padding": 6,
-                        "displayColors": true,
-                        "borderColor": "#000000",
-                        "borderWidth": 0
-                    },
-                    "zoom": {
-                        "pan": {
-                            "enabled": true,
-                            "mode": "x",
-                            "modifierKey": "ctrl"
-                        },
-                        "zoom": {
-                            "mode": "x",
-                            "drag": {
-                                "enabled": true,
-                                "modifierKey": "ctrl"
-                            },
-                            "pinch": {
-                                "enabled": true
-                            },
-                            "wheel": {
-                                "enabled": true,
-                                "modifierKey": "ctrl"
-                            }
-                        }
-                    }
-                }
-            },
             "description": "Chart options.",
             "$ref": "#/$defs/chart_options"
         },
