@@ -108,6 +108,21 @@ describe('toFunction', () => {
         expect(result).toBe(750)
     })
 
+    it('should parse a function with a new line', async () => {
+        const script = toFunction(
+            `         (p) => 
+                const result = p.nested1 + p.nested2;
+                return result;      `
+        )
+        const result = script({
+            p: {
+                nested1: 400,
+                nested2: 350,
+            },
+        })
+        expect(result).toBe(750)
+    })
+
     it('should run a function called with global parameters', async () => {
         const script = toFunction(
             `         ( self, test1 ) => return self.nested1 + ' ' + test1 + ' ' + extra.parameter;      `,

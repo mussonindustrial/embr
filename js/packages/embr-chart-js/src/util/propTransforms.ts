@@ -28,8 +28,8 @@ export function getScriptTransform(
 ): PropTransform<unknown, string | CallableFunction> {
     const transform = (prop: unknown) => {
         if (typeof prop === 'string' && isFunction(prop)) {
-            return (...args: unknown[]) =>
-                toFunction(prop, extraContext)({ ...args })
+            const f = toFunction(prop, extraContext)
+            return (...args: unknown[]) => f({ ...args })
         }
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         return prop as any
