@@ -39,6 +39,10 @@ cd embr
 ./gradlew build
 ```
 
+## Sponsors
+Maintenance of this project is made possible by all the [contributors] and [sponsors]. 
+If you'd like to sponsor this project and have your avatar or company logo appear below [click here](https://github.com/sponsors/mussonindustrial). 💖
+
 
 
 ## Links
@@ -48,4 +52,6 @@ cd embr
 -   [Inductive Automation](https://inductiveautomation.com/)
 
 [embr]: https://github.com/mussonindustrial/embr
+[contributors]: https://github.com/JamesIves/github-pages-deploy-action/graphs/contributors
+[sponsors]: https://github.com/sponsors/mussonindustrial
 [chartjs]: https://www.chartjs.org/
