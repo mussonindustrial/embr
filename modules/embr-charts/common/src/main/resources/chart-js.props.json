@@ -30,14 +30,8 @@
                 }
             }
         },
-        "animations": {
+        "animation_configuration": {
             "type": "object",
-            "default": {
-                "properties": [],
-                "type": "color",
-                "from": null,
-                "to": null
-            },
             "properties": {
                 "properties": {
                     "type": "array",
@@ -67,6 +61,32 @@
                     "default": null,
                     "description": "End value for the animation. Updated value is used when undefined."
                 }
+            }
+        },
+        "animations": {
+            "type": "object",
+            "default": {
+                "numbers": {
+                    "properties": ["x", "y", "borderWidth", "radius", "tension"],
+                    "type": "number"
+                },
+                "colors": {
+                    "properties": [
+                        "color", "borderColor", "backgroundColor"
+                    ],
+                    "type": "color"
+                }
+            },
+            "properties": {
+                "numbers": {
+                    "$ref": "#/$defs/animation_configuration"
+                },
+                "colors": {
+                    "$ref": "#/$defs/animation_configuration"
+                }
+            },
+            "additionalProperties": {
+                "$ref": "#/$defs/animation_configuration"
             }
         },
         "area_fill": {
@@ -236,11 +256,6 @@
                     "description": "Base border color",
                     "$ref": "#/$defs/color"
                 },
-                "datasets": {
-                    "default": {},
-                    "description": "Chart dataset options.",
-                    "$ref": "#/$defs/dataset_options"
-                },
                 "devicePixelRatio": {
                     "description": "Override the window's default devicePixelRatio.",
                     "type": "number"
@@ -277,7 +292,7 @@
                 },
                 "parsing": {
                     "type": ["boolean", "object"],
-                    "default": false,
+                    "default": true,
                     "description": "How to parse the dataset. The parsing can be disabled by specifying parsing: false at chart options or dataset. If parsing is disabled, data must be sorted and in the formats the associated chart type and scales use internally."
                 },
                 "plugins": {
@@ -337,42 +352,66 @@
             ],
             "type": "string"
         },
+        "clip": {
+            "description": "How to clip relative to chartArea. Positive value allows overflow, negative value clips that many pixels inside chartArea. 0 = clip at chartArea. Clipping can also be configured per side: `clip: {left: 5, top: false, right: -2, bottom: 0}`",
+            "type": ["number", "boolean", "object"],
+            "$ref":  "#/$defs/chart_area"
+        },
         "color": {
             "type": ["string", "null"],
             "format": "color"
         },
-        "dataset_options": {
-            "type": "object",
-            "properties": {
-                "bar": {
-                    "$ref": "#/$defs/dataset_options_bar"
-                },
-                "bubble": {
-                    "$ref": "#/$defs/dataset_options_bubble"
-                },
-                "doughnut": {
-                    "$ref": "#/$defs/dataset_options_doughnut"
-                },
-                "line": {
-                    "$ref": "#/$defs/dataset_options_line"
-                },
-                "pie": {
-                    "$ref": "#/$defs/dataset_options_pie"
-                },
-                "polarArea": {
-                    "$ref": "#/$defs/dataset_options_polarArea"
-                },
-                "radar": {
-                    "$ref": "#/$defs/dataset_options_radar"
-                },
-                "scatter": {
-                    "$ref": "#/$defs/dataset_options_scatter"
-                }
-            }
-        },
         "dataset": {
             "type": "object",
             "properties": {
+                "animation": {
+                    "description": "Dataset animation options.",
+                    "$ref": "#/$defs/animation"
+                },
+                "animations": {
+                    "description": "Animations options configures which element properties are animated and how.",
+                    "type": "object",
+                    "$ref": "#/$defs/animations"
+                },
+                "backgroundColor": {
+                    "description": "Line fill color.",
+                    "$ref": "#/$defs/color"
+                },
+                "borderWidth": {
+                    "type": "number",
+                    "description": "Line stroke width."
+                },
+                "borderColor": {
+                    "description": "Line stroke color.",
+                    "$ref": "#/$defs/color"
+                },
+                "borderCapStyle": {
+                    "description": "Line cap style.",
+                    "$ref": "#/$defs/line_cap"
+                },
+                "borderDash": {
+                    "description": "Line cap style.",
+                    "$ref": "#/$defs/line_dash"
+                },
+                "borderDashOffset": {
+                    "type": "number",
+                    "description": "Line dash offset."
+                },
+                "borderJoinStyle": {
+                    "description": "Line join style.",
+                    "$ref": "#/$defs/line_join"
+                },
+                "capBezierPoints": {
+                    "type": "boolean",
+                    "description": "`true` to keep Bézier control inside the chart, `false` for no restriction."
+                },
+                "clip": {
+                    "$ref":  "#/$defs/clip"
+                },
+                "cubicInterpolationMode": {
+                    "description": "Line join style.",
+                    "$ref": "#/$defs/interpolation_cubic_mode"
+                },
                 "data": {
                     "type": "array",
                     "default": [],
@@ -382,35 +421,105 @@
                         "$ref": "#/$defs/dataset_data"
                     }
                 },
-                "label": {
-                    "type": "string",
-                    "default": "Dataset",
-                    "description": "The label for the dataset which appears in the legend and tooltips."
-                },
-                "clip": {
-                    "type": ["number", "object"],
-                    "description": "How to clip relative to chartArea. Positive value allows overflow, negative value clips that many pixels inside chartArea. 0 = clip at chartArea. Clipping can also be configured per side: `clip: {left: 5, top: false, right: -2, bottom: 0}`"
-                },
-                "order": {
-                    "type": "number",
-                    "description": "The drawing order of dataset. Also affects order for stacking, tooltip and legend."
-                },
-                "stack": {
-                    "type": "string",
-                    "description": "The ID of the group to which this dataset belongs to (when stacked, each group will be a separate stack). Defaults to dataset type."
-                },
-                "parsing": {
-                    "type": ["boolean", "object"],
-                    "description": "How to parse the dataset. The parsing can be disabled by specifying parsing: false at chart options or dataset. If parsing is disabled, data must be sorted and in the formats the associated chart type and scales use internally."
-                },
-                "normalized": {
-                    "type": "boolean",
-                    "description": "Chart.js is fastest if you provide data with indices that are unique, sorted, and consistent across datasets and provide the normalized: true option to let Chart.js know that you have done so."
+                "fill": {
+                    "description": "How to fill the area under the line.",
+                    "$ref": "#/$defs/area_fill"
                 },
                 "hidden": {
                     "type": "boolean",
                     "default": false,
                     "description": "Configure the visibility of the dataset. Using hidden: true will hide the dataset from being rendered in the Chart."
+                },
+                "indexAxis": {
+                    "description": "The base axis of the dataset. 'x' for vertical charts and 'y' for horizontal charts.",
+                    "$ref": "#/$defs/axis"
+                },
+                "label": {
+                    "type": "string",
+                    "default": "Dataset",
+                    "description": "The label for the dataset which appears in the legend and tooltips."
+                },
+                "normalized": {
+                    "type": "boolean",
+                    "description": "Chart.js is fastest if you provide data with indices that are unique, sorted, and consistent across datasets and provide the normalized: true option to let Chart.js know that you have done so."
+                },
+                "order": {
+                    "type": "number",
+                    "description": "The drawing order of dataset. Also affects order for stacking, tooltip and legend."
+                },
+                "parsing": {
+                    "type": ["boolean", "object"],
+                    "description": "How to parse the dataset. The parsing can be disabled by specifying parsing: false at chart options or dataset. If parsing is disabled, data must be sorted and in the formats the associated chart type and scales use internally."
+                },
+                "pointBackgroundColor": {
+                    "description": "Point fill color.",
+                    "$ref": "#/$defs/color"
+                },
+                "pointBorderColor": {
+                    "description": "Point stroke color.",
+                    "$ref": "#/$defs/color"
+                },
+                "pointBorderWidth": {
+                    "type": "number",
+                    "description": "Point stroke width."
+                },
+                "pointHitRadius": {
+                    "type": "number",
+                    "description": "Extra radius added to point radius for hit detection."
+                },
+                "pointHoverBorderWidth": {
+                    "type": "number",
+                    "description": "Point stroke width when hovered."
+                },
+                "pointHoverRadius": {
+                    "type": "number",
+                    "description": "Point radius when hovered"
+                },
+                "pointRadius": {
+                    "type": "number",
+                    "description": "Point radius."
+                },
+                "pointRotation": {
+                    "type": "number",
+                    "description": "Point rotation (in degrees)."
+                },
+                "pointStyle": {
+                    "$ref": "#/$defs/point_style",
+                    "default": "circle",
+                    "description": "Point style."
+                },
+                "segment": {
+                    "type": "object"
+                },
+                "showLine": {
+                    "type": "boolean"
+                },
+                "spanGaps": {
+                    "type": ["number", "boolean"],
+                    "description": "If true, lines will be drawn between points with no or null data. If false, points with NaN data will create a break in the line. Can also be a number specifying the maximum gap length to span. The unit of the value depends on the scale used."
+                },
+                "stack": {
+                    "type": "string",
+                    "description": "The ID of the group to which this dataset belongs to (when stacked, each group will be a separate stack). Defaults to dataset type."
+                },
+                "stepped": {
+                    "type": "boolean",
+                    "description": "true to show the line as a stepped line (tension will be ignored)."
+                },
+                "tension": {
+                    "type": "number",
+                    "description": "Bézier curve tension (0 for no Bézier curves)."
+                },
+                "type": {
+                    "$ref": "#/$defs/chart_type"
+                },
+                "xAxisID": {
+                    "type": "string",
+                    "description": "The ID of the x axis to plot this dataset on."
+                },
+                "yAxisID": {
+                    "type": "string",
+                    "description": "The ID of the y axis to plot this dataset on."
                 }
             }
         },
@@ -593,11 +702,7 @@
             "description": "Line elements are used to represent the line in a line chart.",
             "default": {},
             "properties": {
-                "tension": {
-                    "type": "number",
-                    "default": 0,
-                    "description": "Bézier curve tension (0 for no Bézier curves)."
-                },
+
                 "backgroundColor": {
                     "description": "Line fill color.",
                     "$ref": "#/$defs/color"
@@ -650,6 +755,11 @@
                     "type": "boolean",
                     "description": "`true` to show the line as a stepped line (`tension` will be ignored).",
                     "default": false
+                },
+                "tension": {
+                    "type": "number",
+                    "default": 0,
+                    "description": "Bézier curve tension (0 for no Bézier curves)."
                 }
             }
         },
@@ -677,14 +787,14 @@
                     "description": "Point fill color.",
                     "$ref": "#/$defs/color"
                 },
+                "borderColor": {
+                    "description": "Point stroke color.",
+                    "$ref": "#/$defs/color"
+                },
                 "borderWidth": {
                     "type": "number",
                     "default": 1,
                     "description": "Point stroke width."
-                },
-                "borderColor": {
-                    "description": "Point stroke color.",
-                    "$ref": "#/$defs/color"
                 },
                 "hitRadius": {
                     "type": "number",
