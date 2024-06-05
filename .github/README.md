@@ -24,9 +24,10 @@
  ## Directory
 <div align="center">
   
-| Module                                          | Description                                                                            | Release Notes                                                                                                                           |
-|-------------------------------------------------|----------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------|
-| [embr-charts](../modules/embr-charts/README.md) | An Ignition module that adds a collection of enhanced Perspective charting components. | [![version](https://img.shields.io/github/v/release/mussonindustrial/embr?filter=*charts*&label=%20)](modules/embr-charts/CHANGELOG.md) |
+| Module                                                  | Description                                                                            | Release Notes                                                                                                                                   |
+|---------------------------------------------------------|----------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------|
+| [embr-charts](../modules/embr-charts/README.md)         | A collection of enhanced Perspective charting components.                              | [![version](https://img.shields.io/github/v/release/mussonindustrial/embr?filter=*charts*&label=%20)](modules/embr-charts/CHANGELOG.md)         |
+| [embr-tag-stream](../modules/embr-tag-stream/README.md) | 	Provides an API for high-speed streaming of tag changes via SSE (server-sent events). | [![version](https://img.shields.io/github/v/release/mussonindustrial/embr?filter=*tag-stream*&label=%20)](modules/embr-tag-stream/CHANGELOG.md) |
 
 </div>
 
