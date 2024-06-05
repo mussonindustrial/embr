@@ -22,7 +22,7 @@ function subscribe() {
 	})
 	console.log(requestBody)
 
-	fetch("http://localhost:8088/main/system/subscribe", {
+	fetch("/embr-tag-stream/subscribe", {
 		method: "POST",
 		mode: "cors",
 		body: requestBody
@@ -30,7 +30,7 @@ function subscribe() {
 	.then(json => {
 		console.log(json)
 		const url = json.url
-		eventSource = new EventSource(url);
+		eventSource = new EventSource(`/embr-tag-stream/stream/${json.id}`);
 		eventSource.onmessage = (e) => {
 			const content = document.createElement('div');
 			content.textContent = e.data;
@@ -38,7 +38,8 @@ function subscribe() {
 		}
 		eventSource.addEventListener(tagPath, (e) => {
 			var s = document.getElementById("values");
-			s.value = e.data;
+			var obj = JSON.parse(e.data)
+			s.value = JSON.stringify(obj);
 		})
 		eventSource.onopen = function (e) {
 			console.log('Opened');

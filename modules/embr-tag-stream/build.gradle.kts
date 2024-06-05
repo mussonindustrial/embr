@@ -13,9 +13,8 @@ allprojects {
 ignitionModule {
     name.set("Embr Tag Stream")
     moduleDescription.set("Provides an API for streaming tag changes via SSE.")
-    id.set("com.mussonindustrial.embr.sse")
+    id.set("com.mussonindustrial.embr.tagstream")
     fileName.set("Embr-TagStream-module.modl")
-    moduleVersion.set("${project.version}.${buildTime()}")
     freeModule.set(true)
     requiredIgnitionVersion.set(libs.versions.ignition)
 
@@ -27,7 +26,7 @@ ignitionModule {
     )
         hooks.putAll(
         mapOf(
-            "com.mussonindustrial.ignition.embr.sse.GatewayHook" to "G"
+            "com.mussonindustrial.ignition.embr.tagstream.TagStreamGatewayHook" to "G"
         ),
     )
 }
