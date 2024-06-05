@@ -1,7 +1,7 @@
-package com.mussonindustrial.ignition.perspective.example
+package com.mussonindustrial.ignition.embr.sse
 
 import com.inductiveautomation.perspective.common.api.BrowserResource
-import com.mussonindustrial.ignition.perspective.example.Meta.URL_ALIAS
+import com.mussonindustrial.ignition.embr.sse.Meta.URL_ALIAS
 
 object Components {
     const val COMPONENT_CATEGORY = "Embr"
