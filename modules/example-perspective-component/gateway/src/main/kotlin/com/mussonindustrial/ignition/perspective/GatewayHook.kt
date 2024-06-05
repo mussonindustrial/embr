@@ -1,4 +1,4 @@
-package com.mussonindustrial.ignition.perspective.example
+package com.mussonindustrial.ignition.perspective
 
 import com.inductiveautomation.ignition.common.licensing.LicenseState
 import com.inductiveautomation.ignition.gateway.model.AbstractGatewayModuleHook
@@ -6,8 +6,8 @@ import com.inductiveautomation.ignition.gateway.model.GatewayContext
 import com.inductiveautomation.perspective.common.api.ComponentRegistry
 import com.inductiveautomation.perspective.gateway.api.ComponentModelDelegateRegistry
 import com.inductiveautomation.perspective.gateway.api.PerspectiveContext
-import com.mussonindustrial.ignition.perspective.example.Meta.URL_ALIAS
-import com.mussonindustrial.ignition.perspective.example.component.display.ExampleComponent
+import com.mussonindustrial.ignition.embr.sse.Meta.URL_ALIAS
+import com.mussonindustrial.ignition.embr.sse.component.display.ExampleComponent
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.util.*

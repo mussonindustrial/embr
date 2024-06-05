@@ -1,4 +1,4 @@
-package com.mussonindustrial.ignition.perspective.example
+package com.mussonindustrial.ignition.embr.sse
 
 object Meta {
     const val MODULE_ID = "com.mussonindustrial.embr.example"
