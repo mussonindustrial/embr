@@ -4,7 +4,7 @@ kotlin = "2.0.0"
 kotest = "5.9.0"
 ignition = "8.1.38"
 ia-gson = "2.10.1"
-jetty = "10.0.21"
+jetty = "11.0.21"
 
 [plugins]
 kotlin = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
