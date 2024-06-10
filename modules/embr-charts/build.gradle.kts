@@ -9,6 +9,7 @@ ignitionModule {
     fileName.set("Embr-Charts-module.modl")
     freeModule.set(true)
     requiredIgnitionVersion.set(libs.versions.ignition)
+    license.set("license.html")
 
     projectScopes.putAll(
         mapOf(
