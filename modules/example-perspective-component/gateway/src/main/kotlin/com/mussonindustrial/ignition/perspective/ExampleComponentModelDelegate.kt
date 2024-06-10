@@ -1,4 +1,4 @@
-package com.mussonindustrial.ignition.perspective.example;
+package com.mussonindustrial.ignition.perspective;
 
 import com.inductiveautomation.perspective.gateway.api.Component
 import com.inductiveautomation.perspective.gateway.api.ComponentModelDelegate;

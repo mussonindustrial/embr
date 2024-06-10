@@ -6,6 +6,7 @@ import com.inductiveautomation.ignition.gateway.model.GatewayContext
 import com.inductiveautomation.perspective.common.api.ComponentRegistry
 import com.inductiveautomation.perspective.gateway.api.ComponentModelDelegateRegistry
 import com.inductiveautomation.perspective.gateway.api.PerspectiveContext
+
 import com.mussonindustrial.ignition.embr.charts.Meta.SHORT_MODULE_ID
 import com.mussonindustrial.ignition.embr.charts.component.chart.ChartJs
 import org.slf4j.Logger

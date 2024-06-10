@@ -1,4 +1,4 @@
-package com.mussonindustrial.ignition.perspective.example
+package com.mussonindustrial.ignition.perspective
 
 import com.inductiveautomation.ignition.common.licensing.LicenseState
 import com.inductiveautomation.ignition.designer.model.AbstractDesignerModuleHook
@@ -6,7 +6,7 @@ import com.inductiveautomation.ignition.designer.model.DesignerContext
 import com.inductiveautomation.perspective.designer.DesignerComponentRegistry
 import com.inductiveautomation.perspective.designer.api.ComponentDesignDelegateRegistry
 import com.inductiveautomation.perspective.designer.api.PerspectiveDesignerInterface
-import com.mussonindustrial.ignition.perspective.example.component.display.ExampleComponent
+import com.mussonindustrial.ignition.embr.sse.component.display.ExampleComponent
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
