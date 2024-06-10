@@ -84,9 +84,6 @@
                 "colors": {
                     "$ref": "#/$defs/animation_configuration"
                 }
-            },
-            "additionalProperties": {
-                "$ref": "#/$defs/animation_configuration"
             }
         },
         "area_fill": {
@@ -192,25 +189,6 @@
         "chart_options": {
             "type": "object",
             "properties": {
-                "indexAxis": {
-                    "description": "The base axis of the chart. 'x' for vertical charts and 'y' for horizontal charts.",
-                    "$ref": "#/$defs/axis"
-                },
-                "maintainAspectRatio": {
-                    "default": false,
-                    "description": "Maintain the original canvas aspect ratio (width / height) when resizing.",
-                    "type": "boolean"
-                },
-                "resizeDelay": {
-                    "default": 0,
-                    "description": "Delay the resize update by give amount of milliseconds. This can ease the resize process by debouncing update of the elements.",
-                    "type": "number"
-                },
-                "responsive": {
-                    "default": true,
-                    "description": "Resizes the chart canvas when its container does.",
-                    "type": "boolean"
-                },
                 "animation": {
                     "description": "Chart animation options.",
                     "$ref": "#/$defs/animation"
@@ -236,6 +214,14 @@
                     "description": "Canvas aspect ratio (i.e. width / height, a value of 1 representing a square canvas). Note that this option is ignored if the height is explicitly defined either as attribute or via the style.",
                     "type": "number"
                 },
+                "backgroundColor": {
+                    "description": "Base background color",
+                    "$ref": "#/$defs/color"
+                },
+                "borderColor": {
+                    "description": "Base border color",
+                    "$ref": "#/$defs/color"
+                },
                 "clip": {
                     "description": "How to clip relative to chartArea. Positive value allows overflow, negative value clips that many pixels inside chartArea. 0 = clip at chartArea. Clipping can also be configured per side: `clip: {left: 5, top: false, right: -2, bottom: 0}`",
                     "anyOf": [
@@ -248,14 +234,6 @@
                     "description": "Base color",
                     "$ref": "#/$defs/color"
                 },
-                "backgroundColor": {
-                    "description": "Base background color",
-                    "$ref": "#/$defs/color"
-                },
-                "borderColor": {
-                    "description": "Base border color",
-                    "$ref": "#/$defs/color"
-                },
                 "devicePixelRatio": {
                     "description": "Override the window's default devicePixelRatio.",
                     "type": "number"
@@ -263,9 +241,19 @@
                 "elements": {
                     "$ref": "#/$defs/elements"
                 },
+                "events": {
+                    "type": "array",
+                    "items": "string",
+                    "description": "The events option defines the browser events that the chart should listen to for tooltips and hovering.",
+                    "default": ["mousemove", "mouseout", "click", "touchstart", "touchmove"]
+                },
                 "font": {
                     "description": "Base font",
                     "$ref": "#/$defs/font"
+                },
+                "indexAxis": {
+                    "description": "The base axis of the chart. 'x' for vertical charts and 'y' for horizontal charts.",
+                    "$ref": "#/$defs/axis"
                 },
                 "interaction": {
                     "$ref": "#/$defs/interaction"
@@ -276,6 +264,11 @@
                 "locale": {
                     "description": "Locale used for number formatting (using `Intl.NumberFormat`).",
                     "type": "string"
+                },
+                "maintainAspectRatio": {
+                    "default": false,
+                    "description": "Maintain the original canvas aspect ratio (width / height) when resizing.",
+                    "type": "boolean"
                 },
                 "normalized": {
                     "type": "boolean",
@@ -290,6 +283,10 @@
                     "description": "Called when any of the events fire over chartArea. Passed the event, an array of active elements (bars, points, etc), and the chart.",
                     "$ref": "#/$defs/function"
                 },
+                "onResize": {
+                    "description": "Called when a resize occurs. Gets passed two arguments: the chart instance and the new size.",
+                    "$ref": "#/$defs/function"
+                },
                 "parsing": {
                     "type": ["boolean", "object"],
                     "default": true,
@@ -298,6 +295,16 @@
                 "plugins": {
                     "description": "Chart plugin options.",
                     "$ref": "#/$defs/plugins_options"
+                },
+                "resizeDelay": {
+                    "default": 0,
+                    "description": "Delay the resize update by give amount of milliseconds. This can ease the resize process by debouncing update of the elements.",
+                    "type": "number"
+                },
+                "responsive": {
+                    "default": true,
+                    "description": "Resizes the chart canvas when its container does.",
+                    "type": "boolean"
                 },
                 "scales": {
                     "default": {},
@@ -313,6 +320,17 @@
                             "$ref": "#/$defs/scale_options"
                         }
                     }
+                },
+                "showLine": {
+                    "type": "boolean",
+                    "description": "If false, the lines between points are not drawn."
+                },
+                "spanGaps": {
+                    "type": "boolean",
+                    "description": "If true, lines will be drawn between points with no or null data. If false, points with NaN data will create a break in the line. Can also be a number specifying the maximum gap length to span. The unit of the value depends on the scale used."
+                },
+                "transitions": {
+                    "$ref": "#/$defs/transitions"
                 }
             }
         },
@@ -1156,7 +1174,29 @@
         },
         "plugin_autocolors": {
             "type": ["object", "boolean"],
-            "default": false
+            "default": false,
+            "properties": {
+                "customize": {
+                    "$ref": "#/$defs/function"
+                },
+                "enabled": {
+                    "type": "boolean"
+                },
+                "mode": {
+                    "type": "string",
+                    "enum": [
+                        "data",
+                        "dataset",
+                        "label"
+                    ]
+                },
+                "offset": {
+                    "type": "number"
+                },
+                "repeat": {
+                    "type": "number"
+                }
+            }
         },
         "plugin_colors": {
             "type": ["object", "boolean"],
@@ -2317,6 +2357,75 @@
             ],
             "default": "rtl",
             "required": false
+        },
+        "transitions": {
+            "type": "object",
+            "description": "The core transitions are 'active', 'hide', 'reset', 'resize', 'show'. A custom transition can be used by passing a custom mode to update. Transition extends the main animation configuration and animations configuration.",
+            "properties": {
+                "active": {
+                    "$ref": "#/$defs/transition_mode",
+                    "default": {
+                        "animation": {
+                            "duration": 400
+                        }
+                    }
+                },
+                "hide": {
+                    "$ref": "#/$defs/transition_mode",
+                    "default": {
+                        "animations": {
+                            "colors": {
+                                "type": "color",
+                                "properties": [ "borderColor", "backgroundColor" ],
+                                "from": "transparent"
+                            },
+                            "visible": {
+                                "type": "boolean",
+                                "duration": "easeInExpo"
+                            }
+                        }
+                    }
+                },
+                "reset": {
+                    "$ref": "#/$defs/transition_mode",
+                    "default": {}
+                },
+                "resize": {
+                    "$ref": "#/$defs/transition_mode",
+                    "default": {
+                        "animation": {
+                            "duration": 400
+                        }
+                    }
+                },
+                "show": {
+                    "$ref": "#/$defs/transition_mode",
+                    "default": {
+                        "animations": {
+                            "colors": {
+                                "type": "color",
+                                "properties": [ "borderColor", "backgroundColor" ],
+                                "from": "transparent"
+                            },
+                            "visible": {
+                                "type": "boolean",
+                                "duration": 0
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "transition_mode": {
+            "type": "object",
+            "properties": {
+                "animation": {
+                    "$ref": "#/$defs/animation"
+                },
+                "animations": {
+                    "$ref": "#/$defs/animations"
+                }
+            }
         }
     },
     "properties": {
