@@ -1,1 +1,1 @@
-export * from './BaseChartComponent'
+export * from './ChartjsComponent'

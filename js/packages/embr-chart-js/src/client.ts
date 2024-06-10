@@ -98,11 +98,11 @@ import { WordCloudController, WordElement } from 'chartjs-chart-wordcloud'
 Chart.register(WordCloudController, WordElement)
 
 import {
-    BaseChartComponent,
-    BaseChartComponentMeta,
-} from './components/BaseChartComponent'
+    ChartjsComponent,
+    ChartjsComponentMeta,
+} from './components/ChartjsComponent'
 
-export { BaseChartComponent }
+export { ChartjsComponent as BaseChartComponent }
 
-const components: Array<ComponentMeta> = [new BaseChartComponentMeta()]
+const components: Array<ComponentMeta> = [new ChartjsComponentMeta()]
 components.forEach((c: ComponentMeta) => ComponentRegistry.register(c))
