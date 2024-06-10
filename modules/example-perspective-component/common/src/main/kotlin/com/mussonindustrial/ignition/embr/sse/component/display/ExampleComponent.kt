@@ -1,11 +1,11 @@
-package com.mussonindustrial.ignition.perspective.example.component.display
+package com.mussonindustrial.ignition.embr.sse.component.display
 
 import com.inductiveautomation.ignition.common.jsonschema.JsonSchema
 import com.inductiveautomation.perspective.common.api.ComponentDescriptorImpl
 import com.inductiveautomation.perspective.common.api.ComponentDescriptor
-import com.mussonindustrial.ignition.perspective.example.Components
-import com.mussonindustrial.ignition.perspective.example.Components.COMPONENT_CATEGORY
-import com.mussonindustrial.ignition.perspective.example.Meta.MODULE_ID
+import com.mussonindustrial.ignition.embr.sse.Components
+import com.mussonindustrial.ignition.embr.sse.Components.COMPONENT_CATEGORY
+import com.mussonindustrial.ignition.embr.sse.Meta.MODULE_ID
 
 class ExampleComponent {
     companion object {

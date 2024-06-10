@@ -2,9 +2,6 @@
 name: 'Publish releases'
 on: 
   workflow_dispatch:
-  push:
-    tags:
-    - '*'
 
 env:
   JAVA_VERSION: 21

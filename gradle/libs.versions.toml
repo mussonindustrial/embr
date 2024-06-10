@@ -4,6 +4,7 @@ kotlin = "2.0.0"
 kotest = "5.9.0"
 ignition = "8.1.38"
 ia-gson = "2.10.1"
+jetty = "10.0.21"
 
 [plugins]
 kotlin = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
@@ -14,6 +15,9 @@ axion-release = { id = "pl.allegro.tech.build.axion-release", version = "1.17.2"
 [libraries]
 kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 kotlin-stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib", version.ref = "kotlin"}
+jetty-server = { group = "org.eclipse.jetty", name = "jetty-server", version.ref = "jetty" }
+jetty-servlet = { group = "org.eclipse.jetty", name = "jetty-servlet", version.ref = "jetty" }
+jetty-servlets = { group = "org.eclipse.jetty", name = "jetty-servlets", version.ref = "jetty" }
 ignition-common = { group = "com.inductiveautomation.ignitionsdk", name = "ignition-common", version.ref = "ignition" }
 ignition-gson = { group = "com.inductiveautomation.ignition", name = "ia-gson", version.ref = "ia-gson"}
 ignition-gateway-api = { group = "com.inductiveautomation.ignitionsdk", name = "gateway-api", version.ref = "ignition" }
