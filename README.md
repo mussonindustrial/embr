@@ -53,6 +53,6 @@ If you'd like to sponsor this project and have your avatar or company logo appea
 -   [Inductive Automation](https://inductiveautomation.com/)
 
 [embr]: https://github.com/mussonindustrial/embr
-[contributors]: https://github.com/JamesIves/github-pages-deploy-action/graphs/contributors
+[contributors]: https://github.com/mussonindustrial/embr/graphs/contributors
 [sponsors]: https://github.com/sponsors/mussonindustrial
 [chartjs]: https://www.chartjs.org/
