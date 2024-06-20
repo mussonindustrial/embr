@@ -4,7 +4,7 @@ An Ignition module that provides an API for high-speed streaming of tag changes 
 
 Server-Sent Events (SSE) is a server push technology enabling a client to receive automatic updates from a server via an HTTP connection.
 The EventSource API is standardized as part of HTML Living Standard by the WHATWG.
-The media type for SSE is text/event-stream.
+The media type for SSE is `text/event-stream`.
 
 All modern browsers support server-sent events: Firefox 6+, Google Chrome 6+, Opera 11.5+, Safari 5+, Microsoft Edge 79+.
 
@@ -17,25 +17,31 @@ All modern browsers support server-sent events: Firefox 6+, Google Chrome 6+, Op
 
 ## Gateway API
 
-* [Create a TagStream](#Create-a-TagStream) : `POST /embr-tag-stream/subscribe`
-* [Subscribe to a TagStream](#Subscribe-to-a-TagStream) : `GET /embr-tag-stream/stream/{id}`
+* [Create a TagStream Session](#Create-a-TagStream) : `POST /embr/tag/stream/session`
+* [Subscribe to a TagStream Session](#Subscribe-to-a-TagStream) : `GET /embr/tag/stream/session/{session_id}`
 
 ---
-### Create a TagStream
+### Create a TagStream Session
 
-Create a TagStream containing the specified tags.
+Creates a TagStream session containing the specified tags.
+The returned `session_id` is used to access the stream.
 
-| Item   | Value                        |
-|--------|------------------------------|
-| URL    | `/embr-tag-stream/subscribe` |
-| Method | `POST`                       |
-| Body   | `{ tags: [] }`               |
-| Auth   | None                         |
+As a security measure, the `session_id` is time-limited and single use.
+If the session is not accessed within 30 seconds after creation, a time-out occurs and the session is discarded.
+Only a single client may access a given `session_id`.
+
+
+| Item   | Value                      |
+|--------|----------------------------|
+| URL    | `/embr/tag/stream/session` |
+| Method | `POST`                     |
+| Body   | `{ tagPaths: [] }`         |
+| Auth   | None                       |
 
 #### Body Example
 ```json
 {
-  "tags": [
+  "tagPaths": [
     "[default]Tag1",
     "[default]Path/Tag1"
   ]
@@ -46,28 +52,43 @@ Create a TagStream containing the specified tags.
 
 **Code** : `200 OK`
 
-The response is a `JSON` object containing the `id` of the stream.
-This `id` is used to subscribe to the stream.
+The response is a `JSON` object containing the `session_id` of the stream and details of the tags included in the session.
+
+Each tag is given a numeric `id` in order to compress the event source message size.
+The [EventSource] data messages will use this `id` when sending tag change information.
 
 ```json
 {
-    "id": "e61c7dd-5f4b-38a2-8067-3e77483fabce"
+  "status": "success",
+  "data": {
+    "session_id": "e61c7dd-5f4b-38a2-8067-3e77483fabce",
+    "tags": {
+      "[default]Tag1": {
+        "id": 0,
+        "path": "[default]Tag1"
+      },
+      "[default]Path/Tag1": {
+        "id": 1,
+        "path": "[default]Path/Tag1"
+      }
+    }
+  }
 }
 ```
 
 ---
-### Subscribe to a TagStream
+### Subscribe to a TagStream Session
 
-Subscribe to a TagStream by its `id`.
+Subscribe to a TagStream by its `session_id`.
 This endpoint is meant to be accessed by an [EventSource].
 For more details, see [Mozilla's MDN WebDocs](https://developer.mozilla.org/en-US/docs/Web/API/EventSource).
 
-| Item   | Value                          |
-|--------|--------------------------------|
-| URL    | `/embr-tag-stream/stream/{id}` |
-| Method | `GET`                          |
-| Params | `id`: TagStream id             |
-| Auth   | None                           |
+| Item   | Value                                   |
+|--------|-----------------------------------------|
+| URL    | `/embr/tag/stream/session/{session_id}` |
+| Method | `GET`                                   |
+| Params | `session_id`: TagStream session id      |
+| Auth   | None                                    |
 
 #### Success Response
 
@@ -75,9 +96,9 @@ For more details, see [Mozilla's MDN WebDocs](https://developer.mozilla.org/en-U
 
 Messages events have the following format:
 
-```json
-event: [default]Path/Tag1
-data: {"value":"Tag Value!","quality": 192,"timestamp":1717624491517}
+```
+event: id=0
+data: {"v":"Tag Value!","q": 192,"t":1717624491517}
 ```
 
 

@@ -12,18 +12,19 @@ class TagStreamServlet: EventSourceServlet() {
     private val tagStreamManager = TagStreamGatewayHook.context.tagStreamManager
 
     override fun newEventSource(request: HttpServletRequest): EventSource? {
-        logger.debug("EventSource request received at URL: {}", request.requestURI)
+        logger.trace("TagStreamServlet request received at URL: {}", request.requestURI)
 
-        val id = request.requestURI.toString().split("/").last()
-        logger.trace("TagStream ID parsed as {}.", id)
+        val path = request.requestURI.substring(request.contextPath.length)
+        val id = path.split("/").last()
+        logger.trace("Session ID parsed as {}.", id)
 
-        val stream = tagStreamManager.getStream(id)
-        stream?.let {
-            logger.trace("Existing TagStream {} was found. Initializing session.", id)
-            return TagEventSource(it)
+        val session = tagStreamManager.joinSession(id)
+        session?.let {
+            logger.trace("Session {} was found. Joining session.", id)
+            return it
         }
 
-        logger.warn("Request received for an invalid TagStream ID.")
+        logger.warn("Request received for an invalid Session ID.")
         return null
     }
 }

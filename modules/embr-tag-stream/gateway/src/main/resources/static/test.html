@@ -18,11 +18,11 @@ function subscribe() {
 
 	const tagPath = document.getElementById("tagPath").value;
 	const requestBody = JSON.stringify({
-		"tags": [tagPath.toString()]
+		"tagPaths": [tagPath.toString()]
 	})
 	console.log(requestBody)
 
-	fetch("/embr-tag-stream/subscribe", {
+	fetch("/embr/tag/stream/session", {
 		method: "POST",
 		mode: "cors",
 		body: requestBody
@@ -30,13 +30,13 @@ function subscribe() {
 	.then(json => {
 		console.log(json)
 		const url = json.url
-		eventSource = new EventSource(`/embr-tag-stream/stream/${json.id}`);
+		eventSource = new EventSource(`/embr/tag/stream/session/${json.data.session_id}`);
 		eventSource.onmessage = (e) => {
 			const content = document.createElement('div');
 			content.textContent = e.data;
 			document.body.append(content);
 		}
-		eventSource.addEventListener(tagPath, (e) => {
+		eventSource.addEventListener(`id=${json.data.tags[tagPath.toString()].id}`, (e) => {
 			var s = document.getElementById("values");
 			var obj = JSON.parse(e.data)
 			s.value = JSON.stringify(obj);
