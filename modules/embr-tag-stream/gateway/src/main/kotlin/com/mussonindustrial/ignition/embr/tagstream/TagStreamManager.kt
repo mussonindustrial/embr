@@ -11,16 +11,19 @@ import com.inductiveautomation.ignition.common.tags.model.event.TagChangeEvent
 import com.inductiveautomation.ignition.common.tags.model.event.TagChangeListener
 import com.inductiveautomation.ignition.common.tags.paths.parser.TagPathParser
 import com.mussonindustrial.ignition.embr.tagstream.alarming.SimpleAlarmListener
+import org.eclipse.jetty.io.EofException
 import org.eclipse.jetty.servlets.EventSource
 import java.util.*
 import java.util.concurrent.TimeUnit
+import java.util.concurrent.atomic.AtomicBoolean
 
 class TagStreamManager(context: TagStreamGatewayContext) {
 
+    private val logger = this.getLogger()
     private val executionManager = context.executionManager
     private val tagManager = context.tagManager
     private val alarmManager = context.alarmManager
-    private val metricsProvider = context.tagStreamMetricsProvider
+    private val systemTags = context.tagStreamSystemTagsProvider
     private val unconnectedSessions = hashMapOf<String, Session>()
     private val connectedSessions = hashMapOf<String, Session>()
 
@@ -40,27 +43,29 @@ class TagStreamManager(context: TagStreamGatewayContext) {
         return stream
     }
 
-    fun removeSession(id: String) {
-        unconnectedSessions.remove(id)
-        connectedSessions.remove(id)
+    fun removeSession(session: Session) {
+        unconnectedSessions.remove(session.id)
+        connectedSessions.remove(session.id)?.close()
         updateMetrics()
     }
 
-    fun closeAllStreams() {
-        connectedSessions.values.forEach { it.close() }
+    fun closeAllSessions() {
+        logger.debug("Closing all sessions.")
         unconnectedSessions.clear()
+        connectedSessions.values.forEach { it.close() }
         connectedSessions.clear()
         updateMetrics()
     }
 
     private fun updateMetrics() {
-        metricsProvider.setUnconnectedSessionCount(unconnectedSessions.size)
-        metricsProvider.setConnectedSessionCount(connectedSessions.size)
+        systemTags.sessionCountConnected = connectedSessions.size
+        systemTags.sessionCountUnconnected = unconnectedSessions.size
     }
 
     inner class Session(paths: List<String>): EventSource {
         private val logger = this.getLogger()
         val id = UUID.randomUUID().toString()
+        private var opened = AtomicBoolean(false)
 
         private val tagPaths = paths.map { TagPathParser.parse(it) }
         private val tagIds = tagPaths.withIndex().associate { it.value to it.index}
@@ -71,68 +76,94 @@ class TagStreamManager(context: TagStreamGatewayContext) {
 
         private val doTimeout = executionManager.executeOnce({
             logger.warn("Session {} timed out before a connection was established.", id)
-            removeSession(id) }, 30, TimeUnit.SECONDS)
+            removeSession(this) }, 30, TimeUnit.SECONDS)
 
-        fun asGson(): JsonObject {
-            val json = JsonObject()
+        val sessionInfo = JsonObject().let { json ->
             json.addProperty("session_id", id)
 
             val tags = JsonArray()
-            this.tagListeners.forEach {
+            this.tagListeners.forEach { listener ->
                 val tag = JsonObject()
-                tag.addProperty("tag_path", it.tagPath.toString())
-                tag.addProperty("alarm_path", it.alarmPath.toString())
-                tag.addProperty("tag_id", it.id)
+                tag.addProperty("tag_path", listener.tagPath.toString())
+                tag.addProperty("alarm_path", listener.alarmPath.toString())
+                tag.addProperty("tag_id", id)
                 tags.add(tag)
             }
             json.add("tags", tags)
-            return json
+            return@let json
         }
 
         override fun onOpen(emitter: EventSource.Emitter) {
-            logger.debug("New event source opened.")
+            logger.debug("Opening session {}", id)
             logger.trace("Connected Sessions: ${connectedSessions.size}")
             doTimeout.cancel(true)
+            opened.set(true)
 
             this.emitter = emitter
-            emitter.event("session_open", asGson().toString())
+            emitter.event("session_open", sessionInfo.toString())
 
-            tagManager.subscribeAsync(tagPaths, tagListeners)
-            tagListeners.forEach { alarmManager.addListener(it.alarmPath, it) }
+            tagListeners.forEach { it.subscribe() }
         }
 
         override fun onClose() {
-            logger.debug("Closing EventSource Session {}.", id)
-            close()
+            if (opened.getAndSet(false)) {
+                logger.debug("Client initiated session close: {}", id)
+                doTimeout.cancel(true)
+                emitter = null
+                tagListeners.forEach { it.unsubscribe() }
+                removeSession(this)
+            }
         }
 
         fun close() {
-            logger.debug("Closing Session {}.", id)
-            doTimeout.cancel(true)
-            tagManager.unsubscribeAsync(tagPaths, tagListeners)
-            tagListeners.forEach { alarmManager.removeListener(it.alarmPath, it) }
-
-            try {
+            if (opened.getAndSet(false)) {
+                logger.debug("Server initiated session close: {}", id)
+                doTimeout.cancel(true)
                 emitter?.close()
-            } catch (e: Throwable) {
-                logger.warn("Error closing Session ${id}.", e)
+                emitter = null
+                tagListeners.forEach { it.unsubscribe() }
+                removeSession(this)
             }
 
-            removeSession(this.id)
         }
 
-
         inner class TagListener(val id: Int, val tagPath: TagPath): TagChangeListener, SimpleAlarmListener {
-
             val alarmPath: QualifiedPath = QualifiedPath.Builder()
                 .setProvider(tagPath.source)
                 .setTag(tagPath.toStringPartial())
                 .build()
-            override fun tagChanged(event: TagChangeEvent) {
-                logger.trace("alarmEvent: {}", event)
+            private var subscribed = AtomicBoolean(false)
 
+            private fun closeOnException(runnable: () -> Unit) {
                 try {
-                    logger.trace("Notifying session of tag change event for {}.", tagPath)
+                    runnable()
+                } catch (e: EofException) {
+                    logger.debug("session ${this@Session.id}, connection dropped.", e)
+                    close()
+                } catch (e: Throwable) {
+                    logger.warn("Error occurred during session ${this@Session.id}.", e)
+                    close()
+                }
+            }
+
+            fun subscribe() {
+                logger.trace("session: {}, subscribing to {} events.", this@Session.id, tagPath)
+                subscribed.set(true)
+                tagManager.subscribeAsync(tagPath, this)
+                alarmManager.addListener(alarmPath, this)
+            }
+
+            fun unsubscribe() {
+                if (subscribed.getAndSet(false)) {
+                    logger.trace("session: {}, unsubscribing from: {}", this@Session.id, tagPath)
+                    tagManager.unsubscribeAsync(tagPath, this)
+                    alarmManager.removeListener(alarmPath, this)
+                }
+            }
+
+            override fun tagChanged(event: TagChangeEvent) {
+                logger.trace("session: {}, tagChanged: {}", this@Session.id, event)
+                closeOnException {
                     val data = tagGson.toJsonTree(event.value)
                     (data as JsonObject).let {
                         it.addProperty("tag_id", id)
@@ -141,26 +172,22 @@ class TagStreamManager(context: TagStreamGatewayContext) {
                         it.add("q", it.remove("quality"))
                     }
                     emitter?.event("tag_change", data.toString())
-                } catch (e: org.eclipse.jetty.io.EofException) {
-                    logger.debug("Session $id was closed remotely.", e)
-                    close()
-                } catch (e: Throwable) {
-                    logger.warn("Error during Session ${id}. Dropping bad session.", e)
-                    close()
                 }
             }
 
             override fun onAlarmEvent(event: AlarmEvent) {
-                logger.trace("alarmEvent: {}", event)
+                logger.trace("session: {}, alarmEvent: {}", this@Session.id, event)
 
-                try {
-                    logger.trace("Notifying session of alarm event for {}.", tagPath)
+                closeOnException {
                     val data = JsonObject()
                     data.let {
                         it.addProperty("tag_id", id)
                         it.addProperty("count", event.count)
                         it.addProperty("displayPath", event.displayPath.toString())
-                        it.addProperty("eventData", event.ackData ?: event.activeData ?: event.clearedData ?: EventData())
+                        it.addProperty(
+                            "eventData",
+                            event.ackData ?: event.activeData ?: event.clearedData ?: EventData()
+                        )
                         it.addProperty("extension", event.extension)
                         it.addProperty("id", event.id.toString())
                         it.addProperty("isAcked", event.isAcked)
@@ -173,15 +200,8 @@ class TagStreamManager(context: TagStreamGatewayContext) {
                         it.addProperty("source", event.source.toString())
                         it.addProperty("state", event.state.toString())
                         it.addProperty("values", event.values)
-
                     }
                     emitter?.event("alarm_event", data.toString())
-                } catch (e: org.eclipse.jetty.io.EofException) {
-                    logger.debug("Session $id was closed remotely.", e)
-                    close()
-                } catch (e: Throwable) {
-                    logger.warn("Error during Session ${id}. Dropping bad session.", e)
-                    close()
                 }
             }
         }

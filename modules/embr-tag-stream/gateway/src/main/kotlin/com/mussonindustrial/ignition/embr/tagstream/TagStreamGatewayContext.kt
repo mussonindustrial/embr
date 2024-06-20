@@ -6,7 +6,7 @@ import com.mussonindustrial.ignition.embr.tagstream.servlets.ModuleServletManage
 import org.eclipse.jetty.server.Server
 
 data class TagStreamGatewayContext(val context: GatewayContext): GatewayContext by context {
-    val tagStreamMetricsProvider = TagStreamMetricsProvider(context.tagManager)
+    val tagStreamSystemTagsProvider = TagStreamSystemTagsProvider(context.tagManager)
     val tagStreamManager = TagStreamManager(this)
     val servletManager = ModuleServletManager(context.webResourceManager, Meta.URL_ALIAS)
 }

@@ -4,15 +4,15 @@ import com.inductiveautomation.ignition.common.model.values.QualityCode
 import com.inductiveautomation.ignition.common.sqltags.model.types.DataType
 import com.inductiveautomation.ignition.gateway.tags.model.GatewayTagManager
 
-class TagStreamMetricsProvider(private val tagManager: GatewayTagManager)  {
+class TagStreamSystemTagsProvider(private val tagManager: GatewayTagManager)  {
     companion object {
-        private const val PATH_UNCONNECTED_SESSION_COUNT = "Gateway/TagStream/Sessions/Unconnected"
-        private const val PATH_SESSION_COUNT = "Gateway/TagStream/Sessions/Connected"
+        private const val PATH_SESSION_COUNT_UNCONNECTED = "Gateway/TagStream/Sessions/Unconnected"
+        private const val PATH_SESSION_COUNT_CONNECTED = "Gateway/TagStream/Sessions/Connected"
     }
     init {
         clearNamespace()
-        createAndInitialize(PATH_UNCONNECTED_SESSION_COUNT, DataType.Int8, 0)
-        createAndInitialize(PATH_SESSION_COUNT, DataType.Int8, 0)
+        createAndInitialize(PATH_SESSION_COUNT_UNCONNECTED, DataType.Int8, 0)
+        createAndInitialize(PATH_SESSION_COUNT_CONNECTED, DataType.Int8, 0)
     }
 
     private fun clearNamespace() {
@@ -27,7 +27,15 @@ class TagStreamMetricsProvider(private val tagManager: GatewayTagManager)  {
         tagManager.systemTags.updateValue(path, value, QualityCode.Good)
     }
 
-    fun setUnconnectedSessionCount(sessionCount: Int) = setValue(PATH_UNCONNECTED_SESSION_COUNT, sessionCount)
-    fun setConnectedSessionCount(sessionCount: Int) = setValue(PATH_SESSION_COUNT, sessionCount)
+    var sessionCountConnected: Int = 0
+        set(value) {
+            setValue(PATH_SESSION_COUNT_CONNECTED, value)
+            field = value
+        }
 
+    var sessionCountUnconnected: Int = 0
+        set(value) {
+            setValue(PATH_SESSION_COUNT_UNCONNECTED, value)
+            field = value
+        }
 }

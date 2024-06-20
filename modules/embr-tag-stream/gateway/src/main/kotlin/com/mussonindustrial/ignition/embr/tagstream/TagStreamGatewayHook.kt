@@ -33,8 +33,8 @@ class TagStreamGatewayHook : AbstractGatewayModuleHook() {
 
     override fun shutdown() {
         logger.info("Shutting down Embr Tag Stream module.")
+        context.tagStreamManager.closeAllSessions()
         context.servletManager.removeAllServlets()
-        context.tagStreamManager.closeAllStreams()
     }
 
     override fun getMountedResourceFolder(): Optional<String> {

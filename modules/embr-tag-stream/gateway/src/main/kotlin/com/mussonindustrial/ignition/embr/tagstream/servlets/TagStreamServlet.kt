@@ -7,7 +7,6 @@ import org.eclipse.jetty.servlets.EventSource
 import javax.servlet.http.HttpServletRequest
 
 class TagStreamServlet: EventSourceServlet() {
-
     private val logger = this.getLogger()
     private val tagStreamManager = TagStreamGatewayHook.context.tagStreamManager
 
