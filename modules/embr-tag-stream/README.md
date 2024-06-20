@@ -1,11 +1,8 @@
 # Embr Tag Stream Module [<img src="https://cdn.mussonindustrial.com/files/public/images/emblem.svg" alt="Musson Industrial Logo" width="90" height="40" align="right">][embr]
 
-An Ignition module that provides an API for high-speed streaming of tag changes via SSE (server-sent events).
+An Ignition module that provides an API for high-speed streaming of tag changes and alarm events via SSE (server-sent events).
 
 Server-Sent Events (SSE) is a server push technology enabling a client to receive automatic updates from a server via an HTTP connection.
-The EventSource API is standardized as part of HTML Living Standard by the WHATWG.
-The media type for SSE is `text/event-stream`.
-
 All modern browsers support server-sent events: Firefox 6+, Google Chrome 6+, Opera 11.5+, Safari 5+, Microsoft Edge 79+.
 
 ## Getting Started
@@ -43,7 +40,7 @@ Only a single client may access a given `session_id`.
 {
   "tagPaths": [
     "[default]Tag1",
-    "[default]Path/Tag1"
+    "[default]Path/Tag2"
   ]
 }
 ```
@@ -54,24 +51,26 @@ Only a single client may access a given `session_id`.
 
 The response is a `JSON` object containing the `session_id` of the stream and details of the tags included in the session.
 
-Each tag is given a numeric `id` in order to compress the event source message size.
-The [EventSource] data messages will use this `id` when sending tag change information.
+Each tag is given a numeric `tag_id` in order to compress the event source message size.
+The [EventSource] messages will use this `tag_id` when sending tag change information.
 
 ```json
 {
   "status": "success",
   "data": {
-    "session_id": "e61c7dd-5f4b-38a2-8067-3e77483fabce",
-    "tags": {
-      "[default]Tag1": {
-        "id": 0,
-        "path": "[default]Tag1"
+    "session_id": "8c1a5b02-df33-4a2e-ad6f-101f76ab3d06",
+    "tags": [
+      {
+        "tag_path": "[default]Tag1",
+        "alarm_path": "prov:default:/tag:Tag1",
+        "tag_id": 0
       },
-      "[default]Path/Tag1": {
-        "id": 1,
-        "path": "[default]Path/Tag1"
+      {
+        "tag_path": "[default]Path/Tag2",
+        "alarm_path": "prov:default:/tag:Path/Tag2",
+        "tag_id": 1
       }
-    }
+    ]
   }
 }
 ```
@@ -97,8 +96,11 @@ For more details, see [Mozilla's MDN WebDocs](https://developer.mozilla.org/en-U
 Messages events have the following format:
 
 ```
-event: id=0
-data: {"v":"Tag Value!","q": 192,"t":1717624491517}
+event: tag_change
+data: {"tag_id":0,"v":"Tag Value!","q": 192,"t":1717624491517}
+
+event: alarm_event
+data: {"tag_id":0,"count":1,"displayPath":"","eventData":{"eventValue":"false","name":"AlarmName","eventTime":"Thu Jun 20 13:17:37 EDT 2024","priority":"Critical","displayPath":""},"extension":{"isShelved":"false"},"id":"454d77c5-44f8-4e52-ab3c-e1ed5c950583","isAcked":false,"isCleared":false,"isShelved":false,"label":"AlarmName","name":"AlarmName","notes":"","priority":"Critical","source":"prov:default:/tag:Tag1:/alm:AlarmName","state":"Active, Unacknowledged","values":[{"isShelved":"false"}]}
 ```
 
 

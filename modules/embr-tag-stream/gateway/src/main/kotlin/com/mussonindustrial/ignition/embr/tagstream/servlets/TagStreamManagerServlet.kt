@@ -65,9 +65,6 @@ class TagStreamManagerServlet: HttpServlet() {
         val session = tagStreamManager.createSession(paths)
         logger.trace("Session {} created.", session.id)
 
-        val data = JsonObject()
-        data.addProperty("session_id", session.id)
-        data.add("tags", session.getTagsJson())
-        response.sendSuccess(data)
+        response.sendSuccess(session.asGson())
     }
 }

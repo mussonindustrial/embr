@@ -36,7 +36,7 @@ function subscribe() {
 			content.textContent = e.data;
 			document.body.append(content);
 		}
-		eventSource.addEventListener(`id=${json.data.tags[tagPath.toString()].id}`, (e) => {
+		eventSource.addEventListener('tag_change', (e) => {
 			var s = document.getElementById("values");
 			var obj = JSON.parse(e.data)
 			s.value = JSON.stringify(obj);

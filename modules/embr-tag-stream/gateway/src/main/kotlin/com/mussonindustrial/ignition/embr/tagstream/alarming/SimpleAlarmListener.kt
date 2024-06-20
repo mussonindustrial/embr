@@ -3,7 +3,7 @@ package com.mussonindustrial.ignition.embr.tagstream.alarming
 import com.inductiveautomation.ignition.common.alarming.AlarmEvent
 import com.inductiveautomation.ignition.common.alarming.AlarmListener
 
-interface SimpleAlarmListener: AlarmListener {
+fun interface SimpleAlarmListener: AlarmListener {
 
     fun onAlarmEvent(event: AlarmEvent)
 
