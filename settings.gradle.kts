@@ -10,6 +10,9 @@ pluginManagement {
 include(
     ":",
 
+    ":lib:embr-core-common",
+    ":lib:embr-core-servlets",
+
     ":js:packages:example-perspective-component",
     ":js:packages:embr-chart-js",
 

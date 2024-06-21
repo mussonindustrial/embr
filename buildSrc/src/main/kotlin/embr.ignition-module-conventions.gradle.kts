@@ -4,24 +4,8 @@ import java.util.*
 plugins {
     id("embr.kotlin-library-conventions")
     id("io.ia.sdk.modl")
-    id("pl.allegro.tech.build.axion-release")
     id("com.github.breadmoirai.github-release")
 }
-
-fun buildTime(): String { return SimpleDateFormat("yyyyMMddHH").format(Date()) }
-scmVersion {
-    checks {
-        uncommittedChanges.set(false)
-    }
-    tag {
-        prefix.set(project.name)
-        versionSeparator.set("-")
-    }
-    useHighestVersion.set(true)
-    versionIncrementer("incrementPatch")
-}
-
-version = scmVersion.version
 
 allprojects {
     group = "com.mussonindustrial.embr"
@@ -36,6 +20,7 @@ subprojects {
     version = project.parent?.version!!
 }
 
+fun buildTime(): String { return SimpleDateFormat("yyyyMMddHH").format(Date()) }
 ignitionModule {
     moduleVersion.set(if (version.toString().contains("-SNAPSHOT")) {
         version.toString().replace("-SNAPSHOT", ".${buildTime()}-SNAPSHOT")
