@@ -1,4 +1,4 @@
-package com.mussonindustrial.ignition.embr.tagstream.servlets
+package com.mussonindustrial.ignition.embr.servlets
 
 import com.inductiveautomation.ignition.gateway.web.WebResourceManager
 import org.eclipse.jetty.server.handler.HandlerCollection

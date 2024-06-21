@@ -3,9 +3,10 @@ package com.mussonindustrial.ignition.embr.tagstream
 import com.inductiveautomation.ignition.common.licensing.LicenseState
 import com.inductiveautomation.ignition.gateway.model.AbstractGatewayModuleHook
 import com.inductiveautomation.ignition.gateway.model.GatewayContext
-import com.mussonindustrial.ignition.embr.tagstream.Meta.URL_ALIAS
-import com.mussonindustrial.ignition.embr.tagstream.servlets.TagStreamServlet
-import com.mussonindustrial.ignition.embr.tagstream.servlets.TagStreamSubscriptionServlet
+import com.mussonindustrial.ignition.embr.common.logging.getLogger
+import com.mussonindustrial.ignition.embr.tagstream.Meta.SHORT_MODULE_ID
+import com.mussonindustrial.ignition.embr.tagstream.servlets.TagStreamSessionServlet
+import com.mussonindustrial.ignition.embr.tagstream.servlets.TagStreamManagerServlet
 import java.util.*
 
 
@@ -17,25 +18,22 @@ class TagStreamGatewayHook : AbstractGatewayModuleHook() {
     }
 
     private val logger = this.getLogger()
-    private lateinit var context: TagStreamGatewayContext
 
     override fun setup(context: GatewayContext) {
-        this.context = TagStreamGatewayContext(context)
-        Companion.context = this.context
+        Companion.context = TagStreamGatewayContext(context)
     }
 
 
     override fun startup(activationState: LicenseState) {
         logger.info("Embr Tag Stream module started.")
-        context.servletManager.addServlet("/stream/*", TagStreamServlet::class.java)
-        context.servletManager.addServlet("/subscribe", TagStreamSubscriptionServlet::class.java)
+        context.servletManager.addServlet("/session", TagStreamManagerServlet::class.java)
+        context.servletManager.addServlet("/session/*", TagStreamSessionServlet::class.java)
     }
 
     override fun shutdown() {
         logger.info("Shutting down Embr Tag Stream module.")
+        context.tagStreamManager.closeAllSessions()
         context.servletManager.removeAllServlets()
-        context.tagStreamManager.closeAllStreams()
-
     }
 
     override fun getMountedResourceFolder(): Optional<String> {
@@ -43,7 +41,7 @@ class TagStreamGatewayHook : AbstractGatewayModuleHook() {
     }
 
     override fun getMountPathAlias(): Optional<String> {
-        return Optional.of(URL_ALIAS)
+        return Optional.of(SHORT_MODULE_ID)
     }
 
     override fun isFreeModule(): Boolean {

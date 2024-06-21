@@ -1,4 +1,4 @@
-package com.mussonindustrial.ignition.embr.tagstream
+package com.mussonindustrial.ignition.embr.common.logging
 
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory

@@ -1,4 +1,4 @@
-package com.mussonindustrial.ignition.embr.tagstream
+package com.mussonindustrial.ignition.embr.common.reflect
 
 fun <T : Any> T.getPrivateProperty(variableName: String): Any? {
     return javaClass.getDeclaredField(variableName).let { field ->
