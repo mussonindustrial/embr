@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TagStream Example Client</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Embr-TagStream</h1>
+        <h2>Example Client</h2>
+    </header>
+    
+    <main id="home" class="main">
+        <section class="intro">
+            <h2>Welcome</h2>
+            <p>This is an example EventSource client for Embr-TagStream tag change and alarm events.</p>
+            <p><a href="https://github.com/mussonindustrial/embr/tree/main/modules/embr-tag-stream">Documentation</a></p>
+        </section>
+        
+        <section id="subscribe" class="subscribe">
+            <h2>Manage Subscriptions</h2>
+            <input type="text" id="tagPath" placeholder="Enter tag path">
+            <button onclick="subscribeTag()">Subscribe</button>
+            <div id="subscribedTags"></div>
+        </section>
+    </main>
+    
+    <footer>
+        <p>Developed by <b>Musson Industrial</b></p>
+        
+    </footer>
+
+    <script src="scripts.js"></script>
+</body>
+</html>

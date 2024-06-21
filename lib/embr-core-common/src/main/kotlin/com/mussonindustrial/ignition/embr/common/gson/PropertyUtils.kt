@@ -1,4 +1,4 @@
-package com.mussonindustrial.ignition.embr.tagstream
+package com.mussonindustrial.ignition.embr.common.gson
 
 import com.inductiveautomation.ignition.common.config.PropertySet
 import com.inductiveautomation.ignition.common.config.PropertyValue

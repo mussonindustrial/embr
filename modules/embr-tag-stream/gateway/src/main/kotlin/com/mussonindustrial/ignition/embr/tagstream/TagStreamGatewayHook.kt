@@ -1,12 +1,11 @@
 package com.mussonindustrial.ignition.embr.tagstream
 
 import com.inductiveautomation.ignition.common.licensing.LicenseState
-import com.inductiveautomation.ignition.common.model.values.QualityCode
-import com.inductiveautomation.ignition.common.sqltags.model.types.DataType
 import com.inductiveautomation.ignition.gateway.model.AbstractGatewayModuleHook
 import com.inductiveautomation.ignition.gateway.model.GatewayContext
+import com.mussonindustrial.ignition.embr.common.logging.getLogger
 import com.mussonindustrial.ignition.embr.tagstream.Meta.SHORT_MODULE_ID
-import com.mussonindustrial.ignition.embr.tagstream.servlets.TagStreamServlet
+import com.mussonindustrial.ignition.embr.tagstream.servlets.TagStreamSessionServlet
 import com.mussonindustrial.ignition.embr.tagstream.servlets.TagStreamManagerServlet
 import java.util.*
 
@@ -28,7 +27,7 @@ class TagStreamGatewayHook : AbstractGatewayModuleHook() {
     override fun startup(activationState: LicenseState) {
         logger.info("Embr Tag Stream module started.")
         context.servletManager.addServlet("/session", TagStreamManagerServlet::class.java)
-        context.servletManager.addServlet("/session/*", TagStreamServlet::class.java)
+        context.servletManager.addServlet("/session/*", TagStreamSessionServlet::class.java)
     }
 
     override fun shutdown() {

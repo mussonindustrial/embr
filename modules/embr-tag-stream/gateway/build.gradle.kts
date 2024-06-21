@@ -4,8 +4,12 @@ plugins {
 
 dependencies {
     compileOnly(libs.bundles.gateway)
-    compileOnly(projects.modules.embrTagStream.common)
     compileOnly(libs.jetty.server)
     compileOnly(libs.jetty.servlet)
     modlImplementation(libs.jetty.servlets)
+
+    compileOnly(projects.lib.embrCoreCommon)
+    modlImplementation(projects.lib.embrCoreServlets)
+
+    compileOnly(projects.modules.embrTagStream.common)
 }

@@ -1,0 +1,76 @@
+body {
+    font-family: 'Open Sans', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f9;
+    color: #333;
+}
+
+header {
+    background-color: #4CAF50;
+    color: white;
+    padding: 1em 2em;
+    text-align: left;
+}
+
+nav ul {
+    list-style: none;
+    padding: 0;
+}
+
+nav ul li {
+    display: inline;
+    margin: 0 10px;
+}
+
+nav ul li a {
+    color: white;
+    text-decoration: none;
+}
+
+.main {
+    padding: 2em;
+}
+
+.intro, .subscribe, .data {
+    margin-bottom: 2em;
+}
+
+input[type="text"] {
+    padding: 0.5em;
+    margin-right: 0.5em;
+}
+
+button {
+    padding: 0.5em 1em;
+    margin-right: 0.5em;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+footer {
+    text-align: center;
+    padding: 1em 0;
+    background-color: #333;
+    color: white;
+}
+
+#subscribedTags {
+    margin-top: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem
+}
+
+.tag {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    align-items: center;
+}

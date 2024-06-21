@@ -1,12 +1,12 @@
 package com.mussonindustrial.ignition.embr.tagstream.servlets
 
+import com.mussonindustrial.ignition.embr.common.logging.getLogger
 import com.mussonindustrial.ignition.embr.tagstream.TagStreamGatewayHook
-import com.mussonindustrial.ignition.embr.tagstream.getLogger
 import org.eclipse.jetty.servlets.EventSourceServlet
 import org.eclipse.jetty.servlets.EventSource
 import javax.servlet.http.HttpServletRequest
 
-class TagStreamServlet: EventSourceServlet() {
+class TagStreamSessionServlet: EventSourceServlet() {
     private val logger = this.getLogger()
     private val tagStreamManager = TagStreamGatewayHook.context.tagStreamManager
 

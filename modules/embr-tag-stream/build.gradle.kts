@@ -1,13 +1,5 @@
-import java.util.Date
-import java.text.SimpleDateFormat
 plugins {
     id("embr.ignition-module-conventions")
-}
-
-fun buildTime(): String { return SimpleDateFormat("yyyyMMddHH").format(Date()) }
-
-allprojects {
-    group = "com.mussonindustrial.embr"
 }
 
 ignitionModule {

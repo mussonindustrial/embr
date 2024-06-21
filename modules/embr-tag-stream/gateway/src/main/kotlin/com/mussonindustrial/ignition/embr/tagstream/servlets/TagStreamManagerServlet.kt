@@ -2,8 +2,8 @@ package com.mussonindustrial.ignition.embr.tagstream.servlets
 
 import com.inductiveautomation.ignition.common.gson.JsonObject
 import com.inductiveautomation.ignition.common.gson.JsonParser
+import com.mussonindustrial.ignition.embr.common.logging.getLogger
 import com.mussonindustrial.ignition.embr.tagstream.TagStreamGatewayHook
-import com.mussonindustrial.ignition.embr.tagstream.getLogger
 import javax.servlet.http.HttpServlet
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse

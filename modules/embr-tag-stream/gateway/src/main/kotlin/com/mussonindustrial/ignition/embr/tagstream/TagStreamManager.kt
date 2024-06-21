@@ -10,6 +10,8 @@ import com.inductiveautomation.ignition.common.tags.model.TagPath
 import com.inductiveautomation.ignition.common.tags.model.event.TagChangeEvent
 import com.inductiveautomation.ignition.common.tags.model.event.TagChangeListener
 import com.inductiveautomation.ignition.common.tags.paths.parser.TagPathParser
+import com.mussonindustrial.ignition.embr.common.gson.addProperty
+import com.mussonindustrial.ignition.embr.common.logging.getLogger
 import com.mussonindustrial.ignition.embr.tagstream.alarming.SimpleAlarmListener
 import org.eclipse.jetty.io.EofException
 import org.eclipse.jetty.servlets.EventSource
@@ -124,7 +126,6 @@ class TagStreamManager(context: TagStreamGatewayContext) {
                 tagListeners.forEach { it.unsubscribe() }
                 removeSession(this)
             }
-
         }
 
         inner class TagListener(val id: Int, val tagPath: TagPath): TagChangeListener, SimpleAlarmListener {
