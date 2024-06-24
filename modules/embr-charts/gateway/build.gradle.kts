@@ -3,8 +3,12 @@ plugins {
 }
 
 dependencies {
+    compileOnly(projects.lib.embrCoreCommon)
+    compileOnly(projects.modules.embrCharts.common)
+
     compileOnly(libs.bundles.gateway)
     compileOnly(libs.bundles.perspectiveGateway)
-    compileOnly(projects.modules.embrCharts.common)
+    modlImplementation(projects.lib.embrCoreGateway)
+
     modlImplementation(projects.js.packages.embrChartJs)
 }

@@ -1,9 +1,8 @@
-package com.mussonindustrial.ignition.embr.charts.component
+package com.mussonindustrial.ignition.embr.perspective.common.component
 
 import com.inductiveautomation.ignition.common.gson.JsonObject
 import com.inductiveautomation.ignition.common.gson.JsonParser
 import com.inductiveautomation.perspective.common.api.ComponentDescriptorImpl.ComponentBuilder
-import com.mussonindustrial.ignition.embr.charts.Meta
 import java.awt.image.BufferedImage
 import java.io.InputStreamReader
 import javax.imageio.ImageIO
@@ -15,13 +14,13 @@ data class PaletteEntry(
     val thumbnail: BufferedImage?,
     val props: JsonObject?
 ) {
-    constructor(variantId: String, label: String, tooltip: String) :
+    constructor(source: Class<*>, variantId: String, label: String, tooltip: String) :
         this(
             variantId,
             label,
             tooltip,
-            getImage("/images/components/thumbnails/${variantId}.png"),
-            getJsonProps("/variants/${variantId}.props.json")
+            getImage(source, "/images/components/thumbnails/${variantId}.png"),
+            getJsonProps(source, "/variants/${variantId}.props.json")
         )
 }
 
@@ -30,16 +29,16 @@ fun ComponentBuilder.addPaletteEntry(entry: PaletteEntry): ComponentBuilder {
     return this
 }
 
-fun getImage(path: String): BufferedImage? {
-    val resource = Meta::class.java.getResource(path)
+fun getImage(source: Class<*>, path: String): BufferedImage? {
+    val resource = source.getResource(path)
     resource?.let {
         return ImageIO.read(it)
     }
     return null
 }
 
-fun getJsonProps(path: String): JsonObject {
+fun getJsonProps(source: Class<*>, path: String): JsonObject {
     return JsonParser.parseReader(
-        Meta::class.java.getResourceAsStream(path)
+        source.getResourceAsStream(path)
         ?.let { InputStreamReader(it) }).asJsonObject
 }

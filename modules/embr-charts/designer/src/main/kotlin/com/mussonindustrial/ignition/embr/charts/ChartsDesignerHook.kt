@@ -6,26 +6,23 @@ import com.inductiveautomation.ignition.designer.model.DesignerContext
 import com.inductiveautomation.perspective.designer.DesignerComponentRegistry
 import com.inductiveautomation.perspective.designer.api.ComponentDesignDelegateRegistry
 import com.inductiveautomation.perspective.designer.api.PerspectiveDesignerInterface
-import com.mussonindustrial.ignition.embr.charts.Meta.SHORT_MODULE_ID
-import com.mussonindustrial.ignition.embr.charts.component.asDesignerDescriptor
 import com.mussonindustrial.ignition.embr.charts.component.chart.ChartJs
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
-
+import com.mussonindustrial.ignition.embr.common.logging.getLogger
+import com.mussonindustrial.ignition.embr.perspective.designer.component.asDesignerDescriptor
 
 @Suppress("unused")
-class DesignerHook : AbstractDesignerModuleHook() {
+class ChartsDesignerHook : AbstractDesignerModuleHook() {
 
-    private val logger: Logger = LoggerFactory.getLogger(SHORT_MODULE_ID)
+    private val logger = this.getLogger()
 
-    private lateinit var context: DesignerContext
+    private lateinit var context: ChartsDesignerContext
     private lateinit var componentRegistry: DesignerComponentRegistry
     private lateinit var delegateRegistry: ComponentDesignDelegateRegistry
 
 
     override fun startup(context: DesignerContext, activationState: LicenseState) {
         logger.info("Embr-Charts module started.")
-        this.context = context
+        this.context = ChartsDesignerContext(context)
 
         val pdi: PerspectiveDesignerInterface = PerspectiveDesignerInterface.get(context)
 
@@ -33,6 +30,9 @@ class DesignerHook : AbstractDesignerModuleHook() {
         delegateRegistry = pdi.componentDesignDelegateRegistry
 
         componentRegistry.registerComponent(ChartJs.DESCRIPTOR.asDesignerDescriptor())
+        this.context.requireModule("test") {
+
+        }
     }
 
     override fun shutdown() {

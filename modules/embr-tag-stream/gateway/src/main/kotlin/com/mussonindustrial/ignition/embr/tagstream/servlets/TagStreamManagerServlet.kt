@@ -3,7 +3,7 @@ package com.mussonindustrial.ignition.embr.tagstream.servlets
 import com.inductiveautomation.ignition.common.gson.JsonObject
 import com.inductiveautomation.ignition.common.gson.JsonParser
 import com.mussonindustrial.ignition.embr.common.logging.getLogger
-import com.mussonindustrial.ignition.embr.tagstream.TagStreamGatewayHook
+import com.mussonindustrial.ignition.embr.tagstream.TagStreamGatewayContext
 import javax.servlet.http.HttpServlet
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
@@ -12,7 +12,7 @@ import kotlin.text.Charsets.UTF_8
 class TagStreamManagerServlet: HttpServlet() {
 
     private val logger = this.getLogger()
-    private val tagStreamManager = TagStreamGatewayHook.context.tagStreamManager
+    private val tagStreamManager = TagStreamGatewayContext.INSTANCE.tagStreamManager
 
     private fun <T: HttpServletResponse> T.sendSuccess(data: JsonObject) {
         val json = JsonObject()

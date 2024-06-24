@@ -1,14 +1,14 @@
 package com.mussonindustrial.ignition.embr.tagstream.servlets
 
 import com.mussonindustrial.ignition.embr.common.logging.getLogger
-import com.mussonindustrial.ignition.embr.tagstream.TagStreamGatewayHook
+import com.mussonindustrial.ignition.embr.tagstream.TagStreamGatewayContext
 import org.eclipse.jetty.servlets.EventSourceServlet
 import org.eclipse.jetty.servlets.EventSource
 import javax.servlet.http.HttpServletRequest
 
 class TagStreamSessionServlet: EventSourceServlet() {
     private val logger = this.getLogger()
-    private val tagStreamManager = TagStreamGatewayHook.context.tagStreamManager
+    private val tagStreamManager = TagStreamGatewayContext.INSTANCE.tagStreamManager
 
     override fun newEventSource(request: HttpServletRequest): EventSource? {
         logger.trace("TagStreamServlet request received at URL: {}", request.requestURI)

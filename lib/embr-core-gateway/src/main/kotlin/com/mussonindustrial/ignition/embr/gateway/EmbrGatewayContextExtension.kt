@@ -1,0 +1,3 @@
+package com.mussonindustrial.ignition.embr.gateway
+
+interface EmbrGatewayContextExtension

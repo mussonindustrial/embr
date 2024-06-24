@@ -1,4 +1,4 @@
-package com.mussonindustrial.ignition.embr.charts.component
+package com.mussonindustrial.ignition.embr.perspective.designer.component
 
 import com.inductiveautomation.ignition.designer.navtree.icon.InteractiveSvgIcon
 import com.inductiveautomation.perspective.common.api.ComponentDescriptor

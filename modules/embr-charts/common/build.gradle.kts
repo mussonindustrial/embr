@@ -4,5 +4,8 @@ plugins {
 
 dependencies {
     compileOnly(libs.bundles.common)
+    modlImplementation(projects.lib.embrCoreCommon)
+
     compileOnly(libs.bundles.perspectiveCommon)
+    modlImplementation(projects.lib.embrPerspectiveCommon)
 }

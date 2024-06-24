@@ -11,7 +11,11 @@ include(
     ":",
 
     ":lib:embr-core-common",
+    ":lib:embr-core-designer",
+    ":lib:embr-core-gateway",
     ":lib:embr-core-servlets",
+    ":lib:embr-perspective-common",
+    ":lib:embr-perspective-designer",
 
     ":js:packages:example-perspective-component",
     ":js:packages:embr-chart-js",

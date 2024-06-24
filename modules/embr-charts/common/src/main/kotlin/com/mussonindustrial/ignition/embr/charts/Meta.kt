@@ -1,6 +1,7 @@
 package com.mussonindustrial.ignition.embr.charts
 
+import com.mussonindustrial.ignition.embr.common.Embr
+
 object Meta {
-    const val MODULE_ID = "com.mussonindustrial.embr.charts"
-    const val SHORT_MODULE_ID = "embr-charts"
+    val MODULE = Embr.CHARTS
 }

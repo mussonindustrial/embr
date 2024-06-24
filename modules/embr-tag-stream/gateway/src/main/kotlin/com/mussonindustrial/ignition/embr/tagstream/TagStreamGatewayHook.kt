@@ -4,7 +4,6 @@ import com.inductiveautomation.ignition.common.licensing.LicenseState
 import com.inductiveautomation.ignition.gateway.model.AbstractGatewayModuleHook
 import com.inductiveautomation.ignition.gateway.model.GatewayContext
 import com.mussonindustrial.ignition.embr.common.logging.getLogger
-import com.mussonindustrial.ignition.embr.tagstream.Meta.SHORT_MODULE_ID
 import com.mussonindustrial.ignition.embr.tagstream.servlets.TagStreamSessionServlet
 import com.mussonindustrial.ignition.embr.tagstream.servlets.TagStreamManagerServlet
 import java.util.*
@@ -13,14 +12,11 @@ import java.util.*
 @Suppress("unused")
 class TagStreamGatewayHook : AbstractGatewayModuleHook() {
 
-    companion object {
-        lateinit var context: TagStreamGatewayContext
-    }
-
     private val logger = this.getLogger()
+    private lateinit var context: TagStreamGatewayContext
 
     override fun setup(context: GatewayContext) {
-        Companion.context = TagStreamGatewayContext(context)
+        this.context = TagStreamGatewayContext(context)
     }
 
 
@@ -41,7 +37,7 @@ class TagStreamGatewayHook : AbstractGatewayModuleHook() {
     }
 
     override fun getMountPathAlias(): Optional<String> {
-        return Optional.of(SHORT_MODULE_ID)
+        return Optional.of(Meta.shortId)
     }
 
     override fun isFreeModule(): Boolean {

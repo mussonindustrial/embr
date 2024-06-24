@@ -1,4 +1,4 @@
-package com.mussonindustrial.ignition.embr.tagstream.alarming
+package com.mussonindustrial.ignition.embr.common.alarming
 
 import com.inductiveautomation.ignition.common.alarming.AlarmEvent
 import com.inductiveautomation.ignition.common.alarming.AlarmListener

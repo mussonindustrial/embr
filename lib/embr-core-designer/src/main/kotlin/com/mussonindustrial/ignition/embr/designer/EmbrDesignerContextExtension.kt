@@ -1,0 +1,3 @@
+package com.mussonindustrial.ignition.embr.designer
+
+interface EmbrDesignerContextExtension

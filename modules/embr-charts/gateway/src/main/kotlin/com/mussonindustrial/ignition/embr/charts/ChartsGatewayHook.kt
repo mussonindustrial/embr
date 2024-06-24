@@ -7,25 +7,24 @@ import com.inductiveautomation.perspective.common.api.ComponentRegistry
 import com.inductiveautomation.perspective.gateway.api.ComponentModelDelegateRegistry
 import com.inductiveautomation.perspective.gateway.api.PerspectiveContext
 
-import com.mussonindustrial.ignition.embr.charts.Meta.SHORT_MODULE_ID
 import com.mussonindustrial.ignition.embr.charts.component.chart.ChartJs
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
+import com.mussonindustrial.ignition.embr.common.Embr
+import com.mussonindustrial.ignition.embr.common.logging.getLogger
 import java.util.*
 
 
 @Suppress("unused")
-class GatewayHook : AbstractGatewayModuleHook() {
+class ChartsGatewayHook : AbstractGatewayModuleHook() {
 
-    private val logger: Logger = LoggerFactory.getLogger(SHORT_MODULE_ID)
-    private lateinit var context: GatewayContext
+    private val logger = this.getLogger()
+    private lateinit var context: ChartsGatewayContext
     private lateinit var perspectiveContext: PerspectiveContext
     private lateinit var componentRegistry: ComponentRegistry
     private lateinit var modelDelegateRegistry: ComponentModelDelegateRegistry
 
 
     override fun setup(context: GatewayContext) {
-        this.context = context
+        this.context = ChartsGatewayContext(context)
     }
 
     override fun startup(activationState: LicenseState) {
@@ -37,6 +36,10 @@ class GatewayHook : AbstractGatewayModuleHook() {
 
         logger.info("Registering components...")
         componentRegistry.registerComponent(ChartJs.DESCRIPTOR)
+
+        context.requireModule(Embr.TAG_STREAM.id) {
+            logger.info("Embr-TagStream module found. Registering TagStream components...")
+        }
     }
 
     override fun shutdown() {
@@ -44,12 +47,12 @@ class GatewayHook : AbstractGatewayModuleHook() {
         componentRegistry.removeComponent(ChartJs.COMPONENT_ID)
     }
 
-    override fun getMountedResourceFolder(): Optional<String>? {
+    override fun getMountedResourceFolder(): Optional<String> {
         return Optional.of("static")
     }
 
-    override fun getMountPathAlias(): Optional<String>? {
-        return Optional.of(SHORT_MODULE_ID)
+    override fun getMountPathAlias(): Optional<String> {
+        return Optional.of(Embr.CHARTS.shortId)
     }
 
     override fun isFreeModule(): Boolean {
