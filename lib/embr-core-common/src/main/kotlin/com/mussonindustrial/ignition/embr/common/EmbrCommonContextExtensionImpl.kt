@@ -4,13 +4,17 @@ import com.inductiveautomation.ignition.common.model.CommonContext
 
 class EmbrCommonContextExtensionImpl(val context: CommonContext): EmbrCommonContextExtension {
 
-    override fun requireModule(moduleId: String, run: () -> Unit) {
-        try {
-            if (context.getModule(moduleId) != null) {
-                run()
-            }
+    override fun getModuleSafe(moduleId: String): Any? {
+        return try {
+            context.getModule(moduleId)
         } catch (_: Throwable) {
+            false
         }
     }
-
+    override fun <T> ifModule(moduleId: String, action: () -> T): T? {
+        if (getModuleSafe(moduleId) != null) {
+            return action()
+        }
+        return null
+    }
 }

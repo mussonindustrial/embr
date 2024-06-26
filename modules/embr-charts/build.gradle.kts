@@ -22,6 +22,7 @@ ignitionModule {
     moduleDependencies.set(
         mapOf(
             "com.inductiveautomation.perspective" to "GD",
+            "com.mussonindustrial.embr.tagstream" to "GD",
         ),
     )
 

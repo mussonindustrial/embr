@@ -6,6 +6,7 @@ import com.inductiveautomation.ignition.common.alarming.EventData
 import com.inductiveautomation.ignition.common.gson.JsonArray
 import com.inductiveautomation.ignition.common.gson.JsonObject
 import com.inductiveautomation.ignition.common.tags.config.TagGson
+import com.inductiveautomation.ignition.common.tags.model.SecurityContext
 import com.inductiveautomation.ignition.common.tags.model.TagPath
 import com.inductiveautomation.ignition.common.tags.model.event.TagChangeEvent
 import com.inductiveautomation.ignition.common.tags.model.event.TagChangeListener
@@ -30,7 +31,11 @@ class TagStreamManager(context: TagStreamGatewayContext) {
     private val connectedSessions = hashMapOf<String, Session>()
 
     fun createSession(paths: List<String>): Session {
-        val session = Session(paths)
+        return createSession(paths, SecurityContext.emptyContext())
+    }
+
+    fun createSession(paths: List<String>, securityContext: SecurityContext): Session {
+        val session = Session(paths, securityContext)
         unconnectedSessions[session.id] = session
         updateMetrics()
         return session
@@ -64,7 +69,7 @@ class TagStreamManager(context: TagStreamGatewayContext) {
         systemTags.sessionCountUnconnected = unconnectedSessions.size
     }
 
-    inner class Session(paths: List<String>): EventSource {
+    inner class Session(paths: List<String>, val securityContext: SecurityContext): EventSource {
         private val logger = this.getLogger()
         val id = UUID.randomUUID().toString()
         private var opened = AtomicBoolean(false)
@@ -88,7 +93,7 @@ class TagStreamManager(context: TagStreamGatewayContext) {
                 val tag = JsonObject()
                 tag.addProperty("tag_path", listener.tagPath.toString())
                 tag.addProperty("alarm_path", listener.alarmPath.toString())
-                tag.addProperty("tag_id", id)
+                tag.addProperty("tag_id", listener.id)
                 tags.add(tag)
             }
             json.add("tags", tags)
@@ -174,6 +179,10 @@ class TagStreamManager(context: TagStreamGatewayContext) {
                     }
                     emitter?.event("tag_change", data.toString())
                 }
+            }
+
+            override fun getSecurityContext(): SecurityContext {
+                return this@Session.securityContext
             }
 
             override fun onAlarmEvent(event: AlarmEvent) {

@@ -10,6 +10,8 @@ dependencies {
     compileOnly(libs.bundles.gateway)
     modlImplementation(projects.lib.embrCoreGateway)
 
+    compileOnly(libs.bundles.perspectiveGateway)
+
     compileOnly(libs.jetty.server)
     compileOnly(libs.jetty.servlet)
     modlImplementation(libs.jetty.servlets)

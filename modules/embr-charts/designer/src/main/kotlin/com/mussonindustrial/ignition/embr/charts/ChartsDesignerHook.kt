@@ -7,6 +7,8 @@ import com.inductiveautomation.perspective.designer.DesignerComponentRegistry
 import com.inductiveautomation.perspective.designer.api.ComponentDesignDelegateRegistry
 import com.inductiveautomation.perspective.designer.api.PerspectiveDesignerInterface
 import com.mussonindustrial.ignition.embr.charts.component.chart.ChartJs
+import com.mussonindustrial.ignition.embr.charts.component.chart.TagStream
+import com.mussonindustrial.ignition.embr.common.Embr
 import com.mussonindustrial.ignition.embr.common.logging.getLogger
 import com.mussonindustrial.ignition.embr.perspective.designer.component.asDesignerDescriptor
 
@@ -30,13 +32,16 @@ class ChartsDesignerHook : AbstractDesignerModuleHook() {
         delegateRegistry = pdi.componentDesignDelegateRegistry
 
         componentRegistry.registerComponent(ChartJs.DESCRIPTOR.asDesignerDescriptor())
-        this.context.requireModule("test") {
-
+        componentRegistry.registerComponent(TagStream.DESCRIPTOR)
+        this.context.ifModule(Embr.TAG_STREAM.id) {
+            logger.info("Embr-TagStream module found. Registering TagStream components...")
+            componentRegistry.registerComponent(TagStream.DESCRIPTOR)
         }
     }
 
     override fun shutdown() {
         logger.info("Shutting down Embr-Charts module and removing registered components.")
         componentRegistry.removeComponent(ChartJs.COMPONENT_ID)
+        componentRegistry.removeComponent(TagStream.COMPONENT_ID)
     }
 }

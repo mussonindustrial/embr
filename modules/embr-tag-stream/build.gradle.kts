@@ -16,7 +16,14 @@ ignitionModule {
             ":modules:embr-tag-stream:gateway" to "G",
         ),
     )
-        hooks.putAll(
+
+    moduleDependencies.set(
+        mapOf(
+            "com.inductiveautomation.perspective" to "G"
+        ),
+    )
+
+    hooks.putAll(
         mapOf(
             "com.mussonindustrial.ignition.embr.tagstream.TagStreamGatewayHook" to "G"
         ),

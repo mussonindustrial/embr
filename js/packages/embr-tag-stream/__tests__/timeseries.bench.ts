@@ -22,10 +22,10 @@ const original_newData = generateTimeSeries(
     100
 )
 
-const data_a = newTimeSeriesCache([])
-const data_b = newTimeSeriesCache([])
-const data_c = newTimeSeriesCache([])
-const newData = newTimeSeriesCache([])
+const data_a = newTimeSeriesCache()
+const data_b = newTimeSeriesCache()
+const data_c = newTimeSeriesCache()
+const newData = newTimeSeriesCache()
 
 const setup = (task) => {
     task.opts.beforeEach = () => {

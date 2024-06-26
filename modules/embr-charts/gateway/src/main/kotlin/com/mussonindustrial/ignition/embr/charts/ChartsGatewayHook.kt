@@ -8,6 +8,7 @@ import com.inductiveautomation.perspective.gateway.api.ComponentModelDelegateReg
 import com.inductiveautomation.perspective.gateway.api.PerspectiveContext
 
 import com.mussonindustrial.ignition.embr.charts.component.chart.ChartJs
+import com.mussonindustrial.ignition.embr.charts.component.chart.TagStream
 import com.mussonindustrial.ignition.embr.common.Embr
 import com.mussonindustrial.ignition.embr.common.logging.getLogger
 import java.util.*
@@ -37,14 +38,16 @@ class ChartsGatewayHook : AbstractGatewayModuleHook() {
         logger.info("Registering components...")
         componentRegistry.registerComponent(ChartJs.DESCRIPTOR)
 
-        context.requireModule(Embr.TAG_STREAM.id) {
+        context.ifModule(Embr.TAG_STREAM.id) {
             logger.info("Embr-TagStream module found. Registering TagStream components...")
+            componentRegistry.registerComponent(TagStream.DESCRIPTOR)
         }
     }
 
     override fun shutdown() {
         logger.info("Shutting down Embr-Charts module and removing registered components.")
         componentRegistry.removeComponent(ChartJs.COMPONENT_ID)
+        componentRegistry.removeComponent(TagStream.COMPONENT_ID)
     }
 
     override fun getMountedResourceFolder(): Optional<String> {

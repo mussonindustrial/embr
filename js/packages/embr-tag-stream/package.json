@@ -2,9 +2,17 @@
   "name": "@mussonindustrial/embr-tag-stream",
   "private": true,
   "version": "0.0.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "type": "module",
+  "exports": {
+    ".": {
+      "require": "./dist/index.cjs",
+      "import": "./dist/index.js"
+    }
+  },
   "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build&& vitest run",
+    "build": "tsup-node --dts",
     "clean": "",
     "test": "vitest run",
     "bench": "vitest bench",
@@ -19,6 +27,7 @@
     "@mussonindustrial/embr-utils": "*",
     "@mussonindustrial/eslint-config-embr": "*",
     "eslint": "^8.56.0",
+    "tsup": "^8.1.0",
     "typescript": "^5.3.3",
     "vite": "^5.0.10",
     "vitest": "^1.6.0"

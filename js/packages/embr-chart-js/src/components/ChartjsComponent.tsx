@@ -12,7 +12,29 @@ import { getCSSTransform, getScriptTransform } from '../util/propTransforms'
 import { transformProps } from '@mussonindustrial/embr-utils'
 import { unset, cloneDeep } from 'lodash'
 
-export const COMPONENT_TYPE = 'embr.chart.chart-js'
+export const ChartjsComponentMeta: ComponentMeta = {
+    getComponentType: function (): string {
+        return 'embr.chart.chart-js'
+    },
+    getDefaultSize: function (): SizeObject {
+        return {
+            width: 300,
+            height: 300,
+        }
+    },
+    getViewComponent: function (): PComponent {
+        return ChartjsComponent as PComponent
+    },
+    getPropsReducer(tree: PropertyTree): PerspectiveChartProps {
+        return {
+            type: tree.readString('type'),
+            options: tree.read('options', {}),
+            data: tree.read('data', {}),
+            plugins: tree.readArray('plugins', []),
+            events: tree.read('events', {}),
+        } as never
+    },
+}
 
 type PerspectiveChart = Chart
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -84,31 +106,4 @@ export function ChartjsComponent(props: ComponentProps<PerspectiveChartProps>) {
             />
         </div>
     )
-}
-
-export class ChartjsComponentMeta implements ComponentMeta {
-    getComponentType(): string {
-        return COMPONENT_TYPE
-    }
-
-    getDefaultSize(): SizeObject {
-        return {
-            width: 300,
-            height: 300,
-        }
-    }
-
-    getPropsReducer(tree: PropertyTree): PerspectiveChartProps {
-        return {
-            type: tree.readString('type'),
-            options: tree.read('options', {}),
-            data: tree.read('data', {}),
-            plugins: tree.readArray('plugins', []),
-            events: tree.read('events', {}),
-        } as never
-    }
-
-    getViewComponent(): PComponent {
-        return ChartjsComponent as PComponent
-    }
 }

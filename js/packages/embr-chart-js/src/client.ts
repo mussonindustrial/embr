@@ -1,7 +1,4 @@
-import {
-    ComponentMeta,
-    ComponentRegistry,
-} from '@inductiveautomation/perspective-client'
+import { ComponentRegistry } from '@inductiveautomation/perspective-client'
 import 'chartjs-adapter-moment'
 
 import { Chart, registerables } from 'chart.js'
@@ -98,11 +95,19 @@ import { WordCloudController, WordElement } from 'chartjs-chart-wordcloud'
 Chart.register(WordCloudController, WordElement)
 
 import {
+    StreamingPlugin,
+    RealTimeScale,
+} from '@robloche/chartjs-plugin-streaming'
+Chart.register(StreamingPlugin, RealTimeScale)
+
+import {
     ChartjsComponent,
     ChartjsComponentMeta,
-} from './components/ChartjsComponent'
+    TagStreamComponent,
+    TagStreamComponentComponentMeta,
+} from './components'
 
-export { ChartjsComponent as BaseChartComponent }
+export { ChartjsComponent, TagStreamComponent }
 
-const components: Array<ComponentMeta> = [new ChartjsComponentMeta()]
-components.forEach((c: ComponentMeta) => ComponentRegistry.register(c))
+ComponentRegistry.register(ChartjsComponentMeta)
+ComponentRegistry.register(TagStreamComponentComponentMeta)

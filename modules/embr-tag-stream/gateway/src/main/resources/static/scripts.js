@@ -8,6 +8,13 @@ document.addEventListener("DOMContentLoaded", function() {
         tagValue.innerHTML = `<pre><code> ${value} </code></pre>`
     }
 
+    function getUserInfo() {
+        return {
+            username: document.getElementById('username').value,
+            password: document.getElementById('password').value
+        }
+    }
+
     function subscribeTag() {
         const tagPathElement = document.getElementById("tagPath");
         const tagPath = tagPathElement.value
@@ -62,7 +69,8 @@ document.addEventListener("DOMContentLoaded", function() {
     
         // Create the body of the session request.
         const requestBody = JSON.stringify({
-            "tagPaths": subscribedTags
+            tag_paths: subscribedTags,
+            ...getUserInfo()
         })
         console.log(`post-body: ${requestBody}`)
 

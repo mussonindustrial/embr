@@ -33,12 +33,14 @@ Only a single client may access a given `session_id`.
 | URL    | `/embr/tag/stream/session` |
 | Method | `POST`                     |
 | Body   | `{ tagPaths: [] }`         |
-| Auth   | None                       |
+| Auth   | `body`                     |
 
 #### Body Example
 ```json
 {
-  "tagPaths": [
+  "username": "admin",
+  "password": "password",
+  "tag_paths": [
     "[default]Tag1",
     "[default]Path/Tag2"
   ]
