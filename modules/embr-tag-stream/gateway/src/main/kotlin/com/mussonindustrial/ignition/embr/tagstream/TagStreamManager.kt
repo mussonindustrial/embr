@@ -10,7 +10,6 @@ import com.inductiveautomation.ignition.common.tags.model.SecurityContext
 import com.inductiveautomation.ignition.common.tags.model.TagPath
 import com.inductiveautomation.ignition.common.tags.model.event.TagChangeEvent
 import com.inductiveautomation.ignition.common.tags.model.event.TagChangeListener
-import com.inductiveautomation.ignition.common.tags.paths.parser.TagPathParser
 import com.mussonindustrial.ignition.embr.common.alarming.SimpleAlarmListener
 import com.mussonindustrial.ignition.embr.common.gson.addProperty
 import com.mussonindustrial.ignition.embr.common.logging.getLogger
@@ -30,12 +29,12 @@ class TagStreamManager(context: TagStreamGatewayContext) {
     private val sessions = hashMapOf<String, Session>()
     private val tagGson = TagGson.create()
 
-    fun createSession(paths: List<String>): Session {
-        return createSession(paths, SecurityContext.emptyContext())
+    fun createSession(tagPaths: List<TagPath>): Session {
+        return createSession(tagPaths, SecurityContext.emptyContext())
     }
 
-    fun createSession(paths: List<String>, securityContext: SecurityContext): Session {
-        val session = Session(paths, securityContext)
+    fun createSession(tagPaths: List<TagPath>, securityContext: SecurityContext): Session {
+        val session = Session(tagPaths, securityContext)
         sessions[session.id] = session
         updateMetrics()
         return session
@@ -65,14 +64,12 @@ class TagStreamManager(context: TagStreamGatewayContext) {
         systemTags.sessionCountUnconnected = sessions.count { (_, session) -> !session.opened.plain }
     }
 
-    inner class Session(paths: List<String>, val securityContext: SecurityContext): EventSource {
+    inner class Session(tagPaths: List<TagPath>, val securityContext: SecurityContext): EventSource {
         private val logger = this.getLogger()
         val id = UUID.randomUUID().toString()
         val opened = AtomicBoolean(false)
 
-        private val tagPaths = paths.map { TagPathParser.parse(it) }
-        private val tagIds = tagPaths.withIndex().associate { it.value to it.index}
-        private val tagListeners = tagIds.map { TagListener(it.value, it.key) }
+        private val tagListeners = tagPaths.withIndex().map { TagListener(it.index, it.value) }
 
         private val serializer = JsonSerializer<Session> { _, _, context ->
             JsonObject().apply {

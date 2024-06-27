@@ -3,6 +3,8 @@ package com.mussonindustrial.ignition.embr.tagstream.servlets
 import com.inductiveautomation.ignition.common.gson.JsonObject
 import com.inductiveautomation.ignition.common.gson.JsonParser
 import com.inductiveautomation.ignition.common.tags.model.SecurityContext
+import com.inductiveautomation.ignition.common.tags.model.TagPath
+import com.inductiveautomation.ignition.common.tags.paths.parser.TagPathParser
 import com.inductiveautomation.ignition.common.user.BasicAuthChallenge
 import com.inductiveautomation.ignition.common.util.asStringOrNull
 import com.mussonindustrial.ignition.embr.common.logging.getLogger
@@ -51,7 +53,7 @@ class TagStreamManagerServlet: HttpServlet() {
         val username: String?,
         val password: String?,
         val perspectiveSessionId: String?,
-        val tagPaths: List<String>,
+        val tagPaths: List<TagPath>,
     )
 
     private fun getPerspectiveSecurityContext(sessionId: String): SecurityContext? {
@@ -92,7 +94,7 @@ class TagStreamManagerServlet: HttpServlet() {
             val username = json.get("username")?.asStringOrNull()
             val password = json.get("password")?.asStringOrNull()
             val perspectiveSessionId = json.get("perspective_session_id")?.asStringOrNull()
-            val paths = json.getAsJsonArray("tag_paths").map { it.asString }
+            val paths = json.getAsJsonArray("tag_paths").map { TagPathParser.parse(it.asString) }
             body = RequestBody(username, password, perspectiveSessionId, paths)
 
         } catch (e: Throwable) {
