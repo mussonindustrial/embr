@@ -3,8 +3,8 @@ package com.mussonindustrial.ignition.embr.tagstream
 import com.inductiveautomation.ignition.common.QualifiedPath
 import com.inductiveautomation.ignition.common.alarming.AlarmEvent
 import com.inductiveautomation.ignition.common.alarming.EventData
-import com.inductiveautomation.ignition.common.gson.JsonArray
-import com.inductiveautomation.ignition.common.gson.JsonObject
+import com.inductiveautomation.ignition.common.auth.security.level.SecurityLevelConfig
+import com.inductiveautomation.ignition.common.gson.*
 import com.inductiveautomation.ignition.common.tags.config.TagGson
 import com.inductiveautomation.ignition.common.tags.model.SecurityContext
 import com.inductiveautomation.ignition.common.tags.model.TagPath
@@ -27,8 +27,8 @@ class TagStreamManager(context: TagStreamGatewayContext) {
     private val tagManager = context.tagManager
     private val alarmManager = context.alarmManager
     private val systemTags = context.tagStreamSystemTagsProvider
-    private val unconnectedSessions = hashMapOf<String, Session>()
-    private val connectedSessions = hashMapOf<String, Session>()
+    private val sessions = hashMapOf<String, Session>()
+    private val tagGson = TagGson.create()
 
     fun createSession(paths: List<String>): Session {
         return createSession(paths, SecurityContext.emptyContext())
@@ -36,48 +36,59 @@ class TagStreamManager(context: TagStreamGatewayContext) {
 
     fun createSession(paths: List<String>, securityContext: SecurityContext): Session {
         val session = Session(paths, securityContext)
-        unconnectedSessions[session.id] = session
+        sessions[session.id] = session
         updateMetrics()
         return session
     }
 
     fun joinSession(id: String): Session? {
-        val stream = unconnectedSessions.remove(id)
-        stream?.let {
-            connectedSessions[id] = stream
-        }
+        val stream = sessions[id]
+        if (stream?.opened?.get() == true) return null
         updateMetrics()
         return stream
     }
 
     fun removeSession(session: Session) {
-        unconnectedSessions.remove(session.id)
-        connectedSessions.remove(session.id)?.close()
+        sessions.remove(session.id)?.close()
         updateMetrics()
     }
 
     fun closeAllSessions() {
         logger.debug("Closing all sessions.")
-        unconnectedSessions.clear()
-        connectedSessions.values.forEach { it.close() }
-        connectedSessions.clear()
+        sessions.values.forEach { it.close() }
+        sessions.clear()
         updateMetrics()
     }
 
     private fun updateMetrics() {
-        systemTags.sessionCountConnected = connectedSessions.size
-        systemTags.sessionCountUnconnected = unconnectedSessions.size
+        systemTags.sessionCountConnected = sessions.count { (_, session) -> session.opened.plain }
+        systemTags.sessionCountUnconnected = sessions.count { (_, session) -> !session.opened.plain }
     }
 
     inner class Session(paths: List<String>, val securityContext: SecurityContext): EventSource {
         private val logger = this.getLogger()
         val id = UUID.randomUUID().toString()
-        private var opened = AtomicBoolean(false)
+        val opened = AtomicBoolean(false)
 
         private val tagPaths = paths.map { TagPathParser.parse(it) }
         private val tagIds = tagPaths.withIndex().associate { it.value to it.index}
         private val tagListeners = tagIds.map { TagListener(it.value, it.key) }
-        private val tagGson = TagGson.create()
+
+        private val serializer = JsonSerializer<Session> { _, _, context ->
+            JsonObject().apply {
+                addProperty("session_id", id)
+                add("security_context", context.serialize(securityContext))
+                add("tags", context.serialize(tagListeners))
+            }
+        }
+        private val tagListenerSerializer = JsonSerializer<TagListener> { tagListener, _, _ ->  tagListener.toGson() }
+        private val gsonAdapter: Gson = GsonBuilder().apply {
+            registerTypeAdapter(Session::class.java, serializer)
+            registerTypeAdapter(SecurityContext::class.java, SecurityContext.GsonAdapter())
+            registerTypeAdapter(SecurityLevelConfig::class.java, SecurityLevelConfig.GsonAdapter(true))
+            registerTypeAdapter(TagListener::class.java, tagListenerSerializer)
+        }.create()
+        fun toGson(): JsonObject = this.gsonAdapter.toJsonTree(this).asJsonObject
 
         private var emitter: EventSource.Emitter? = null
 
@@ -85,29 +96,14 @@ class TagStreamManager(context: TagStreamGatewayContext) {
             logger.warn("Session {} timed out before a connection was established.", id)
             removeSession(this) }, 30, TimeUnit.SECONDS)
 
-        val sessionInfo = JsonObject().let { json ->
-            json.addProperty("session_id", id)
-
-            val tags = JsonArray()
-            this.tagListeners.forEach { listener ->
-                val tag = JsonObject()
-                tag.addProperty("tag_path", listener.tagPath.toString())
-                tag.addProperty("alarm_path", listener.alarmPath.toString())
-                tag.addProperty("tag_id", listener.id)
-                tags.add(tag)
-            }
-            json.add("tags", tags)
-            return@let json
-        }
-
         override fun onOpen(emitter: EventSource.Emitter) {
             logger.debug("Opening session {}", id)
-            logger.trace("Connected Sessions: ${connectedSessions.size}")
+            logger.trace("Connected Sessions: ${systemTags.sessionCountConnected}")
             doTimeout.cancel(true)
             opened.set(true)
 
             this.emitter = emitter
-            emitter.event("session_open", sessionInfo.toString())
+            emitter.event("session_open", toGson().toString())
 
             tagListeners.forEach { it.subscribe() }
         }
@@ -140,6 +136,51 @@ class TagStreamManager(context: TagStreamGatewayContext) {
                 .build()
             private var subscribed = AtomicBoolean(false)
 
+            private val serializer = JsonSerializer<TagListener> { tagListener, _, _ ->
+                JsonObject().apply {
+                    addProperty("tag_id", tagListener.id)
+                    addProperty("alarm_path", tagListener.alarmPath.toString())
+                    addProperty("tag_path",  tagListener.tagPath.toString())
+                }
+            }
+            private val tagChangeEventSerializer = JsonSerializer<TagChangeEvent> { event, _, _ ->
+                (tagGson.toJsonTree(event.value) as JsonObject).apply {
+                    addProperty("tag_id", id)
+                    add("v", remove("value"))
+                    add("t", remove("timestamp"))
+                    add("q", remove("quality"))
+                }
+            }
+            private val alarmEventSerializer = JsonSerializer<AlarmEvent> { event, _, _ ->
+                JsonObject().apply {
+                    addProperty("tag_id", id)
+                    addProperty("count", event.count)
+                    addProperty("displayPath", event.displayPath.toString())
+                    addProperty(
+                        "eventData",
+                        event.ackData ?: event.activeData ?: event.clearedData ?: EventData()
+                    )
+                    addProperty("extension", event.extension)
+                    addProperty("id", event.id.toString())
+                    addProperty("isAcked", event.isAcked)
+                    addProperty("isCleared", event.isCleared)
+                    addProperty("isShelved", event.isShelved)
+                    addProperty("label", event.label)
+                    addProperty("name", event.name)
+                    addProperty("notes", event.notes)
+                    addProperty("priority", event.priority.toString())
+                    addProperty("source", event.source.toString())
+                    addProperty("state", event.state.toString())
+                    addProperty("values", event.values)
+                }
+            }
+            private val gsonAdapter: Gson = GsonBuilder().apply {
+                registerTypeAdapter(TagListener::class.java, serializer)
+                registerTypeAdapter(TagChangeEvent::class.java, tagChangeEventSerializer)
+                registerTypeAdapter(AlarmEvent::class.java, alarmEventSerializer)
+            }.create()
+            fun toGson(): JsonObject = this.gsonAdapter.toJsonTree(this).asJsonObject
+
             private fun closeOnException(runnable: () -> Unit) {
                 try {
                     runnable()
@@ -170,14 +211,7 @@ class TagStreamManager(context: TagStreamGatewayContext) {
             override fun tagChanged(event: TagChangeEvent) {
                 logger.trace("session: {}, tagChanged: {}", this@Session.id, event)
                 closeOnException {
-                    val data = tagGson.toJsonTree(event.value)
-                    (data as JsonObject).let {
-                        it.addProperty("tag_id", id)
-                        it.add("v", it.remove("value"))
-                        it.add("t", it.remove("timestamp"))
-                        it.add("q", it.remove("quality"))
-                    }
-                    emitter?.event("tag_change", data.toString())
+                    emitter?.event("tag_change", this.gsonAdapter.toJson(event))
                 }
             }
 
@@ -187,34 +221,13 @@ class TagStreamManager(context: TagStreamGatewayContext) {
 
             override fun onAlarmEvent(event: AlarmEvent) {
                 logger.trace("session: {}, alarmEvent: {}", this@Session.id, event)
-
                 closeOnException {
-                    val data = JsonObject()
-                    data.let {
-                        it.addProperty("tag_id", id)
-                        it.addProperty("count", event.count)
-                        it.addProperty("displayPath", event.displayPath.toString())
-                        it.addProperty(
-                            "eventData",
-                            event.ackData ?: event.activeData ?: event.clearedData ?: EventData()
-                        )
-                        it.addProperty("extension", event.extension)
-                        it.addProperty("id", event.id.toString())
-                        it.addProperty("isAcked", event.isAcked)
-                        it.addProperty("isCleared", event.isCleared)
-                        it.addProperty("isShelved", event.isShelved)
-                        it.addProperty("label", event.label)
-                        it.addProperty("name", event.name)
-                        it.addProperty("notes", event.notes)
-                        it.addProperty("priority", event.priority.toString())
-                        it.addProperty("source", event.source.toString())
-                        it.addProperty("state", event.state.toString())
-                        it.addProperty("values", event.values)
-                    }
-                    emitter?.event("alarm_event", data.toString())
+                    emitter?.event("alarm_event", this.gsonAdapter.toJson(event))
                 }
             }
         }
+
+
     }
 }
 

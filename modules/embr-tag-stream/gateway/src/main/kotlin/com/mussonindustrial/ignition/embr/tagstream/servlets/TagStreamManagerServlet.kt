@@ -124,12 +124,12 @@ class TagStreamManagerServlet: HttpServlet() {
 
         if (securityContext !== null) {
             val session = tagStreamManager.createSession(body.tagPaths, securityContext)
-            logger.trace("Authenticated Session {} created: {}", session.id, securityContext)
-            response.sendSuccess(session.sessionInfo)
+            logger.trace("Authenticated Session {} created.", session.id)
+            response.sendSuccess(session.toGson())
         } else {
             val session = tagStreamManager.createSession(body.tagPaths)
             logger.trace("Anonymous Session {} created.", session.id)
-            response.sendSuccess(session.sessionInfo)
+            response.sendSuccess(session.toGson())
         }
     }
 }
