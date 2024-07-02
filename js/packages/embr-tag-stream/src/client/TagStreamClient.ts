@@ -1,51 +1,27 @@
-export type TagConfig = {
-    tag_id: number
-    tag_path: string
-    alarm_path: string
-}
-
-export type SessionInfo = {
-    session_id: string
-    tags: TagConfig[]
-}
+import {
+    AlarmEventCallback,
+    AlarmEventData,
+    AuthRequest,
+    EventCallback,
+    RawTagChangeData,
+    SessionInfo,
+    TagChangeCallback,
+    TagChangeData,
+} from './types'
 
 type SubscribeResponse = {
     status: string
     data: SessionInfo
 }
 
-export type TagChangeData = {
-    quality: number
-    value: number
-    timestamp: number
-}
-
-export type RawTagChangeData = {
-    tag_id: number
-    q: number
-    v: number
-    t: number
-}
-
-export type TagChangeEvent = { tag: TagConfig; data: TagChangeData }
-export type TagChangeCallback = (event: TagChangeEvent) => void
-
-export type AlarmEventData = Record<string, unknown> & {
-    tag_id: number
-}
-export type AlarmEvent = { tag: TagConfig; data: AlarmEventData }
-export type AlarmEventCallback = (event: AlarmEvent) => void
-
-export type EventCallback = (event: Event) => void
-
 export class TagStreamClient {
     url: string
     eventSource?: EventSource
     sessionInfo?: SessionInfo
-    extraBody?: Record<string, string>
+    auth?: AuthRequest
 
-    constructor(url?: string, extraBody?: Record<string, string>) {
-        this.extraBody = extraBody
+    constructor(url?: string, auth?: AuthRequest) {
+        this.auth = auth
         if (url === undefined) {
             this.url = '/embr/tag/stream/session'
         } else {
@@ -81,7 +57,7 @@ export class TagStreamClient {
         this.close()
 
         const requestBody = JSON.stringify({
-            ...this.extraBody,
+            auth: this.auth,
             tag_paths: tags,
         })
 

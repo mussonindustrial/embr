@@ -1,9 +1,5 @@
-import {
-    TagChangeCallback,
-    TagChangeData,
-    TagChangeEvent,
-    TagStreamClient,
-} from './TagStreamClient'
+import { TagStreamClient } from './TagStreamClient'
+import { TagChangeCallback, TagChangeData, TagChangeEvent } from './types'
 
 export type TagChangeEventLog = TagChangeData[]
 export type TagChangeBuffer = TagChangeEventLog[]

@@ -10,6 +10,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     function getUserInfo() {
         return {
+            type: 'basic',
             username: document.getElementById('username').value,
             password: document.getElementById('password').value
         }
@@ -70,7 +71,7 @@ document.addEventListener("DOMContentLoaded", function() {
         // Create the body of the session request.
         const requestBody = JSON.stringify({
             tag_paths: subscribedTags,
-            ...getUserInfo()
+            auth: getUserInfo()
         })
         console.log(`post-body: ${requestBody}`)
 

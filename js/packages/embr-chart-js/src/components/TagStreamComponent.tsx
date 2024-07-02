@@ -91,7 +91,8 @@ export function TagStreamComponent(props: ComponentProps<TagStreamChartProps>) {
 
     const client = useRef<BufferedTagStreamClient>(
         new BufferedTagStreamClient(undefined, {
-            perspective_session_id: window.__client!.sessionId!,
+            type: 'perspective',
+            session_id: window.__client!.sessionId!,
         })
     )
     const chartData = useRef<TagStreamChartData[]>([])

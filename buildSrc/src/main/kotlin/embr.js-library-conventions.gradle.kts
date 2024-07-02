@@ -29,6 +29,7 @@ node {
     npmWorkDir = file("${rootProject.projectDir}/.gradle/npm")
     yarnWorkDir = file("${rootProject.projectDir}/.gradle/yarn")
     distBaseUrl.set("https://nodejs.org/dist")
+
 }
 
 java {

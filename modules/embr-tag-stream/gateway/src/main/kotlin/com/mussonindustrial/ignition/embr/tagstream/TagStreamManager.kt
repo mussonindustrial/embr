@@ -66,6 +66,7 @@ class TagStreamManager(context: TagStreamGatewayContext) {
 
     inner class Session(tagPaths: List<TagPath>, val securityContext: SecurityContext): EventSource {
         private val logger = this.getLogger()
+        private var emitter: EventSource.Emitter? = null
         val id = UUID.randomUUID().toString()
         val opened = AtomicBoolean(false)
 
@@ -79,15 +80,13 @@ class TagStreamManager(context: TagStreamGatewayContext) {
             }
         }
         private val tagListenerSerializer = JsonSerializer<TagListener> { tagListener, _, _ ->  tagListener.toGson() }
-        private val gsonAdapter: Gson = GsonBuilder().apply {
-            registerTypeAdapter(Session::class.java, serializer)
-            registerTypeAdapter(SecurityContext::class.java, SecurityContext.GsonAdapter())
-            registerTypeAdapter(SecurityLevelConfig::class.java, SecurityLevelConfig.GsonAdapter(true))
-            registerTypeAdapter(TagListener::class.java, tagListenerSerializer)
-        }.create()
+        private val gsonAdapter: Gson = GsonBuilder()
+            .registerTypeAdapter(Session::class.java, serializer)
+            .registerTypeAdapter(SecurityContext::class.java, SecurityContext.GsonAdapter())
+            .registerTypeAdapter(SecurityLevelConfig::class.java, SecurityLevelConfig.GsonAdapter(true))
+            .registerTypeAdapter(TagListener::class.java, tagListenerSerializer)
+            .create()
         fun toGson(): JsonObject = this.gsonAdapter.toJsonTree(this).asJsonObject
-
-        private var emitter: EventSource.Emitter? = null
 
         private val doTimeout = executionManager.executeOnce({
             logger.warn("Session {} timed out before a connection was established.", id)
@@ -171,11 +170,11 @@ class TagStreamManager(context: TagStreamGatewayContext) {
                     addProperty("values", event.values)
                 }
             }
-            private val gsonAdapter: Gson = GsonBuilder().apply {
-                registerTypeAdapter(TagListener::class.java, serializer)
-                registerTypeAdapter(TagChangeEvent::class.java, tagChangeEventSerializer)
-                registerTypeAdapter(AlarmEvent::class.java, alarmEventSerializer)
-            }.create()
+            private val gsonAdapter: Gson = GsonBuilder()
+                .registerTypeAdapter(TagListener::class.java, serializer)
+                .registerTypeAdapter(TagChangeEvent::class.java, tagChangeEventSerializer)
+                .registerTypeAdapter(AlarmEvent::class.java, alarmEventSerializer)
+                .create()
             fun toGson(): JsonObject = this.gsonAdapter.toJsonTree(this).asJsonObject
 
             private fun closeOnException(runnable: () -> Unit) {

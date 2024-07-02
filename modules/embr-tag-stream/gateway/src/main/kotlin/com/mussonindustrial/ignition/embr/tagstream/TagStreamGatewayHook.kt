@@ -4,6 +4,7 @@ import com.inductiveautomation.ignition.common.licensing.LicenseState
 import com.inductiveautomation.ignition.gateway.model.AbstractGatewayModuleHook
 import com.inductiveautomation.ignition.gateway.model.GatewayContext
 import com.mussonindustrial.ignition.embr.common.logging.getLogger
+import com.mussonindustrial.ignition.embr.tagstream.servlets.TagHistoryServlet
 import com.mussonindustrial.ignition.embr.tagstream.servlets.TagStreamSessionServlet
 import com.mussonindustrial.ignition.embr.tagstream.servlets.TagStreamManagerServlet
 import java.util.*
@@ -24,6 +25,7 @@ class TagStreamGatewayHook : AbstractGatewayModuleHook() {
         logger.info("Embr Tag Stream module started.")
         context.servletManager.addServlet("/session", TagStreamManagerServlet::class.java)
         context.servletManager.addServlet("/session/*", TagStreamSessionServlet::class.java)
+        context.servletManager.addServlet("/history", TagHistoryServlet::class.java)
     }
 
     override fun shutdown() {
