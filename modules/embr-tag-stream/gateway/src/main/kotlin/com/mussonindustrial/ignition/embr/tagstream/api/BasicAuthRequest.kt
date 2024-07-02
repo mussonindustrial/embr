@@ -31,7 +31,7 @@ data class BasicAuthRequest(val username: String, val password: String): AuthReq
         }
     }
 
-    override fun getSecurityContext(context: TagStreamGatewayContext): SecurityContext? {
+    override fun getSecurityContext(context: TagStreamGatewayContext): SecurityContext {
         val challenge = BasicAuthChallenge(username, password)
         val user = context.userSourceProfile.authenticate(challenge)
         return SecurityContext.fromAuthenticatedUser(user)

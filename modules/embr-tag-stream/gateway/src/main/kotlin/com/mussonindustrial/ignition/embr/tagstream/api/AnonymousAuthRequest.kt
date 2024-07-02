@@ -27,7 +27,7 @@ class AnonymousAuthRequest: AuthRequest {
         }
     }
 
-    override fun getSecurityContext(context: TagStreamGatewayContext): SecurityContext? {
+    override fun getSecurityContext(context: TagStreamGatewayContext): SecurityContext {
         return SecurityContext.emptyContext()
     }
 }

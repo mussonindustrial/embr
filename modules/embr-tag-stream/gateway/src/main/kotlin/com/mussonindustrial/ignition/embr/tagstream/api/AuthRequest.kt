@@ -39,6 +39,6 @@ sealed interface AuthRequest {
             .create()
     }
 
-    fun getSecurityContext(context: TagStreamGatewayContext): SecurityContext?
+    fun getSecurityContext(context: TagStreamGatewayContext): SecurityContext
 
 }
