@@ -60,8 +60,8 @@ export class TagStreamClient {
             auth: this.auth,
             tags: {
                 paths: tags,
-                events: ["tag_change", "alarm_event"]
-            }
+                events: ['tag_change', 'alarm_event'],
+            },
         })
 
         const response = await fetch(this.url, {
