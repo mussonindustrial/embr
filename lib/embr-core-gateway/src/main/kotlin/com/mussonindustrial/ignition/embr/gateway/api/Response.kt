@@ -19,6 +19,19 @@ fun <T: HttpServletResponse> T.sendSuccess(data: JsonElement) {
     }
 }
 
+fun <T: HttpServletResponse> T.sendSuccess() {
+    val json = JsonObject()
+    json.addProperty("status", "success")
+
+    apply {
+        status = HttpServletResponse.SC_OK
+        contentType = "application/json"
+        characterEncoding = UTF_8.toString()
+        writer.println(json.toString())
+        writer.close()
+    }
+}
+
 fun <T: HttpServletResponse> T.sendError(message: String) {
     val json = JsonObject()
     json.addProperty("status", "error")

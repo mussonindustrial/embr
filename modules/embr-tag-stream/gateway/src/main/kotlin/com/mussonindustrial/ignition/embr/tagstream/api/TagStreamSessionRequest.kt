@@ -9,7 +9,7 @@ import java.lang.reflect.Type
 data class TagStreamSessionRequest(val auth: AuthRequest, val tagPaths: List<TagPath>) {
 
     companion object {
-        val gsonSerializer = object : JsonSerializable<TagStreamSessionRequest> {
+        val gsonAdapter = object : JsonSerializable<TagStreamSessionRequest> {
             override fun serialize(request: TagStreamSessionRequest, type: Type, serializationContext: JsonSerializationContext): JsonElement {
                 return JsonObject().apply {
                     add("auth", serializationContext.serialize(request.auth))
@@ -26,11 +26,12 @@ data class TagStreamSessionRequest(val auth: AuthRequest, val tagPaths: List<Tag
             }
         }
 
-        val gsonAdapter: Gson = GsonBuilder()
-            .registerTypeAdapter(TagStreamSessionRequest::class.java, gsonSerializer)
-            .registerTypeAdapter(AuthRequest::class.java, AuthRequest.gsonSerializer)
-            .registerTypeAdapter(BasicAuthRequest::class.java, BasicAuthRequest.gsonSerializer)
-            .registerTypeAdapter(PerspectiveAuthRequest::class.java, PerspectiveAuthRequest.gsonSerializer)
+        val gson: Gson = GsonBuilder()
+            .registerTypeAdapter(TagStreamSessionRequest::class.java, this.gsonAdapter)
+            .registerTypeAdapter(AuthRequest::class.java, AuthRequest.gsonAdapter)
+            .registerTypeAdapter(AnonymousAuthRequest::class.java, AnonymousAuthRequest.gsonAdapter)
+            .registerTypeAdapter(BasicAuthRequest::class.java, BasicAuthRequest.gsonAdapter)
+            .registerTypeAdapter(PerspectiveAuthRequest::class.java, PerspectiveAuthRequest.gsonAdapter)
             .create()
     }
 }

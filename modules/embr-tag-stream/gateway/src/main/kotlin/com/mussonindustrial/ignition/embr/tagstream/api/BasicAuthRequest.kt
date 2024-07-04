@@ -3,16 +3,17 @@ package com.mussonindustrial.ignition.embr.tagstream.api
 import com.inductiveautomation.ignition.common.gson.*
 import com.inductiveautomation.ignition.common.tags.model.SecurityContext
 import com.inductiveautomation.ignition.common.user.BasicAuthChallenge
-import com.mussonindustrial.ignition.embr.common.gson.JsonSerializable
 import com.mussonindustrial.ignition.embr.tagstream.TagStreamGatewayContext
 import java.lang.reflect.Type
 
-data class BasicAuthRequest(val username: String, val password: String): AuthRequest {
+class BasicAuthRequest(val username: String, val password: String): AuthRequest {
 
-    override val type = "basic"
+    override val type: String = gsonAdapter.type
 
     companion object {
-        val gsonSerializer = object : JsonSerializable<BasicAuthRequest> {
+        val gsonAdapter = object : AuthRequestGsonAdapter<BasicAuthRequest> {
+            override val type = "basic"
+
             override fun serialize(request: BasicAuthRequest, type: Type, serializationContext: JsonSerializationContext): JsonElement {
                 return JsonObject().apply {
                     addProperty("type", request.type)
@@ -29,6 +30,7 @@ data class BasicAuthRequest(val username: String, val password: String): AuthReq
                 )
             }
         }
+
     }
 
     override fun getSecurityContext(context: TagStreamGatewayContext): SecurityContext {

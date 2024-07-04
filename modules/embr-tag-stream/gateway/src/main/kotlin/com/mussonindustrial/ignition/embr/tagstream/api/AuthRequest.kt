@@ -11,34 +11,28 @@ sealed interface AuthRequest {
     val type: String
 
     companion object {
-        val gsonSerializer = object : JsonSerializable<AuthRequest> {
+        val gsonAdapter = object : JsonSerializable<AuthRequest> {
             override fun serialize(request: AuthRequest, type: Type, serializationContext: JsonSerializationContext): JsonElement {
-                return when (request::class.java) {
-                    BasicAuthRequest::class.java -> serializationContext.serialize(request, BasicAuthRequest::class.java)
-                    PerspectiveAuthRequest::class.java -> serializationContext.serialize(request, PerspectiveAuthRequest::class.java)
-                    AnonymousAuthRequest::class.java -> serializationContext.serialize(request, PerspectiveAuthRequest::class.java)
-                    else -> serializationContext.serialize(request, AnonymousAuthRequest::class.java)
-                }
+                return serializationContext.serialize(request, request::class.java)
             }
 
             override fun deserialize(element: JsonElement, type: Type, deserializationContext: JsonDeserializationContext): AuthRequest {
                 val json = element.asJsonObject
-                return when (json.get("type").asString) {
-                    "basic" -> deserializationContext.deserialize(element, BasicAuthRequest::class.java)
-                    "perspective" -> deserializationContext.deserialize(element, PerspectiveAuthRequest::class.java)
-                    "anonymous" -> deserializationContext.deserialize(element, AnonymousAuthRequest::class.java)
-                    else -> deserializationContext.deserialize(element, AnonymousAuthRequest::class.java)
+                val clazz = when (json.get("type").asString) {
+                    BasicAuthRequest.gsonAdapter.type -> BasicAuthRequest::class.java
+                    PerspectiveAuthRequest.gsonAdapter.type -> PerspectiveAuthRequest::class.java
+                    AnonymousAuthRequest.gsonAdapter.type -> AnonymousAuthRequest::class.java
+                    else -> AnonymousAuthRequest::class.java
                 }
+                return deserializationContext.deserialize(element, clazz)
             }
         }
-
-        val gsonAdapter: Gson = GsonBuilder()
-            .registerTypeAdapter(BasicAuthRequest::class.java, BasicAuthRequest.gsonSerializer)
-            .registerTypeAdapter(PerspectiveAuthRequest::class.java, PerspectiveAuthRequest.gsonSerializer)
-            .registerTypeAdapter(AnonymousAuthRequest::class.java, AnonymousAuthRequest.gsonSerializer)
-            .create()
     }
 
     fun getSecurityContext(context: TagStreamGatewayContext): SecurityContext
 
+}
+
+interface AuthRequestGsonAdapter<T: AuthRequest>: JsonSerializable<T> {
+    val type: String
 }

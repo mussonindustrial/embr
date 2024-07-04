@@ -1,7 +1,6 @@
 package com.mussonindustrial.ignition.embr.tagstream.servlets
 
 import com.inductiveautomation.ignition.common.gson.JsonParser
-import com.inductiveautomation.ignition.common.tags.model.SecurityContext
 import com.inductiveautomation.ignition.common.util.fromJson
 import com.mussonindustrial.ignition.embr.common.logging.getLogger
 import com.mussonindustrial.ignition.embr.tagstream.TagStreamGatewayContext
@@ -31,7 +30,7 @@ class TagStreamManagerServlet: HttpServlet() {
         try {
             val json = JsonParser.parseReader(request.reader).asJsonObject
             logger.trace("Request body: {}", json)
-            sessionRequest = TagStreamSessionRequest.gsonAdapter.fromJson(json)
+            sessionRequest = TagStreamSessionRequest.gson.fromJson(json)
 
         } catch (e: Throwable) {
             logger.warn("Rejecting subscription request, malformed body.", e)

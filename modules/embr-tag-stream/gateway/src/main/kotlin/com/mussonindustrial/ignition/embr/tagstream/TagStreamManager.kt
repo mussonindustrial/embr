@@ -1,10 +1,13 @@
 package com.mussonindustrial.ignition.embr.tagstream
 
 import com.inductiveautomation.ignition.common.QualifiedPath
+import com.inductiveautomation.ignition.common.StreamingDataset
 import com.inductiveautomation.ignition.common.alarming.AlarmEvent
 import com.inductiveautomation.ignition.common.alarming.EventData
 import com.inductiveautomation.ignition.common.auth.security.level.SecurityLevelConfig
 import com.inductiveautomation.ignition.common.gson.*
+import com.inductiveautomation.ignition.common.sqltags.history.TagHistoryQueryParams
+import com.inductiveautomation.ignition.common.sqltags.history.cache.TagHistoryCache
 import com.inductiveautomation.ignition.common.tags.config.TagGson
 import com.inductiveautomation.ignition.common.tags.model.SecurityContext
 import com.inductiveautomation.ignition.common.tags.model.TagPath
@@ -18,6 +21,7 @@ import org.eclipse.jetty.servlets.EventSource
 import java.util.*
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
+import java.util.concurrent.atomic.AtomicLong
 
 class TagStreamManager(context: TagStreamGatewayContext) {
 
@@ -26,12 +30,15 @@ class TagStreamManager(context: TagStreamGatewayContext) {
     private val tagManager = context.tagManager
     private val alarmManager = context.alarmManager
     private val systemTags = context.tagStreamSystemTagsProvider
+    private val tagHistoryManager = context.tagHistoryManager
+    private val tagHistoryCache = TagHistoryCache()
+    private val tagHistoryQueryProvider = { params: TagHistoryQueryParams ->
+        val dataset = StreamingDataset()
+        tagHistoryManager.queryHistory(params, dataset)
+        dataset
+    }
     private val sessions = hashMapOf<String, Session>()
     private val tagGson = TagGson.create()
-
-    fun createSession(tagPaths: List<TagPath>): Session {
-        return createSession(tagPaths, SecurityContext.emptyContext())
-    }
 
     fun createSession(tagPaths: List<TagPath>, securityContext: SecurityContext): Session {
         val session = Session(tagPaths, securityContext)
@@ -40,11 +47,17 @@ class TagStreamManager(context: TagStreamGatewayContext) {
         return session
     }
 
-    fun joinSession(id: String): Session? {
-        val stream = sessions[id]
-        if (stream?.opened?.get() == true) return null
+    fun getUnopenedSession(id: String): Session? {
+        val session = sessions[id]
+        if (session?.opened?.get() == true) return null
         updateMetrics()
-        return stream
+        return session
+    }
+
+    fun getSession(id: String): Session? {
+        val session = sessions[id]
+        updateMetrics()
+        return session
     }
 
     fun removeSession(session: Session) {
@@ -70,23 +83,24 @@ class TagStreamManager(context: TagStreamGatewayContext) {
         val id = UUID.randomUUID().toString()
         val opened = AtomicBoolean(false)
 
-        private val tagListeners = tagPaths.withIndex().map { TagListener(it.index, it.value) }
+        val tagListeners = tagPaths.withIndex().map { TagListener(it.index, it.value) }
+        val tagHistoryClient = TagHistoryClient()
 
-        private val serializer = JsonSerializer<Session> { _, _, context ->
+        private val gsonAdapter = JsonSerializer<Session> { _, _, context ->
             JsonObject().apply {
                 addProperty("session_id", id)
                 add("security_context", context.serialize(securityContext))
                 add("tags", context.serialize(tagListeners))
             }
         }
-        private val tagListenerSerializer = JsonSerializer<TagListener> { tagListener, _, _ ->  tagListener.toGson() }
-        private val gsonAdapter: Gson = GsonBuilder()
-            .registerTypeAdapter(Session::class.java, serializer)
+        private val tagListenerGsonAdapter = JsonSerializer<TagListener> { tagListener, _, _ ->  tagListener.toGson() }
+        private val gson: Gson = GsonBuilder()
+            .registerTypeAdapter(Session::class.java, gsonAdapter)
             .registerTypeAdapter(SecurityContext::class.java, SecurityContext.GsonAdapter())
             .registerTypeAdapter(SecurityLevelConfig::class.java, SecurityLevelConfig.GsonAdapter(true))
-            .registerTypeAdapter(TagListener::class.java, tagListenerSerializer)
+            .registerTypeAdapter(TagListener::class.java, tagListenerGsonAdapter)
             .create()
-        fun toGson(): JsonObject = this.gsonAdapter.toJsonTree(this).asJsonObject
+        fun toGson(): JsonObject = this.gson.toJsonTree(this).asJsonObject
 
         private val doTimeout = executionManager.executeOnce({
             logger.warn("Session {} timed out before a connection was established.", id)
@@ -122,6 +136,53 @@ class TagStreamManager(context: TagStreamGatewayContext) {
                 emitter = null
                 tagListeners.forEach { it.unsubscribe() }
                 removeSession(this)
+            }
+        }
+
+        inner class TagHistoryClient() {
+            private val messageId = AtomicLong(0)
+
+            private fun startMessage(size: Int): Long {
+                val id = messageId.incrementAndGet()
+                emitter?.event("tag_history_start", JsonObject().apply {
+                    addProperty("id", id)
+                    addProperty("size", size)
+                }.toString())
+                return id
+            }
+
+            private fun endMessage(id: Long) {
+                emitter?.event("tag_history_end", JsonObject().apply {
+                    addProperty("id", id)
+                }.toString())
+            }
+
+            private fun sendMessage(id: Long, timestamp: Long, values: List<Any>) {
+                val v = JsonArray()
+                values.forEach { v.add(it as Number) }
+
+                val json = JsonObject().apply {
+                    addProperty("id", id)
+                    addProperty("t", timestamp)
+                    add("v", v)
+                }
+                emitter?.event("tag_history", json.toString())
+            }
+
+            fun queryHistory(params: TagHistoryQueryParams) {
+                executionManager.executeOnce {
+                    val results = tagHistoryCache.query(tagHistoryQueryProvider, params)
+                    val id = startMessage(results.rowCount)
+                    for (row in 0 until results.rowCount) {
+                        val date = results.getValueAt(row, 0) as Date
+                        val values = mutableListOf<Number>()
+                        for (col in 1 until results.columnCount) {
+                            values.add(results.getValueAt(row, col) as Number)
+                        }
+                        sendMessage(id, date.time, values)
+                    }
+                    endMessage(id)
+                }
             }
         }
 

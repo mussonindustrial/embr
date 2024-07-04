@@ -1,16 +1,13 @@
 package com.mussonindustrial.ignition.embr.tagstream.servlets
 
-import com.inductiveautomation.ignition.common.StreamingDataset
-import com.inductiveautomation.ignition.common.TypeUtilities
 import com.inductiveautomation.ignition.common.gson.*
-import com.inductiveautomation.ignition.common.sqltags.history.TagHistoryQueryParams
-import com.inductiveautomation.ignition.common.sqltags.history.cache.TagHistoryCache
 import com.inductiveautomation.ignition.common.util.fromJson
 import com.mussonindustrial.ignition.embr.common.logging.getLogger
 import com.mussonindustrial.ignition.embr.gateway.api.sendError
 import com.mussonindustrial.ignition.embr.gateway.api.sendSuccess
 import com.mussonindustrial.ignition.embr.tagstream.TagStreamGatewayContext
 import com.mussonindustrial.ignition.embr.tagstream.api.TagHistoryRequest
+import com.mussonindustrial.ignition.embr.tagstream.history.TagStreamHistoryQueryParams
 import javax.servlet.http.HttpServlet
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
@@ -19,8 +16,7 @@ class TagHistoryServlet: HttpServlet() {
 
     private val logger = this.getLogger()
     private val context = TagStreamGatewayContext.INSTANCE
-    private val tagHistoryManager = context.tagHistoryManager
-    private val cache = TagHistoryCache()
+    private val tagStreamManager = context.tagStreamManager
 
     override fun doGet(request: HttpServletRequest, response: HttpServletResponse) {
         logger.trace("Get request received: {}", request)
@@ -35,7 +31,7 @@ class TagHistoryServlet: HttpServlet() {
         try {
             val json = JsonParser.parseReader(request.reader).asJsonObject
             logger.trace("Request body: {}", json)
-            tagHistoryRequest = TagHistoryRequest.gsonAdapter.fromJson(json)
+            tagHistoryRequest = TagHistoryRequest.gson.fromJson(json)
 
         } catch (e: Throwable) {
             logger.warn("Rejecting history request, malformed body.", e)
@@ -43,15 +39,17 @@ class TagHistoryServlet: HttpServlet() {
             return
         }
 
-        val doQuery = { params: TagHistoryQueryParams ->
-            val dataset = StreamingDataset()
-            tagHistoryManager.queryHistory(params, dataset)
-            dataset
+
+        val session = tagStreamManager.getSession(tagHistoryRequest.sessionId)
+        if (session == null) {
+            logger.warn("Request received for an invalid Session ID.")
+            response.sendError("invalid session")
+            return
         }
 
-        val results = cache.query(doQuery, tagHistoryRequest)
-        logger.trace("Tag history results {} retrieved.", results)
-
-        response.sendSuccess(TypeUtilities.datasetToGson(results))
+        logger.trace("Session {} was found. Requesting history for session.", session.id)
+        response.sendSuccess()
+        val params = TagStreamHistoryQueryParams(session, tagHistoryRequest)
+        session.tagHistoryClient.queryHistory(params)
     }
 }

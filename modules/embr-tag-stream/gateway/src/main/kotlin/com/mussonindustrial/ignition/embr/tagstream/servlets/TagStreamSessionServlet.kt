@@ -17,13 +17,13 @@ class TagStreamSessionServlet: EventSourceServlet() {
         val id = path.split("/").last()
         logger.trace("Session ID parsed as {}.", id)
 
-        val session = tagStreamManager.joinSession(id)
-        session?.let {
-            logger.trace("Session {} was found. Joining session.", id)
-            return it
+        val session = tagStreamManager.getUnopenedSession(id)
+        if (session == null) {
+            logger.warn("Request received for an invalid Session ID.")
+            return null
         }
 
-        logger.warn("Request received for an invalid Session ID.")
-        return null
+        logger.trace("Session {} was found. Joining session.", id)
+        return session
     }
 }
