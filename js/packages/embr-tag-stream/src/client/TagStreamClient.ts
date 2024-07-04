@@ -58,7 +58,10 @@ export class TagStreamClient {
 
         const requestBody = JSON.stringify({
             auth: this.auth,
-            tag_paths: tags,
+            tags: {
+                paths: tags,
+                events: ["tag_change", "alarm_event"]
+            }
         })
 
         const response = await fetch(this.url, {
