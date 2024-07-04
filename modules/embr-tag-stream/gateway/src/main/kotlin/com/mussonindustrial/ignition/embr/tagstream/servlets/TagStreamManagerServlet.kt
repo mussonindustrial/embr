@@ -39,7 +39,7 @@ class TagStreamManagerServlet: HttpServlet() {
         }
 
         val securityContext = sessionRequest.auth.getSecurityContext(context)
-        val session = tagStreamManager.createSession(sessionRequest.tagPaths, securityContext)
+        val session = tagStreamManager.createSession(sessionRequest.tags, securityContext)
         logger.trace("Session {} created with security context: {}", session.id, securityContext)
 
         response.sendSuccess(session.toGson())

@@ -14,11 +14,11 @@ class TagStreamHistoryQueryParams(
     private val request: TagHistoryRequest
 ): TagHistoryQueryParams {
     override fun getPaths(): List<TagPath> {
-        return session.tagListeners.map { it.tagPath }
+        return session.tags?.map { it.tagPath } ?: listOf()
     }
 
     override fun getAliases(): List<String> {
-        return session.tagListeners.map { it.id.toString() }
+        return session.tags?.map { it.id.toString() } ?: listOf()
     }
 
     override fun getStartDate(): Date {

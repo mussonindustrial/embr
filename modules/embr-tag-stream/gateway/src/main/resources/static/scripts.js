@@ -70,7 +70,10 @@ document.addEventListener("DOMContentLoaded", function() {
     
         // Create the body of the session request.
         const requestBody = JSON.stringify({
-            tag_paths: subscribedTags,
+            tags: {
+                paths: subscribedTags,
+                events: ["tag_change"]
+            },
             auth: getUserInfo()
         })
         console.log(`post-body: ${requestBody}`)

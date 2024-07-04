@@ -50,6 +50,6 @@ class TagHistoryServlet: HttpServlet() {
         logger.trace("Session {} was found. Requesting history for session.", session.id)
         response.sendSuccess()
         val params = TagStreamHistoryQueryParams(session, tagHistoryRequest)
-        session.tagHistoryClient.queryHistory(params)
+        session.queryHistory(params)
     }
 }

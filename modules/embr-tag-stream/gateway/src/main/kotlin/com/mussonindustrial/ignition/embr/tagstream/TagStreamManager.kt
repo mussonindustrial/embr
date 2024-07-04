@@ -16,6 +16,8 @@ import com.inductiveautomation.ignition.common.tags.model.event.TagChangeListene
 import com.mussonindustrial.ignition.embr.common.alarming.SimpleAlarmListener
 import com.mussonindustrial.ignition.embr.common.gson.addProperty
 import com.mussonindustrial.ignition.embr.common.logging.getLogger
+import com.mussonindustrial.ignition.embr.tagstream.session.TagEvent
+import com.mussonindustrial.ignition.embr.tagstream.session.TagSubscriptionProps
 import org.eclipse.jetty.io.EofException
 import org.eclipse.jetty.servlets.EventSource
 import java.util.*
@@ -40,8 +42,8 @@ class TagStreamManager(context: TagStreamGatewayContext) {
     private val sessions = hashMapOf<String, Session>()
     private val tagGson = TagGson.create()
 
-    fun createSession(tagPaths: List<TagPath>, securityContext: SecurityContext): Session {
-        val session = Session(tagPaths, securityContext)
+    fun createSession(tagSubscriptionsProps: TagSubscriptionProps?, securityContext: SecurityContext): Session {
+        val session = Session(tagSubscriptionsProps, securityContext)
         sessions[session.id] = session
         updateMetrics()
         return session
@@ -77,20 +79,20 @@ class TagStreamManager(context: TagStreamGatewayContext) {
         systemTags.sessionCountUnconnected = sessions.count { (_, session) -> !session.opened.plain }
     }
 
-    inner class Session(tagPaths: List<TagPath>, val securityContext: SecurityContext): EventSource {
+    inner class Session(private val tagSubscriptionsProps: TagSubscriptionProps?, val securityContext: SecurityContext): EventSource {
         private val logger = this.getLogger()
         private var emitter: EventSource.Emitter? = null
         val id = UUID.randomUUID().toString()
         val opened = AtomicBoolean(false)
 
-        val tagListeners = tagPaths.withIndex().map { TagListener(it.index, it.value) }
-        val tagHistoryClient = TagHistoryClient()
+        val tags = tagSubscriptionsProps?.paths?.withIndex()?.map { TagListener(it.index, it.value) }
+        private val tagHistoryClient = TagHistoryClient()
 
         private val gsonAdapter = JsonSerializer<Session> { _, _, context ->
             JsonObject().apply {
                 addProperty("session_id", id)
                 add("security_context", context.serialize(securityContext))
-                add("tags", context.serialize(tagListeners))
+                add("tags", context.serialize(tags))
             }
         }
         private val tagListenerGsonAdapter = JsonSerializer<TagListener> { tagListener, _, _ ->  tagListener.toGson() }
@@ -115,7 +117,7 @@ class TagStreamManager(context: TagStreamGatewayContext) {
             this.emitter = emitter
             emitter.event("session_open", toGson().toString())
 
-            tagListeners.forEach { it.subscribe() }
+            tags?.forEach { it.subscribe() }
         }
 
         override fun onClose() {
@@ -123,7 +125,7 @@ class TagStreamManager(context: TagStreamGatewayContext) {
                 logger.debug("Client initiated session close: {}", id)
                 doTimeout.cancel(true)
                 emitter = null
-                tagListeners.forEach { it.unsubscribe() }
+                tags?.forEach { it.unsubscribe() }
                 removeSession(this)
             }
         }
@@ -134,12 +136,18 @@ class TagStreamManager(context: TagStreamGatewayContext) {
                 doTimeout.cancel(true)
                 emitter?.close()
                 emitter = null
-                tagListeners.forEach { it.unsubscribe() }
+                tags?.forEach { it.unsubscribe() }
                 removeSession(this)
             }
         }
 
-        inner class TagHistoryClient() {
+        fun queryHistory(params: TagHistoryQueryParams) = tagHistoryClient.queryHistory(params)
+
+        fun isEventEnabled(eventType: TagEvent): Boolean {
+            return tagSubscriptionsProps?.events?.contains(eventType) == true
+        }
+
+        private inner class TagHistoryClient() {
             private val messageId = AtomicLong(0)
 
             private fun startMessage(size: Int): Long {
@@ -187,7 +195,7 @@ class TagStreamManager(context: TagStreamGatewayContext) {
         }
 
         inner class TagListener(val id: Int, val tagPath: TagPath): TagChangeListener, SimpleAlarmListener {
-            val alarmPath: QualifiedPath = QualifiedPath.Builder()
+            private val alarmPath: QualifiedPath = QualifiedPath.Builder()
                 .setProvider(tagPath.source)
                 .setTag(tagPath.toStringPartial())
                 .build()
@@ -253,15 +261,15 @@ class TagStreamManager(context: TagStreamGatewayContext) {
             fun subscribe() {
                 logger.trace("session: {}, subscribing to {} events.", this@Session.id, tagPath)
                 subscribed.set(true)
-                tagManager.subscribeAsync(tagPath, this)
-                alarmManager.addListener(alarmPath, this)
+                if (isEventEnabled(TagEvent.TagChange)) tagManager.subscribeAsync(tagPath, this)
+                if (isEventEnabled(TagEvent.AlarmEvent)) alarmManager.addListener(alarmPath, this)
             }
 
             fun unsubscribe() {
                 if (subscribed.getAndSet(false)) {
                     logger.trace("session: {}, unsubscribing from: {}", this@Session.id, tagPath)
-                    tagManager.unsubscribeAsync(tagPath, this)
-                    alarmManager.removeListener(alarmPath, this)
+                    if (isEventEnabled(TagEvent.TagChange)) tagManager.unsubscribeAsync(tagPath, this)
+                    if (isEventEnabled(TagEvent.AlarmEvent)) alarmManager.removeListener(alarmPath, this)
                 }
             }
 

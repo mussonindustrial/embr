@@ -9,7 +9,6 @@ import com.mussonindustrial.ignition.embr.tagstream.servlets.TagStreamSessionSer
 import com.mussonindustrial.ignition.embr.tagstream.servlets.TagStreamManagerServlet
 import java.util.*
 
-
 @Suppress("unused")
 class TagStreamGatewayHook : AbstractGatewayModuleHook() {
 
