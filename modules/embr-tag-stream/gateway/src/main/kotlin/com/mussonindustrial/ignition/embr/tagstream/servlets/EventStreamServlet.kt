@@ -1,23 +1,24 @@
 package com.mussonindustrial.ignition.embr.tagstream.servlets
 
 import com.mussonindustrial.ignition.embr.common.logging.getLogger
-import com.mussonindustrial.ignition.embr.tagstream.TagStreamGatewayContext
+import com.mussonindustrial.ignition.embr.tagstream.EventStreamGatewayContext
 import org.eclipse.jetty.servlets.EventSourceServlet
 import org.eclipse.jetty.servlets.EventSource
 import javax.servlet.http.HttpServletRequest
 
-class TagStreamSessionServlet: EventSourceServlet() {
+class EventStreamServlet: EventSourceServlet() {
     private val logger = this.getLogger()
-    private val tagStreamManager = TagStreamGatewayContext.INSTANCE.tagStreamManager
+    private val context = EventStreamGatewayContext.INSTANCE
+    private val eventStreamManager = context.eventStreamManager
 
     override fun newEventSource(request: HttpServletRequest): EventSource? {
-        logger.trace("TagStreamServlet request received at URL: {}", request.requestURI)
+        logger.trace("Request received at URL: {}", request.requestURI)
 
         val path = request.requestURI.substring(request.contextPath.length)
         val id = path.split("/").last()
         logger.trace("Session ID parsed as {}.", id)
 
-        val session = tagStreamManager.getUnopenedSession(id)
+        val session = eventStreamManager.getUnopenedSession(id)
         if (session == null) {
             logger.warn("Request received for an invalid Session ID.")
             return null

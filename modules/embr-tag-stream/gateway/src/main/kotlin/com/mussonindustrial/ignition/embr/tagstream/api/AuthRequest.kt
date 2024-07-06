@@ -3,7 +3,7 @@ package com.mussonindustrial.ignition.embr.tagstream.api
 import com.inductiveautomation.ignition.common.gson.*
 import com.inductiveautomation.ignition.common.tags.model.SecurityContext
 import com.mussonindustrial.ignition.embr.common.gson.JsonSerializable
-import com.mussonindustrial.ignition.embr.tagstream.TagStreamGatewayContext
+import com.mussonindustrial.ignition.embr.tagstream.EventStreamGatewayContext
 import java.lang.reflect.Type
 
 sealed interface AuthRequest {
@@ -29,7 +29,7 @@ sealed interface AuthRequest {
         }
     }
 
-    fun getSecurityContext(context: TagStreamGatewayContext): SecurityContext
+    fun getSecurityContext(context: EventStreamGatewayContext): SecurityContext
 
 }
 

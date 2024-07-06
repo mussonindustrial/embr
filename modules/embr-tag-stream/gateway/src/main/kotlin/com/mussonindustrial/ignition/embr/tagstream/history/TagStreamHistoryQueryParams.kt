@@ -5,20 +5,20 @@ import com.inductiveautomation.ignition.common.sqltags.history.ReturnFormat
 import com.inductiveautomation.ignition.common.sqltags.history.TagHistoryQueryParams
 import com.inductiveautomation.ignition.common.tags.model.TagPath
 import com.inductiveautomation.ignition.common.util.Flags
-import com.mussonindustrial.ignition.embr.tagstream.TagStreamManager
 import com.mussonindustrial.ignition.embr.tagstream.api.TagHistoryRequest
+import com.mussonindustrial.ignition.embr.tagstream.emitters.TagEmitter
 import java.util.*
 
 class TagStreamHistoryQueryParams(
-    private val session: TagStreamManager.Session,
+    private val tagEmitter: TagEmitter,
     private val request: TagHistoryRequest
 ): TagHistoryQueryParams {
     override fun getPaths(): List<TagPath> {
-        return session.tags?.map { it.tagPath } ?: listOf()
+        return tagEmitter.listeners.map { it.tagPath }
     }
 
     override fun getAliases(): List<String> {
-        return session.tags?.map { it.id.toString() } ?: listOf()
+        return tagEmitter.listeners.map { it.id.toString() }
     }
 
     override fun getStartDate(): Date {

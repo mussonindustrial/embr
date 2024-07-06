@@ -72,8 +72,9 @@ document.addEventListener("DOMContentLoaded", function() {
         const requestBody = JSON.stringify({
             tags: {
                 paths: subscribedTags,
-                events: ["tag_change"]
+                events: ['tag_change']
             },
+            license: { },
             auth: getUserInfo()
         })
         console.log(`post-body: ${requestBody}`)
@@ -92,11 +93,13 @@ document.addEventListener("DOMContentLoaded", function() {
             // Connect to the event source.
             const url = `/embr/tag/stream/session/${sessionInfo.data.session_id}`
             eventSource = new EventSource(url);
+            const tagEmitter = sessionInfo.data.emitters.tags
+            const tagListeners = tagEmitter.listeners
 
             // When a tag change occurs, display the tags new value.
             eventSource.addEventListener('tag_change', (e) => {
                 const tagChangeData = JSON.parse(e.data)
-                const tagPath = sessionInfo.data.tags[tagChangeData.tag_id].tag_path
+                const tagPath = tagListeners[tagChangeData.tag_id].tag_path
                 const tagDataString = JSON.stringify(tagChangeData)
                 displayTagData(tagPath, tagDataString)
             })

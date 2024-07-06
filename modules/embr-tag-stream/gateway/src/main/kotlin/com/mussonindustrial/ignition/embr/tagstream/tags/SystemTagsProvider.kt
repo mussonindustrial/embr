@@ -1,10 +1,10 @@
-package com.mussonindustrial.ignition.embr.tagstream
+package com.mussonindustrial.ignition.embr.tagstream.tags
 
 import com.inductiveautomation.ignition.common.model.values.QualityCode
 import com.inductiveautomation.ignition.common.sqltags.model.types.DataType
 import com.inductiveautomation.ignition.gateway.tags.model.GatewayTagManager
 
-class TagStreamSystemTagsProvider(private val tagManager: GatewayTagManager)  {
+class SystemTagsProvider(private val tagManager: GatewayTagManager)  {
     companion object {
         private const val PATH_SESSION_COUNT_UNCONNECTED = "Gateway/TagStream/Sessions/Unconnected"
         private const val PATH_SESSION_COUNT_CONNECTED = "Gateway/TagStream/Sessions/Connected"

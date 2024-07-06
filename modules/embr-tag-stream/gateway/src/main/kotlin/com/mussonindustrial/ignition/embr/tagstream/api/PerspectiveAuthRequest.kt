@@ -3,7 +3,7 @@ package com.mussonindustrial.ignition.embr.tagstream.api
 import com.inductiveautomation.ignition.common.gson.*
 import com.inductiveautomation.ignition.common.tags.model.SecurityContext
 import com.mussonindustrial.ignition.embr.common.logging.getLogger
-import com.mussonindustrial.ignition.embr.tagstream.TagStreamGatewayContext
+import com.mussonindustrial.ignition.embr.tagstream.EventStreamGatewayContext
 import java.lang.reflect.Type
 import java.util.*
 
@@ -33,7 +33,7 @@ class PerspectiveAuthRequest(val sessionId: String): AuthRequest {
 
     }
 
-    override fun getSecurityContext(context: TagStreamGatewayContext): SecurityContext {
+    override fun getSecurityContext(context: EventStreamGatewayContext): SecurityContext {
         return context.perspectiveContext?.run {
             logger.trace("Attempting to find Perspective Session {}...", sessionId)
             return sessionMonitor.findSession(UUID.fromString(sessionId))

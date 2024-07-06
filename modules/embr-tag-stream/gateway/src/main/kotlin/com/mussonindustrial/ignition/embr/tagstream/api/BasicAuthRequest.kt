@@ -3,7 +3,7 @@ package com.mussonindustrial.ignition.embr.tagstream.api
 import com.inductiveautomation.ignition.common.gson.*
 import com.inductiveautomation.ignition.common.tags.model.SecurityContext
 import com.inductiveautomation.ignition.common.user.BasicAuthChallenge
-import com.mussonindustrial.ignition.embr.tagstream.TagStreamGatewayContext
+import com.mussonindustrial.ignition.embr.tagstream.EventStreamGatewayContext
 import java.lang.reflect.Type
 
 class BasicAuthRequest(val username: String, val password: String): AuthRequest {
@@ -33,7 +33,7 @@ class BasicAuthRequest(val username: String, val password: String): AuthRequest 
 
     }
 
-    override fun getSecurityContext(context: TagStreamGatewayContext): SecurityContext {
+    override fun getSecurityContext(context: EventStreamGatewayContext): SecurityContext {
         val challenge = BasicAuthChallenge(username, password)
         val user = context.userSourceProfile.authenticate(challenge)
         return SecurityContext.fromAuthenticatedUser(user)

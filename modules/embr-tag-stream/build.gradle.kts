@@ -3,8 +3,8 @@ plugins {
 }
 
 ignitionModule {
-    name.set("Embr Tag Stream")
-    moduleDescription.set("Provides an API for streaming tag changes via SSE.")
+    name.set("Embr Event Stream")
+    moduleDescription.set("Provides an API for streaming events via SSE.")
     id.set("com.mussonindustrial.embr.tagstream")
     fileName.set("Embr-TagStream-module.modl")
     freeModule.set(true)
@@ -25,7 +25,7 @@ ignitionModule {
 
     hooks.putAll(
         mapOf(
-            "com.mussonindustrial.ignition.embr.tagstream.TagStreamGatewayHook" to "G"
+            "com.mussonindustrial.ignition.embr.tagstream.EventStreamGatewayHook" to "G"
         ),
     )
 }

@@ -3,19 +3,18 @@ package com.mussonindustrial.ignition.embr.tagstream.servlets
 import com.inductiveautomation.ignition.common.gson.JsonParser
 import com.inductiveautomation.ignition.common.util.fromJson
 import com.mussonindustrial.ignition.embr.common.logging.getLogger
-import com.mussonindustrial.ignition.embr.tagstream.TagStreamGatewayContext
-import com.mussonindustrial.ignition.embr.tagstream.api.TagStreamSessionRequest
+import com.mussonindustrial.ignition.embr.tagstream.EventStreamGatewayContext
+import com.mussonindustrial.ignition.embr.tagstream.api.EventStreamSessionRequest
 import com.mussonindustrial.ignition.embr.gateway.api.sendSuccess
 import com.mussonindustrial.ignition.embr.gateway.api.sendError
 import javax.servlet.http.HttpServlet
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
-class TagStreamManagerServlet: HttpServlet() {
-
+class EventStreamSessionServlet: HttpServlet() {
     private val logger = this.getLogger()
-    private val context = TagStreamGatewayContext.INSTANCE
-    private val tagStreamManager = context.tagStreamManager
+    private val context = EventStreamGatewayContext.INSTANCE
+    private val eventStreamManager = context.eventStreamManager
 
     override fun doPost(request: HttpServletRequest, response: HttpServletResponse) {
         logger.trace("Post request received: {}", request)
@@ -26,11 +25,18 @@ class TagStreamManagerServlet: HttpServlet() {
             return
         }
 
-        val sessionRequest: TagStreamSessionRequest
+        val sessionRequest: EventStreamSessionRequest
         try {
             val json = JsonParser.parseReader(request.reader).asJsonObject
             logger.trace("Request body: {}", json)
-            sessionRequest = TagStreamSessionRequest.gson.fromJson(json)
+            sessionRequest = EventStreamSessionRequest.gson.fromJson(json)
+
+            val securityContext = sessionRequest.auth.getSecurityContext(context)
+
+            val session = eventStreamManager.createSession(sessionRequest.subscriptionProps, securityContext)
+            logger.trace("Session {} created with security context: {}", session.id, securityContext)
+            response.sendSuccess(session.toGson())
+            return
 
         } catch (e: Throwable) {
             logger.warn("Rejecting subscription request, malformed body.", e)
@@ -38,10 +44,5 @@ class TagStreamManagerServlet: HttpServlet() {
             return
         }
 
-        val securityContext = sessionRequest.auth.getSecurityContext(context)
-        val session = tagStreamManager.createSession(sessionRequest.tags, securityContext)
-        logger.trace("Session {} created with security context: {}", session.id, securityContext)
-
-        response.sendSuccess(session.toGson())
     }
 }

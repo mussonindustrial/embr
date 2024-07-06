@@ -7,14 +7,15 @@ import com.inductiveautomation.perspective.gateway.api.PerspectiveContext
 import com.mussonindustrial.ignition.embr.gateway.EmbrGatewayContext
 import com.mussonindustrial.ignition.embr.gateway.EmbrGatewayContextImpl
 import com.mussonindustrial.ignition.embr.servlets.ModuleServletManager
+import com.mussonindustrial.ignition.embr.tagstream.tags.SystemTagsProvider
 
-data class TagStreamGatewayContext(val context: GatewayContext): EmbrGatewayContext by EmbrGatewayContextImpl(context) {
+data class EventStreamGatewayContext(val context: GatewayContext): EmbrGatewayContext by EmbrGatewayContextImpl(context) {
 
     companion object {
-        lateinit var INSTANCE: TagStreamGatewayContext
+        lateinit var INSTANCE: EventStreamGatewayContext
     }
-    val tagStreamSystemTagsProvider = TagStreamSystemTagsProvider(context.tagManager)
-    val tagStreamManager = TagStreamManager(this)
+    val systemTagsProvider = SystemTagsProvider(context.tagManager)
+    val eventStreamManager = EventStreamManager(this)
     val servletManager = ModuleServletManager(context.webResourceManager, Meta.urlAlias)
     val perspectiveContext: PerspectiveContext?
     val userSourceProfile: UserSourceProfile = context.userSourceManager.getProfile("tag-stream")
