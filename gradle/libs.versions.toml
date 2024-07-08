@@ -10,7 +10,7 @@ jetty = "10.0.21"
 kotlin = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 modl = { id = "io.ia.sdk.modl", version = "0.3.0" }
 ktlint = { id = "org.jlleitschuh.gradle.ktlint", version = "12.1.1" }
-axion-release = { id = "pl.allegro.tech.build.axion-release", version = "1.17.2"}
+axion-release = { id = "pl.allegro.tech.build.axion-release", version = "1.18.0"}
 
 [libraries]
 kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
