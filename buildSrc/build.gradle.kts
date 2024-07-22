@@ -15,7 +15,7 @@ dependencies {
     implementation("com.github.node-gradle:gradle-node-plugin:7.0.2")
     implementation("gradle.plugin.io.ia.sdk:gradle-module-plugin:0.3.0")
     implementation("com.coditory.gradle:webjar-plugin:1.3.1")
-    implementation("pl.allegro.tech.build:axion-release-plugin:1.17.2")
+    implementation("pl.allegro.tech.build:axion-release-plugin:1.18.2")
     implementation("com.github.breadmoirai:github-release:2.4.1")
     implementation("io.github.kotlin-artisans:plugin:0.0.4")
 }
