@@ -127,7 +127,7 @@ If you'd like to sponsor this project and have your avatar or company logo appea
 [documentation]: https://docs.mussonindustrial.com/
 [contributors]: https://github.com/JamesIves/github-pages-deploy-action/graphs/contributors
 [sponsors]: https://github.com/sponsors/mussonindustrial
-[latest version]: https://github.com/mussonindustrial/embr/releases/download/embr-chart-js-0.1.3-SNAPSHOT/Embr-Chartjs-module.modl
+[latest version]: https://github.com/mussonindustrial/embr/releases?q=embr-charts&expanded=true
 [Chart.js]: https://www.chartjs.org/
 [Chart.js documentation]: https://www.chartjs.org/docs/latest/
 [Chart.js Addons]: https://github.com/chartjs/awesome
