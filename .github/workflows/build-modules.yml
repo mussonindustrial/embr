@@ -1,8 +1,17 @@
 # GitHub Actions workflow to automatically build and test Embr.
 name: 'build-modules'
 
-on: ['workflow_call', 'workflow_dispatch']
-
+on:
+  workflow_dispatch:
+  workflow_call:
+    secrets: 
+      GRADLE_IGNITION_MODULE_SIGNING_PROPS:
+        required: true
+      IGNITION_MODULE_CERT_BASE64:
+        required: true
+      IGNITION_MODULE_KEYSTORE_BASE64:
+        required: true
+    
 env:
   JAVA_VERSION: 21
   NODE_VERSION: 20
