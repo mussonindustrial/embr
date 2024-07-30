@@ -3,6 +3,12 @@ name: 'build'
 
 on: ['pull_request', 'push', 'workflow_call']
 
+# Cancel in progress workflows on pull_requests.
+# https://docs.github.com/en/actions/using-jobs/using-concurrency#example-using-a-fallback-value
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
 env:
   JAVA_VERSION: 21
   NODE_VERSION: 20
