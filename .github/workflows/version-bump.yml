@@ -14,14 +14,14 @@ jobs:
         id: changes
         with:
           filters: |
-            example-perspective-component:
+            example_perspective_component:
               - 'modules/example-perspective-component/**'
-            embr-charts:
+            embr_charts:
               - 'modules/embr-charts/**'
 
 
   embr-charts:
-    if: needs.files-changed.outputs.embr-charts == 'true'
+    if: needs.files-changed.outputs.embr_charts == 'true'
     needs: files-changed
     runs-on: ubuntu-latest
     steps:
@@ -33,7 +33,7 @@ jobs:
           tag_prefix: embr-charts
 
   example-perspective-component:
-    if: needs.files-changed.outputs.example-perspective-component == 'true'
+    if: needs.files-changed.outputs.example_perspective_component == 'true'
     needs: files-changed
     runs-on: ubuntu-latest
     steps:
