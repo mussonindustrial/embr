@@ -2,7 +2,7 @@
 java = "21"
 kotlin = "2.0.0"
 kotest = "5.9.1"
-ignition = "8.1.38"
+ignition = "8.1.0"
 ia-gson = "2.10.1"
 jetty = "10.0.21"
 
