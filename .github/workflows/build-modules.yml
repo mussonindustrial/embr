@@ -1,7 +1,7 @@
 # GitHub Actions workflow to automatically build and test Embr.
 name: 'build-modules'
 
-on: ['workflow_call']
+on: ['workflow_call', 'workflow_dispatch']
 
 env:
   JAVA_VERSION: 21
