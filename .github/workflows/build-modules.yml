@@ -8,43 +8,31 @@ env:
   NODE_VERSION: 20
 
 jobs:
-  setup:
-    name: 'Setup Environment'
+  build:
+    name: 'Build All Modules'
     runs-on: ubuntu-latest
     permissions:
       contents: write
     steps:
       - name: 'Checkout repository'
         uses: actions/checkout@v4
-
       - name: 'Fetch git tags' # Required for axion-release-plugin
         run: git fetch --tags --unshallow
-
       - name: 'Set up Java ${{ env.JAVA_VERSION }}'
         uses: actions/setup-java@v4
         with:
           java-version: '${{ env.JAVA_VERSION }}'
           distribution: 'zulu'
-
       - name: 'Set up Node.js'
         uses: actions/setup-node@v4
         with:
           node-version: '${{ env.NODE_VERSION }}'
-          
       - name: 'Initialize Node.js'
         working-directory: ./js
         run: npm ci
-
       - name: 'Make gradlew executable'
         run: chmod +x ./gradlew
 
-  config:
-    name: 'Configure Build'
-    runs-on: ubuntu-latest
-    needs: setup
-    permissions:
-      contents: write
-    steps:
       - name: 'Restore gradle.properties'
         env:
           GRADLE_IGNITION_MODULE_SIGNING_PROPS: ${{ secrets.GRADLE_IGNITION_MODULE_SIGNING_PROPS }}
@@ -68,19 +56,12 @@ jobs:
         env:
           IGNITION_MODULE_KEYSTORE_BASE64: ${{ secrets.IGNITION_MODULE_KEYSTORE_BASE64 }}
 
-  build:
-    name: 'Build'
-    runs-on: ubuntu-latest
-    needs: config
-    permissions:
-      contents: write
-    steps:
       - name: 'Build All'
         run: ./gradlew --scan build
-
       - name: 'Archive build artifacts'
         uses: actions/upload-artifact@v4
         with:
           name: modules
           path: |
             **/*.modl
+
