@@ -1,0 +1,20 @@
+name: 'publish-module-chartjs'
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Build modules'
+        uses: ./.github/workflows/build-modules.yml
+
+      - name: Download modules
+        uses: actions/download-artifact@v4
+        with:
+          name: modules
+  
+      - name: 'Release'
+        uses: softprops/action-gh-release@v2
+        with:
+          files: modules/**.modl
