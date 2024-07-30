@@ -6,6 +6,7 @@ plugins {
     id("embr.base-conventions")
     kotlin("jvm")
     id("pl.allegro.tech.build.axion-release")
+    id("org.jlleitschuh.gradle.ktlint")
 }
 
 java {
@@ -33,3 +34,15 @@ scmVersion {
 }
 
 version = scmVersion.version
+
+ktlint {
+    additionalEditorconfig.set(
+        mapOf(
+            "max_line_length" to "off"
+        ),
+    )
+}
+
+tasks.withType<org.jlleitschuh.gradle.ktlint.tasks.KtLintCheckTask>().configureEach {
+    dependsOn(tasks.ktlintFormat)
+}

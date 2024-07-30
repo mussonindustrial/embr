@@ -23,7 +23,7 @@ export class TagStreamClient {
     constructor(url?: string, auth?: AuthRequest) {
         this.auth = auth
         if (url === undefined) {
-            this.url = '/embr/tag/stream/session'
+            this.url = '/embr/event-stream/session'
         } else {
             this.url = url
         }
@@ -50,7 +50,7 @@ export class TagStreamClient {
     }
 
     getTagConfig(tag_id: number) {
-        return this.sessionInfo?.tags[tag_id]
+        return this.sessionInfo?.streams?.tag?.tags[tag_id]
     }
 
     async subscribe(tags: string[]) {
@@ -58,9 +58,11 @@ export class TagStreamClient {
 
         const requestBody = JSON.stringify({
             auth: this.auth,
-            tags: {
-                paths: tags,
-                events: ['tag_change', 'alarm_event'],
+            streams: {
+                tag: {
+                    paths: tags,
+                    events: ['tag_change', 'tag_alarm'],
+                },
             },
         })
 
@@ -91,7 +93,7 @@ export class TagStreamClient {
             this._onTagChange && this._onTagChange({ tag, data })
         })
 
-        this.eventSource.addEventListener('alarm_event', (event) => {
+        this.eventSource.addEventListener('tag_alarm', (event) => {
             const data = JSON.parse(event.data) as AlarmEventData
             const tag = this.getTagConfig(data.tag_id)!
             this._onAlarmEvent && this._onAlarmEvent({ tag, data })

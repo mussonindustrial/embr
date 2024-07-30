@@ -2,6 +2,6 @@ package com.mussonindustrial.ignition.embr.common
 
 import com.inductiveautomation.ignition.common.model.CommonContext
 
-open class EmbrCommonContextImpl(val context: CommonContext):
+open class EmbrCommonContextImpl(val context: CommonContext) :
     CommonContext by context,
     EmbrCommonContextExtension by EmbrCommonContextExtensionImpl(context)

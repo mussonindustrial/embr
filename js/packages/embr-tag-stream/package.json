@@ -21,11 +21,14 @@
     "lint:prettier": "prettier -c . --cache --ignore-path=../../.prettierignore"
   },
   "dependencies": {
+    "eventsource": "^2.0.2",
+    "fetch-retry": "^6.0.0"
   },
   "devDependencies": {
     "@mussonindustrial/embr-tsconfig": "*",
     "@mussonindustrial/embr-utils": "*",
     "@mussonindustrial/eslint-config-embr": "*",
+    "@types/eventsource": "^1.1.15",
     "eslint": "^8.56.0",
     "tsup": "^8.1.0",
     "typescript": "^5.3.3",

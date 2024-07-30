@@ -7,7 +7,6 @@ import org.eclipse.jetty.servlet.ServletHolder
 import javax.servlet.Servlet
 
 class ModuleServletManager(webResourceManager: WebResourceManager, private val contextPath: String) {
-
     private val servlets = hashMapOf<String, Class<out Servlet>>()
     private val runningServlets = hashMapOf<String, ServletHolder>()
     private var handler: ServletContextHandler? = null
@@ -22,7 +21,10 @@ class ModuleServletManager(webResourceManager: WebResourceManager, private val c
         }
     }
 
-    fun addServlet(path: String, servlet: Class<out Servlet>) {
+    fun addServlet(
+        path: String,
+        servlet: Class<out Servlet>,
+    ) {
         servlets[path] = servlet
         val newHandler = getContextHandler()
         serverHandlerCollection.removeHandler(handler)
@@ -32,7 +34,7 @@ class ModuleServletManager(webResourceManager: WebResourceManager, private val c
     }
 
     fun removeAllServlets() {
-        runningServlets.forEach {(path, servlet) ->
+        runningServlets.forEach { (path, servlet) ->
             servlet.stop()
             servlets.remove(path)
             serverHandlerCollection.removeHandler(handler)
@@ -41,7 +43,7 @@ class ModuleServletManager(webResourceManager: WebResourceManager, private val c
     }
 
     fun removeServlet(path: String) {
-        runningServlets[path]?.let{
+        runningServlets[path]?.let {
             it.stop()
             servlets.remove(path)
             runningServlets.remove(path)
@@ -52,6 +54,5 @@ class ModuleServletManager(webResourceManager: WebResourceManager, private val c
             newHandler.start()
             handler = newHandler
         }
-
     }
 }

@@ -10,18 +10,18 @@ import com.mussonindustrial.ignition.embr.sse.component.display.ExampleComponent
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
-
 @Suppress("unused")
 class DesignerHook : AbstractDesignerModuleHook() {
-
     private val logger: Logger = LoggerFactory.getLogger("ExamplePerspectiveComponent")
 
     private lateinit var context: DesignerContext
     private lateinit var componentRegistry: DesignerComponentRegistry
     private lateinit var delegateRegistry: ComponentDesignDelegateRegistry
 
-
-    override fun startup(context: DesignerContext, activationState: LicenseState) {
+    override fun startup(
+        context: DesignerContext,
+        activationState: LicenseState,
+    ) {
         logger.info("Perspective example component module started.")
         this.context = context
 
@@ -30,11 +30,11 @@ class DesignerHook : AbstractDesignerModuleHook() {
         componentRegistry = pdi.designerComponentRegistry
         delegateRegistry = pdi.componentDesignDelegateRegistry
 
-        componentRegistry.registerComponent(ExampleComponent.DESCRIPTOR)
+        componentRegistry.registerComponent(ExampleComponent.descriptor)
     }
 
     override fun shutdown() {
         logger.info("Shutting down Component module and removing registered components.")
-        componentRegistry.removeComponent(ExampleComponent.COMPONENT_ID)
+        componentRegistry.removeComponent(ExampleComponent.id)
     }
 }

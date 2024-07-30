@@ -14,15 +14,16 @@ import com.mussonindustrial.ignition.embr.perspective.designer.component.asDesig
 
 @Suppress("unused")
 class ChartsDesignerHook : AbstractDesignerModuleHook() {
-
     private val logger = this.getLogger()
 
     private lateinit var context: ChartsDesignerContext
     private lateinit var componentRegistry: DesignerComponentRegistry
     private lateinit var delegateRegistry: ComponentDesignDelegateRegistry
 
-
-    override fun startup(context: DesignerContext, activationState: LicenseState) {
+    override fun startup(
+        context: DesignerContext,
+        activationState: LicenseState,
+    ) {
         logger.info("Embr-Charts module started.")
         this.context = ChartsDesignerContext(context)
 
@@ -31,17 +32,17 @@ class ChartsDesignerHook : AbstractDesignerModuleHook() {
         componentRegistry = pdi.designerComponentRegistry
         delegateRegistry = pdi.componentDesignDelegateRegistry
 
-        componentRegistry.registerComponent(ChartJs.DESCRIPTOR.asDesignerDescriptor())
-        componentRegistry.registerComponent(TagStream.DESCRIPTOR)
-        this.context.ifModule(Embr.TAG_STREAM.id) {
+        componentRegistry.registerComponent(ChartJs.descriptor.asDesignerDescriptor())
+        componentRegistry.registerComponent(TagStream.descriptor)
+        this.context.ifModule(Embr.EVENT_STREAM.id) {
             logger.info("Embr-TagStream module found. Registering TagStream components...")
-            componentRegistry.registerComponent(TagStream.DESCRIPTOR)
+            componentRegistry.registerComponent(TagStream.descriptor)
         }
     }
 
     override fun shutdown() {
         logger.info("Shutting down Embr-Charts module and removing registered components.")
-        componentRegistry.removeComponent(ChartJs.COMPONENT_ID)
-        componentRegistry.removeComponent(TagStream.COMPONENT_ID)
+        componentRegistry.removeComponent(ChartJs.id)
+        componentRegistry.removeComponent(TagStream.id)
     }
 }

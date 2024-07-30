@@ -10,18 +10,15 @@ import com.mussonindustrial.ignition.embr.sse.Meta.URL_ALIAS
 import com.mussonindustrial.ignition.embr.sse.component.display.ExampleComponent
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import java.util.*
-
+import java.util.Optional
 
 @Suppress("unused")
 class GatewayHook : AbstractGatewayModuleHook() {
-
     private val logger: Logger = LoggerFactory.getLogger("ExamplePerspectiveModule")
     private lateinit var gatewayContext: GatewayContext
     private lateinit var perspectiveContext: PerspectiveContext
     private lateinit var componentRegistry: ComponentRegistry
     private lateinit var modelDelegateRegistry: ComponentModelDelegateRegistry
-
 
     override fun setup(context: GatewayContext) {
         this.gatewayContext = context
@@ -35,17 +32,16 @@ class GatewayHook : AbstractGatewayModuleHook() {
         this.modelDelegateRegistry = perspectiveContext.componentModelDelegateRegistry
 
         logger.info("Registering Components.")
-        this.componentRegistry.registerComponent(ExampleComponent.DESCRIPTOR)
+        this.componentRegistry.registerComponent(ExampleComponent.descriptor)
 
         logger.info("Registering model delegates.")
-        this.modelDelegateRegistry.register(ExampleComponent.COMPONENT_ID, ::ExampleComponentModelDelegate)
-
+        this.modelDelegateRegistry.register(ExampleComponent.id, ::ExampleComponentModelDelegate)
     }
 
     override fun shutdown() {
         logger.info("Shutting down Component module and removing registered components.")
-        this.componentRegistry.removeComponent(ExampleComponent.COMPONENT_ID)
-        this.modelDelegateRegistry.remove(ExampleComponent.COMPONENT_ID)
+        this.componentRegistry.removeComponent(ExampleComponent.id)
+        this.modelDelegateRegistry.remove(ExampleComponent.id)
     }
 
     override fun getMountedResourceFolder(): Optional<String>? {

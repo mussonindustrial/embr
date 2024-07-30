@@ -14,7 +14,7 @@ export class BufferedTagStreamClient extends TagStreamClient {
     }
 
     clear() {
-        this.buffer = Array(this.sessionInfo?.tags.length)
+        this.buffer = Array(this.sessionInfo?.streams?.tag?.tags.length)
             .fill(undefined)
             .map(() => [])
     }
@@ -32,11 +32,11 @@ export class BufferedTagStreamClient extends TagStreamClient {
     }
 
     private addToBuffer(event: TagChangeEvent) {
-        const b = this.buffer[event.tag.tag_id]
+        const b = this.buffer[event.tag.id]
         if (b instanceof Array) {
             b.push(event.data)
         } else {
-            this.buffer[event.tag.tag_id] = [event.data]
+            this.buffer[event.tag.id] = [event.data]
         }
     }
 

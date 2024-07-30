@@ -2,8 +2,7 @@ package com.mussonindustrial.ignition.embr.common
 
 import com.inductiveautomation.ignition.common.model.CommonContext
 
-class EmbrCommonContextExtensionImpl(val context: CommonContext): EmbrCommonContextExtension {
-
+class EmbrCommonContextExtensionImpl(val context: CommonContext) : EmbrCommonContextExtension {
     override fun getModuleSafe(moduleId: String): Any? {
         return try {
             context.getModule(moduleId)
@@ -11,7 +10,11 @@ class EmbrCommonContextExtensionImpl(val context: CommonContext): EmbrCommonCont
             false
         }
     }
-    override fun <T> ifModule(moduleId: String, action: () -> T): T? {
+
+    override fun <T> ifModule(
+        moduleId: String,
+        action: () -> T,
+    ): T? {
         if (getModuleSafe(moduleId) != null) {
             return action()
         }

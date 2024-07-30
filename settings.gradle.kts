@@ -25,8 +25,8 @@ include(
     ":modules:embr-charts:designer",
     ":modules:embr-charts:gateway",
 
-    ":modules:embr-tag-stream:common",
-    ":modules:embr-tag-stream:gateway",
+    ":modules:embr-event-stream:common",
+    ":modules:embr-event-stream:gateway",
 
     ":modules:example-perspective-component:common",
     ":modules:example-perspective-component:designer",

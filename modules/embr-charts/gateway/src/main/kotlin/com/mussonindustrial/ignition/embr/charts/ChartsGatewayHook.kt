@@ -6,23 +6,19 @@ import com.inductiveautomation.ignition.gateway.model.GatewayContext
 import com.inductiveautomation.perspective.common.api.ComponentRegistry
 import com.inductiveautomation.perspective.gateway.api.ComponentModelDelegateRegistry
 import com.inductiveautomation.perspective.gateway.api.PerspectiveContext
-
 import com.mussonindustrial.ignition.embr.charts.component.chart.ChartJs
 import com.mussonindustrial.ignition.embr.charts.component.chart.TagStream
 import com.mussonindustrial.ignition.embr.common.Embr
 import com.mussonindustrial.ignition.embr.common.logging.getLogger
-import java.util.*
-
+import java.util.Optional
 
 @Suppress("unused")
 class ChartsGatewayHook : AbstractGatewayModuleHook() {
-
     private val logger = this.getLogger()
     private lateinit var context: ChartsGatewayContext
     private lateinit var perspectiveContext: PerspectiveContext
     private lateinit var componentRegistry: ComponentRegistry
     private lateinit var modelDelegateRegistry: ComponentModelDelegateRegistry
-
 
     override fun setup(context: GatewayContext) {
         this.context = ChartsGatewayContext(context)
@@ -36,18 +32,18 @@ class ChartsGatewayHook : AbstractGatewayModuleHook() {
         modelDelegateRegistry = perspectiveContext.componentModelDelegateRegistry
 
         logger.info("Registering components...")
-        componentRegistry.registerComponent(ChartJs.DESCRIPTOR)
+        componentRegistry.registerComponent(ChartJs.descriptor)
 
-        context.ifModule(Embr.TAG_STREAM.id) {
+        context.ifModule(Embr.EVENT_STREAM.id) {
             logger.info("Embr-TagStream module found. Registering TagStream components...")
-            componentRegistry.registerComponent(TagStream.DESCRIPTOR)
+            componentRegistry.registerComponent(TagStream.descriptor)
         }
     }
 
     override fun shutdown() {
         logger.info("Shutting down Embr-Charts module and removing registered components.")
-        componentRegistry.removeComponent(ChartJs.COMPONENT_ID)
-        componentRegistry.removeComponent(TagStream.COMPONENT_ID)
+        componentRegistry.removeComponent(ChartJs.id)
+        componentRegistry.removeComponent(TagStream.id)
     }
 
     override fun getMountedResourceFolder(): Optional<String> {

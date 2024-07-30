@@ -3,8 +3,7 @@ package com.mussonindustrial.ignition.embr.common.alarming
 import com.inductiveautomation.ignition.common.alarming.AlarmEvent
 import com.inductiveautomation.ignition.common.alarming.AlarmListener
 
-fun interface SimpleAlarmListener: AlarmListener {
-
+fun interface SimpleAlarmListener : AlarmListener {
     fun onAlarmEvent(event: AlarmEvent)
 
     override fun onActive(event: AlarmEvent) {

@@ -5,7 +5,7 @@ import com.inductiveautomation.ignition.common.gson.JsonObject
 import javax.servlet.http.HttpServletResponse
 import kotlin.text.Charsets.UTF_8
 
-fun <T: HttpServletResponse> T.sendSuccess(data: JsonElement) {
+fun <T : HttpServletResponse> T.sendSuccess(data: JsonElement) {
     val json = JsonObject()
     json.addProperty("status", "success")
     json.add("data", data)
@@ -19,7 +19,7 @@ fun <T: HttpServletResponse> T.sendSuccess(data: JsonElement) {
     }
 }
 
-fun <T: HttpServletResponse> T.sendSuccess() {
+fun <T : HttpServletResponse> T.sendSuccess() {
     val json = JsonObject()
     json.addProperty("status", "success")
 
@@ -32,7 +32,7 @@ fun <T: HttpServletResponse> T.sendSuccess() {
     }
 }
 
-fun <T: HttpServletResponse> T.sendError(message: String) {
+fun <T : HttpServletResponse> T.sendError(message: String) {
     val json = JsonObject()
     json.addProperty("status", "error")
     json.addProperty("message", message)

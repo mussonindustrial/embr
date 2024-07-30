@@ -1,12 +1,20 @@
 export type TagConfig = {
-    tag_id: number
-    tag_path: string
-    alarm_path: string
+    id: number
+    path: string
 }
+
+export type TagEmitter = {
+    events: TagEventType[]
+    tags: TagConfig[]
+}
+
+export type TagEventType = 'tag_change' | 'tag_alarm'
 
 export type SessionInfo = {
     session_id: string
-    tags: TagConfig[]
+    streams: {
+        tag?: TagEmitter
+    }
 }
 
 export type TagChangeData = {

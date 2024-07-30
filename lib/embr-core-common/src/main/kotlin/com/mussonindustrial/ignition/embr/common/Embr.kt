@@ -1,17 +1,17 @@
 package com.mussonindustrial.ignition.embr.common
 
 object Embr {
+    val CHARTS =
+        EmbrModuleMeta(
+            "com.mussonindustrial.embr.charts",
+            "embr-charts",
+            "/embr/charts",
+        )
 
-    val CHARTS = EmbrModuleMeta(
-        "com.mussonindustrial.embr.charts",
-        "embr-charts",
-        "/embr/charts"
-    )
-
-    val TAG_STREAM = EmbrModuleMeta(
-        "com.mussonindustrial.embr.tagstream",
-        "embr-tag-stream",
-        "/embr/tag/stream"
-    )
-
+    val EVENT_STREAM =
+        EmbrModuleMeta(
+            "com.mussonindustrial.embr.eventstream",
+            "embr-event-stream",
+            "/embr/event-stream",
+        )
 }

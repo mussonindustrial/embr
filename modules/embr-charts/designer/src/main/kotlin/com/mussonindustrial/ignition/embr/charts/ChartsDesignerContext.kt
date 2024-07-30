@@ -4,14 +4,13 @@ import com.inductiveautomation.ignition.designer.model.DesignerContext
 import com.mussonindustrial.ignition.embr.designer.EmbrDesignerContext
 import com.mussonindustrial.ignition.embr.designer.EmbrDesignerContextImpl
 
-class ChartsDesignerContext(private val context: DesignerContext):
+class ChartsDesignerContext(private val context: DesignerContext) :
     EmbrDesignerContext by EmbrDesignerContextImpl(context) {
-
     companion object {
-        lateinit var INSTANCE: ChartsDesignerContext
-    }
-    init {
-        INSTANCE = this
+        lateinit var instance: ChartsDesignerContext
     }
 
+    init {
+        instance = this
+    }
 }

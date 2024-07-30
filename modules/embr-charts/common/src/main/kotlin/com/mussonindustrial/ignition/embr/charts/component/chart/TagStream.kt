@@ -10,24 +10,27 @@ import com.mussonindustrial.ignition.embr.perspective.common.component.addPalett
 
 class TagStream {
     companion object {
-        var COMPONENT_ID: String = "embr.chart.tag-stream"
-        var SCHEMA: JsonSchema = JsonSchema.parse(Components::class.java.getResourceAsStream("/tag-stream.props.json"))
+        var id: String = "embr.chart.tag-stream"
+        val schema: JsonSchema = JsonSchema.parse(Components::class.java.getResourceAsStream("/tag-stream.props.json"))
 
-        private var VARIANT_BASE = PaletteEntry(Components::class.java,
-            "tag-stream.base",
-            "Tag Stream Test",
-            "Tag Stream test component."
-        )
+        private var variantBase =
+            PaletteEntry(
+                Components::class.java,
+                "tag-stream.base",
+                "Tag Stream Test",
+                "Tag Stream test component.",
+            )
 
-        var DESCRIPTOR: ComponentDescriptor = ComponentDescriptorImpl.ComponentBuilder.newBuilder()
-            .setPaletteCategory("chart")
-            .setId(COMPONENT_ID)
-            .setModuleId(Embr.CHARTS.id)
-            .setSchema(SCHEMA)
-            .setName("TagStream")
-            .addPaletteEntry(VARIANT_BASE)
-            .setDefaultMetaName("TagStream")
-            .setResources(Components.BROWSER_RESOURCES)
-            .build()
+        var descriptor: ComponentDescriptor =
+            ComponentDescriptorImpl.ComponentBuilder.newBuilder()
+                .setPaletteCategory("chart")
+                .setId(id)
+                .setModuleId(Embr.CHARTS.id)
+                .setSchema(schema)
+                .setName("TagStream")
+                .addPaletteEntry(variantBase)
+                .setDefaultMetaName("TagStream")
+                .setResources(Components.BROWSER_RESOURCES)
+                .build()
     }
 }
