@@ -4,14 +4,12 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: 'Checkout repository'
-        uses: actions/checkout@v4
-    
-      - name: 'Build modules'
-        uses: ./.github/workflows/build-modules.yml
+    uses: ./.github/workflows/build-modules.yml
 
+  release:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
       - name: 'Download artifacts'
         uses: actions/download-artifact@v4
         with:
