@@ -131,4 +131,3 @@ If you'd like to sponsor this project and have your avatar or company logo appea
 [Chart.js]: https://www.chartjs.org/
 [Chart.js documentation]: https://www.chartjs.org/docs/latest/
 [Chart.js Addons]: https://github.com/chartjs/awesome
-
