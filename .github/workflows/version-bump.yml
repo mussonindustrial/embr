@@ -6,6 +6,9 @@ on:
 jobs:
   files-changed:
     runs-on: ubuntu-latest
+    outputs:
+      embr_charts: ${{ steps.changes.outputs.embr_charts }}
+      example_perspective_component: ${{ steps.changes.outputs.example_perspective_component }}
     steps:
       - uses: actions/checkout@v4
 
