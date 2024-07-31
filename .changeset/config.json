@@ -3,11 +3,16 @@
   "changelog": "@changesets/cli/changelog",
   "commit": true,
   "fixed": [
-
+    [ "@mussonindustrial/embr-core-*" ],
+    [ "@mussonindustrial/embr-perspective-*" ]
   ],
   "linked": [],
   "access": "restricted",
   "baseBranch": "main",
   "updateInternalDependencies": "patch",
-  "ignore": []
+  "ignore": [],
+  "privatePackages": {
+    "version": true,
+    "tag": true
+  }
 }
