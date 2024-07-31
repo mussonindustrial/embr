@@ -9,7 +9,7 @@
         "format": "prettier --write \"**/*.{ts,tsx,md}\"",
         "release": "turbo build && && gradlew build && changeset version && changeset publish"
       },
-    "workspaces": [ "lib/js/*", "lib/kotlin/*" ],
+    "workspaces": [ "lib/js/*", "lib/kotlin/*", "modules/*" ],
     "dependencies": {
         "@changesets/cli": "^2.26.2",
         "changeset": "^0.2.6",
