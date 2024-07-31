@@ -3,8 +3,8 @@
   "changelog": "@changesets/cli/changelog",
   "commit": true,
   "fixed": [
-    [ "@mussonindustrial/embr-core-*" ],
-    [ "@mussonindustrial/embr-perspective-*" ]
+    [ "@mussonindustrial/embr-jvm-core-*" ],
+    [ "@mussonindustrial/embr-jvm-perspective-*" ]
   ],
   "linked": [],
   "access": "restricted",
