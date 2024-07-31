@@ -1,5 +1,5 @@
 {
-    "name": "embr-charts",
+    "name": "@mussonindustrial/embr-charts",
     "version": "1.1.0",
     "private": true,
     "dependencies": {
