@@ -6,5 +6,5 @@ dependencies {
     compileOnly(libs.bundles.gateway)
     compileOnly(libs.bundles.perspectiveGateway)
     compileOnly(projects.modules.embrCharts.common)
-    modlImplementation(projects.js.packages.embrChartJs)
+    modlImplementation(projects.lib.js.embrChartJs)
 }

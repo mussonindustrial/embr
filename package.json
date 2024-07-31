@@ -1,0 +1,23 @@
+{
+    "name": "embr",
+    "version": "0.0.0",
+    "private": true,
+    "scripts": {
+        "build": "turbo build",
+        "dev": "turbo dev",
+        "lint": "turbo lint",
+        "format": "prettier --write \"**/*.{ts,tsx,md}\""
+      },
+    "workspaces": [ "lib/js/*", "lib/kotlin/*" ],
+    "dependencies": {
+        "@changesets/cli": "^2.26.2",
+        "changeset": "^0.2.6",
+        "npx": "^10.2.2"
+    },
+    "devDependencies": {
+        "eslint": "^8.56.0",
+        "prettier": "^3.1.1",
+        "turbo": "latest"
+      },
+      "packageManager": "npm@10.5.0"
+}
