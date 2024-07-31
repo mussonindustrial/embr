@@ -1,7 +1,7 @@
 {
   "name": "@mussonindustrial/embr-js-utils",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Utility functions for Embr modules.",
   "main": "./src/index.ts",
   "scripts": {

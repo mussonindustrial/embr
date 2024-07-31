@@ -16,7 +16,7 @@
   },
   "devDependencies": {
     "@mussonindustrial/embr-tsconfig": "*",
-    "@mussonindustrial/embr-js-utils": "*",
+    "@mussonindustrial/embr-js-utils": "0.1.0",
     "@mussonindustrial/eslint-config-embr": "*",
     "eslint": "^8.56.0",
     "typescript": "^5.3.3",

@@ -3,8 +3,8 @@
     "version": "1.1.0",
     "private": true,
     "dependencies": {
-        "@mussonindustrial/embr-js-chart-js": "*",
-        "@mussonindustrial/embr-jvm-core-common": "*",
-        "@mussonindustrial/embr-jvm-core-designer": "*"
+        "@mussonindustrial/embr-js-chart-js": "0.1.0",
+        "@mussonindustrial/embr-jvm-core-common": "0.1.0",
+        "@mussonindustrial/embr-jvm-core-designer": "0.1.0"
     }
 }
