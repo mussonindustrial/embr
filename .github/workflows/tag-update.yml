@@ -1,4 +1,4 @@
-name: 'Tag Version'
+name: 'Update Tags'
 on:
   workflow_dispatch:
   pull_request:
