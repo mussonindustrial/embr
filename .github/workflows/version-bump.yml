@@ -7,8 +7,8 @@ jobs:
   files-changed:
     runs-on: ubuntu-latest
     outputs:
-      embr-charts: ${{ steps.changes.outputs.embr_charts }}
-      example-perspective-component: ${{ steps.changes.outputs.example_perspective_component }}
+      embr-charts: ${{ steps.changes.outputs.embr-charts }}
+      example-perspective-component: ${{ steps.changes.outputs.example-perspective-component }}
     steps:
       - uses: actions/checkout@v4
 
