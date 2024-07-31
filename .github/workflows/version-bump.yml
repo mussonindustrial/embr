@@ -22,27 +22,24 @@ jobs:
             embr_charts:
               - 'modules/embr-charts/**'
 
-
-  embr-charts:
-    if: needs.files-changed.outputs.embr_charts == 'true'
+  example_matrix:
     needs: files-changed
     runs-on: ubuntu-latest
-    steps:
+    strategy:
+      matrix:
+        include:
+          - name: embr_charts
+            tag_prefix: embr-charts-
+          - name: example_perspective_component
+            tag-tag_prefix: example-perspective-component-
+    steps:  
       - name: Bump version and push tag
+        if: needs.files-changed.outputs[${{ matrix.name }}] == 'true'
         id: tag_version
         uses: mathieudutour/github-tag-action@v6.2
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          tag_prefix: embr-charts-
+          tag_prefix: ${{ matrix.tag_prefix}}
 
-  example-perspective-component:
-    if: needs.files-changed.outputs.example_perspective_component == 'true'
-    needs: files-changed
-    runs-on: ubuntu-latest
-    steps:
-      - name: Bump version and push tag
-        id: tag_version
-        uses: mathieudutour/github-tag-action@v6.2
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          tag_prefix: example-perspective-component-
+
+
