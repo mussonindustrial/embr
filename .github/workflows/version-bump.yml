@@ -7,8 +7,8 @@ jobs:
   files-changed:
     runs-on: ubuntu-latest
     outputs:
-      embr_charts: ${{ steps.changes.outputs.embr_charts }}
-      example_perspective_component: ${{ steps.changes.outputs.example_perspective_component }}
+      embr-charts: ${{ steps.changes.outputs.embr_charts }}
+      example-perspective-component: ${{ steps.changes.outputs.example_perspective_component }}
     steps:
       - uses: actions/checkout@v4
 
@@ -17,9 +17,9 @@ jobs:
         id: changes
         with:
           filters: |
-            example_perspective_component:
+            example-perspective-component:
               - 'modules/example-perspective-component/**'
-            embr_charts:
+            embr-charts:
               - 'modules/embr-charts/**'
 
   example_matrix:
@@ -27,19 +27,17 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        include:
-          - name: embr_charts
-            tag_prefix: embr-charts-
-          - name: example_perspective_component
-            tag-tag_prefix: example-perspective-component-
+        module:
+          - embr-charts
+          - example-perspective-component
     steps:  
       - name: Bump version and push tag
-        if: needs.files-changed.outputs[${{ matrix.name }}] == 'true'
+        if: ${{ needs.files-changed.outputs[matrix.module] }} == 'true'
         id: tag_version
         uses: mathieudutour/github-tag-action@v6.2
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          tag_prefix: ${{ matrix.tag_prefix}}
+          tag_prefix: ${{ matrix.module}}
 
 
 
