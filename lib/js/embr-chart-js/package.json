@@ -1,7 +1,7 @@
 {
   "name": "@mussonindustrial/embr-js-chart-js",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.2.0",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build&& vitest run",
@@ -43,7 +43,7 @@
   },
   "devDependencies": {
     "@mussonindustrial/embr-tsconfig": "*",
-    "@mussonindustrial/embr-js-utils": "0.1.0",
+    "@mussonindustrial/embr-js-utils": "0.2.0",
     "@mussonindustrial/eslint-config-embr": "*",
     "@types/lodash": "^4.14.202",
     "@types/react": "^18.2.56",
