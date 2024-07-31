@@ -39,7 +39,6 @@ jobs:
         with:
           node-version: '${{ env.NODE_VERSION }}'
       - name: 'Initialize Node.js'
-        working-directory: ./js
         run: npm ci
 
       - name: 'Setup Gradle'

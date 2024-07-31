@@ -1,0 +1,26 @@
+{
+  "name": "@mussonindustrial/embr-js-tag-stream",
+  "private": true,
+  "version": "0.0.0",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build&& vitest run",
+    "clean": "",
+    "test": "vitest run",
+    "bench": "vitest bench",
+    "preview": "vite preview",
+    "lint": "eslint src/**/*.ts",
+    "lint:prettier": "prettier -c . --cache --ignore-path=../../.prettierignore"
+  },
+  "dependencies": {
+  },
+  "devDependencies": {
+    "@mussonindustrial/embr-tsconfig": "*",
+    "@mussonindustrial/embr-js-utils": "*",
+    "@mussonindustrial/eslint-config-embr": "*",
+    "eslint": "^8.56.0",
+    "typescript": "^5.3.3",
+    "vite": "^5.0.10",
+    "vitest": "^1.6.0"
+  }
+}

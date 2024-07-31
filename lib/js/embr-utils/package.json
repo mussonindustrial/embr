@@ -1,0 +1,27 @@
+{
+  "name": "@mussonindustrial/embr-js-utils",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Utility functions for Embr modules.",
+  "main": "./src/index.ts",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "clean": "",
+    "test": "vitest run",
+    "preview": "vite preview",
+    "lint": "eslint src/**/*.ts",
+    "lint:prettier": "prettier -c . --cache --ignore-path=../../.prettierignore"
+  },
+  "dependencies": {
+    "lodash": "^4.17.21"
+  },
+  "devDependencies": {
+    "@mussonindustrial/embr-tsconfig": "*",
+    "@mussonindustrial/eslint-config-embr": "*",
+    "eslint": "^8.56.0",
+    "typescript": "^5.3.3",
+    "vite": "^5.0.10",
+    "vitest": "^1.6.0"
+  }
+}

@@ -8,8 +8,8 @@ dependencies {
     compileOnly(libs.jetty.servlet)
     modlImplementation(libs.jetty.servlets)
 
-    compileOnly(projects.lib.embrCoreCommon)
-    modlImplementation(projects.lib.embrCoreServlets)
+    compileOnly(projects.lib.jvm.embrCoreCommon)
+    modlImplementation(projects.lib.jvm.embrCoreServlets)
 
     compileOnly(projects.modules.embrTagStream.common)
 }

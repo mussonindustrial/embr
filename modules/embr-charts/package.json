@@ -1,0 +1,10 @@
+{
+    "name": "embr-charts",
+    "version": "1.1.0",
+    "private": true,
+    "dependencies": {
+        "@mussonindustrial/embr-js-chart-js": "*",
+        "@mussonindustrial/embr-jvm-core-common": "*",
+        "@mussonindustrial/embr-jvm-core-designer": "*"
+    }
+}
