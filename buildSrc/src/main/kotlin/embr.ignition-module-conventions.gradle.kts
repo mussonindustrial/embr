@@ -9,24 +9,11 @@ plugins {
 
 allprojects {
     group = "com.mussonindustrial.embr"
-
-    // Give a friendly error when building project and git tags aren't available.
-    if (version == "0.1.0-SNAPSHOT") {
-        throw IllegalStateException("Version is not set, please run 'git fetch --tags' command to fetch tags from main repository.")
-    }
-}
-
-subprojects {
-    version = project.parent?.version!!
 }
 
 fun buildTime(): String { return SimpleDateFormat("yyyyMMddHH").format(Date()) }
 ignitionModule {
-    moduleVersion.set(if (version.toString().contains("-SNAPSHOT")) {
-        version.toString().replace("-SNAPSHOT", ".${buildTime()}-SNAPSHOT")
-    } else {
-        "${version}.${buildTime()}"
-    })
+    moduleVersion.set("${version}.${buildTime()}")
 }
 
 afterEvaluate {
