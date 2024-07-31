@@ -32,12 +32,12 @@ jobs:
           - example-perspective-component
     steps:  
       - name: Bump version and push tag
-        if: ${{ needs.files-changed.outputs[matrix.module] }} == 'true'
+        if: ${{ needs.files-changed.outputs[matrix.module] == 'true' }} 
         id: tag_version
         uses: mathieudutour/github-tag-action@v6.2
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          tag_prefix: ${{ matrix.module}}
+          tag_prefix: ${{ matrix.module }}-
 
 
 
