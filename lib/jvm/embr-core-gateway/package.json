@@ -1,5 +1,5 @@
 {
-    "name": "@mussonindustrial/embr-kt-core-gateway",
+    "name": "@mussonindustrial/embr-jvm-core-gateway",
     "version": "0.1.0",
     "private": true
 }

@@ -6,7 +6,8 @@
         "build": "turbo build",
         "dev": "turbo dev",
         "lint": "turbo lint",
-        "format": "prettier --write \"**/*.{ts,tsx,md}\""
+        "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+        "release": "turbo build && && gradlew build && changeset version && changeset publish"
       },
     "workspaces": [ "lib/js/*", "lib/kotlin/*" ],
     "dependencies": {

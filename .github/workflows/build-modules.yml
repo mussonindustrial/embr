@@ -74,3 +74,8 @@ jobs:
           path: |
             **/*.modl
 
+      - name: Create Release Pull Request
+        uses: changesets/action@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
