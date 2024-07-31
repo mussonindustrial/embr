@@ -16,11 +16,8 @@ jobs:
         uses: dorny/paths-filter@v2
         id: changes
         with:
-          filters: |
-            example-perspective-component:
-              - 'modules/example-perspective-component/**'
-            embr-charts:
-              - 'modules/embr-charts/**'
+          token: ${{ github.token }}
+          filters: .github/file-filters.yml
 
   bump-version:
     needs: files-changed
@@ -32,7 +29,7 @@ jobs:
           - example-perspective-component
     steps:  
       - name: Bump version and push tag
-        if: ${{ needs.files-changed.outputs[matrix.module] }} 
+        if: ${{ needs.files-changed.outputs[matrix.module] == 'true' }} 
         id: tag_version
         uses: mathieudutour/github-tag-action@v6.2
         with:
