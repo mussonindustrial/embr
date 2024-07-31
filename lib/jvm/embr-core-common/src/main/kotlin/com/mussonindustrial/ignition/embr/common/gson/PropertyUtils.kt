@@ -12,6 +12,7 @@ fun JsonObject.addProperty(property: String, value: List<PropertyValue>) {
         json.addProperty(it.property.toString(), it.value.toString())
         values.add(json)
     }
+    
     add(property, values)
 }
 
