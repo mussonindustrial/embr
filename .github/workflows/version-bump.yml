@@ -22,7 +22,7 @@ jobs:
             embr-charts:
               - 'modules/embr-charts/**'
 
-  example_matrix:
+  bump-version:
     needs: files-changed
     runs-on: ubuntu-latest
     strategy:
@@ -32,7 +32,7 @@ jobs:
           - example-perspective-component
     steps:  
       - name: Bump version and push tag
-        if: ${{ needs.files-changed.outputs[matrix.module] == 'true' }} 
+        if: ${{ needs.files-changed.outputs[matrix.module] }} 
         id: tag_version
         uses: mathieudutour/github-tag-action@v6.2
         with:
