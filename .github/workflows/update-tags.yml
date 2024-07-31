@@ -2,6 +2,7 @@ name: 'Update Tags'
 on:
   workflow_dispatch:
   pull_request:
+    branches: [ main ]
 
 jobs:
   files-changed:
