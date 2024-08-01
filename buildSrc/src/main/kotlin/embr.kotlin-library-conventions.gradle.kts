@@ -3,7 +3,6 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 plugins {
     id("embr.base-conventions")
     kotlin("jvm")
-//    id("pl.allegro.tech.build.axion-release")
 }
 
 java {

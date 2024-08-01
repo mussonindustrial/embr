@@ -2,9 +2,8 @@ import com.github.gradle.node.npm.task.NpxTask
 import gradle.kotlin.dsl.accessors._6964a05bebf46e68d5f8b1e476ef19a8.processResources
 
 plugins {
-    id("embr.base-conventions")
+    id("embr.kotlin-library-conventions")
     id("com.github.node-gradle.node")
-    `java-library`
 }
 
 repositories {
@@ -35,12 +34,6 @@ tasks.nodeSetup {
 }
 tasks.npmInstall {
     enabled = false
-}
-
-
-java {
-    sourceCompatibility = JavaVersion.VERSION_21
-    targetCompatibility = JavaVersion.VERSION_11
 }
 
 val nxBuild = tasks.register<NpxTask>("nxBuild") {
