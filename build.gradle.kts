@@ -1,4 +1,5 @@
 import com.github.gradle.node.npm.task.NpxTask
+import org.jetbrains.kotlin.gradle.utils.`is`
 
 plugins {
     base
@@ -21,14 +22,12 @@ tasks.register("buildModules") {
 
 val changesetVersion = tasks.register<NpxTask>("changesetVersion") {
     group = "changesets"
-    dependsOn(tasks.build)
     command.set("changeset")
     args.set(listOf("version"))
 }
 
 val changesetPublish = tasks.register<NpxTask>("changesetPublish") {
     group = "changesets"
-    dependsOn(tasks.build)
     mustRunAfter(changesetVersion)
     command.set("changeset")
     args.set(listOf("publish"))
@@ -36,5 +35,10 @@ val changesetPublish = tasks.register<NpxTask>("changesetPublish") {
 
 val release = tasks.register("release") {
     group = "publishing"
+    subprojects {
+        try {
+            dependsOn(this.tasks.build)
+        } catch (_: Throwable) { }
+    }
     dependsOn(changesetVersion, changesetPublish)
 }
