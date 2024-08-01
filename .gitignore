@@ -40,3 +40,7 @@ public/dist
 
 # VSCode
 .vscode/*
+
+
+.nx/cache
+.nx/workspace-data

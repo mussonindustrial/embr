@@ -65,7 +65,7 @@ jobs:
         env:
           IGNITION_MODULE_KEYSTORE_BASE64: ${{ secrets.IGNITION_MODULE_KEYSTORE_BASE64 }}
 
-      - name: 'Build All'
+      - name: 'Build Modules'
         run: ./gradlew --scan build
       - name: 'Archive build artifacts'
         uses: actions/upload-artifact@v4
@@ -73,6 +73,7 @@ jobs:
           name: modules
           path: |
             **/*.modl
+            !**/*-unsigned.modl
 
       - name: Create Release Pull Request
         uses: changesets/action@v1

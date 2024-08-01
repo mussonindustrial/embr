@@ -3,7 +3,7 @@ import { resolve } from 'path'
 
 const packageName = 'embr-chart-js'
 
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
     build: {
         outDir: './dist',
         lib: {
@@ -32,4 +32,15 @@ export default defineConfig({
             },
         },
     },
-})
+    test: {
+        fileParallelism: mode !== 'benchmark',
+        globals: true,
+        environment: 'node',
+        include: ['src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}', '__tests__/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
+        reporters: ['default'],
+        coverage: {
+            reportsDirectory: '../../../coverage/lib/js/embr-chart-js',
+            provider: 'v8',
+        },
+    },
+}))
