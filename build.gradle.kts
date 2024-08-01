@@ -22,24 +22,26 @@ tasks.register("buildModules") {
 
 val changesetVersion = tasks.register<NpxTask>("changesetVersion") {
     group = "changesets"
-    mustRunAfter(tasks.build)
     command.set("changeset")
     args.set(listOf("version"))
 }
 
 val changesetPublish = tasks.register<NpxTask>("changesetPublish") {
     group = "changesets"
-    mustRunAfter(tasks.build, changesetVersion)
+    mustRunAfter(changesetVersion)
     command.set("changeset")
     args.set(listOf("publish"))
 }
 
 val release = tasks.register("release") {
     group = "publishing"
-    subprojects {
-        try {
-            dependsOn(this.tasks.build)
-        } catch (_: Throwable) { }
-    }
     dependsOn(changesetVersion, changesetPublish)
+}
+
+subprojects {
+    this.tasks.matching { it.name == "build" }.forEach { task ->
+        changesetPublish {
+            mustRunAfter(task)
+        }
+    }
 }
