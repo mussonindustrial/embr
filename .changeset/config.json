@@ -1,18 +1,18 @@
 {
   "$schema": "https://unpkg.com/@changesets/config@3.0.0/schema.json",
   "changelog": "@changesets/cli/changelog",
-  "commit": true,
+  "commit": false,
   "fixed": [
     [ "@mussonindustrial/embr-jvm-core-*" ],
     [ "@mussonindustrial/embr-jvm-perspective-*" ]
   ],
   "linked": [],
-  "access": "restricted",
+  "access": "public",
   "baseBranch": "main",
   "updateInternalDependencies": "patch",
   "ignore": [],
   "privatePackages": {
     "version": true,
-    "tag": true
+    "tag": false
   }
 }
