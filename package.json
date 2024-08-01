@@ -6,7 +6,7 @@
         "build": "gradlew build",
         "test": "npx nx run-many -t test",
         "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-        "release": "gradlew build && changeset version && changeset publish"
+        "release": "gradlew release"
     },
     "workspaces": [
         "lib/js/*",
