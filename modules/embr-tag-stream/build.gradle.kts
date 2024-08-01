@@ -6,7 +6,7 @@ ignitionModule {
     name.set("Embr Tag Stream")
     moduleDescription.set("Provides an API for streaming tag changes via SSE.")
     id.set("com.mussonindustrial.embr.tagstream")
-    fileName.set("Embr-TagStream-module.modl")
+    fileName.set("Embr-TagStream-${version}.modl")
     freeModule.set(true)
     requiredIgnitionVersion.set(libs.versions.ignition)
 

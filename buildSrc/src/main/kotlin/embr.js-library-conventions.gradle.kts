@@ -1,7 +1,10 @@
+import com.github.gradle.node.npm.task.NpxTask
+import gradle.kotlin.dsl.accessors._6964a05bebf46e68d5f8b1e476ef19a8.processResources
+
 plugins {
     id("embr.base-conventions")
     id("com.github.node-gradle.node")
-    id("com.coditory.webjar")
+    `java-library`
 }
 
 repositories {
@@ -21,10 +24,7 @@ repositories {
 }
 
 node {
-    version.set("20.11.0")
-    yarnVersion.set("1.22.19")
-    npmVersion.set("10.5.0")
-    download.set(false)
+    fastNpmInstall.set(true)
     workDir = file("${rootProject.projectDir}/.gradle/nodejs")
     npmWorkDir = file("${rootProject.projectDir}/.gradle/npm")
     yarnWorkDir = file("${rootProject.projectDir}/.gradle/yarn")
@@ -36,11 +36,25 @@ java {
     targetCompatibility = JavaVersion.VERSION_11
 }
 
-tasks.create<Delete>("cleanDist") {
+tasks.register<NpxTask>("nxBuild") {
+    dependsOn(tasks.npmInstall)
+    command.set("nx")
+    args.set(listOf("build"))
+
+    // Let NX do its own caching.
+    outputs.upToDateWhen { false }
+}
+
+tasks.create<Delete>("nxClean") {
     group = "node"
     delete = setOf("${projectDir}/dist")
 }
 
+tasks.processResources {
+    dependsOn("nxBuild")
+    from( "dist") { into("static") }
+}
+
 tasks.clean {
-    dependsOn("cleanDist")
+    dependsOn("nxClean")
 }

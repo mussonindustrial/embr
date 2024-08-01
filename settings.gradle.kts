@@ -15,6 +15,7 @@ include(
 
     ":lib:js:example-perspective-component",
     ":lib:js:embr-chart-js",
+    ":lib:js:embr-tag-stream",
 
     ":modules:embr-charts:common",
     ":modules:embr-charts:designer",
