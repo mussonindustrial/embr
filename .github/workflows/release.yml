@@ -11,12 +11,15 @@ env:
   JAVA_VERSION: 21
   NODE_VERSION: 20
 
+permissions:
+  issues: write
+  contents: write
+  pull-requests: write
+
 jobs:
   build:
     name: 'Build'
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     outputs:
       version: '${{ steps.version.outputs.version }}'
     steps:
@@ -78,3 +81,4 @@ jobs:
           publish: npm run release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
