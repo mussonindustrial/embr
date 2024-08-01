@@ -24,12 +24,19 @@ repositories {
 }
 
 node {
-    fastNpmInstall.set(true)
     workDir = file("${rootProject.projectDir}/.gradle/nodejs")
     npmWorkDir = file("${rootProject.projectDir}/.gradle/npm")
     yarnWorkDir = file("${rootProject.projectDir}/.gradle/yarn")
     distBaseUrl.set("https://nodejs.org/dist")
 }
+
+tasks.nodeSetup {
+    enabled = false
+}
+tasks.npmInstall {
+    enabled = false
+}
+
 
 java {
     sourceCompatibility = JavaVersion.VERSION_21
