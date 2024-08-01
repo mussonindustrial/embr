@@ -7,12 +7,12 @@
     [ "@mussonindustrial/embr-jvm-perspective-*" ]
   ],
   "linked": [],
-  "access": "restricted",
+  "access": "public",
   "baseBranch": "main",
   "updateInternalDependencies": "patch",
   "ignore": [],
   "privatePackages": {
     "version": true,
-    "tag": true
+    "tag": false
   }
 }
