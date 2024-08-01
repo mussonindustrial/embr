@@ -1,9 +1,14 @@
 {
     "name": "@mussonindustrial/embr-tag-stream",
-    "version": "0.1.1",
+    "version": "0.1.2",
     "private": false,
-    "keywords": [ "ignition", "module" ],
-    "files": [ "**/*.modl" ],
+    "keywords": [
+        "ignition",
+        "module"
+    ],
+    "files": [
+        "**/*.modl"
+    ],
     "dependencies": {
         "@mussonindustrial/embr-js-chart-js": "0.2.0",
         "@mussonindustrial/embr-jvm-core-common": "0.1.1",
