@@ -22,13 +22,14 @@ tasks.register("buildModules") {
 
 val changesetVersion = tasks.register<NpxTask>("changesetVersion") {
     group = "changesets"
+    mustRunAfter(tasks.build)
     command.set("changeset")
     args.set(listOf("version"))
 }
 
 val changesetPublish = tasks.register<NpxTask>("changesetPublish") {
     group = "changesets"
-    mustRunAfter(changesetVersion)
+    mustRunAfter(tasks.build, changesetVersion)
     command.set("changeset")
     args.set(listOf("publish"))
 }
