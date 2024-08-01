@@ -2,8 +2,7 @@ name: Release
 
 on:
   push:
-    branches:
-      - main  
+    branches: ['main']
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
@@ -17,23 +16,26 @@ permissions:
   pull-requests: write
 
 jobs:
-  build:
-    name: 'Build'
+  release:
+    name: 'Release'
     runs-on: ubuntu-latest
-    outputs:
-      version: '${{ steps.version.outputs.version }}'
     steps:
       - name: 'Checkout repository'
         uses: actions/checkout@v4
-
-      - name: 'Fetch git tags' # Required for axion-release-plugin
-        run: git fetch --tags --unshallow
 
       - name: 'Set up Java ${{ env.JAVA_VERSION }}'
         uses: actions/setup-java@v4
         with:
           java-version: '${{ env.JAVA_VERSION }}'
           distribution: 'zulu'
+      - name: 'Setup Gradle'
+        uses: gradle/actions/setup-gradle@v3.4.1
+        with:
+          cache-read-only: ${{ github.event_name == 'pull_request' }}
+      - name: 'Make gradlew executable'
+        run: chmod +x ./gradlew
+      - name: 'Validate Gradle wrapper'
+        uses: gradle/actions/wrapper-validation@v3
 
       - name: 'Set up Node.js'
         uses: actions/setup-node@v4
@@ -42,45 +44,49 @@ jobs:
       - name: 'Initialize Node.js'
         run: npm ci
 
-      - name: 'Setup Gradle'
-        uses: gradle/actions/setup-gradle@v3.4.1
-        with:
-          cache-read-only: ${{ github.event_name == 'pull_request' }}
-
-      - name: 'Restore gradle.properties'
+      - name: 'Load Organization gradle.properties'
         env:
-          GRADLE_IGNITION_MODULE_SIGNING_PROPS: ${{ secrets.GRADLE_IGNITION_MODULE_SIGNING_PROPS }}
-        shell: bash
+          props: ${{ secrets.GRADLE_IGNITION_MODULE_SIGNING_PROPS }}
         run: |
           mkdir -p ~/.gradle/
           echo "GRADLE_USER_HOME=${HOME}/.gradle" >> $GITHUB_ENV
-          echo "${GRADLE_IGNITION_MODULE_SIGNING_PROPS}" > ~/.gradle/gradle.properties
-      - name: 'Make secrets folder'
+          echo "${props}" > ~/.gradle/gradle.properties
+      - name: 'Load Organization Signing Cert'
         run: |
           mkdir ./secrets
-        shell: bash
-      - name: 'Write certificate to file'
-        run: |
-          echo -n "$IGNITION_MODULE_CERT_BASE64" | base64 --decode > ./secrets/cert.p7b
+          echo -n "$cert_base64" | base64 --decode > ./secrets/cert.p7b
         env:
-          IGNITION_MODULE_CERT_BASE64: ${{ secrets.IGNITION_MODULE_CERT_BASE64 }}
-      - name: 'Write keystore to file'
+          cert_base64: ${{ secrets.IGNITION_MODULE_CERT_BASE64 }}
+      - name: 'Load Organization Keystore'
         run: |
-          echo -n "$IGNITION_MODULE_KEYSTORE_BASE64" | base64 --decode > ./secrets/keystore.jks
+          echo -n "$keystore_base64" | base64 --decode > ./secrets/keystore.jks
         env:
-          IGNITION_MODULE_KEYSTORE_BASE64: ${{ secrets.IGNITION_MODULE_KEYSTORE_BASE64 }}
+          keystore_base64: ${{ secrets.IGNITION_MODULE_KEYSTORE_BASE64 }}
+
+      - name: 'Publish on Version Change'
+        id: changesets
+        uses: changesets/action@v1
+        with:
+          publish: ./gradlew release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+  dependency-submission:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 'Set up Java ${{ env.JAVA_VERSION }}'
+        uses: actions/setup-java@v4
+        with:
+          java-version: '${{ env.JAVA_VERSION }}'
+          distribution: 'zulu'
 
       - name: 'Make gradlew executable'
         run: chmod +x ./gradlew
 
-      - name: Create Release Pull Request or publish
-        id: changesets
-        uses: changesets/action@v1
-        with:
-          # This expects you to have a script called release which does a build for your packages and calls changeset publish
-          publish: |
-            ./gradlew release
-
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+      # Generates and submits a dependency graph, enabling Dependabot Alerts for all project dependencies.
+      # See: https://github.com/gradle/actions/blob/main/dependency-submission/README.md
+      - name: 'Generate and submit dependency graph'
+        uses: gradle/actions/dependency-submission@31ae3562f68c96d481c31bc1a8a55cc1be162f83 # v3.4.1

@@ -1,7 +1,11 @@
 # GitHub Actions workflow to automatically build and test Embr.
-name: 'build'
+name: 'Build'
 
-on: ['pull_request', 'push', 'workflow_call']
+on:
+  push:
+    branches-ignore: ['main']
+  pull_request:
+    branches: ['main']
 
 # Cancel in progress workflows on pull_requests.
 # https://docs.github.com/en/actions/using-jobs/using-concurrency#example-using-a-fallback-value
@@ -13,26 +17,33 @@ env:
   JAVA_VERSION: 21
   NODE_VERSION: 20
 
+permissions:
+  issues: write
+  contents: write
+  pull-requests: write
+
+
 jobs:
   build:
     name: 'Build'
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    outputs:
-      version: '${{ steps.version.outputs.version }}'
     steps:
       - name: 'Checkout repository'
         uses: actions/checkout@v4
-
-      - name: 'Fetch git tags' # Required for axion-release-plugin
-        run: git fetch --tags --unshallow
 
       - name: 'Set up Java ${{ env.JAVA_VERSION }}'
         uses: actions/setup-java@v4
         with:
           java-version: '${{ env.JAVA_VERSION }}'
           distribution: 'zulu'
+      - name: 'Setup Gradle'
+        uses: gradle/actions/setup-gradle@v3.4.1
+        with:
+          cache-read-only: ${{ github.event_name == 'pull_request' }}
+      - name: 'Make gradlew executable'
+        run: chmod +x ./gradlew
+      - name: 'Validate Gradle wrapper'
+        uses: gradle/actions/wrapper-validation@v3
 
       - name: 'Set up Node.js'
         uses: actions/setup-node@v4
@@ -41,36 +52,24 @@ jobs:
       - name: 'Initialize Node.js'
         run: npm ci
 
-      - name: 'Setup Gradle'
-        uses: gradle/actions/setup-gradle@v3.4.1
-        with:
-          cache-read-only: ${{ github.event_name == 'pull_request' }}
-
-      - name: 'Restore gradle.properties'
+      - name: 'Load Organization gradle.properties'
         env:
-          GRADLE_IGNITION_MODULE_SIGNING_PROPS: ${{ secrets.GRADLE_IGNITION_MODULE_SIGNING_PROPS }}
-        shell: bash
+          props: ${{ secrets.GRADLE_IGNITION_MODULE_SIGNING_PROPS }}
         run: |
           mkdir -p ~/.gradle/
           echo "GRADLE_USER_HOME=${HOME}/.gradle" >> $GITHUB_ENV
-          echo "${GRADLE_IGNITION_MODULE_SIGNING_PROPS}" > ~/.gradle/gradle.properties
-      - name: 'Make secrets folder'
+          echo "${props}" > ~/.gradle/gradle.properties
+      - name: 'Load Organization Signing Cert'
         run: |
           mkdir ./secrets
-        shell: bash
-      - name: 'Write certificate to file'
-        run: |
-          echo -n "$IGNITION_MODULE_CERT_BASE64" | base64 --decode > ./secrets/cert.p7b
+          echo -n "$cert_base64" | base64 --decode > ./secrets/cert.p7b
         env:
-          IGNITION_MODULE_CERT_BASE64: ${{ secrets.IGNITION_MODULE_CERT_BASE64 }}
-      - name: 'Write keystore to file'
+          cert_base64: ${{ secrets.IGNITION_MODULE_CERT_BASE64 }}
+      - name: 'Load Organization Keystore'
         run: |
-          echo -n "$IGNITION_MODULE_KEYSTORE_BASE64" | base64 --decode > ./secrets/keystore.jks
+          echo -n "$keystore_base64" | base64 --decode > ./secrets/keystore.jks
         env:
-          IGNITION_MODULE_KEYSTORE_BASE64: ${{ secrets.IGNITION_MODULE_KEYSTORE_BASE64 }}
-
-      - name: 'Make gradlew executable'
-        run: chmod +x ./gradlew
+          keystore_base64: ${{ secrets.IGNITION_MODULE_KEYSTORE_BASE64 }}
 
       - name: 'Build'
         run: ./gradlew --scan build
