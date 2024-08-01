@@ -1,5 +1,11 @@
 # @mussonindustrial/embr-tag-stream
 
+## 0.1.4
+
+### Patch Changes
+
+- fc2e4f8: publish test
+
 ## 0.1.3
 
 ### Patch Changes
