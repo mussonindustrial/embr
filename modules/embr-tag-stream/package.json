@@ -6,9 +6,7 @@
         "ignition",
         "module"
     ],
-    "files": [
-        "**/*.modl"
-    ],
+    "files": [ "**/*.modl", "!**/*.unsigned.modl"],
     "dependencies": {
         "@mussonindustrial/embr-js-chart-js": "0.2.0",
         "@mussonindustrial/embr-jvm-core-common": "0.1.1",
