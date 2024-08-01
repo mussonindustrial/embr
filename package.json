@@ -3,11 +3,11 @@
     "version": "0.0.0",
     "private": true,
     "scripts": {
-        "build": "npx nx run-many -t build",
-        "dev": "turbo dev",
+        "build": "gradlew build",
+        "dev": "npm dev",
         "lint": "turbo lint",
         "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-        "release": "turbo build && && gradlew build && changeset version && changeset publish"
+        "release": "gradlew build && changeset version && changeset publish"
     },
     "workspaces": [
         "lib/js/*",

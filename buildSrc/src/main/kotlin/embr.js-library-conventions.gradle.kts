@@ -43,25 +43,26 @@ java {
     targetCompatibility = JavaVersion.VERSION_11
 }
 
-tasks.register<NpxTask>("nxBuild") {
+val nxBuild = tasks.register<NpxTask>("nxBuild") {
+    group = "nx"
     dependsOn(tasks.npmInstall)
     command.set("nx")
     args.set(listOf("build"))
 
-    // Let NX do its own caching.
+    // Let Nx do its own caching.
     outputs.upToDateWhen { false }
 }
 
-tasks.create<Delete>("nxClean") {
-    group = "node"
+val nxClean = tasks.create<Delete>("nxClean") {
+    group = "nx"
     delete = setOf("${projectDir}/dist")
 }
 
 tasks.processResources {
-    dependsOn("nxBuild")
+    dependsOn(nxBuild)
     from( "dist") { into("static") }
 }
 
 tasks.clean {
-    dependsOn("nxClean")
+    dependsOn(nxClean)
 }

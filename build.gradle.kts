@@ -10,20 +10,8 @@ repositories {
 }
 
 
-allprojects {
-  apply {
-      plugin("project-report")
-  }
-}
-
-tasks.register("projectReportAll") {
-    // All project reports of subprojects
-    allprojects.forEach {
-        dependsOn(it.tasks["projectReport"])
-    }
-
-    // All projectReportAll of included builds
-    gradle.includedBuilds.forEach {
-        dependsOn(it.task(":projectReportAll"))
-    }
+tasks.register("buildModules") {
+    group = "build"
+    dependsOn(":modules:embr-charts:build")
+    dependsOn(":modules:embr-tag-stream:build")
 }
