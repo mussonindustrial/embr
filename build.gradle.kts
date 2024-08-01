@@ -20,29 +20,27 @@ tasks.register("buildModules") {
     dependsOn(":modules:embr-tag-stream:build")
 }
 
+val subBuilds = subprojects.map {
+    it.tasks.matching { task -> task.name == "build" }
+}
+
 val changesetVersion = tasks.register<NpxTask>("changesetVersion") {
     group = "changesets"
-    mustRunAfter(tasks.build)
     command.set("changeset")
     args.set(listOf("version"))
 }
 
 val changesetPublish = tasks.register<NpxTask>("changesetPublish") {
     group = "changesets"
-    mustRunAfter(tasks.build, changesetVersion)
+    mustRunAfter(subBuilds, changesetVersion)
     command.set("changeset")
     args.set(listOf("publish"))
 }
 
 val release = tasks.register("release") {
     group = "publishing"
-    dependsOn(changesetVersion, changesetPublish)
-}
-
-subprojects {
-    this.tasks.matching { it.name == "build" }.forEach { task ->
-        changesetPublish {
-            mustRunAfter(task)
-        }
+    subBuilds.forEach {
+        dependsOn(it)
     }
+    dependsOn(changesetVersion, changesetPublish)
 }
