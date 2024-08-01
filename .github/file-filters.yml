@@ -1,6 +1,0 @@
-embr-charts:
-  - 'modules/embr-charts/**'
-
-example-perspective-component:
-  - 'modules/example-perspective-component/**'
-  
