@@ -1,11 +1,16 @@
 # @mussonindustrial/embr-tag-stream
 
+## 0.1.7
+
+### Patch Changes
+
+- 89fa547: minor bump
+
 ## 0.1.6
 
 ### Patch Changes
 
 - 5aa012a: another publish!
-
 
 ## 0.1.5
 
