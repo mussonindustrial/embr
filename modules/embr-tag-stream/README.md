@@ -120,3 +120,4 @@ Free use of this software is granted under the terms of the MIT License.
 [documentation]: https://docs.mussonindustrial.com/
 [latest version]: https://github.com/mussonindustrial/embr/releases/download/embr-chart-js-0.1.3-SNAPSHOT/Embr-Chartjs-module.modl
 [EventSource]: https://developer.mozilla.org/en-US/docs/Web/API/EventSource
+
