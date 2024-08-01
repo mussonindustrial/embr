@@ -36,10 +36,13 @@ val changesetPublish = tasks.register<NpxTask>("changesetPublish") {
 
 val release = tasks.register("release") {
     group = "publishing"
-    subprojects {
-        try {
-            dependsOn(this.tasks.build)
-        } catch (_: Throwable) { }
-    }
     dependsOn(changesetVersion, changesetPublish)
+}
+
+subprojects {
+    this.tasks.matching { it.name == "build" }.forEach { task ->
+        changesetPublish {
+            mustRunAfter(task)
+        }
+    }
 }
