@@ -1,5 +1,11 @@
 # @mussonindustrial/embr-charts
 
+## 1.1.3
+
+### Patch Changes
+
+- 790e5ce: readme changes, just to bump version
+
 ## 1.1.2
 
 ### Patch Changes

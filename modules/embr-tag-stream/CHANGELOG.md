@@ -1,5 +1,11 @@
 # @mussonindustrial/embr-tag-stream
 
+## 0.1.3
+
+### Patch Changes
+
+- 790e5ce: readme changes, just to bump version
+
 ## 0.1.2
 
 ### Patch Changes
