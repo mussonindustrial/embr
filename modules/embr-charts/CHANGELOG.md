@@ -1,5 +1,11 @@
 # @mussonindustrial/embr-charts
 
+## 1.1.2
+
+### Patch Changes
+
+- 70a8dcf: attempt to include build files on publish
+
 ## 1.1.1
 
 ### Patch Changes
