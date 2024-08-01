@@ -7,23 +7,70 @@ on:
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
+env:
+  JAVA_VERSION: 21
+  NODE_VERSION: 20
+
 jobs:
-  release:
-    name: Release
+  build:
+    name: 'Build'
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    outputs:
+      version: '${{ steps.version.outputs.version }}'
     steps:
-      - name: Checkout Repo
-        uses: actions/checkout@v3
+      - name: 'Checkout repository'
+        uses: actions/checkout@v4
 
-      - name: Setup Node.js 18.x
-        uses: actions/setup-node@v3
+      - name: 'Fetch git tags' # Required for axion-release-plugin
+        run: git fetch --tags --unshallow
+
+      - name: 'Set up Java ${{ env.JAVA_VERSION }}'
+        uses: actions/setup-java@v4
         with:
-            node-version: 18.x
+          java-version: '${{ env.JAVA_VERSION }}'
+          distribution: 'zulu'
 
-      - name: Install Dependencies
+      - name: 'Set up Node.js'
+        uses: actions/setup-node@v4
+        with:
+          node-version: '${{ env.NODE_VERSION }}'
+      - name: 'Initialize Node.js'
         run: npm ci
 
-      - name: Create Release Pull Request or Publish to npm
+      - name: 'Setup Gradle'
+        uses: gradle/actions/setup-gradle@v3.4.1
+        with:
+          cache-read-only: ${{ github.event_name == 'pull_request' }}
+
+      - name: 'Restore gradle.properties'
+        env:
+          GRADLE_IGNITION_MODULE_SIGNING_PROPS: ${{ secrets.GRADLE_IGNITION_MODULE_SIGNING_PROPS }}
+        shell: bash
+        run: |
+          mkdir -p ~/.gradle/
+          echo "GRADLE_USER_HOME=${HOME}/.gradle" >> $GITHUB_ENV
+          echo "${GRADLE_IGNITION_MODULE_SIGNING_PROPS}" > ~/.gradle/gradle.properties
+      - name: 'Make secrets folder'
+        run: |
+          mkdir ./secrets
+        shell: bash
+      - name: 'Write certificate to file'
+        run: |
+          echo -n "$IGNITION_MODULE_CERT_BASE64" | base64 --decode > ./secrets/cert.p7b
+        env:
+          IGNITION_MODULE_CERT_BASE64: ${{ secrets.IGNITION_MODULE_CERT_BASE64 }}
+      - name: 'Write keystore to file'
+        run: |
+          echo -n "$IGNITION_MODULE_KEYSTORE_BASE64" | base64 --decode > ./secrets/keystore.jks
+        env:
+          IGNITION_MODULE_KEYSTORE_BASE64: ${{ secrets.IGNITION_MODULE_KEYSTORE_BASE64 }}
+
+      - name: 'Make gradlew executable'
+        run: chmod +x ./gradlew
+
+      - name: Create Release Pull Request or publish
         id: changesets
         uses: changesets/action@v1
         with:
