@@ -1,5 +1,11 @@
 # @mussonindustrial/embr-charts
 
+## 1.1.6
+
+### Patch Changes
+
+- 76c3c18: publish
+
 ## 1.1.5
 
 ### Patch Changes
