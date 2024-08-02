@@ -1,5 +1,11 @@
 # @mussonindustrial/embr-tag-stream
 
+## 0.1.16
+
+### Patch Changes
+
+- 5c5757f: patch
+
 ## 0.1.15
 
 ### Patch Changes
