@@ -91,7 +91,7 @@ jobs:
         - name: Get Tag Name
           id: meta
           run: |
-            echo "tag_name=${{ matrix.package.name }}@${{ matrix.package.version }}" >> "GITHUB_OUTPUT"
+            echo "tag_name=${{ matrix.package.name }}@${{ matrix.package.version }}" >> "$GITHUB_OUTPUT"
 
         - name: Publish Assets to Releases
           run: |
