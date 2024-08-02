@@ -25,17 +25,14 @@ val changesetVersion = tasks.register<NpxTask>("changesetVersion") {
 
 val changesetPublish = tasks.register<NpxTask>("changesetPublish") {
     group = "changesets"
-    mustRunAfter(subBuilds, changesetVersion)
+    mustRunAfter(zipModules, changesetVersion)
     command.set("changeset")
     args.set(listOf("publish"))
 }
 
 val release = tasks.register("release") {
     group = "publishing"
-    subBuilds.forEach {
-        dependsOn(it)
-    }
-    dependsOn(changesetVersion, changesetPublish)
+    dependsOn(zipModules, changesetVersion, changesetPublish)
 }
 
 
