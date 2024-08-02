@@ -80,7 +80,7 @@ jobs:
         with:
           name: build
           path: |
-            build/
+            ./build/
 
   publish-gha:
       name: Publish to GitHub Releases
@@ -99,7 +99,7 @@ jobs:
           uses: actions/download-artifact@v4
           with:
             name: build
-            path: artifacts
+            path: /build
 
         - name: Get Tag Name
           id: meta
@@ -108,7 +108,7 @@ jobs:
 
         - name: Publish Artifacts to Releases
           run: |
-            gh release upload ${{ steps.meta.outputs.tag_name }} artifacts/modules.zip
+            gh release upload ${{ steps.meta.outputs.tag_name }} /build/modules.zip
           env:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
