@@ -1,5 +1,11 @@
 # @mussonindustrial/embr-tag-stream
 
+## 0.1.9
+
+### Patch Changes
+
+- 9c2d829: version bump
+
 ## 0.1.8
 
 ### Patch Changes
