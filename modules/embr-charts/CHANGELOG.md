@@ -1,5 +1,11 @@
 # @mussonindustrial/embr-charts
 
+## 1.1.8
+
+### Patch Changes
+
+- 7b10b6a: bump
+
 ## 1.1.7
 
 ### Patch Changes
