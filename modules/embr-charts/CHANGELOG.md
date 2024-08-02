@@ -1,5 +1,12 @@
 # @mussonindustrial/embr-charts
 
+## 1.1.10
+
+### Patch Changes
+
+- 6e48fe6: patch please
+- 6e48fe6: bump
+
 ## 1.1.9
 
 ### Patch Changes
