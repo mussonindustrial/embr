@@ -93,9 +93,13 @@ jobs:
           run: |
             echo "tag_name=${{ matrix.package.name }}@${{ matrix.package.version }}" >> "$GITHUB_OUTPUT"
 
+        - name: Find Release Assets
+          run: |
+            
+
         - name: Publish Assets to Releases
           run: |
-            gh release upload ${{ steps.meta.outputs.tag_name }} **.*.modl
+            gh release upload ${{ steps.meta.outputs.tag_name }} ./**/**.*.modl
           env:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
