@@ -4,7 +4,7 @@
 
 ### Patch Changes
 
-- 89fa547: minor bump
+- e2a40e1: minor bump
 
 ## 0.1.6
 
