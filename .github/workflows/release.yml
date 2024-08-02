@@ -17,8 +17,11 @@ permissions:
 
 jobs:
   release:
-    name: 'Release'
+    name: 'Release Changeset'
     runs-on: ubuntu-latest
+    outputs:
+      published: ${{ steps.changesets.outputs.published }}
+      publishedPackages: ${{ steps.changesets.outputs.publishedPackages }}
     steps:
       - name: 'Checkout repository'
         uses: actions/checkout@v4
@@ -71,6 +74,23 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+  publish-gha:
+      name: 'Publish to GitHub Releases'
+      runs-on: ubuntu-latest
+      needs: release
+      if: needs.release.outputs.published == 'true'
+      strategy:
+        fail-fast: true
+        matrix:
+          package: ${{ fromJson(needs.release.outputs.publishedPackages) }}
+      steps:
+        - name: Checkout
+          uses: actions/checkout@v4
+
+        - name: Publish Assets to Releases
+          run: |
+            gh release upload ${{ matrix.package.name }}@{{ matrix.package.version }} **.*.modl
 
   dependency-submission:
     runs-on: ubuntu-latest
