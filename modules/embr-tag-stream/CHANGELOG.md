@@ -1,5 +1,18 @@
 # @mussonindustrial/embr-tag-stream
 
+## 0.2.0
+
+### Minor Changes
+
+- 944e17a: Introduced new Nx based build system and CI workflow. Version bumping and patch notes are powered by changesets, with automatic publishing on the main branch.
+
+### Patch Changes
+
+- Updated dependencies [944e17a]
+  - @mussonindustrial/embr-js-chart-js@0.3.0
+  - @mussonindustrial/embr-jvm-core-common@0.2.0
+  - @mussonindustrial/embr-jvm-core-servlets@0.2.0
+
 ## 0.1.18
 
 ### Patch Changes
