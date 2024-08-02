@@ -1,5 +1,4 @@
 import com.github.gradle.node.npm.task.NpxTask
-import org.jetbrains.kotlin.gradle.utils.`is`
 
 plugins {
     base
@@ -13,12 +12,6 @@ repositories {
     gradlePluginPortal()
 }
 
-
-tasks.register("buildModules") {
-    group = "build"
-    dependsOn(":modules:embr-charts:build")
-    dependsOn(":modules:embr-tag-stream:build")
-}
 
 val subBuilds = subprojects.map {
     it.tasks.matching { task -> task.name == "build" }
@@ -43,4 +36,35 @@ val release = tasks.register("release") {
         dependsOn(it)
     }
     dependsOn(changesetVersion, changesetPublish)
+}
+
+
+val releaseFiles: Configuration = configurations.create("releaseFiles") {
+    isCanBeConsumed = false
+    isCanBeResolved = true
+}
+dependencies {
+    releaseFiles(project(":modules:embr-charts", releaseFiles.name))
+    releaseFiles(project(":modules:embr-tag-stream", releaseFiles.name))
+}
+
+val assembleModules = tasks.register<Copy>("assembleModules") {
+    group = "ignition module"
+    inputs.files(releaseFiles)
+
+    from(releaseFiles)
+    destinationDir = file("build/modules")
+}
+
+val zipModules = tasks.register<Zip>("zipModules") {
+    group = "ignition module"
+    inputs.files(assembleModules.get().outputs)
+
+    archiveBaseName.set("modules")
+    destinationDirectory.set(file("build"))
+    from(assembleModules.get().destinationDir)
+}
+
+tasks.build {
+    dependsOn(zipModules)
 }
