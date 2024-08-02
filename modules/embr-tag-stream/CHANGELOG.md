@@ -1,5 +1,11 @@
 # @mussonindustrial/embr-tag-stream
 
+## 0.1.8
+
+### Patch Changes
+
+- 6016e2b: we like to bump
+
 ## 0.1.7
 
 ### Patch Changes
