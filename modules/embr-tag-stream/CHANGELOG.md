@@ -1,5 +1,11 @@
 # @mussonindustrial/embr-tag-stream
 
+## 0.1.10
+
+### Patch Changes
+
+- 638fbdc: fake patch
+
 ## 0.1.9
 
 ### Patch Changes

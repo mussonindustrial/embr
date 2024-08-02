@@ -1,5 +1,11 @@
 # @mussonindustrial/embr-charts
 
+## 1.1.5
+
+### Patch Changes
+
+- 638fbdc: fake patch
+
 ## 1.1.4
 
 ### Patch Changes
