@@ -88,9 +88,16 @@ jobs:
         - name: Checkout
           uses: actions/checkout@v4
 
+        - name: Get Tag Name
+          id: meta
+          run: |
+            echo "tag_name=${{ matrix.package.name }}@${{ matrix.package.version }}" >> "GITHUB_OUTPUT"
+
         - name: Publish Assets to Releases
           run: |
-            gh release upload ${{ matrix.package.name }}@{{ matrix.package.version }} **.*.modl
+            gh release upload ${{ steps.meta.outputs.tag_name }} **.*.modl
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   dependency-submission:
     runs-on: ubuntu-latest
