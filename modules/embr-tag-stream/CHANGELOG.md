@@ -1,5 +1,11 @@
 # @mussonindustrial/embr-tag-stream
 
+## 0.1.11
+
+### Patch Changes
+
+- 76c3c18: publish
+
 ## 0.1.10
 
 ### Patch Changes
