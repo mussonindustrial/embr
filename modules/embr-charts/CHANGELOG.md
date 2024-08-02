@@ -1,5 +1,11 @@
 # @mussonindustrial/embr-charts
 
+## 1.2.1
+
+### Patch Changes
+
+- 48279e9: republished to github and npm
+
 ## 1.2.0
 
 ### Minor Changes
