@@ -1,4 +1,4 @@
-# Embr Tag Stream Module [<img src="https://cdn.mussonindustrial.com/files/public/images/emblem.svg" alt="Musson Industrial Logo" width="90" height="40" align="right">][embr]
+# Embr Event Stream Module [<img src="https://cdn.mussonindustrial.com/files/public/images/emblem.svg" alt="Musson Industrial Logo" width="90" height="40" align="right">][embr]
 
 An Ignition module that provides an API for high-speed streaming of tag changes and alarm events via SSE (server-sent events).
 
@@ -14,13 +14,13 @@ All modern browsers support server-sent events: Firefox 6+, Google Chrome 6+, Op
 
 ## Gateway API
 
-* [Create a TagStream Session](#Create-a-TagStream) : `POST /embr/tag/stream/session`
-* [Subscribe to a TagStream Session](#Subscribe-to-a-TagStream) : `GET /embr/tag/stream/session/{session_id}`
+* [Create a EventStream Session](#Create-a-EventStream) : `POST /embr/tag/stream/session`
+* [Subscribe to a EventStream Session](#Subscribe-to-a-EventStream) : `GET /embr/tag/stream/session/{session_id}`
 
 ---
-### Create a TagStream Session
+### Create a EventStream Session
 
-Creates a TagStream session containing the specified tags.
+Creates a EventStream session containing the specified tags.
 The returned `session_id` is used to access the stream.
 
 As a security measure, the `session_id` is time-limited and single use.
@@ -33,12 +33,14 @@ Only a single client may access a given `session_id`.
 | URL    | `/embr/tag/stream/session` |
 | Method | `POST`                     |
 | Body   | `{ tagPaths: [] }`         |
-| Auth   | None                       |
+| Auth   | `body`                     |
 
 #### Body Example
 ```json
 {
-  "tagPaths": [
+  "username": "admin",
+  "password": "password",
+  "tag_paths": [
     "[default]Tag1",
     "[default]Path/Tag2"
   ]
@@ -76,9 +78,9 @@ The [EventSource] messages will use this `tag_id` when sending tag change inform
 ```
 
 ---
-### Subscribe to a TagStream Session
+### Subscribe to a EventStream Session
 
-Subscribe to a TagStream by its `session_id`.
+Subscribe to a EventStream by its `session_id`.
 This endpoint is meant to be accessed by an [EventSource].
 For more details, see [Mozilla's MDN WebDocs](https://developer.mozilla.org/en-US/docs/Web/API/EventSource).
 
@@ -86,7 +88,7 @@ For more details, see [Mozilla's MDN WebDocs](https://developer.mozilla.org/en-U
 |--------|-----------------------------------------|
 | URL    | `/embr/tag/stream/session/{session_id}` |
 | Method | `GET`                                   |
-| Params | `session_id`: TagStream session id      |
+| Params | `session_id`: EventStream session id      |
 | Auth   | None                                    |
 
 #### Success Response
@@ -120,4 +122,3 @@ Free use of this software is granted under the terms of the MIT License.
 [documentation]: https://docs.mussonindustrial.com/
 [latest version]: https://github.com/mussonindustrial/embr/releases/download/embr-chart-js-0.1.3-SNAPSHOT/Embr-Chartjs-module.modl
 [EventSource]: https://developer.mozilla.org/en-US/docs/Web/API/EventSource
-

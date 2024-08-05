@@ -21,8 +21,14 @@
         
         <section id="subscribe" class="subscribe">
             <h2>Manage Subscriptions</h2>
-            <input type="text" id="tagPath" placeholder="Enter tag path">
-            <button onclick="subscribeTag()">Subscribe</button>
+            <div class="auth">
+                <label for="username">Username</label><input type="text" id="username" placeholder="">
+                <label for="password">Password</label><input type="text" id="password" placeholder="">
+            </div>
+            <div>
+                <label for="tagPath">Tag Path</label>
+                <input type="text" id="tagPath" placeholder="Enter tag path">
+                <button onclick="subscribeTag()">Subscribe</button></div>
             <div id="subscribedTags"></div>
         </section>
     </main>

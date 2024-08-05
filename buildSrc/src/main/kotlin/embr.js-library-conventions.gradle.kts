@@ -1,5 +1,4 @@
 import com.github.gradle.node.npm.task.NpxTask
-import gradle.kotlin.dsl.accessors._6964a05bebf46e68d5f8b1e476ef19a8.processResources
 
 plugins {
     id("embr.kotlin-library-conventions")
