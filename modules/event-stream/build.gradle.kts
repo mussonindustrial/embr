@@ -12,8 +12,8 @@ ignitionModule {
 
     projectScopes.putAll(
         mapOf(
-            ":modules:embr-event-stream:common" to "G",
-            ":modules:embr-event-stream:gateway" to "G",
+            ":modules:event-stream:common" to "G",
+            ":modules:event-stream:gateway" to "G",
         ),
     )
 
@@ -25,7 +25,7 @@ ignitionModule {
 
     hooks.putAll(
         mapOf(
-            "com.mussonindustrial.ignition.embr.eventstream.EventStreamGatewayHook" to "G",
+            "com.mussonindustrial.embr.eventstream.EventStreamGatewayHook" to "G",
         ),
     )
 }
