@@ -1,6 +1,6 @@
 {
     "name": "@embr-modules/charts",
-    "version": "1.2.1",
+    "version": "1.3.0",
     "private": false,
     "keywords": [
         "ignition",
@@ -15,8 +15,8 @@
         "!**/*.unsigned.modl"
     ],
     "dependencies": {
-        "@embr-js/chart-js": "0.3.0",
-        "@embr-jvm/core-common": "0.2.0",
-        "@embr-jvm/core-designer": "0.2.0"
+        "@embr-js/chart-js": "0.4.0",
+        "@embr-jvm/core-common": "0.3.0",
+        "@embr-jvm/core-designer": "0.3.0"
     }
 }

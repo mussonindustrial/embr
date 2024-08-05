@@ -1,5 +1,11 @@
 # @mussonindustrial/embr-jvm-core-gateway
 
+## 0.3.0
+
+### Minor Changes
+
+- 6e4abb8: Retarget to Ignition SDK version 8.1.33 (first version on Java 17)
+
 ## 0.2.0
 
 ### Minor Changes
