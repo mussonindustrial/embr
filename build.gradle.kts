@@ -40,9 +40,10 @@ val releaseFiles: Configuration = configurations.create("releaseFiles") {
     isCanBeConsumed = false
     isCanBeResolved = true
 }
+
 dependencies {
-    releaseFiles(project(":modules:embr-charts", releaseFiles.name))
-    releaseFiles(project(":modules:embr-tag-stream", releaseFiles.name))
+    releaseFiles(project(":modules:charts", releaseFiles.name))
+    releaseFiles(project(":modules:event-stream", releaseFiles.name))
 }
 
 val assembleModules = tasks.register<Copy>("assembleModules") {

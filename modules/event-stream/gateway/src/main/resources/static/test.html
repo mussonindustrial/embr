@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+</head>
+<body>
+<textarea id="tagPath">[default]BenTest/now</textarea>
+<button id="doSubscribe">Subscribe</button>
+<textarea id="values"></textarea>
+<script>
+	
+let eventSource = null;
+
+function subscribe() {
+	if (eventSource) {
+		eventSource.close();
+	}
+
+	const tagPath = document.getElementById("tagPath").value;
+	const requestBody = JSON.stringify({
+		"tagPaths": [tagPath.toString()]
+	})
+	console.log(requestBody)
+
+	fetch("/embr/tag/stream/session", {
+		method: "POST",
+		mode: "cors",
+		body: requestBody
+	}).then(response => response.json())
+	.then(json => {
+		console.log(json)
+		const url = json.url
+		eventSource = new EventSource(`/embr/tag/stream/session/${json.data.session_id}`);
+		eventSource.onmessage = (e) => {
+			const content = document.createElement('div');
+			content.textContent = e.data;
+			document.body.append(content);
+		}
+		eventSource.addEventListener('tag_change', (e) => {
+			var s = document.getElementById("values");
+			var obj = JSON.parse(e.data)
+			s.value = JSON.stringify(obj);
+		})
+		eventSource.onopen = function (e) {
+			console.log('Opened');
+		}
+	
+		eventSource.onerror = function (e) {
+			console.log('Error');
+		}
+	})
+}
+
+document.getElementById("doSubscribe").addEventListener("click", subscribe);
+
+</script>
+</body>
+</html>
