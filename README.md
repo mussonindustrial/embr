@@ -12,6 +12,7 @@
   
 [![Build](https://github.com/mussonindustrial/embr/actions/workflows/build.yml/badge.svg)]()
 [![Kotlin](https://img.shields.io/badge/kotlin-2.0.0-blue.svg?logo=kotlin)](http://kotlinlang.org)
+[![Ignition](https://img.shields.io/badge/Ignition-8.1.33+-purple.svg)](https://inductiveautomation.com/)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/mussonindustrial/embr/blob/main/LICENSE)
 
 </p>
@@ -26,8 +27,8 @@
   
 | Module                                                  | Description                                                                           | Release Notes                                                                                                                                   |
 |---------------------------------------------------------|---------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------|
-| [embr-charts](modules/embr-charts/README.md)            | A collection of enhanced Perspective charting components.                             | [![version](https://img.shields.io/github/v/release/mussonindustrial/embr?filter=*charts*&label=%20)](modules/embr-charts/CHANGELOG.md)         |
-| [embr-tag-stream](modules/embr-tag-stream/README.md) | Provides an API for high-speed streaming of tag changes via SSE (server-sent events). | [![version](https://img.shields.io/github/v/release/mussonindustrial/embr?filter=*tag-stream*&label=%20)](modules/embr-tag-stream/CHANGELOG.md) |
+| [embr-charts](modules/charts/README.md)            | A collection of enhanced Perspective charting components.                             | [![version](https://img.shields.io/github/v/release/mussonindustrial/embr?filter=*charts*&label=%20)](modules/charts/CHANGELOG.md)         |
+| [embr-event-stream](modules/event-stream/README.md) | Provides an API for high-speed streaming of tag changes via SSE (server-sent events). | [![version](https://img.shields.io/github/v/release/mussonindustrial/embr?filter=*event-stream*&label=%20)](modules/event-stream/CHANGELOG.md) |
 
 </div>
 
@@ -37,6 +38,7 @@
 ```sh
 git clone https://github.com/mussonindustrial/embr
 cd embr
+npm i
 ./gradlew build
 ```
 
