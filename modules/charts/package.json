@@ -1,0 +1,22 @@
+{
+    "name": "@embr-modules/charts",
+    "version": "1.2.1",
+    "private": false,
+    "keywords": [
+        "ignition",
+        "module",
+        "charting",
+        "charts",
+        "trend",
+        "graph"
+    ],
+    "files": [
+        "**/*.modl",
+        "!**/*.unsigned.modl"
+    ],
+    "dependencies": {
+        "@embr-js/chart-js": "0.3.0",
+        "@embr-jvm/core-common": "0.2.0",
+        "@embr-jvm/core-designer": "0.2.0"
+    }
+}

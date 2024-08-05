@@ -1,0 +1,133 @@
+name: Release
+
+on:
+  push:
+    branches: ['main']
+
+concurrency: ${{ github.workflow }}-${{ github.ref }}
+
+env:
+  JAVA_VERSION: 21
+  NODE_VERSION: 20
+
+permissions:
+  issues: write
+  contents: write
+  pull-requests: write
+
+jobs:
+  release:
+    name: Release Changeset
+    runs-on: ubuntu-latest
+    outputs:
+      published: ${{ steps.changesets.outputs.published }}
+      publishedPackages: ${{ steps.changesets.outputs.publishedPackages }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 'Set up Java ${{ env.JAVA_VERSION }}'
+        uses: actions/setup-java@v4
+        with:
+          java-version: '${{ env.JAVA_VERSION }}'
+          distribution: 'zulu'
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3.4.1
+        with:
+          cache-read-only: ${{ github.event_name == 'pull_request' }}
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+      - name: Validate Gradle wrapper
+        uses: gradle/actions/wrapper-validation@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '${{ env.NODE_VERSION }}'
+      - name: Initialize Node.js
+        run: npm ci
+
+      - name: Load Organization gradle.properties
+        env:
+          props: ${{ secrets.GRADLE_IGNITION_MODULE_SIGNING_PROPS }}
+        run: |
+          mkdir -p ~/.gradle/
+          echo "GRADLE_USER_HOME=${HOME}/.gradle" >> $GITHUB_ENV
+          echo "${props}" > ~/.gradle/gradle.properties
+      - name: Load Organization Signing Cert
+        run: |
+          mkdir ./secrets
+          echo -n "$cert_base64" | base64 --decode > ./secrets/cert.p7b
+        env:
+          cert_base64: ${{ secrets.IGNITION_MODULE_CERT_BASE64 }}
+      - name: Load Organization Keystore
+        run: |
+          echo -n "$keystore_base64" | base64 --decode > ./secrets/keystore.jks
+        env:
+          keystore_base64: ${{ secrets.IGNITION_MODULE_KEYSTORE_BASE64 }}
+
+      - name: Publish on Version Change
+        id: changesets
+        uses: changesets/action@v1
+        with:
+          publish: ./gradlew release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Archive build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build
+          path: |
+            ./build/
+
+  publish-gha:
+      name: Publish to GitHub Releases
+      runs-on: ubuntu-latest
+      needs: release
+      if: needs.release.outputs.published == 'true'
+      strategy:
+        fail-fast: true
+        matrix:
+          package: ${{ fromJson(needs.release.outputs.publishedPackages) }}
+      steps:
+        - name: Checkout
+          uses: actions/checkout@v4
+
+        - name: Download Artifacts
+          uses: actions/download-artifact@v4
+          with:
+            name: build
+            path: ./build
+
+        - name: Get Tag Name
+          id: meta
+          run: |
+            echo "tag_name=${{ matrix.package.name }}@${{ matrix.package.version }}" >> "$GITHUB_OUTPUT"
+
+        - name: Publish Artifacts to Releases
+          run: |
+            gh release upload ${{ steps.meta.outputs.tag_name }} ./build/modules.zip
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  dependency-submission:
+    runs-on: ubuntu-latest
+    name: 'Submit dependencies'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 'Set up Java ${{ env.JAVA_VERSION }}'
+        uses: actions/setup-java@v4
+        with:
+          java-version: '${{ env.JAVA_VERSION }}'
+          distribution: 'zulu'
+
+      - name: 'Make gradlew executable'
+        run: chmod +x ./gradlew
+
+      # Generates and submits a dependency graph, enabling Dependabot Alerts for all project dependencies.
+      # See: https://github.com/gradle/actions/blob/main/dependency-submission/README.md
+      - name: 'Generate and submit dependency graph'
+        uses: gradle/actions/dependency-submission@v3

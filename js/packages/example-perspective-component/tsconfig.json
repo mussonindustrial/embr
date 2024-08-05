@@ -1,4 +1,0 @@
-{
-  "extends": "@mussonindustrial/embr-tsconfig/vite.json",
-  "include": ["src"]
-}

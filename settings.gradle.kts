@@ -10,22 +10,18 @@ pluginManagement {
 include(
     ":",
 
-    ":lib:embr-core-common",
-    ":lib:embr-core-servlets",
+    ":jvm:core-common",
+    ":jvm:core-servlets",
 
-    ":js:packages:example-perspective-component",
-    ":js:packages:embr-chart-js",
+    ":js:chart-js",
+    ":js:event-stream",
 
-    ":modules:embr-charts:common",
-    ":modules:embr-charts:designer",
-    ":modules:embr-charts:gateway",
+    ":modules:charts:common",
+    ":modules:charts:designer",
+    ":modules:charts:gateway",
 
-    ":modules:embr-tag-stream:common",
-    ":modules:embr-tag-stream:gateway",
-
-    ":modules:example-perspective-component:common",
-    ":modules:example-perspective-component:designer",
-    ":modules:example-perspective-component:gateway"
+    ":modules:event-stream:common",
+    ":modules:event-stream:gateway",
 )
 
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")

@@ -1,0 +1,3 @@
+{
+    "extends": "@mussonindustrial/embr-tsconfig/base.json"
+}
