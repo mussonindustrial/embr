@@ -8,6 +8,14 @@ document.addEventListener("DOMContentLoaded", function() {
         tagValue.innerHTML = `<pre><code> ${value} </code></pre>`
     }
 
+    function getUserInfo() {
+        return {
+            type: 'basic',
+            username: document.getElementById('username').value,
+            password: document.getElementById('password').value
+        }
+    }
+
     function subscribeTag() {
         const tagPathElement = document.getElementById("tagPath");
         const tagPath = tagPathElement.value
@@ -62,12 +70,19 @@ document.addEventListener("DOMContentLoaded", function() {
     
         // Create the body of the session request.
         const requestBody = JSON.stringify({
-            "tagPaths": subscribedTags
+            streams: {
+                tag: {
+                    paths: subscribedTags,
+                    events: ['tag_change']
+                },
+                license: { },
+            },
+            auth: getUserInfo()
         })
         console.log(`post-body: ${requestBody}`)
 
         // Create a new session.
-        fetch("/embr/tag/stream/session", {
+        fetch("/embr/event-stream/session", {
             method: "POST",
             mode: "cors",
             body: requestBody
@@ -78,13 +93,15 @@ document.addEventListener("DOMContentLoaded", function() {
             console.log(`post-response: ${sessionInfo}`)
 
             // Connect to the event source.
-            const url = `/embr/tag/stream/session/${sessionInfo.data.session_id}`
+            const url = `/embr/event-stream/session/${sessionInfo.data.session_id}`
             eventSource = new EventSource(url);
+            const tagStream = sessionInfo.data.streams.tag
+            const tags = tagStream.tags
 
             // When a tag change occurs, display the tags new value.
             eventSource.addEventListener('tag_change', (e) => {
                 const tagChangeData = JSON.parse(e.data)
-                const tagPath = sessionInfo.data.tags[tagChangeData.tag_id].tag_path
+                const tagPath = tags[tagChangeData.tag_id].path
                 const tagDataString = JSON.stringify(tagChangeData)
                 displayTagData(tagPath, tagDataString)
             })

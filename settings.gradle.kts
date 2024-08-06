@@ -11,7 +11,11 @@ include(
     ":",
 
     ":jvm:core-common",
+    ":jvm:core-designer",
+    ":jvm:core-gateway",
     ":jvm:core-servlets",
+    ":jvm:perspective-common",
+    ":jvm:perspective-designer",
 
     ":js:chart-js",
     ":js:event-stream",

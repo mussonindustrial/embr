@@ -1,0 +1,3 @@
+package com.mussonindustrial.embr.designer
+
+interface EmbrDesignerContextExtension

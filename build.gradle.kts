@@ -12,31 +12,7 @@ repositories {
     gradlePluginPortal()
 }
 
-
-val subBuilds = subprojects.map {
-    it.tasks.matching { task -> task.name == "build" }
-}
-
-val changesetVersion = tasks.register<NpxTask>("changesetVersion") {
-    group = "changesets"
-    command.set("changeset")
-    args.set(listOf("version"))
-}
-
-val changesetPublish = tasks.register<NpxTask>("changesetPublish") {
-    group = "changesets"
-    mustRunAfter(zipModules, changesetVersion)
-    command.set("changeset")
-    args.set(listOf("publish"))
-}
-
-val release = tasks.register("release") {
-    group = "publishing"
-    dependsOn(zipModules, changesetVersion, changesetPublish)
-}
-
-
-val releaseFiles: Configuration = configurations.create("releaseFiles") {
+val releaseFiles: Configuration by configurations.creating {
     isCanBeConsumed = false
     isCanBeResolved = true
 }
@@ -46,7 +22,29 @@ dependencies {
     releaseFiles(project(":modules:event-stream", releaseFiles.name))
 }
 
-val assembleModules = tasks.register<Copy>("assembleModules") {
+val subBuilds = subprojects.map {
+    it.tasks.matching { task -> task.name == "build" }
+}
+
+val changesetVersion by tasks.registering(NpxTask::class) {
+    group = "changesets"
+    command.set("changeset")
+    args.set(listOf("version"))
+}
+
+val changesetPublish by tasks.registering(NpxTask::class) {
+    group = "changesets"
+    mustRunAfter(zipModules, changesetVersion)
+    command.set("changeset")
+    args.set(listOf("publish"))
+}
+
+val release by tasks.registering {
+    group = "publishing"
+    dependsOn(zipModules, changesetVersion, changesetPublish)
+}
+
+val assembleModules by tasks.registering(Copy::class) {
     group = "ignition module"
     inputs.files(releaseFiles)
 
@@ -54,7 +52,7 @@ val assembleModules = tasks.register<Copy>("assembleModules") {
     destinationDir = file("build/modules")
 }
 
-val zipModules = tasks.register<Zip>("zipModules") {
+val zipModules by tasks.registering(Zip::class) {
     group = "ignition module"
     inputs.files(assembleModules.get().outputs)
 
