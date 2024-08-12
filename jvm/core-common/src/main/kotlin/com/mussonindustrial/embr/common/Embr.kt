@@ -14,4 +14,11 @@ object Embr {
             "embr-event-stream",
             "/embr/event-stream",
         )
+
+    val THERMO =
+        EmbrModuleMeta(
+            "com.mussonindustrial.embr.thermo",
+            "embr-thermo",
+            "/embr/thermo",
+        )
 }

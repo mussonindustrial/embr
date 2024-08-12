@@ -9,4 +9,4 @@
 "@embr-jvm/core-common": minor
 ---
 
-Break resources into shared libraries.
+Break resources into shared libraries to support future inter-module work.

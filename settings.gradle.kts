@@ -10,6 +10,7 @@ pluginManagement {
 include(
     ":",
 
+    ":jvm:core-client",
     ":jvm:core-common",
     ":jvm:core-designer",
     ":jvm:core-gateway",
@@ -26,6 +27,11 @@ include(
 
     ":modules:event-stream:common",
     ":modules:event-stream:gateway",
+
+    ":modules:thermo:common",
+    ":modules:thermo:client",
+    ":modules:thermo:designer",
+    ":modules:thermo:gateway",
 )
 
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")

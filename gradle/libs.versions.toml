@@ -5,6 +5,7 @@ kotest = "5.9.1"
 ignition = "8.1.33"
 ia-gson = "2.10.1"
 jetty = "10.0.21"
+if97 = "2.0.0"
 
 [plugins]
 kotlin = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
@@ -26,6 +27,7 @@ ignition-vision-client-api = { group = "com.inductiveautomation.ignitionsdk", na
 ignition-perspective-common = { group = "com.inductiveautomation.ignitionsdk", name = "perspective-common", version.ref = "ignition" }
 ignition-perspective-gateway = { group = "com.inductiveautomation.ignitionsdk", name = "perspective-gateway", version.ref = "ignition" }
 ignition-perspective-designer = { group = "com.inductiveautomation.ignitionsdk", name = "perspective-designer", version.ref = "ignition" }
+if97 = { group = "com.hummeling", name = "if97", version.ref = "if97"}
 
 # test framework
 kotest-junit = { group = "io.kotest", name = "kotest-runner-junit5", version.ref = "kotest" }

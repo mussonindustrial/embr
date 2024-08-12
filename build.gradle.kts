@@ -20,6 +20,7 @@ val releaseFiles: Configuration by configurations.creating {
 dependencies {
     releaseFiles(project(":modules:charts", releaseFiles.name))
     releaseFiles(project(":modules:event-stream", releaseFiles.name))
+    releaseFiles(project(":modules:thermo", releaseFiles.name))
 }
 
 val subBuilds = subprojects.map {
