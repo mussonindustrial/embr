@@ -1,5 +1,17 @@
 # @mussonindustrial/embr-jvm-core-designer
 
+## 0.4.0
+
+### Minor Changes
+
+- 9182d09: Break resources into shared libraries to support future inter-module work.
+
+### Patch Changes
+
+- Updated dependencies [9182d09]
+- Updated dependencies [9182d09]
+  - @embr-jvm/core-common@0.4.0
+
 ## 0.3.0
 
 ### Minor Changes
