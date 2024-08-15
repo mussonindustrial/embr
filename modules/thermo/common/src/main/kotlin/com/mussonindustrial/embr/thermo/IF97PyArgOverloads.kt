@@ -117,7 +117,6 @@ object IF97PyArgOverloads {
         .addOverload({ if97.refractiveIndexPSLambda(it[0] as Double, it[1] as Double, it[2] as Double) }, "p" to Double::class, "s" to Double::class, "l" to Double::class)
         .addOverload({ if97.refractiveIndexPTLambda(it[0] as Double, it[1] as Double, it[2] as Double) }, "p" to Double::class, "t" to Double::class, "l" to Double::class)
         .addOverload({ if97.refractiveIndexRhoTLambda(it[0] as Double, it[1] as Double, it[2] as Double) }, "rho" to Double::class, "t" to Double::class, "l" to Double::class)
-        .addOverload({ if97.refractiveIndexRhoTLambda(it[0] as Double, it[1] as Double, it[2] as Double) }, "rho" to Double::class, "t" to Double::class, "l" to Double::class)
         .build()
 
     val saturationPressure = PyArgOverloadBuilder()
