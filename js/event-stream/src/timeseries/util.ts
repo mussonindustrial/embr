@@ -1,4 +1,4 @@
-import { TimeSeriesCache, TimeSeriesEntry } from '.'
+import { TimeSeriesEntry, newTimeSeriesCache } from '.'
 
 export function generateTimeSeries(start: number, end: number, count: number) {
     const period = (end - start) / count
@@ -11,5 +11,5 @@ export function generateTimeSeries(start: number, end: number, count: number) {
         })
         timestamp = timestamp + period
     }
-    return TimeSeriesCache.of(data)
+    return newTimeSeriesCache(data)
 }

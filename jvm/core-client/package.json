@@ -1,0 +1,8 @@
+{
+    "name": "@embr-jvm/core-client",
+    "version": "0.1.0",
+    "private": true,
+    "dependencies": {
+        "@embr-jvm/core-common": "0.3.0"
+    }
+}

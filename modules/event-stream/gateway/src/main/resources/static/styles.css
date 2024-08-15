@@ -68,6 +68,20 @@ footer {
     gap: 0.25rem
 }
 
+.subscribe {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.auth {
+    gap: 2rem;
+
+    label {
+        margin-right: 0.25rem;
+    }
+}
+
 .tag {
     display: flex;
     flex-direction: row;

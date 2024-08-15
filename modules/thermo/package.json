@@ -1,0 +1,19 @@
+{
+    "name": "@embr-modules/thermo",
+    "version": "0.1.0",
+    "private": false,
+    "keywords": [
+        "ignition",
+        "module",
+        "if97",
+        "thermodynamics",
+        "steam"
+    ],
+    "files": [
+        "**/*.modl",
+        "!**/*.unsigned.modl"
+    ],
+    "dependencies": {
+        "@embr-jvm/core-common": "0.3.0"
+    }
+}
