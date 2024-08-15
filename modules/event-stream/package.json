@@ -1,6 +1,6 @@
 {
     "name": "@embr-modules/event-stream",
-    "version": "0.3.0",
+    "version": "0.4.0",
     "private": false,
     "keywords": [
         "ignition",
@@ -11,7 +11,7 @@
         "!**/*.unsigned.modl"
     ],
     "dependencies": {
-        "@embr-jvm/core-common": "0.3.0",
-        "@embr-jvm/core-servlets": "0.3.0"
+        "@embr-jvm/core-common": "0.4.0",
+        "@embr-jvm/core-servlets": "0.4.0"
     }
 }

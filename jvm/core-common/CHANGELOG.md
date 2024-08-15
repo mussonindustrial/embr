@@ -1,5 +1,15 @@
 # @mussonindustrial/embr-jvm-core-common
 
+## 0.4.0
+
+### Minor Changes
+
+- 9182d09: Break resources into shared libraries to support future inter-module work.
+
+### Patch Changes
+
+- 9182d09: New Feature: `PyArgOverload` and `PyArgOverloadBuilder` allow for creating overloaded functions using Python keyword arguments.
+
 ## 0.3.0
 
 ### Minor Changes

@@ -1,5 +1,11 @@
 # @mussonindustrial/embr-jvm-perspective-core
 
+## 0.4.0
+
+### Minor Changes
+
+- 9182d09: Break resources into shared libraries to support future inter-module work.
+
 ## 0.3.0
 
 ### Minor Changes

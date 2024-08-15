@@ -1,5 +1,14 @@
 # @mussonindustrial/embr-charts
 
+## 1.3.1
+
+### Patch Changes
+
+- Updated dependencies [9182d09]
+- Updated dependencies [9182d09]
+  - @embr-jvm/core-designer@0.4.0
+  - @embr-jvm/core-common@0.4.0
+
 ## 1.3.0
 
 ### Minor Changes
