@@ -1,5 +1,11 @@
 # @embr-modules/thermo
 
+## 0.1.2
+
+### Patch Changes
+
+- 91f567d: Fix issue with duplicate identical overloads for `refractiveIndex`
+
 ## 0.1.1
 
 ### Patch Changes
