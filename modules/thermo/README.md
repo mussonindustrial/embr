@@ -27,7 +27,7 @@ There is also a separate equation for metastable steam at pressures up to 10 MPa
 
 
 ### Supported Properties and Parameters 
-| Property                                   | Symbol | SI          | (p, T) | (p, h) | (p, s) | (h, s) | (T, s) | (ρ, T) | (p, x) | (T, x) |
+| Property                                   | Symbol | Units       | (p, T) | (p, h) | (p, s) | (h, s) | (T, s) | (ρ, T) | (p, x) | (T, x) |
 |--------------------------------------------|--------|-------------|--------|--------|--------|--------|--------|--------|--------|--------|
 | Absolute pressure                          | p      | Pa          |        |        |        | ✓      |        |        | ✓      | ✓ sat. |
 | Density                                    | ρ      | kg/m³       | ✓      | ✓      | ✓      | ✓      |        |        | ✓      | ✓      |
