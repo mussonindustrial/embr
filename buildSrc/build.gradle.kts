@@ -13,5 +13,5 @@ repositories {
 dependencies {
     implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:2.0.0")
     implementation("com.github.node-gradle:gradle-node-plugin:7.0.2")
-    implementation("gradle.plugin.io.ia.sdk:gradle-module-plugin:0.3.0")
+    implementation("gradle.plugin.io.ia.sdk:gradle-module-plugin:0.4.0")
 }
