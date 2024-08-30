@@ -4,8 +4,8 @@ import com.inductiveautomation.ignition.common.licensing.LicenseState
 import com.inductiveautomation.ignition.gateway.model.AbstractGatewayModuleHook
 import com.inductiveautomation.ignition.gateway.model.GatewayContext
 import com.mussonindustrial.embr.common.logging.getLogger
-import com.mussonindustrial.embr.eventstream.servlets.EventStreamSessionServlet
 import com.mussonindustrial.embr.eventstream.servlets.EventStreamServlet
+import com.mussonindustrial.embr.eventstream.servlets.EventStreamSessionServlet
 import com.mussonindustrial.embr.eventstream.servlets.TagHistoryServlet
 import com.mussonindustrial.embr.eventstream.streams.LicenseStream
 import com.mussonindustrial.embr.eventstream.streams.TagStream

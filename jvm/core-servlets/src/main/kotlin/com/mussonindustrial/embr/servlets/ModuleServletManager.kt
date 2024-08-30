@@ -1,23 +1,25 @@
 package com.mussonindustrial.embr.servlets
 
 import com.inductiveautomation.ignition.gateway.web.WebResourceManager
+import javax.servlet.Servlet
 import org.eclipse.jetty.server.handler.HandlerCollection
 import org.eclipse.jetty.servlet.ServletContextHandler
 import org.eclipse.jetty.servlet.ServletHolder
-import javax.servlet.Servlet
 
-class ModuleServletManager(webResourceManager: WebResourceManager, private val contextPath: String) {
+class ModuleServletManager(
+    webResourceManager: WebResourceManager,
+    private val contextPath: String
+) {
     private val servlets = hashMapOf<String, Class<out Servlet>>()
     private val runningServlets = hashMapOf<String, ServletHolder>()
     private var handler: ServletContextHandler? = null
-    private val serverHandlerCollection = webResourceManager.getJettyServer().handler as HandlerCollection
+    private val serverHandlerCollection =
+        webResourceManager.getJettyServer().handler as HandlerCollection
 
     private fun getContextHandler(): ServletContextHandler {
         return ServletContextHandler().apply {
             contextPath = this@ModuleServletManager.contextPath
-            servlets.forEach {
-                runningServlets[it.key] = this.addServlet(it.value, it.key)
-            }
+            servlets.forEach { runningServlets[it.key] = this.addServlet(it.value, it.key) }
         }
     }
 

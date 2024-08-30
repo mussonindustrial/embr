@@ -23,8 +23,6 @@ fun JsonObject.addProperty(
     value: PropertySet,
 ) {
     val json = JsonObject()
-    value.forEach {
-        json.addProperty(it.property.toString(), it.value.toString())
-    }
+    value.forEach { json.addProperty(it.property.toString(), it.value.toString()) }
     add(property, json)
 }

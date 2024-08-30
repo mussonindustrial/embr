@@ -29,12 +29,20 @@ class ThermoGatewayHook : AbstractGatewayModuleHook() {
     }
 
     override fun initializeScriptManager(manager: ScriptManager) {
-        manager.addScriptModule(IF97ScriptModuleImpl.PATH, IF97ScriptModuleImpl(), PropertiesFileDocProvider())
+        manager.addScriptModule(
+            IF97ScriptModuleImpl.PATH,
+            IF97ScriptModuleImpl(),
+            PropertiesFileDocProvider()
+        )
     }
 
     override fun configureFunctionFactory(factory: ExpressionFunctionManager) {
         factory.categories.add(IF97ExpressionFunction.CATEGORY)
-        factory.addFunction(IF97ExpressionFunction.NAME, IF97ExpressionFunction.CATEGORY, IF97ExpressionFunction())
+        factory.addFunction(
+            IF97ExpressionFunction.NAME,
+            IF97ExpressionFunction.CATEGORY,
+            IF97ExpressionFunction()
+        )
         super.configureFunctionFactory(factory)
     }
 

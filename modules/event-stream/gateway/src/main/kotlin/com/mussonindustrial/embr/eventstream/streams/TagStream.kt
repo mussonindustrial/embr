@@ -106,8 +106,8 @@ class TagStream : EventStream {
         }
     }
 
-    inner class TagListener(val id: Int, val tagPath: TagPath) : TagChangeListener, SimpleAlarmListener,
-        SimpleJsonSerializable {
+    inner class TagListener(val id: Int, val tagPath: TagPath) :
+        TagChangeListener, SimpleAlarmListener, SimpleJsonSerializable {
         private val alarmPath: QualifiedPath =
             QualifiedPath.Builder()
                 .setProvider(tagPath.source)
@@ -210,10 +210,12 @@ class TagStream : EventStream {
             val messageId = messageId.incrementAndGet()
             session.emitEvent(
                 "tag_history_start",
-                JsonObject().apply {
-                    addProperty("message_id", messageId)
-                    addProperty("size", size)
-                }.toString(),
+                JsonObject()
+                    .apply {
+                        addProperty("message_id", messageId)
+                        addProperty("size", size)
+                    }
+                    .toString(),
             )
             return messageId
         }
@@ -221,9 +223,7 @@ class TagStream : EventStream {
         private fun endMessage(messageId: Long) {
             session.emitEvent(
                 "tag_history_end",
-                JsonObject().apply {
-                    addProperty("message_id", messageId)
-                }.toString(),
+                JsonObject().apply { addProperty("message_id", messageId) }.toString(),
             )
         }
 
@@ -305,10 +305,12 @@ class TagStream : EventStream {
             }
         }
     private val gson: Gson =
-        GsonBuilder().apply {
-            registerTypeAdapter(TagStream::class.java, gsonAdapter)
-            registerTypeAdapter(TagListener::class.java, SimpleGsonAdapter<TagListener>())
-        }.create()
+        GsonBuilder()
+            .apply {
+                registerTypeAdapter(TagStream::class.java, gsonAdapter)
+                registerTypeAdapter(TagListener::class.java, SimpleGsonAdapter<TagListener>())
+            }
+            .create()
 
     override fun toGson(): JsonElement {
         return gson.toJsonTree(this)

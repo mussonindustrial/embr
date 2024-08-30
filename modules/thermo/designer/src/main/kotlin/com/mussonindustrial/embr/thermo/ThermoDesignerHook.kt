@@ -15,7 +15,10 @@ class ThermoDesignerHook : AbstractDesignerModuleHook() {
     private val logger = this.getLogger()
     private lateinit var context: ThermoDesignerContext
 
-    override fun startup(context: DesignerContext, activationState: LicenseState) {
+    override fun startup(
+        context: DesignerContext,
+        activationState: LicenseState,
+    ) {
         logger.info("Embr Thermodynamics module started.")
         this.context = ThermoDesignerContext(context)
     }
@@ -25,12 +28,20 @@ class ThermoDesignerHook : AbstractDesignerModuleHook() {
     }
 
     override fun initializeScriptManager(manager: ScriptManager) {
-        manager.addScriptModule(IF97ScriptModuleImpl.PATH, IF97ScriptModuleImpl(), PropertiesFileDocProvider())
+        manager.addScriptModule(
+            IF97ScriptModuleImpl.PATH,
+            IF97ScriptModuleImpl(),
+            PropertiesFileDocProvider()
+        )
     }
 
     override fun configureFunctionFactory(factory: ExpressionFunctionManager) {
         factory.categories.add(IF97ExpressionFunction.CATEGORY)
-        factory.addFunction(IF97ExpressionFunction.NAME, IF97ExpressionFunction.CATEGORY, IF97ExpressionFunction())
+        factory.addFunction(
+            IF97ExpressionFunction.NAME,
+            IF97ExpressionFunction.CATEGORY,
+            IF97ExpressionFunction()
+        )
         super.configureFunctionFactory(factory)
     }
 }

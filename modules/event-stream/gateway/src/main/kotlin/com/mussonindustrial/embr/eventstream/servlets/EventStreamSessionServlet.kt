@@ -25,11 +25,20 @@ class EventStreamSessionServlet : HttpServlet() {
     companion object {
         val gson: Gson =
             GsonBuilder()
-                .registerTypeAdapter(EventStreamSessionRequest::class.java, EventStreamSessionRequest.gsonAdapter)
+                .registerTypeAdapter(
+                    EventStreamSessionRequest::class.java,
+                    EventStreamSessionRequest.gsonAdapter
+                )
                 .registerTypeAdapter(AuthRequest::class.java, AuthRequest.gsonAdapter)
-                .registerTypeAdapter(AnonymousAuthRequest::class.java, AnonymousAuthRequest.gsonAdapter)
+                .registerTypeAdapter(
+                    AnonymousAuthRequest::class.java,
+                    AnonymousAuthRequest.gsonAdapter
+                )
                 .registerTypeAdapter(BasicAuthRequest::class.java, BasicAuthRequest.gsonAdapter)
-                .registerTypeAdapter(PerspectiveAuthRequest::class.java, PerspectiveAuthRequest.gsonAdapter)
+                .registerTypeAdapter(
+                    PerspectiveAuthRequest::class.java,
+                    PerspectiveAuthRequest.gsonAdapter
+                )
                 .create()
     }
 
@@ -38,7 +47,8 @@ class EventStreamSessionServlet : HttpServlet() {
         response: HttpServletResponse,
     ) {
         logger.trace("Post request received: {}", request)
-        val path = request.requestURI.substring(request.contextPath.length + request.servletPath.length)
+        val path =
+            request.requestURI.substring(request.contextPath.length + request.servletPath.length)
 
         if (path != "") {
             response.sendError("bad path")
@@ -55,8 +65,13 @@ class EventStreamSessionServlet : HttpServlet() {
             val securityContext = sessionRequest.auth.getSecurityContext(context)
             val sessionType = sessionRequest.getSessionType()
 
-            val session = eventStreamManager.createSession(subscriptionProps, securityContext, sessionType)
-            logger.trace("Session {} created with security context: {}", session.id, securityContext)
+            val session =
+                eventStreamManager.createSession(subscriptionProps, securityContext, sessionType)
+            logger.trace(
+                "Session {} created with security context: {}",
+                session.id,
+                securityContext
+            )
             response.sendSuccess(session.toGson())
             return
         } catch (e: Throwable) {

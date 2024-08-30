@@ -21,9 +21,7 @@ class AnonymousAuthRequest : AuthRequest {
                     type: Type,
                     serializationContext: JsonSerializationContext,
                 ): JsonElement {
-                    return JsonObject().apply {
-                        addProperty("type", request.type)
-                    }
+                    return JsonObject().apply { addProperty("type", request.type) }
                 }
 
                 override fun deserialize(

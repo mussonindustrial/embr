@@ -2,9 +2,9 @@ package com.mussonindustrial.embr.eventstream.servlets
 
 import com.mussonindustrial.embr.common.logging.getLogger
 import com.mussonindustrial.embr.eventstream.EventStreamGatewayContext
+import javax.servlet.http.HttpServletRequest
 import org.eclipse.jetty.servlets.EventSource
 import org.eclipse.jetty.servlets.EventSourceServlet
-import javax.servlet.http.HttpServletRequest
 
 class EventStreamServlet : EventSourceServlet() {
     private val logger = this.getLogger()
