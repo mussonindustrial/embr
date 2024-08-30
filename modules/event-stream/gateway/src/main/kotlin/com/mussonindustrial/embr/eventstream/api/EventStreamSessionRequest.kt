@@ -9,7 +9,10 @@ import com.mussonindustrial.embr.common.logging.getLogger
 import com.mussonindustrial.embr.eventstream.streams.EventStreamManager
 import java.lang.reflect.Type
 
-data class EventStreamSessionRequest(val auth: AuthRequest, val subscriptionProps: Map<String, JsonElement>) {
+data class EventStreamSessionRequest(
+    val auth: AuthRequest,
+    val subscriptionProps: Map<String, JsonElement>
+) {
     companion object {
         val logger = this.getLogger()
         val gsonAdapter =
@@ -39,7 +42,11 @@ data class EventStreamSessionRequest(val auth: AuthRequest, val subscriptionProp
                 ): EventStreamSessionRequest {
                     val json = element.asJsonObject
 
-                    val auth: AuthRequest = deserializationContext.deserialize(json.get("auth"), AuthRequest::class.java)
+                    val auth: AuthRequest =
+                        deserializationContext.deserialize(
+                            json.get("auth"),
+                            AuthRequest::class.java
+                        )
 
                     val streams = json.getAsJsonObject("streams")
                     val streamKeys = streams.keySet()

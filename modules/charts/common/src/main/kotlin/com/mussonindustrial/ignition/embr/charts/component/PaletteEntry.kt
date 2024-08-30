@@ -15,14 +15,17 @@ data class PaletteEntry(
     val thumbnail: BufferedImage?,
     val props: JsonObject?
 ) {
-    constructor(variantId: String, label: String, tooltip: String) :
-        this(
-            variantId,
-            label,
-            tooltip,
-            getImage("/images/components/thumbnails/${variantId}.png"),
-            getJsonProps("/variants/${variantId}.props.json")
-        )
+    constructor(
+        variantId: String,
+        label: String,
+        tooltip: String
+    ) : this(
+        variantId,
+        label,
+        tooltip,
+        getImage("/images/components/thumbnails/${variantId}.png"),
+        getJsonProps("/variants/${variantId}.props.json")
+    )
 }
 
 fun ComponentBuilder.addPaletteEntry(entry: PaletteEntry): ComponentBuilder {
@@ -40,6 +43,7 @@ fun getImage(path: String): BufferedImage? {
 
 fun getJsonProps(path: String): JsonObject {
     return JsonParser.parseReader(
-        Meta::class.java.getResourceAsStream(path)
-        ?.let { InputStreamReader(it) }).asJsonObject
+            Meta::class.java.getResourceAsStream(path)?.let { InputStreamReader(it) }
+        )
+        .asJsonObject
 }

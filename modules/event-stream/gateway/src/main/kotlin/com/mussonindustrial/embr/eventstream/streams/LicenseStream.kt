@@ -20,7 +20,7 @@ class LicenseStream : EventStream, LicenseStateUpdateListener {
     private val context = EventStreamGatewayContext.instance
     lateinit var session: EventStreamManager.Session
 
-    override fun initialize(props: JsonElement) { }
+    override fun initialize(props: JsonElement) {}
 
     override fun onCreate(session: EventStreamManager.Session) {
         this.session = session
@@ -45,7 +45,10 @@ class LicenseStream : EventStream, LicenseStateUpdateListener {
                     JsonObject().apply {
                         addProperty("mode", event.licenseState.licenseMode.name)
                         addProperty("is_trial_expired", event.licenseState.isTrialExpired)
-                        addProperty("trial_expiration_date", event.licenseState.trialExpirationDate.time)
+                        addProperty(
+                            "trial_expiration_date",
+                            event.licenseState.trialExpirationDate.time
+                        )
                     },
                 )
             }

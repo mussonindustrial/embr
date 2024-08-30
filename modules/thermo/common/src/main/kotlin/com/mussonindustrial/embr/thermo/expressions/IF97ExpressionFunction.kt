@@ -33,11 +33,8 @@ class IF97ExpressionFunction : AbstractFunction() {
 
     override fun execute(expressions: Array<out Expression>): QualifiedValue {
         val property = TypeUtilities.toString(expressions.first().execute().value)!!
-        val parameters = expressions
-            .drop(1)
-            .map { it.execute().value }
-            .chunked(2)
-            .map { it[0] to it[1] }
+        val parameters =
+            expressions.drop(1).map { it.execute().value }.chunked(2).map { it[0] to it[1] }
 
         val keywords = parameters.map { TypeUtilities.toString(it.first)!! }.toTypedArray()
         val args = parameters.map { Py.java2py(it.second) }.toTypedArray()
@@ -47,5 +44,4 @@ class IF97ExpressionFunction : AbstractFunction() {
 
         return BasicQualifiedValue(result)
     }
-
 }

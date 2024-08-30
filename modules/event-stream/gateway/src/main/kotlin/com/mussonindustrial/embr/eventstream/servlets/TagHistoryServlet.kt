@@ -29,7 +29,8 @@ class TagHistoryServlet : HttpServlet() {
         response: HttpServletResponse,
     ) {
         logger.trace("Get request received: {}", request)
-        val path = request.requestURI.substring(request.contextPath.length + request.servletPath.length)
+        val path =
+            request.requestURI.substring(request.contextPath.length + request.servletPath.length)
 
         if (path != "") {
             response.sendError("bad path")

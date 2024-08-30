@@ -6,13 +6,11 @@ import com.inductiveautomation.ignition.gateway.model.GatewayContext
 import com.inductiveautomation.perspective.common.api.ComponentRegistry
 import com.inductiveautomation.perspective.gateway.api.ComponentModelDelegateRegistry
 import com.inductiveautomation.perspective.gateway.api.PerspectiveContext
-
 import com.mussonindustrial.ignition.embr.charts.Meta.SHORT_MODULE_ID
 import com.mussonindustrial.ignition.embr.charts.component.chart.ChartJs
+import java.util.*
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import java.util.*
-
 
 @Suppress("unused")
 class GatewayHook : AbstractGatewayModuleHook() {
@@ -22,7 +20,6 @@ class GatewayHook : AbstractGatewayModuleHook() {
     private lateinit var perspectiveContext: PerspectiveContext
     private lateinit var componentRegistry: ComponentRegistry
     private lateinit var modelDelegateRegistry: ComponentModelDelegateRegistry
-
 
     override fun setup(context: GatewayContext) {
         this.context = context

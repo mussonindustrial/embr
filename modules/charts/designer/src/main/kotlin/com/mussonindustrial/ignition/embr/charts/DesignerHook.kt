@@ -12,7 +12,6 @@ import com.mussonindustrial.ignition.embr.charts.component.chart.ChartJs
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
-
 @Suppress("unused")
 class DesignerHook : AbstractDesignerModuleHook() {
 
@@ -21,7 +20,6 @@ class DesignerHook : AbstractDesignerModuleHook() {
     private lateinit var context: DesignerContext
     private lateinit var componentRegistry: DesignerComponentRegistry
     private lateinit var delegateRegistry: ComponentDesignDelegateRegistry
-
 
     override fun startup(context: DesignerContext, activationState: LicenseState) {
         logger.info("Embr-Charts module started.")

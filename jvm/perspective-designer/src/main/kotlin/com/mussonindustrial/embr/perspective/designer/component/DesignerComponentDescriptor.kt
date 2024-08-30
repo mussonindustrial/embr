@@ -7,7 +7,8 @@ import javax.swing.Icon
 
 data class DesignerComponentDescriptor(val componentDescriptor: ComponentDescriptor) :
     ComponentDescriptor by componentDescriptor {
-    private val svgIcon: InteractiveSvgIcon = InteractiveSvgIcon.createIcon("images/components/${componentDescriptor.id()}.icon.svg")
+    private val svgIcon: InteractiveSvgIcon =
+        InteractiveSvgIcon.createIcon("images/components/${componentDescriptor.id()}.icon.svg")
 
     override fun getIcon(): Optional<Icon> {
         return Optional.of(this.svgIcon)

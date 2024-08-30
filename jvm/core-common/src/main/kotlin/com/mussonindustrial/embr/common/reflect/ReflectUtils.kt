@@ -9,7 +9,10 @@ fun <T : Any> T.getPrivateProperty(variableName: String): Any? {
     }
 }
 
-fun <T : Any> T.getPrivateMethod(methodName: String, vararg params: Class<*> = arrayOf()): Method {
+fun <T : Any> T.getPrivateMethod(
+    methodName: String,
+    vararg params: Class<*> = arrayOf(),
+): Method {
     return javaClass.getDeclaredMethod(methodName, *params).let { method ->
         method.trySetAccessible()
         return@let method

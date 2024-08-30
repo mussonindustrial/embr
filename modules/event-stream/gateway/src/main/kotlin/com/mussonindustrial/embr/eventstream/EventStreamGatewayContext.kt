@@ -13,7 +13,8 @@ import com.mussonindustrial.embr.servlets.ModuleServletManager
 import java.util.concurrent.ThreadFactory
 import java.util.concurrent.atomic.AtomicInteger
 
-data class EventStreamGatewayContext(val context: GatewayContext) : EmbrGatewayContext by EmbrGatewayContextImpl(context) {
+data class EventStreamGatewayContext(val context: GatewayContext) :
+    EmbrGatewayContext by EmbrGatewayContextImpl(context) {
     companion object {
         lateinit var instance: EventStreamGatewayContext
     }
@@ -27,19 +28,17 @@ data class EventStreamGatewayContext(val context: GatewayContext) : EmbrGatewayC
         context.createExecutionManager(
             "Embr EventStream",
             3,
-            object :
-                ThreadFactory {
+            object : ThreadFactory {
                 private val counter = AtomicInteger(0)
 
-                override fun newThread(r: Runnable): Thread = Thread(null, r, "embr-event-stream-executor-${counter.incrementAndGet()}")
+                override fun newThread(r: Runnable): Thread =
+                    Thread(null, r, "embr-event-stream-executor-${counter.incrementAndGet()}")
             },
         )
 
     init {
         instance = this
         perspectiveContext =
-            ifModule(PerspectiveModule.MODULE_ID) {
-                PerspectiveContext.get(context)
-            }
+            ifModule(PerspectiveModule.MODULE_ID) { PerspectiveContext.get(context) }
     }
 }

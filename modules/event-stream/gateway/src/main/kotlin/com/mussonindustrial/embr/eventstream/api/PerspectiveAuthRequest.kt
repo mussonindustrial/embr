@@ -46,11 +46,13 @@ class PerspectiveAuthRequest(val sessionId: String) : AuthRequest {
     override fun getSecurityContext(context: EventStreamGatewayContext): SecurityContext {
         return context.perspectiveContext?.run {
             logger.trace("Attempting to find Perspective Session {}...", sessionId)
-            return sessionMonitor.findSession(UUID.fromString(sessionId))
+            return sessionMonitor
+                .findSession(UUID.fromString(sessionId))
                 .map {
                     logger.trace("Perspective Session {} found.", it.sessionId)
                     SecurityContext.fromSecurityLevels(it.webAuthStatus.securityLevels)
-                }.orElse(null)
+                }
+                .orElse(null)
         } ?: SecurityContext.emptyContext()
     }
 }
