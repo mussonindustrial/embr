@@ -19,23 +19,17 @@ tasks.deployModl {
     hostGateway = "http://localhost:8088"
 }
 
+tasks.writeModuleXml {
+    foldJars = true
+}
 
-val releaseFiles: Configuration = configurations.create("releaseFiles") {
+val releaseFiles: Configuration by configurations.creating {
     isCanBeConsumed = true
     isCanBeResolved = false
 }
 
-// I don't understand why this has to be done way.
-// I'd like to use the output file of the signModule task, but any way I try gradle throws:
-// > Querying the mapped value of task ':modules:embr-charts:signModule' property 'unsigned'
-// before task ':modules:embr-charts:zipModule' has completed is not supported
-val fileName = ignitionModule.fileName.flatMap { project.provider { it } }
-val signedModule = project.provider { file("${projectDir}/build/${fileName.get()}") }
-
 afterEvaluate {
     artifacts {
-        add(releaseFiles.name, signedModule) {
-            builtBy(tasks.signModule)
-        }
+        add(releaseFiles.name, tasks.signModule.flatMap { it.signed })
     }
 }
