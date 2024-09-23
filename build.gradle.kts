@@ -17,7 +17,7 @@ val releaseFiles: Configuration by configurations.creating {
     isCanBeResolved = true
 }
 
-// Depend on all signed modules.
+// Depend on the signed modules of all subprojects.
 gradle.projectsEvaluated {
     dependencies {
         subprojects.filter {
@@ -53,6 +53,9 @@ val assembleModules by tasks.registering(Copy::class) {
     group = "ignition module"
     description = "Collect all modules."
     inputs.files(releaseFiles)
+
+    // Unsure why this is needed. If this line is removed the dependency graph is not correct.
+    dependsOn(subprojects.map { it.tasks.matching { task -> task.name == "signModule"} })
 
     from(releaseFiles)
     destinationDir = file("build/modules")
