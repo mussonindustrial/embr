@@ -1,5 +1,5 @@
 {
-    "name": "@embr-jvm/core-designer",
+    "name": "@mussonindustrial/embr-core-ignition81-designer",
     "version": "0.4.0",
     "private": true,
     "dependencies": {

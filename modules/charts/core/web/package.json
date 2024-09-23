@@ -1,5 +1,5 @@
 {
-    "name": "@embr-js/charts-web",
+    "name": "@mussonindustrial/embr-charts-core-web",
     "private": true,
     "version": "0.4.0",
     "scripts": {
@@ -42,9 +42,9 @@
         "react-dom": "^18"
     },
     "devDependencies": {
-        "@embr-js/tsconfig": "*",
-        "@embr-js/utils": "0.3.0",
-        "@embr-js/eslint-config": "*",
+        "@mussonindustrial/embr-core-tsconfig": "*",
+        "@mussonindustrial/embr-core-ts-utils": "0.3.0",
+        "@mussonindustrial/embr-core-eslint-config": "*",
         "@types/lodash": "^4.14.202",
         "@types/react": "^18.2.56",
         "eslint": "^8.56.0",

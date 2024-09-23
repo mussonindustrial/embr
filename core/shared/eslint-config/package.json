@@ -1,5 +1,5 @@
 {
-    "name": "@embr-js/eslint-config",
+    "name": "@mussonindustrial/embr-core-eslint-config",
     "version": "0.2.0",
     "description": "ESLint config for embr",
     "repository": {

@@ -15,7 +15,6 @@ dependencies {
     compileOnly(sdk.gson)
 
     modlImplementation(core.common)
-    modlImplementation(core.gateway)
 
     modlImplementation(module.common)
     modlImplementation(web)

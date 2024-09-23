@@ -1,5 +1,5 @@
 {
-    "name": "@embr-modules/charts",
+    "name": "@mussonindustrial/embr-charts-ignition81",
     "version": "1.3.1",
     "private": false,
     "keywords": [
@@ -15,8 +15,8 @@
         "!**/*.unsigned.modl"
     ],
     "dependencies": {
-        "@embr-js/chart-js": "0.4.0",
-        "@embr-jvm/core-common": "0.4.0",
-        "@embr-jvm/core-designer": "0.4.0"
+        "@mussonindustrial/embr-charts-core-web": "0.4.0",
+        "@mussonindustrial/embr-core-ignition81-common": "0.4.0",
+        "@mussonindustrial/embr-core-ignition81-designer": "0.4.0"
     }
 }

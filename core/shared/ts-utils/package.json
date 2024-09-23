@@ -1,5 +1,5 @@
 {
-    "name": "@embr-js/utils",
+    "name": "@mussonindustrial/embr-core-ts-utils",
     "private": true,
     "version": "0.3.0",
     "description": "Utility functions for Embr modules.",
@@ -17,8 +17,8 @@
         "lodash": "^4.17.21"
     },
     "devDependencies": {
-        "@embr-js/tsconfig": "*",
-        "@embr-js/eslint-config": "*",
+        "@mussonindustrial/embr-core-tsconfig": "*",
+        "@mussonindustrial/embr-core-eslint-config": "*",
         "eslint": "^8.56.0",
         "typescript": "^5.3.3",
         "vite": "^5.0.10",

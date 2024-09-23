@@ -9,8 +9,8 @@
         "release": "gradlew release"
     },
     "workspaces": [
-        "js/*",
-        "jvm/*",
+        "core/shared/*",
+        "core/ignition81/*",
         "modules/**/*"
     ],
     "dependencies": {
