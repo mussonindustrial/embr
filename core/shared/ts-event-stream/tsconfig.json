@@ -1,4 +1,4 @@
 {
-    "extends": "@embr-js/tsconfig/vite.json",
+    "extends": "@mussonindustrial/embr-core-tsconfig/vite.json",
     "include": ["src"]
 }

@@ -9,7 +9,7 @@ import {
 import { Chart as Chartjs, ChartProps } from 'react-chartjs-2'
 import { Chart } from 'chart.js'
 import { getCSSTransform, getScriptTransform } from '../util/propTransforms'
-import { transformProps } from '@embr-js/utils'
+import { transformProps } from '@mussonindustrial/embr-core-ts-utils'
 import { unset, cloneDeep } from 'lodash'
 
 export const COMPONENT_TYPE = 'embr.chart.chart-js'

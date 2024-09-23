@@ -7,6 +7,7 @@ pluginManagement {
     }
 }
 
+include(":")
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 val architectureElements = mutableListOf<ArchitectureElementBuilder>()
@@ -26,8 +27,6 @@ val core = library("core") {
         subproject("perspective-designer")
         subproject("servlets")
     }
-//
-//    target("sdk-8.3") { }
 }
 
 /**
@@ -64,7 +63,6 @@ val chartsModule = module("charts") {
  * Thermodynamics Module
  */
 val thermoModule = module("thermo") {
-//    subproject("core")
     target("ignition81") {
         subproject("common")
         subproject("client")

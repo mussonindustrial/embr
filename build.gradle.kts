@@ -17,24 +17,27 @@ val releaseFiles: Configuration by configurations.creating {
     isCanBeResolved = true
 }
 
-dependencies {
-//    releaseFiles(project(":modules:charts", releaseFiles.name))
-//    releaseFiles(project(":modules:event-stream", releaseFiles.name))
-//    releaseFiles(project(":modules:thermo", releaseFiles.name))
-}
-
-val subBuilds = subprojects.map {
-    it.tasks.matching { task -> task.name == "build" }
+// Depend on all signed modules.
+gradle.projectsEvaluated {
+    dependencies {
+        subprojects.filter {
+            it.tasks.matching { task -> task.name == "signModule" }.isNotEmpty()
+        }.map {
+            releaseFiles(project(it.path, releaseFiles.name))
+        }
+    }
 }
 
 val changesetVersion by tasks.registering(NpxTask::class) {
     group = "changesets"
+    description = "Consume all changesets and update to the most appropriate semver version based on the those changesets."
     command.set("changeset")
     args.set(listOf("version"))
 }
 
 val changesetPublish by tasks.registering(NpxTask::class) {
     group = "changesets"
+    description = "Run npm publish in each package that is of a later version than the one currently listed on npm."
     mustRunAfter(zipModules, changesetVersion)
     command.set("changeset")
     args.set(listOf("publish"))
@@ -42,11 +45,13 @@ val changesetPublish by tasks.registering(NpxTask::class) {
 
 val release by tasks.registering {
     group = "publishing"
+    description = "Zip, version, and publish."
     dependsOn(zipModules, changesetVersion, changesetPublish)
 }
 
 val assembleModules by tasks.registering(Copy::class) {
     group = "ignition module"
+    description = "Collect all modules."
     inputs.files(releaseFiles)
 
     from(releaseFiles)
@@ -55,6 +60,7 @@ val assembleModules by tasks.registering(Copy::class) {
 
 val zipModules by tasks.registering(Zip::class) {
     group = "ignition module"
+    description = "Create a zip of all modules."
     inputs.files(assembleModules.get().outputs)
 
     archiveBaseName.set("modules")
