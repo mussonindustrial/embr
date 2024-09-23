@@ -11,7 +11,7 @@
         "!**/*.unsigned.modl"
     ],
     "dependencies": {
-        "@embr-jvm/core-common": "0.4.0",
-        "@embr-jvm/core-servlets": "0.4.0"
+        "@mussonindustrial/embr-core-ignition81-common": "0.4.0",
+        "@mussonindustrial/embr-core-ignition81-servlets": "0.4.0"
     }
 }

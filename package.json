@@ -9,9 +9,9 @@
         "release": "gradlew release"
     },
     "workspaces": [
-        "core/shared/*",
-        "core/ignition81/*",
-        "modules/**/*"
+        "libraries/**/*",
+        "modules/**/*",
+        "packages/**/*"
     ],
     "dependencies": {
         "@changesets/cli": "^2.26.2",

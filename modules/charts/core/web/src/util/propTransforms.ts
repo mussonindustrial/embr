@@ -4,7 +4,7 @@ import {
     readCSSVar,
     isCSSVar,
     PropTransform,
-} from '@mussonindustrial/embr-core-ts-utils'
+} from '@mussonindustrial/embr-ts-utils'
 
 export function getCSSTransform(
     element: Element | null | undefined

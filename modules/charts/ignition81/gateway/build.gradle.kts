@@ -4,8 +4,8 @@ plugins {
 
 val sdk = libs.ignition.sdk81
 val core = projects.core.ignition81
-val module = projects.modules.charts.ignition81
-val web = projects.modules.charts.core.web
+val module = projects.charts.ignition81
+val web = projects.charts.core.web
 
 dependencies {
     compileOnly(sdk.common)

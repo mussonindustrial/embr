@@ -12,12 +12,8 @@ enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 val architectureElements = mutableListOf<ArchitectureElementBuilder>()
 
-/**
- * Core Library
- */
+/** Core Library */
 val core = library("core") {
-    target("shared") { }
-
     target("ignition81") {
         subproject("client")
         subproject("common")
@@ -29,9 +25,7 @@ val core = library("core") {
     }
 }
 
-/**
- * Charts Module
- */
+/** Charts Module */
 val chartsModule = module("charts") {
     target("core") {
         subproject("web")
@@ -59,9 +53,7 @@ val chartsModule = module("charts") {
 //    }
 //}
 
-/**
- * Thermodynamics Module
- */
+/** Thermodynamics Module */
 val thermoModule = module("thermo") {
     target("ignition81") {
         subproject("common")
@@ -71,9 +63,7 @@ val thermoModule = module("thermo") {
     }
 }
 
-/**
- * Defines a module.
- */
+/** Defines a module */
 fun module(moduleName: String, moduleConfiguration: ModuleBuilder.() -> Unit): Module {
     val module = ModuleBuilder(moduleName)
     architectureElements.add(module)
@@ -81,9 +71,7 @@ fun module(moduleName: String, moduleConfiguration: ModuleBuilder.() -> Unit): M
     return module.build()
 }
 
-/**
- * Defines a library.
- */
+/** Defines a library */
 fun library(libraryName: String, libraryConfiguration: LibraryBuilder.() -> Unit): Library {
     val library = LibraryBuilder(libraryName)
     architectureElements.add(library)
@@ -91,43 +79,7 @@ fun library(libraryName: String, libraryConfiguration: LibraryBuilder.() -> Unit
     return library.build()
 }
 
-/**
- * Defines the testing module, for project helping test Gradle.
- */
-fun testing(moduleConfiguration: ProjectScope.() -> Unit) =
-    ProjectScope("testing").moduleConfiguration()
-
-/**
- * Defines a bucket of unassigned projects.
- */
-fun unassigned(moduleConfiguration: ProjectScope.() -> Unit) =
-    ProjectScope("subprojects").moduleConfiguration()
-
-class ProjectScope(
-    private val baseFilePath: String,
-    private val baseProjectPath: String,
-) {
-    constructor(baseFilePath: String): this(baseFilePath, "")
-
-    fun subproject(projectName: String): ProjectScope {
-        return subproject(projectName, "")
-    }
-    fun subproject(projectName: String, target: String): ProjectScope {
-        val suffix = if (target != "") {
-            "-$target"
-        } else {
-            ""
-        }
-        val projectPath = "$baseProjectPath:$projectName$suffix"
-        val projectFilePath = "$baseFilePath/$projectName"
-
-        include(projectPath)
-        project(projectPath).projectDir = file(projectFilePath)
-        return ProjectScope(projectFilePath, projectPath)
-    }
-}
-
-class ElementId(val id: String) {
+class ElementId(private val id: String) {
     override fun toString(): String {
         return id
     }
@@ -150,16 +102,45 @@ sealed class ArchitectureElementBuilder(
     abstract fun build(): ArchitectureElement
 }
 
-class TargetBuilder(
+class ProjectScope(
+    private val baseFilePath: String,
+    private val baseProjectPath: String,
+) {
+    constructor(baseFilePath: String): this(baseFilePath, "")
+
+    fun subproject(projectName: String): ProjectScope {
+        val projectPath = "$baseProjectPath:$projectName"
+        val projectFilePath = "$baseFilePath/$projectName"
+
+        include(projectPath)
+        project(projectPath).projectDir = file(projectFilePath)
+        return ProjectScope(projectFilePath, projectPath)
+    }
+
+    fun subproject(projectName: String, projectConfiguration: ProjectScope.() -> Unit) {
+        subproject(projectName).projectConfiguration()
+    }
+}
+
+abstract class SubprojectContainer(
     name: String,
     private val projectScope: ProjectScope
-) : ArchitectureElementBuilder(name) {
+): ArchitectureElementBuilder(name){
 
-    constructor(name: String) : this(name, ProjectScope(name))
-
-    fun subproject(projectName: String) {
-        projectScope.subproject(projectName)
+    fun subproject(projectName: String): ProjectScope {
+        return projectScope.subproject(projectName)
     }
+
+    fun subproject(projectName: String, projectConfiguration: ProjectScope.() -> Unit) {
+        subproject(projectName).projectConfiguration()
+    }
+
+}
+
+class TargetBuilder(
+    name: String,
+    projectScope: ProjectScope
+) : SubprojectContainer(name, projectScope) {
 
     override fun build(): Target {
         return Target(name, id)
@@ -168,17 +149,13 @@ class TargetBuilder(
 
 class LibraryBuilder(
     name: String,
-    private val projectScope: ProjectScope
-) : ArchitectureElementBuilder(name) {
+    projectScope: ProjectScope
+) : SubprojectContainer(name, projectScope) {
     private val targets = mutableListOf<TargetBuilder>()
-    constructor(name: String) : this(name, ProjectScope(name, ":$name"))
-
-    fun subproject(projectName: String) {
-        projectScope.subproject(projectName)
-    }
+    constructor(name: String) : this(name, ProjectScope("libraries/$name", ":$name"))
 
     fun target(targetName: String, targetConfiguration: TargetBuilder.() -> Unit) {
-        val target = TargetBuilder(targetName, projectScope.subproject(targetName))
+        val target = TargetBuilder(targetName, subproject(targetName))
         targets.add(target)
         target.targetConfiguration()
     }
@@ -190,18 +167,13 @@ class LibraryBuilder(
 
 class ModuleBuilder(
     name: String,
-    private val projectScope: ProjectScope
-) : ArchitectureElementBuilder(name) {
+    projectScope: ProjectScope
+) : SubprojectContainer(name, projectScope) {
     private val targets = mutableListOf<TargetBuilder>()
-    private val uses = mutableListOf<LibraryBuilder>()
-    constructor(name: String) : this(name, ProjectScope("modules/$name", ":modules:$name"))
-
-    fun subproject(projectName: String) {
-        projectScope.subproject(projectName)
-    }
+    constructor(name: String) : this(name, ProjectScope("modules/$name", ":$name"))
 
     fun target(targetName: String, targetConfiguration: TargetBuilder.() -> Unit) {
-        val target = TargetBuilder(targetName, projectScope.subproject(targetName))
+        val target = TargetBuilder(targetName, subproject(targetName))
         targets.add(target)
         target.targetConfiguration()
     }

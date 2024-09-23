@@ -17,9 +17,9 @@
         "fetch-retry": "^6.0.0"
     },
     "devDependencies": {
-        "@mussonindustrial/embr-core-tsconfig": "*",
-        "@mussonindustrial/embr-core-ts-utils": "0.3.0",
-        "@mussonindustrial/embr-core-eslint-config": "*",
+        "@mussonindustrial/embr-tsconfig": "*",
+        "@mussonindustrial/embr-ts-utils": "0.3.0",
+        "@mussonindustrial/embr-eslint-config": "*",
         "@types/eventsource": "^1.1.15",
         "eslint": "^8.56.0",
         "typescript": "^5.3.3",
