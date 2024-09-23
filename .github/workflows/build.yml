@@ -75,4 +75,4 @@ jobs:
           keystore_base64: ${{ secrets.IGNITION_MODULE_KEYSTORE_BASE64 }}
 
       - name: 'Build'
-        run: ./gradlew --scan --verbose build
+        run: ./gradlew --scan --no-build-cache build
