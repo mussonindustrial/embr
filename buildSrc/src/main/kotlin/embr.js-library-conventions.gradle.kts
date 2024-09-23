@@ -47,7 +47,7 @@ val nxReset = tasks.register<NpxTask>("nxReset") {
 
 val nxBuild = tasks.register<NpxTask>("nxBuild") {
     group = "nx"
-    dependsOn(tasks.npmInstall, nxReset)
+    dependsOn(tasks.npmInstall)
     command.set("nx")
     args.set(listOf("build"))
 
