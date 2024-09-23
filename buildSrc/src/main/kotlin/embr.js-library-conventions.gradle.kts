@@ -35,9 +35,19 @@ tasks.npmInstall {
     enabled = false
 }
 
-val nxBuild = tasks.register<NpxTask>("nxBuild") {
+val nxReset = tasks.register<NpxTask>("nxReset") {
     group = "nx"
     dependsOn(tasks.npmInstall)
+    command.set("nx")
+    args.set(listOf("reset"))
+
+    // Let Nx do its own caching.
+    outputs.upToDateWhen { false }
+}
+
+val nxBuild = tasks.register<NpxTask>("nxBuild") {
+    group = "nx"
+    dependsOn(tasks.npmInstall, nxReset)
     command.set("nx")
     args.set(listOf("build"))
 
