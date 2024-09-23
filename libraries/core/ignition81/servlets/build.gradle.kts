@@ -2,7 +2,7 @@ plugins {
     id("embr.core-conventions")
 }
 
-val platform = projects.core.ignition81
+val platform = projects.libraries.core.ignition81
 
 dependencies {
     compileOnly(libs.ignition.sdk81.jetty.server)

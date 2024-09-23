@@ -37,21 +37,14 @@ val chartsModule = module("charts") {
         subproject("gateway")
     }
 }
-//
-///**
-// * SSE Module
-// */
-//val eventStreamModule = module("event-stream") {
-//    library("shared") {
-//        subproject("web")
-//    }
-//    target("sdk-8.1") {
-//        subproject("client")
-//    }
-//    target("sdk-8.3") {
-//        subproject("client")
-//    }
-//}
+
+/** Server-Sent-Events Module */
+val sseModule = module("sse") {
+    target("ignition81") {
+        subproject("common")
+        subproject("gateway")
+    }
+}
 
 /** Thermodynamics Module */
 val thermoModule = module("thermo") {
@@ -152,7 +145,7 @@ class LibraryBuilder(
     projectScope: ProjectScope
 ) : SubprojectContainer(name, projectScope) {
     private val targets = mutableListOf<TargetBuilder>()
-    constructor(name: String) : this(name, ProjectScope("libraries/$name", ":$name"))
+    constructor(name: String) : this(name, ProjectScope("libraries/$name", ":libraries:$name"))
 
     fun target(targetName: String, targetConfiguration: TargetBuilder.() -> Unit) {
         val target = TargetBuilder(targetName, subproject(targetName))
@@ -170,7 +163,7 @@ class ModuleBuilder(
     projectScope: ProjectScope
 ) : SubprojectContainer(name, projectScope) {
     private val targets = mutableListOf<TargetBuilder>()
-    constructor(name: String) : this(name, ProjectScope("modules/$name", ":$name"))
+    constructor(name: String) : this(name, ProjectScope("modules/$name", ":modules:$name"))
 
     fun target(targetName: String, targetConfiguration: TargetBuilder.() -> Unit) {
         val target = TargetBuilder(targetName, subproject(targetName))

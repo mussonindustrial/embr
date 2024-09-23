@@ -23,15 +23,7 @@ tasks.build {
 
 
 tasks.jar {
-    var parent = project.parent
-    val parents = mutableListOf<String>()
-    while (parent != null) {
-        parents.add(parent.name)
-        parent = parent.parent
-    }
-    parents.reverse()
-    val baseName = parents.joinToString("-")
-    archiveBaseName.set("${baseName}-${project.name}")
+    archiveBaseName.set("embr-${project.parent?.parent?.name}-${project.parent?.name}-${project.name}")
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {

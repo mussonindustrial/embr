@@ -8,14 +8,14 @@ allprojects {
 
 val sdk = libs.ignition.sdk81
 val sdkVersion = libs.versions.ignition.sdk81.target
-val core = projects.core.ignition81
-val module = projects.charts.ignition81
+val core = projects.libraries.core.ignition81
+val module = projects.modules.charts.ignition81
 
 ignitionModule {
     name.set("Embr Charts")
     moduleDescription.set("A collection of enhanced Perspective charting components.")
     id.set("com.mussonindustrial.embr.charts")
-    fileName.set("Embr-Charts-Ignition81-${version}.modl")
+    fileName.set("Embr-Ignition81-Charts-${version}.modl")
     freeModule.set(true)
     requiredIgnitionVersion.set(sdkVersion)
     license.set("../license.html")

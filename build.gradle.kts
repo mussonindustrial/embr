@@ -12,22 +12,6 @@ repositories {
     gradlePluginPortal()
 }
 
-val releaseFiles: Configuration by configurations.creating {
-    isCanBeConsumed = false
-    isCanBeResolved = true
-}
-
-// Depend on the signed modules of all subprojects.
-gradle.projectsEvaluated {
-    dependencies {
-        subprojects.filter {
-            it.tasks.matching { task -> task.name == "signModule" }.isNotEmpty()
-        }.map {
-            releaseFiles(project(it.path, releaseFiles.name))
-        }
-    }
-}
-
 val changesetVersion by tasks.registering(NpxTask::class) {
     group = "changesets"
     description = "Consume all changesets and update to the most appropriate semver version based on the those changesets."
@@ -52,12 +36,12 @@ val release by tasks.registering {
 val assembleModules by tasks.registering(Copy::class) {
     group = "ignition module"
     description = "Collect all modules."
-    inputs.files(releaseFiles)
+    val signModuleTasks = subprojects.flatMap { it.tasks.matching { task -> task.name == "signModule"} }
+    dependsOn(signModuleTasks)
 
-    // Unsure why this is needed. If this line is removed the dependency graph is not correct.
-    dependsOn(subprojects.map { it.tasks.matching { task -> task.name == "signModule"} })
-
-    from(releaseFiles)
+    val signedModules = signModuleTasks.map { it.outputs.files.singleFile }
+    inputs.files(signedModules)
+    from(signedModules)
     destinationDir = file("build/modules")
 }
 

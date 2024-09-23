@@ -22,14 +22,3 @@ tasks.deployModl {
 tasks.writeModuleXml {
     foldJars = true
 }
-
-val releaseFiles: Configuration by configurations.creating {
-    isCanBeConsumed = true
-    isCanBeResolved = false
-}
-
-afterEvaluate {
-    artifacts {
-        add(releaseFiles.name, tasks.signModule.flatMap { it.signed })
-    }
-}

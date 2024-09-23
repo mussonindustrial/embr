@@ -3,8 +3,8 @@ plugins {
 }
 
 val sdk = libs.ignition.sdk81
-val core = projects.core.ignition81
-val module = projects.thermo.ignition81
+val core = projects.libraries.core.ignition81
+val module = projects.modules.thermo.ignition81
 
 dependencies {
     compileOnly(sdk.common)
