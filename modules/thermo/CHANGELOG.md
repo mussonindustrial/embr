@@ -1,5 +1,11 @@
 # @embr-modules/thermo
 
+## 0.1.4
+
+### Patch Changes
+
+- 02a59ba: republish previously pulled patch release
+
 ## 0.1.3
 
 ### Patch Changes

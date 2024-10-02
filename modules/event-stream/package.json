@@ -1,6 +1,6 @@
 {
     "name": "@embr-modules/event-stream",
-    "version": "0.4.1",
+    "version": "0.4.2",
     "private": false,
     "keywords": [
         "ignition",
