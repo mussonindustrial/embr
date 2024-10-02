@@ -1,5 +1,11 @@
 # @mussonindustrial/embr-charts
 
+## 1.3.3
+
+### Patch Changes
+
+- 02a59ba: republish previously pulled patch release
+
 ## 1.3.2
 
 ### Patch Changes

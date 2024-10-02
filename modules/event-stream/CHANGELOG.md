@@ -1,5 +1,11 @@
 # @mussonindustrial/embr-tag-stream
 
+## 0.4.2
+
+### Patch Changes
+
+- 02a59ba: republish previously pulled patch release
+
 ## 0.4.1
 
 ### Patch Changes
