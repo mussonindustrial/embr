@@ -42,12 +42,13 @@ val changesetPublish by tasks.registering(NpxTask::class) {
 
 val release by tasks.registering {
     group = "publishing"
-    dependsOn(zipModules, changesetVersion, changesetPublish)
+    dependsOn(tasks.build, changesetVersion, changesetPublish)
 }
 
 val assembleModules by tasks.registering(Copy::class) {
     group = "ignition module"
     inputs.files(releaseFiles)
+    dependsOn(subprojects.map { subproject -> subproject.tasks.named { it == "signModule" } })
 
     from(releaseFiles)
     destinationDir = file("build/modules")
