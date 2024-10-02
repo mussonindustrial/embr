@@ -44,7 +44,7 @@ function extractPropsData(props: PerspectiveChartProps) {
     const localProps = cloneDeep(props)
     const data: PerspectiveChartData[] = []
 
-    localProps.data.datasets.forEach((dataset) => {
+    localProps.data?.datasets?.forEach((dataset) => {
         data.push(dataset.data)
         unset(dataset, 'data')
     })
