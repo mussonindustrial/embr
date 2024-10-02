@@ -1,5 +1,11 @@
 # @embr-modules/thermo
 
+## 0.1.3
+
+### Patch Changes
+
+- bd7e4b6: chore: update ignition module plugin
+
 ## 0.1.2
 
 ### Patch Changes
