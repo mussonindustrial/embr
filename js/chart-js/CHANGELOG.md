@@ -1,5 +1,11 @@
 # @mussonindustrial/embr-js-chart-js
 
+## 0.4.1
+
+### Patch Changes
+
+- 9c45437: Fix handling of empty/non-existent data.dataset properties.
+
 ## 0.4.0
 
 ### Minor Changes

@@ -1,5 +1,11 @@
 # @mussonindustrial/embr-tag-stream
 
+## 0.4.1
+
+### Patch Changes
+
+- bd7e4b6: chore: update ignition module plugin
+
 ## 0.4.0
 
 ### Minor Changes
