@@ -1,5 +1,11 @@
 # @mussonindustrial/embr-js-chart-js
 
+## 0.4.2
+
+### Patch Changes
+
+- db13393: Update Chart.js dependency to 4.4.4
+
 ## 0.4.1
 
 ### Patch Changes

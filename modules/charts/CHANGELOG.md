@@ -1,5 +1,13 @@
 # @mussonindustrial/embr-charts
 
+## 1.3.4
+
+### Patch Changes
+
+- db13393: Move Embr `chart-js` dependency into Embr Charts project and renamed to `charts-web`
+- Updated dependencies [db13393]
+  - @embr-js/chart-js@0.4.2
+
 ## 1.3.3
 
 ### Patch Changes
