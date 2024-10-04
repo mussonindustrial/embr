@@ -6,5 +6,5 @@ dependencies {
     compileOnly(libs.bundles.gateway)
     compileOnly(libs.bundles.perspectiveGateway)
     compileOnly(projects.modules.charts.common)
-    modlImplementation(projects.js.chartJs)
+    modlImplementation(projects.modules.charts.web)
 }
