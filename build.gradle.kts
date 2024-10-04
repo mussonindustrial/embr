@@ -12,21 +12,6 @@ repositories {
     gradlePluginPortal()
 }
 
-val releaseFiles: Configuration by configurations.creating {
-    isCanBeConsumed = false
-    isCanBeResolved = true
-}
-
-dependencies {
-    releaseFiles(project(":modules:charts", releaseFiles.name))
-    releaseFiles(project(":modules:event-stream", releaseFiles.name))
-    releaseFiles(project(":modules:thermo", releaseFiles.name))
-}
-
-val subBuilds = subprojects.map {
-    it.tasks.matching { task -> task.name == "build" }
-}
-
 val changesetVersion by tasks.registering(NpxTask::class) {
     group = "changesets"
     command.set("changeset")
@@ -47,10 +32,19 @@ val release by tasks.registering {
 
 val assembleModules by tasks.registering(Copy::class) {
     group = "ignition module"
-    inputs.files(releaseFiles)
-    dependsOn(subprojects.map { subproject -> subproject.tasks.named { it == "signModule" } })
 
-    from(releaseFiles)
+    val signModuleTasks = subprojects.flatMap { subproject ->
+        subproject.tasks.named { it == "signModule" }
+    }
+    val signedModules = signModuleTasks.map {
+        it.outputs.files.singleFile
+    }
+
+
+    inputs.files(signedModules)
+    dependsOn(signModuleTasks)
+
+    from(signedModules)
     destinationDir = file("build/modules")
 }
 
