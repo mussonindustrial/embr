@@ -4,7 +4,8 @@
   "commit": false,
   "fixed": [
     [ "@embr-jvm/core-*" ],
-    [ "@embr-jvm/perspective-*" ]
+    [ "@embr-jvm/perspective-*" ],
+    [ "@embr-modules/charts*"]
   ],
   "linked": [],
   "access": "public",

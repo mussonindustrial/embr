@@ -15,7 +15,7 @@
         "!**/*.unsigned.modl"
     ],
     "dependencies": {
-        "@embr-js/chart-js": "0.4.2",
+        "@embr-modules/charts-web": "1.3.4",
         "@embr-jvm/core-common": "0.4.0",
         "@embr-jvm/core-designer": "0.4.0"
     }
