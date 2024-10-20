@@ -1,4 +1,4 @@
-import React, { MutableRefObject, useRef } from 'react'
+import React, { MutableRefObject, useMemo, useRef } from 'react'
 import {
     ComponentMeta,
     ComponentProps,
@@ -8,7 +8,7 @@ import {
 } from '@inductiveautomation/perspective-client'
 import { Chart as Chartjs, ChartProps } from 'react-chartjs-2'
 import { Chart } from 'chart.js'
-import { getCSSTransform, getScriptTransform } from '../util/propTransforms'
+import { getCSSTransform, getScriptTransform } from '../../util/propTransforms'
 import { transformProps } from '@embr-js/utils'
 import { unset, cloneDeep } from 'lodash'
 
@@ -21,8 +21,11 @@ type ChartEvent = (chart: PerspectiveChart | undefined) => void
 type PerspectiveChartEvents = {
     beforeRender?: ChartEvent
 }
+type UpdateMode =  "resize" | "reset" | "none" | "hide" | "show" | "default" | "active" | "zoom" | undefined
 type PerspectiveChartProps = ChartProps & {
-    events?: PerspectiveChartEvents
+    events?: PerspectiveChartEvents,
+    updateMode?: UpdateMode,
+    redraw?: boolean,
 }
 
 function callUserChartEvent(
@@ -45,7 +48,7 @@ function extractPropsData(props: PerspectiveChartProps) {
     const data: PerspectiveChartData[] = []
 
     localProps.data?.datasets?.forEach((dataset) => {
-        data.push(dataset.data)
+        data.push(dataset.data ? dataset.data : [])
         unset(dataset, 'data')
     })
     return { props, data }
@@ -64,51 +67,59 @@ export function ChartjsComponent(props: ComponentProps<PerspectiveChartProps>) {
     const chartRef: MutableRefObject<PerspectiveChart | undefined> =
         useRef(undefined)
 
-    const { props: configProps, data } = extractPropsData(props.props)
-    const transformedProps = transformProps(configProps, [
-        getScriptTransform({ self: props, client: window.__client }),
-        getCSSTransform(chartRef.current?.canvas.parentElement),
-    ]) as PerspectiveChartProps
+    const transformedProps = useMemo(
+        () => {
+            const { props: configProps, data } = extractPropsData(props.props)
 
-    installPropsData(transformedProps, data)
+            const transformedProps = transformProps(configProps, [
+                getScriptTransform({ self: props, client: window.__client }),
+                getCSSTransform(chartRef.current?.canvas.parentElement),
+            ]) as PerspectiveChartProps
+        
+            installPropsData(transformedProps, data)
+            return transformedProps
+        }, [props.props]
+    )
+
     callUserChartEvent(chartRef.current, transformedProps, 'beforeRender')
 
     return (
         <div {...props.emit()}>
             <Chartjs
+                ref={chartRef}
                 type={transformedProps.type}
                 options={transformedProps.options}
                 data={transformedProps.data}
                 plugins={transformedProps.plugins}
-                ref={chartRef}
+                redraw={transformedProps.redraw}
+                updateMode={transformedProps.updateMode}
             />
         </div>
     )
 }
 
-export class ChartjsComponentMeta implements ComponentMeta {
-    getComponentType(): string {
+export const ChartjsComponentMeta: ComponentMeta = {
+    getComponentType: function (): string {
         return COMPONENT_TYPE
-    }
-
-    getDefaultSize(): SizeObject {
+    },
+    getDefaultSize: function (): SizeObject {
         return {
             width: 300,
             height: 300,
         }
-    }
-
+    },
     getPropsReducer(tree: PropertyTree): PerspectiveChartProps {
         return {
             type: tree.readString('type'),
             options: tree.read('options', {}),
             data: tree.read('data', {}),
             plugins: tree.readArray('plugins', []),
+            redraw: tree.read('redraw', undefined),
+            updateMode: tree.read('updateMode', undefined),
             events: tree.read('events', {}),
         } as never
-    }
-
-    getViewComponent(): PComponent {
+    },
+    getViewComponent: function (): PComponent {
         return ChartjsComponent as PComponent
-    }
+    },
 }

@@ -7,8 +7,8 @@ object Components {
     val BROWSER_RESOURCES: Set<BrowserResource> =
         mutableSetOf(
             BrowserResource(
-                "chart-js-component-js",
-                "/res/${SHORT_MODULE_ID}/embr-chart-js-client.js",
+                "embr-charts-client",
+                "/res/${SHORT_MODULE_ID}/embr-charts-client.js",
                 BrowserResource.ResourceType.JS
             )
         )
