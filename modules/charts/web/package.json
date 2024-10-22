@@ -43,7 +43,7 @@
     },
     "devDependencies": {
         "@embr-js/tsconfig": "*",
-        "@embr-js/utils": "0.3.0",
+        "@embr-js/utils": "0.4.0",
         "@embr-js/eslint-config": "*",
         "@types/lodash": "^4.14.202",
         "@types/react": "^18.2.56",
