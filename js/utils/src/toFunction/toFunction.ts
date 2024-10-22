@@ -15,10 +15,9 @@ export default function toFunction(string: string, globals = {}) {
             const f = Function(...Object.keys(globals), body)
             return () => f(...Object.values(globals))
         } else {
-            const f = Function(...signature, ...Object.keys(globals), body)
+            const f = Function(...Object.keys(globals), ...signature, body)
             return (params: UserScriptParams = {}) => {
-                params.length === signature.length
-                return f(...Object.values(params), ...Object.values(globals))
+                return f(...Object.values(globals), ...Object.values(params))
             }
         }
     }
