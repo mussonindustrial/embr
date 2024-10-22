@@ -1,0 +1,276 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$defs": {
+        "breakpoint_base": {
+            "description": "Base for breakpoints (beta). Can be window or container. If set to window (by default) then breakpoint keys mean window width. If set to container then breakpoint keys treated as swiper container width",
+            "type": "string",
+            "enum": [
+                "containers",
+                "windows"
+            ]
+        },
+        "controller_props": {
+            "description": "Controller parameters",
+            "type": "object"
+        },
+        "direction": {
+            "description": "Swiper direction",
+            "type": "string",
+            "enum": [
+                "horizontal",
+                "vertical"
+            ]
+        },
+        "effect": {
+            "description": "Transition effect",
+            "type": "string",
+            "enum": [
+                "cards",
+                "coverflow",
+                "creative",
+                "cube",
+                "fade",
+                "flip",
+                "slide"
+            ]
+        },
+        "effect_cards_props": {
+            "description": "Cards-effect parameters",
+            "type": "object"
+        },
+        "effect_coverflow_props": {
+            "description": "Coverflow-effect parameters",
+            "type": "object"
+        },
+        "effect_creative_props": {
+            "description": "Creative-effect parameters",
+            "type": "object"
+        },
+        "effect_cube_props": {
+            "description": "Cube-effect parameters",
+            "type": "object"
+        },
+        "effect_fade_props": {
+            "description": "Fade-effect parameters",
+            "type": "object"
+        },
+        "effect_flip_props": {
+            "description": "Flip-effect parameters",
+            "type": "object"
+        },
+        "effect_slide_props": {
+            "description": "Slide-effect parameters",
+            "type": "object"
+        },
+        "embedded_view_config": {
+            "type": "object",
+            "properties": {
+                "viewPath": {
+                    "type": "string",
+                    "format": "view-path",
+                    "description": "View path of this instance.",
+                    "default": ""
+                },
+                "viewParams": {
+                    "type": "object",
+                    "description": "Parameters for this instance.",
+                    "default": {},
+                    "extension": {
+                        "view-params": {
+                            "path":"../viewPath"
+                        }
+                    }
+                },
+                "style": {
+                    "$ref": "urn:ignition-schema:schemas/style-properties.schema.json",
+                    "default": {
+                        "classes": ""
+                    }
+                }
+            }
+        },
+        "grid_props": {
+            "description": "Grid parameters to enable \"multirow\" slider.",
+            "type": "object"
+        },
+        "keyboard_props": {
+            "description": "Enables navigation through slides using keyboard.",
+            "type": "object"
+        },
+        "mode_free_props": {
+            "description": "Enable free mode functionality.",
+            "type": "object"
+        },
+        "settings": {
+            "type": "object",
+            "properties": {
+                "allowSlideNext": {
+                    "type": "boolean",
+                    "description": "Set to false to disable swiping to next slide direction (to right or bottom)"
+                },
+                "allowSlidePrev": {
+                    "type": "boolean",
+                    "description": "Set to false to disable swiping to previous slide direction (to left or top)"
+                },
+                "allowTouchMove": {
+                    "type": "boolean",
+                    "description": "If false, then the only way to switch the slide is use of external API functions like slidePrev or slideNext"
+                },
+                "autoHeight": {
+                    "type": "boolean",
+                    "description": "Set to true and slider wrapper will adapt its height to the height of the currently active slide"
+                },
+                "autoplay": {
+                    "type": ["boolean", "object"],
+                    "default": false,
+                    "description": "Object with autoplay parameters or boolean true to enable with default settings"
+                },
+                "breakpoints": {
+                    "type": "object",
+                    "description": "Allows to set different parameter for different responsive breakpoints (screen sizes)."
+                },
+                "breakpointsBase": {
+                    "$ref": "#/$defs/breakpoint_base"
+                },
+                "cardsEffect": {
+                    "$ref": "#/$defs/effect_cards_props"
+                },
+                "centerInsufficientSlides": {
+                    "type": "boolean",
+                    "description": "When enabled it center slides if the amount of slides less than slidesPerView. Not intended to be used loop mode and grid.rows"
+                },
+                "centeredSlides": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "If true, then active slide will be centered, not always on the left side."
+                },
+                "centeredSlidesBounds": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "If true, then active slide will be centered without adding gaps at the beginning and end of slider. Required centeredSlides: true. Not intended to be used with loop or pagination"
+                },
+                "containerModifierClass": {
+                    "type": "string",
+                    "description": "The beginning of the modifier CSS class that can be added to swiper container depending on different parameters"
+                },
+                "controller": {
+                    "$ref": "#/$defs/controller_props"
+                },
+                "coverflowEffect": {
+                    "$ref": "#/$defs/effect_coverflow_props"
+                },
+                "createElements": {
+                    "type": "boolean",
+                    "description": "When enabled Swiper will automatically wrap slides with swiper-wrapper element, and will create required elements for navigation, pagination and scrollbar they are enabled (with their respective params object or with boolean true))"
+                },
+                "creativeEffect": {
+                    "$ref": "#/$defs/effect_creative_props"
+                },
+                "cssMode": {
+                    "type": "boolean",
+                    "description": "When enabled it will use modern CSS Scroll Snap API. It doesn't support all of Swiper's features, but potentially should bring a much better performance in simple configurations."
+                },
+                "cubeEffect": {
+                    "$ref": "#/$defs/effect_cube_props"
+                },
+                "direction": {
+                    "$ref": "#/$defs/direction",
+                    "default": "horizontal"
+                },
+                "edgeSwipeDetection": {
+                    "type": ["string", "boolean"],
+                    "description": "Enable to release Swiper events for swipe-back work in app. If set to 'prevent' then it will prevent system swipe-back navigation instead. This feature works only with \"touch\" events (and not pointer events), so it will work on iOS/Android devices and won't work on Windows devices with pointer (touch) events."
+                },
+                "edgeSwipeThreshold": {
+                    "type": "number",
+                    "description": "Area (in px) from left edge of the screen to release touch events for swipe-back in app"
+                },
+                "effect": {
+                    "$ref": "#/$defs/effect",
+                    "default": "slide"
+                },
+                "enabled": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Whether Swiper initially enabled. When Swiper is disabled, it will hide all navigation elements and won't respond to any events and interactions"
+                },
+                "eventsPrefix": {
+                    "type": "string",
+                    "description": "Event name prefix for all DOM events emitted by Swiper Element (web component)"
+                },
+                "fadeEffect": {
+                    "$ref": "#/$defs/effect_fade_props"
+                },
+                "flipEffect": {
+                    "$ref": "#/$defs/effect_flip_props"
+                },
+                "focusableElements": {
+                    "type": "string",
+                    "description": "CSS selector for focusable elements. Swiping will be disabled on such elements if they are \"focused\""
+                },
+                "followFinger": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "If disabled, then slider will be animated only when you release it, it will not move while you hold your finger on it"
+                },
+                "freeMode": {
+                    "$ref": "#/$defs/mode_free_props"
+                },
+                "grabCursor": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "This option may a little improve desktop usability. If true, user will see the \"grab\" cursor when hover on Swiper"
+                },
+                "grid": {
+                    "$ref": "#/$defs/grid_props"
+                },
+                "height": {
+                    "type": ["null", "boolean"],
+                    "description": "Swiper height (in px). Parameter allows to force Swiper height. "
+                },
+                "initialSlide": {
+                    "type": "number",
+                    "default": 0,
+                    "description": "Index number of initial slide."
+                },
+                "injectStyles": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "Inject text styles to the shadow DOM. Only for usage with Swiper Element"
+                },
+                "injectStylesUrls": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "Inject styles <link>s to the shadow DOM. Only for usage with Swiper Element"
+                },
+                "keyboard": {
+                    "$ref": "#/$defs/keyboard_props"
+                }
+            }
+        }
+    },
+    "properties": {
+        "instances": {
+            "type": "array",
+            "default": [],
+            "items": {
+                "$ref": "#/$defs/embedded_view_config"
+            }
+        },
+        "settings": {
+            "$ref": "#/$defs/settings"
+        },
+        "style": {
+            "$ref": "urn:ignition-schema:schemas/style-properties.schema.json",
+            "default": {
+                "classes": ""
+            }
+        }
+    },
+    "type": "object",
+    "required": ["instances"]
+}

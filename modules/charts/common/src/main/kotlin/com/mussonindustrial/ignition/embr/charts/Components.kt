@@ -10,6 +10,11 @@ object Components {
                 "chart-js-component-js",
                 "/res/${SHORT_MODULE_ID}/embr-chart-js-client.js",
                 BrowserResource.ResourceType.JS
+            ),
+            BrowserResource(
+                "embr-charts-css",
+                "/res/${SHORT_MODULE_ID}/style.css",
+                BrowserResource.ResourceType.CSS
             )
         )
 }
