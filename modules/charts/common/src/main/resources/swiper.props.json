@@ -68,8 +68,7 @@
                 "viewPath": {
                     "type": "string",
                     "format": "view-path",
-                    "description": "View path of this instance.",
-                    "default": ""
+                    "description": "View path of this instance."
                 },
                 "viewParams": {
                     "type": "object",
@@ -81,7 +80,7 @@
                         }
                     }
                 },
-                "style": {
+                "viewStyle": {
                     "$ref": "urn:ignition-schema:schemas/style-properties.schema.json",
                     "default": {
                         "classes": ""
@@ -256,13 +255,44 @@
     "properties": {
         "instances": {
             "type": "array",
+            "description": "Array of slide instances.",
             "default": [],
             "items": {
                 "$ref": "#/$defs/embedded_view_config"
             }
         },
+        "viewPath": {
+            "type": "string",
+            "format": "view-path",
+            "description": "Fallback view path for all slide instances.",
+            "default": ""
+        },
+        "viewParams": {
+            "type": "object",
+            "description": "Parameters for all slide instances.",
+            "default": {},
+            "extension": {
+                "view-params": {
+                    "path":"../viewPath"
+                }
+            }
+        },
         "settings": {
             "$ref": "#/$defs/settings"
+        },
+        "viewStyle": {
+            "$ref": "urn:ignition-schema:schemas/style-properties.schema.json",
+            "description": "Styles applied to all embedded view instances.",
+            "default": {
+                "classes": ""
+            }
+        },
+        "slideStyle": {
+            "$ref": "urn:ignition-schema:schemas/style-properties.schema.json",
+            "description": "Styles applied to all slide instances.",
+            "default": {
+                "classes": ""
+            }
         },
         "style": {
             "$ref": "urn:ignition-schema:schemas/style-properties.schema.json",

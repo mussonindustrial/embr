@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React, { useRef } from 'react'
 import {
     ComponentMeta,
     ComponentProps,
@@ -12,7 +12,7 @@ import {
     View,
 } from '@inductiveautomation/perspective-client'
 
-import { Swiper, SwiperSlide, SwiperProps } from 'swiper/react'
+import { Swiper, SwiperSlide, SwiperProps, SwiperRef } from 'swiper/react'
 import { Virtual,
     Keyboard,
     Mousewheel,
@@ -47,30 +47,86 @@ const COMPONENT_TYPE = 'embr.chart.swiper'
 
 type EmbeddedViewProps = {
     viewPath: string
-    viewParams?: JsObject
-    style?: StyleObject
+    viewParams: JsObject
+    viewStyle: StyleObject
+    slideStyle: StyleObject
 }
+    
 type SwiperComponentProps = {
+    viewPath?: string
+    viewParams?: JsObject
+    viewStyle: StyleObject
+    slideStyle: StyleObject
     instances: EmbeddedViewProps[]
     settings?: SwiperProps
     style?: StyleObject
 }
+type SlideData = {
+    isActive: boolean;
+    isVisible: boolean;
+    isPrev: boolean;
+    isNext: boolean;
+  }
 
 function getMountMountPath(props: ComponentProps<PlainObject>, id: any) {
     return `${props.store.viewMountPath}$${props.store.addressPathString}[${id}]`
 }
 
+function resolve(inputs: Array<unknown>) {
+    let value: unknown
+    for (let i = 0; i < inputs.length; i++) {
+        value = inputs[i]
+        if (value === undefined) {
+            continue;
+        }
+        if (value !== undefined) {
+            return value as any;
+        }
+    }
+}
 
-function EmbeddedView(props: {context: ComponentProps<any>, view: EmbeddedViewProps, id: any}) {
-    const mountPath = getMountMountPath(props.context, props.id)
+function resolveSlideProps(props: SwiperComponentProps, slideIndex: number): EmbeddedViewProps {
+    const slideProps = props.instances[slideIndex]
+
+    return {
+        viewPath: resolve([slideProps.viewPath, props.viewPath]),
+        viewParams: {
+            ...props.viewParams,
+            ...slideProps.viewParams,
+            index: slideIndex
+        },
+        viewStyle: {
+            ...props.viewStyle,
+            ...slideProps.viewStyle
+        },
+        slideStyle: {
+            ...props.slideStyle,
+            ...slideProps.slideStyle
+        }
+    }
+}
+
+
+function EmbeddedSlide(props: {parent: ComponentProps<SwiperComponentProps>, index: number, slideData?: SlideData}) {
+    const mountPath = getMountMountPath(props.parent, props.index)
+    const viewProps = resolveSlideProps(props.parent.props, props.index)
+
     return (
         <View
-            key={PageStore.instanceKeyFor(props.view.viewPath, mountPath)}
-            store={props.context.store.view.page.parent}
+            key={PageStore.instanceKeyFor(viewProps.viewPath, mountPath)}
+            store={props.parent.store.view.page.parent}
             mountPath={mountPath}
-            resourcePath={props.view.viewPath}
-            params={props.view.viewParams}
-            rootStyle={props.view.style}
+            resourcePath={viewProps.viewPath}
+            params={{
+                ...viewProps.viewParams,
+                index: props.index,
+                slideData: props.slideData,
+            }}
+            rootStyle={{
+                ...viewProps.viewStyle,
+                height: '100%',
+                width: '100%'
+            }}
         />
     )
 }
@@ -116,31 +172,42 @@ const EnabledSwiperModules = [
 
 export function SwiperComponent(props: ComponentProps<SwiperComponentProps>) {
 
-    const transformedProps = useMemo(() => {
+    const swiperRef = useRef<SwiperRef>(null);
 
-        const { props: configProps, settings } = extractSettings(props.props)
-        const transformedSettings = transformProps(settings, [
-            getScriptTransform({ self: props, client: window.__client })
-        ]) as SwiperProps
+    const { props: transformedProps, settings } = extractSettings(props.props)
+    const transformedSettings = transformProps(settings, [
+        getScriptTransform({ self: props, client: window.__client })
+    ]) as SwiperProps
+    installSettings(transformedProps, transformedSettings)
 
-        installSettings(configProps, transformedSettings)
-        return configProps
+    const slides = () => transformedProps.instances.map((instance, index) => {
+        const slideStyle = {
+            ...transformedProps.slideStyle,
+            ...instance.slideStyle
+        }
 
-    }, [props.props.settings])
-
+        return <SwiperSlide style={slideStyle}>
+            {(slideData) => {
+                return <EmbeddedSlide 
+                    parent={props} 
+                    index={index} 
+                    slideData={slideData}
+                />
+            }}
+        </SwiperSlide>
+    })
 
     return (
         <div { ...props.emit() }>
             <Swiper
+                ref={swiperRef}
                 modules={EnabledSwiperModules}
                 { ...transformedProps.settings }
+                observer={true}
+                observeSlideChildren={true}
                 style={{ height: '100%', width: '100%' }}
             >
-                {transformedProps.instances.map((instance, index) => 
-                    <SwiperSlide>
-                        <EmbeddedView context={props} view={instance} id={index}/>
-                    </SwiperSlide>
-                )}
+            {...slides()}
             </Swiper>
         </div>
 
@@ -161,6 +228,10 @@ export class SwiperComponentMeta implements ComponentMeta {
 
     getPropsReducer(tree: PropertyTree): SwiperProps {
         return {
+            viewPath: tree.read('viewPath'),
+            viewParams: tree.read('viewParams'),
+            elementStyle: tree.read('elementStyle', {}),
+            slideStyle: tree.read('slideStyle', {}),
             instances: tree.read('instances', []),
             settings: tree.read('settings', {}),
             style: tree.read('style', {}),
