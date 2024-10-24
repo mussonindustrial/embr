@@ -14,7 +14,7 @@ import {
   View,
 } from '@inductiveautomation/perspective-client'
 
-import { Swiper, SwiperSlide, SwiperProps, SwiperRef, useSwiper, useSwiperSlide } from 'swiper/react'
+import { Swiper, SwiperSlide, SwiperProps, SwiperRef, useSwiperSlide } from 'swiper/react'
 import { Virtual,
   Keyboard,
   Mousewheel,
@@ -41,7 +41,7 @@ import { Virtual,
 } from 'swiper/modules'
 
 import 'swiper/css/bundle';
-import { unset } from 'lodash';
+import { debounce, unset } from 'lodash';
 import { transformProps } from '@embr-js/utils';
 import { getScriptTransform } from '../util';
 
@@ -136,9 +136,15 @@ function resolveViewProps(props: SwiperComponentProps, slideIndex: number): Embe
   }
 }
 
-function EmbeddedSlideView(props: {store: ClientStore, mountPath: string, view: EmbeddedViewProps}) {
-  const swiper = useSwiper()
+function EmbeddedSlideView(props: {store: ClientStore, mountPath: string, view: EmbeddedViewProps, listenResize?: boolean, onResize:() => void}) {
   const slide = useSwiperSlide()
+
+  const resizeDetector = props.listenResize ? <ReactResizeDetector
+      onResize={props.onResize}
+      handleWidth={true}
+      handleHeight={true}
+    />
+    : <></>
 
   return (
     <>        
@@ -153,7 +159,7 @@ function EmbeddedSlideView(props: {store: ClientStore, mountPath: string, view: 
         useDefaultWidth={props.view.useDefaultWidth}
         params={{
           ...props.view.viewParams,
-          slideData: slide,
+          swiperSlide: slide,
         }}
         rootStyle={{
           width: props.view.useDefaultWidth ? undefined : '100%',
@@ -161,11 +167,7 @@ function EmbeddedSlideView(props: {store: ClientStore, mountPath: string, view: 
           ...props.view.viewStyle,
         }}
       />
-      <ReactResizeDetector
-        onResize={() => { swiper.update(); }}
-        handleWidth={true}
-        handleHeight={true}
-      />
+      {resizeDetector}
     </>
   )
 }
@@ -193,8 +195,16 @@ export function SwiperComponent(props: ComponentProps<SwiperComponentProps>) {
     ]) as SwiperProps
     installSettings(transformedProps, transformedSettings)
 
-    const slides = () => transformedProps.instances.map((_, index) => {
+    const updateOnResize = transformedProps.settings?.slidesPerView === 'auto'
+    const handleResize = debounce(() => { 
+      console.log(`updated size`)
+      swiperRef.current?.swiper.updateSlides()
+    }, 200, {
+      leading: true,
+      trailing: false
+    })
 
+    const slides = () => transformedProps.instances.map((_, index) => {
       const mountPath = getChildMountPath(props, index)
       const viewProps = resolveViewProps(transformedProps, index)
       viewProps.viewParams.index = index
@@ -205,6 +215,8 @@ export function SwiperComponent(props: ComponentProps<SwiperComponentProps>) {
             store={props.store.view.page.parent} 
             view={viewProps}
             mountPath={mountPath}
+            listenResize={updateOnResize}
+            onResize={handleResize}
           />
         </SwiperSlide>
       )
@@ -220,7 +232,7 @@ export function SwiperComponent(props: ComponentProps<SwiperComponentProps>) {
           observeSlideChildren={true}
           style={{ height: '100%', width: '100%' }}
         >
-        {...slides()}
+        { ...slides() }
         </Swiper>
       </div>
     )
