@@ -39,12 +39,13 @@
         "moment": "^2.30.1",
         "react": "^18",
         "react-chartjs-2": "^5.2.0",
-        "react-dom": "^18"
+        "react-dom": "^18",
+        "swiper": "^11.1.14"
     },
     "devDependencies": {
+        "@embr-js/eslint-config": "*",
         "@embr-js/tsconfig": "*",
         "@embr-js/utils": "0.3.0",
-        "@embr-js/eslint-config": "*",
         "@types/lodash": "^4.14.202",
         "@types/react": "^18.2.56",
         "eslint": "^8.56.0",

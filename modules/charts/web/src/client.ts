@@ -102,7 +102,12 @@ import {
     ChartjsComponentMeta,
 } from './components/ChartjsComponent'
 
-export { ChartjsComponent as BaseChartComponent }
+import {
+    SwiperComponent,
+    SwiperComponentMeta
+} from './components/SwiperComponent'
 
-const components: Array<ComponentMeta> = [new ChartjsComponentMeta()]
+export { ChartjsComponent as BaseChartComponent, SwiperComponent }
+
+const components: Array<ComponentMeta> = [new ChartjsComponentMeta(), new SwiperComponentMeta()]
 components.forEach((c: ComponentMeta) => ComponentRegistry.register(c))

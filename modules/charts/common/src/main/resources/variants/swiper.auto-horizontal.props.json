@@ -1,0 +1,31 @@
+{
+  "instances": [],
+  "instanceCommon": {
+    "viewPath": "",
+    "viewParams": {},
+    "viewStyle": {
+      "classes": ""
+    },
+    "slideStyle": {
+      "classes": "",
+      "width": "fit-content",
+      "height": "100%"
+    }
+  },
+  "settings": {
+    "direction": "horizontal",
+    "slidesPerView": "auto",
+    "spaceBetween": "15px",
+    "enabled": true,
+    "pagination": {
+      "enabled": true,
+      "clickable": true
+    },
+    "mousewheel": true,
+    "navigation": true,
+    "scrollbar": true
+  },
+  "style": {
+    "classes": ""
+  }
+}
