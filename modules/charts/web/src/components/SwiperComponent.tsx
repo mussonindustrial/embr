@@ -162,7 +162,7 @@ function EmbeddedSlideView(props: {store: ClientStore, mountPath: string, view: 
         }}
       />
       <ReactResizeDetector
-        onResize={() => { console.log('resized'); swiper.update(); }}
+        onResize={() => { swiper.update(); }}
         handleWidth={true}
         handleHeight={true}
       />
