@@ -186,7 +186,7 @@ function installSettings(
 
 export function SwiperComponent(props: ComponentProps<SwiperComponentProps>) {
     const swiperRef = useRef<SwiperRef>(null);
-
+    
     const { props: transformedProps, settings } = extractSettings(props.props)
     const transformedSettings = transformProps(settings, [
       getScriptTransform({ self: props, client: window.__client })
@@ -195,10 +195,11 @@ export function SwiperComponent(props: ComponentProps<SwiperComponentProps>) {
 
     const updateOnResize = transformedProps.settings?.slidesPerView === 'auto'
     const handleResize = debounce(() => { 
+      console.log('resized')
       swiperRef.current?.swiper.updateSlides()
-    }, 200, {
+    }, 100, {
       leading: true,
-      trailing: false
+      trailing: true
     })
     
     return (

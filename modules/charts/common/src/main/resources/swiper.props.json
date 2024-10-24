@@ -127,6 +127,16 @@
             "description": "Enable free mode functionality.",
             "type": "object"
         },
+        "pagination_props": {
+            "type": "object",
+            "properties": {
+                "bulletActiveClass": {
+                    "type": ["array", "string"],
+                    "format": "style-list",
+                    "description": "Styles defined in the project to be applied to this component"
+                }
+            }
+        },
         "settings": {
             "type": "object",
             "properties": {
@@ -275,6 +285,9 @@
                 },
                 "keyboard": {
                     "$ref": "#/$defs/keyboard_props"
+                },
+                "pagination": {
+                    "$ref": "#/$defs/pagination_props"
                 }
             }
         }
