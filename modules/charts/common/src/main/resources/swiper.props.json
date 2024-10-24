@@ -85,6 +85,33 @@
                     "default": {
                         "classes": ""
                     }
+                },
+                "slideStyle": {
+                    "$ref": "urn:ignition-schema:schemas/style-properties.schema.json",
+                    "description": "Styles applied to this slide instances.",
+                    "default": {
+                        "classes": ""
+                    }
+                },
+                "useDefaultHeight": {
+                    "type": "boolean",
+                    "description": "Use default view height.",
+                    "default": false
+                },
+                "useDefaultMinHeight": {
+                    "type": "boolean",
+                    "description": "Use default minimum view height.",
+                    "default": false
+                },
+                "useDefaultMinWidth": {
+                    "type": "boolean",
+                    "description": "Use default minimum view height.",
+                    "default": false
+                },
+                "useDefaultWidth": {
+                    "type": "boolean",
+                    "description": "Use default view width.",
+                    "default": false
                 }
             }
         },
