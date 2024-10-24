@@ -94,8 +94,8 @@ type SwiperComponentProps = {
   style?: StyleObject
 }
 
-function getMountMountPath(props: ComponentProps<PlainObject>, id: any) {
-  return `${props.store.viewMountPath}$${props.store.addressPathString}[${id}]`
+function getChildMountPath(props: ComponentProps<PlainObject>, childIndex: any) {
+  return `${props.store.viewMountPath}$${props.store.addressPathString}[${childIndex}]`
 }
 
 function resolve(inputs: Array<unknown>) {
@@ -195,7 +195,7 @@ export function SwiperComponent(props: ComponentProps<SwiperComponentProps>) {
 
     const slides = () => transformedProps.instances.map((_, index) => {
 
-      const mountPath = getMountMountPath(props, index)
+      const mountPath = getChildMountPath(props, index)
       const viewProps = resolveViewProps(transformedProps, index)
       viewProps.viewParams.index = index
 
