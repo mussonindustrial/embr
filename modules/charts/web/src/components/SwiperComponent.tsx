@@ -43,7 +43,7 @@ import { Virtual,
 import 'swiper/css/bundle';
 import { debounce, unset } from 'lodash';
 import { transformProps } from '@embr-js/utils';
-import { getScriptTransform, resolve } from '../util';
+import { emitStyles, formatStyleNames, getScriptTransform, mergeStyles, resolve } from '../util';
 
 const COMPONENT_TYPE = 'embr.chart.swiper'
 
@@ -74,15 +74,11 @@ const EnabledSwiperModules = [
 ]
 
 type SwiperComponentProps = {
-  viewPath?: string
-  viewParams?: JsObject
-  viewStyle: StyleObject
-  slideStyle: StyleObject
   instances: EmbeddedViewProps[]
+  instanceCommon: EmbeddedViewProps
   settings?: SwiperProps
   style?: StyleObject
 }
-
 
 type EmbeddedViewProps = {
   viewPath: string
@@ -111,24 +107,18 @@ function resolveViewProps(props: SwiperComponentProps, slideIndex: number): Embe
   const view = props.instances[slideIndex]
 
   return {
-      viewPath: resolve([view.viewPath, props.viewPath]),
+      viewPath: resolve([view.viewPath, props.instanceCommon.viewPath]),
       viewParams: {
-        ...props.viewParams,
+        ...props.instanceCommon.viewParams,
         ...view.viewParams,
         index: slideIndex
       },
-      viewStyle: {
-        ...props.viewStyle,
-        ...view.viewStyle
-      },
-      slideStyle: {
-        ...props.slideStyle,
-        ...view.slideStyle
-      },
-      useDefaultHeight: view.useDefaultHeight,
-      useDefaultMinHeight: view.useDefaultMinHeight,
-      useDefaultMinWidth: view.useDefaultMinWidth,
-      useDefaultWidth: view.useDefaultWidth
+      viewStyle: mergeStyles([props.instanceCommon.viewStyle, view.viewStyle]),
+      slideStyle: mergeStyles([props.instanceCommon.slideStyle, view.slideStyle]),
+      useDefaultHeight: resolve([view.useDefaultHeight, props.instanceCommon.useDefaultHeight]),
+      useDefaultMinHeight: resolve([view.useDefaultMinHeight, props.instanceCommon.useDefaultMinHeight]),
+      useDefaultMinWidth: resolve([view.useDefaultMinWidth, props.instanceCommon.useDefaultMinWidth]),
+      useDefaultWidth: resolve([view.useDefaultWidth, props.instanceCommon.useDefaultWidth])
   }
 }
 
@@ -164,6 +154,7 @@ function EmbeddedSlideView(props: EmbeddedSlideViewProps) {
           width: props.view.useDefaultWidth ? undefined : '100%',
           height: props.view.useDefaultHeight ? undefined : '100%',
           ...props.view.viewStyle,
+          classes: formatStyleNames(props.view.viewStyle.classes)
         }}
       />
       {resizeDetector}
@@ -184,14 +175,105 @@ function installSettings(
   props.settings = settings
 }
 
+function transformClassProperties<T>(object: T, properties: Array<keyof T>) {
+  for (let index = 0; index < properties.length; index++) {
+    const property = properties[index];
+    if (typeof(object[property]) === 'string' && object[property] != '' && !object[property].startsWith('psc-')) {
+      console.log((property as string )+ ' ' + object[property])
+      object[property] = formatStyleNames(object[property] as string) as never
+    } 
+  }  
+}
+
+function applyClassTransforms(settings: SwiperProps): SwiperProps {
+
+  transformClassProperties(settings, [
+    'containerModifierClass',
+    'lazyPreloaderClass',
+    'noSwipingClass',
+  ])
+
+  if (typeof(settings.navigation) == 'object') {
+    transformClassProperties(settings.navigation, [
+      'disabledClass',
+      'hiddenClass',
+      'lockClass',
+      'navigationDisabledClass'
+    ])
+  }
+
+  if (typeof(settings.pagination) == 'object') {
+    transformClassProperties(settings.pagination, [
+      'bulletActiveClass',
+      'bulletClass',
+      'clickableClass',
+      'currentClass',
+      'hiddenClass',
+      'horizontalClass',
+      'lockClass',
+      'modifierClass',
+      'paginationDisabledClass',
+      'progressbarFillClass',
+      'progressbarOppositeClass',
+      'totalClass',
+      'verticalClass',
+    ])
+  }
+
+  if (typeof(settings.scrollbar) == 'object') {
+    transformClassProperties(settings.scrollbar, [
+      'dragClass',
+      'horizontalClass',
+      'lockClass',
+      'scrollbarDisabledClass',
+      'verticalClass'
+    ])
+  }
+
+  if (typeof(settings.thumbs) == 'object') {
+    transformClassProperties(settings.thumbs, [
+      'slideThumbActiveClass',
+      'thumbsContainerClass'
+    ])
+  }
+
+  if (typeof(settings.zoom) == 'object') {
+    transformClassProperties(settings.zoom, [
+      'containerClass',
+      'zoomedSlideClass'
+    ])
+  }
+
+  if (typeof(settings.mousewheel) == 'object') {
+    transformClassProperties(settings.mousewheel, [
+      'noMousewheelClass'
+    ])
+  }
+
+  if (typeof(settings.a11y) == 'object') {
+    transformClassProperties(settings.a11y, [
+      'notificationClass'
+    ])
+  }
+
+
+  return settings
+}
+
 export function SwiperComponent(props: ComponentProps<SwiperComponentProps>) {
     const swiperRef = useRef<SwiperRef>(null);
     
-    const { props: transformedProps, settings } = extractSettings(props.props)
-    const transformedSettings = transformProps(settings, [
-      getScriptTransform({ self: props, client: window.__client })
-    ]) as SwiperProps
-    installSettings(transformedProps, transformedSettings)
+    const transformedSettings = useMemo(() => {
+      const { settings } = extractSettings(props.props)
+      const transformedSettings = transformProps(settings, [
+        getScriptTransform({ self: props, client: window.__client })
+      ]) as SwiperProps
+      applyClassTransforms(transformedSettings)
+      return transformedSettings
+    }, [props.props.settings])
+
+    installSettings(props.props, transformedSettings)
+    const transformedProps = props.props
 
     const updateOnResize = transformedProps.settings?.slidesPerView === 'auto'
     const handleResize = debounce(() => { 
@@ -205,9 +287,9 @@ export function SwiperComponent(props: ComponentProps<SwiperComponentProps>) {
     return (
       <div { ...props.emit() }>
         <Swiper
+          { ...transformedProps.settings }
           ref={swiperRef}
           modules={EnabledSwiperModules}
-          { ...transformedProps.settings }
           observer={true}
           observeSlideChildren={true}
           style={{ height: '100%', width: '100%' }}
@@ -218,7 +300,7 @@ export function SwiperComponent(props: ComponentProps<SwiperComponentProps>) {
             viewProps.viewParams.index = index
 
             return (
-              <SwiperSlide style={viewProps.slideStyle}>
+              <SwiperSlide { ...emitStyles(viewProps.slideStyle) }>
                 <EmbeddedSlideView 
                   store={props.store.view.page.parent} 
                   view={viewProps}
@@ -248,11 +330,8 @@ export class SwiperComponentMeta implements ComponentMeta {
 
   getPropsReducer(tree: PropertyTree): SwiperProps {
     return {
-      viewPath: tree.read('viewPath'),
-      viewParams: tree.read('viewParams'),
-      elementStyle: tree.read('elementStyle', {}),
-      slideStyle: tree.read('slideStyle', {}),
       instances: tree.read('instances', []),
+      instanceCommon: tree.read('instanceCommon', {}),
       settings: tree.read('settings', {}),
       style: tree.read('style', {}),
     } as never
