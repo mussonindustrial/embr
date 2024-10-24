@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import React, { useMemo, useRef } from 'react'
 import {
   ClientStore,
   ComponentMeta,
@@ -43,7 +43,7 @@ import { Virtual,
 import 'swiper/css/bundle';
 import { debounce, unset } from 'lodash';
 import { transformProps } from '@embr-js/utils';
-import { getScriptTransform } from '../util';
+import { getScriptTransform, resolve } from '../util';
 
 const COMPONENT_TYPE = 'embr.chart.swiper'
 
@@ -73,6 +73,17 @@ const EnabledSwiperModules = [
   Thumbs
 ]
 
+type SwiperComponentProps = {
+  viewPath?: string
+  viewParams?: JsObject
+  viewStyle: StyleObject
+  slideStyle: StyleObject
+  instances: EmbeddedViewProps[]
+  settings?: SwiperProps
+  style?: StyleObject
+}
+
+
 type EmbeddedViewProps = {
   viewPath: string
   viewParams: JsObject
@@ -84,31 +95,16 @@ type EmbeddedViewProps = {
   useDefaultWidth: boolean
 }
     
-type SwiperComponentProps = {
-  viewPath?: string
-  viewParams?: JsObject
-  viewStyle: StyleObject
-  slideStyle: StyleObject
-  instances: EmbeddedViewProps[]
-  settings?: SwiperProps
-  style?: StyleObject
+type EmbeddedSlideViewProps = {
+  store: ClientStore
+  mountPath: string
+  view: EmbeddedViewProps
+  listenResize?: boolean
+  onResize:() => void
 }
 
 function getChildMountPath(props: ComponentProps<PlainObject>, childIndex: any) {
   return `${props.store.viewMountPath}$${props.store.addressPathString}[${childIndex}]`
-}
-
-function resolve(inputs: Array<unknown>) {
-  let value: unknown
-  for (let i = 0; i < inputs.length; i++) {
-    value = inputs[i]
-    if (value === undefined) {
-      continue;
-    }
-    if (value !== undefined) {
-      return value as any;
-    }
-  }
 }
 
 function resolveViewProps(props: SwiperComponentProps, slideIndex: number): EmbeddedViewProps {
@@ -136,15 +132,18 @@ function resolveViewProps(props: SwiperComponentProps, slideIndex: number): Embe
   }
 }
 
-function EmbeddedSlideView(props: {store: ClientStore, mountPath: string, view: EmbeddedViewProps, listenResize?: boolean, onResize:() => void}) {
+function EmbeddedSlideView(props: EmbeddedSlideViewProps) {
   const slide = useSwiperSlide()
 
-  const resizeDetector = props.listenResize ? <ReactResizeDetector
-      onResize={props.onResize}
-      handleWidth={true}
-      handleHeight={true}
-    />
-    : <></>
+  const resizeDetector = useMemo(() => {
+    return props.listenResize ?
+      <ReactResizeDetector
+        onResize={props.onResize}
+        handleWidth={true}
+        handleHeight={true}
+      />
+    : null
+  }, [props.listenResize, props.onResize])
 
   return (
     <>        
@@ -186,7 +185,6 @@ function installSettings(
 }
 
 export function SwiperComponent(props: ComponentProps<SwiperComponentProps>) {
-
     const swiperRef = useRef<SwiperRef>(null);
 
     const { props: transformedProps, settings } = extractSettings(props.props)
@@ -197,31 +195,12 @@ export function SwiperComponent(props: ComponentProps<SwiperComponentProps>) {
 
     const updateOnResize = transformedProps.settings?.slidesPerView === 'auto'
     const handleResize = debounce(() => { 
-      console.log(`updated size`)
       swiperRef.current?.swiper.updateSlides()
     }, 200, {
       leading: true,
       trailing: false
     })
-
-    const slides = () => transformedProps.instances.map((_, index) => {
-      const mountPath = getChildMountPath(props, index)
-      const viewProps = resolveViewProps(transformedProps, index)
-      viewProps.viewParams.index = index
-
-      return (
-        <SwiperSlide style={viewProps.slideStyle}>
-          <EmbeddedSlideView 
-            store={props.store.view.page.parent} 
-            view={viewProps}
-            mountPath={mountPath}
-            listenResize={updateOnResize}
-            onResize={handleResize}
-          />
-        </SwiperSlide>
-      )
-    })
-
+    
     return (
       <div { ...props.emit() }>
         <Swiper
@@ -232,7 +211,23 @@ export function SwiperComponent(props: ComponentProps<SwiperComponentProps>) {
           observeSlideChildren={true}
           style={{ height: '100%', width: '100%' }}
         >
-        { ...slides() }
+          { transformedProps.instances.map((_, index) => {
+            const mountPath = getChildMountPath(props, index)
+            const viewProps = resolveViewProps(transformedProps, index)
+            viewProps.viewParams.index = index
+
+            return (
+              <SwiperSlide style={viewProps.slideStyle}>
+                <EmbeddedSlideView 
+                  store={props.store.view.page.parent} 
+                  view={viewProps}
+                  mountPath={mountPath}
+                  listenResize={updateOnResize}
+                  onResize={handleResize}
+                />
+              </SwiperSlide>
+            )
+          })}
         </Swiper>
       </div>
     )
