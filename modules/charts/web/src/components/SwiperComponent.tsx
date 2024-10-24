@@ -277,7 +277,6 @@ export function SwiperComponent(props: ComponentProps<SwiperComponentProps>) {
 
     const updateOnResize = transformedProps.settings?.slidesPerView === 'auto'
     const handleResize = debounce(() => { 
-      console.log('resized')
       swiperRef.current?.swiper.updateSlides()
     }, 100, {
       leading: true,
@@ -300,7 +299,7 @@ export function SwiperComponent(props: ComponentProps<SwiperComponentProps>) {
             viewProps.viewParams.index = index
 
             return (
-              <SwiperSlide { ...emitStyles(viewProps.slideStyle) }>
+              <SwiperSlide { ...emitStyles(viewProps.slideStyle) } virtualIndex={index}>
                 <EmbeddedSlideView 
                   store={props.store.view.page.parent} 
                   view={viewProps}

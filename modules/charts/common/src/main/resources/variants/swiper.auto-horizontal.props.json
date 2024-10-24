@@ -1,7 +1,17 @@
 {
   "instances": [],
-  "viewPath": "",
-  "viewParams": {},
+  "instanceCommon": {
+    "viewPath": "",
+    "viewParams": {},
+    "viewStyle": {
+      "classes": ""
+    },
+    "slideStyle": {
+      "classes": "",
+      "width": "fit-content",
+      "height": "100%"
+    }
+  },
   "settings": {
     "direction": "horizontal",
     "slidesPerView": "auto",
@@ -14,14 +24,6 @@
     "mousewheel": true,
     "navigation": true,
     "scrollbar": true
-  },
-  "viewStyle": {
-    "classes": ""
-  },
-  "slideStyle": {
-    "classes": "",
-    "width": "fit-content",
-    "height": "100%"
   },
   "style": {
     "classes": ""

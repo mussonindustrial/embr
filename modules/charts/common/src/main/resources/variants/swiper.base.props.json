@@ -1,1 +1,16 @@
-{}
+{
+  "instances": [],
+  "instanceCommon": {
+    "viewPath": "",
+    "viewParams": {},
+    "viewStyle": {
+      "classes": ""
+    },
+    "slideStyle": {
+      "classes": ""
+    }
+  },
+  "style": {
+    "classes": ""
+  }
+}
