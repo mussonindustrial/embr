@@ -1,0 +1,142 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$defs": {
+        "embedded_view_config": {
+            "type": "object",
+            "properties": {
+                "viewPath": {
+                    "type": "string",
+                    "format": "view-path",
+                    "description": "View path of this instance.",
+                    "default": ""
+                },
+                "viewParams": {
+                    "type": "object",
+                    "description": "Parameters for this instance.",
+                    "default": {},
+                    "extension": {
+                        "view-params": {
+                            "path":"../viewPath"
+                        }
+                    }
+                },
+                "viewStyle": {
+                    "$ref": "urn:ignition-schema:schemas/style-properties.schema.json",
+                    "default": {
+                        "classes": ""
+                    }
+                },
+                "useDefaultHeight": {
+                    "type": "boolean",
+                    "description": "Use default view height.",
+                    "default": false
+                },
+                "useDefaultMinHeight": {
+                    "type": "boolean",
+                    "description": "Use default minimum view height.",
+                    "default": false
+                },
+                "useDefaultMinWidth": {
+                    "type": "boolean",
+                    "description": "Use default minimum view height.",
+                    "default": false
+                },
+                "useDefaultWidth": {
+                    "type": "boolean",
+                    "description": "Use default view width.",
+                    "default": false
+                }
+            }
+        }
+    },
+    "properties": {
+        "instances": {
+            "type": "array",
+            "description": "Array of view instances.",
+            "default": [],
+            "items": {
+                "$ref": "#/$defs/embedded_view_config"
+            }
+        },
+        "instanceCommon": {
+            "$ref": "#/$defs/embedded_view_config",
+            "description": "Properties shared between all view instances.",
+            "default": {
+                "viewParams": {},
+                "viewStyle": { "classes":  "" }
+            }
+        },
+        "settings": {
+            "type": "object",
+            "properties": {
+                "direction": {
+                    "type": "string",
+                    "description": "",
+                    "default": "row",
+                    "enum": [
+                        "row",
+                        "row-reverse",
+                        "column",
+                        "column-reverse"
+                    ]
+                },
+                "wrap": {
+                    "type": "string",
+                    "description": "",
+                    "default": "nowrap",
+                    "enum": [
+                        "nowrap",
+                        "wrap",
+                        "wrap-reverse"
+                    ]
+                },
+                "justify": {
+                    "type": "string",
+                    "description": "",
+                    "default": "flex-start",
+                    "enum": [
+                        "flex-start",
+                        "flex-end",
+                        "center",
+                        "space-between",
+                        "space-around",
+                        "space-evenly"
+                    ]
+                },
+                "alignItems": {
+                    "type": "string",
+                    "description": "",
+                    "default": "stretch",
+                    "enum": [
+                        "flex-start",
+                        "flex-end",
+                        "center",
+                        "baseline",
+                        "stretch"
+                    ]
+                },
+                "alignContent": {
+                    "type": "string",
+                    "description": "",
+                    "default": "stretch",
+                    "enum": [
+                        "flex-start",
+                        "flex-end",
+                        "center",
+                        "space-between",
+                        "space-around",
+                        "stretch"
+                    ]
+                }
+            }
+        },
+        "style": {
+            "$ref": "urn:ignition-schema:schemas/style-properties.schema.json",
+            "default": {
+                "classes": ""
+            }
+        }
+    },
+    "type": "object",
+    "required": ["instances", "settings"]
+}

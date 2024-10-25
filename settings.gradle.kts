@@ -28,6 +28,11 @@ include(
     ":modules:event-stream:common",
     ":modules:event-stream:gateway",
 
+    ":modules:periscope:common",
+    ":modules:periscope:designer",
+    ":modules:periscope:gateway",
+    ":modules:periscope:web",
+
     ":modules:thermo:common",
     ":modules:thermo:client",
     ":modules:thermo:designer",

@@ -1,4 +1,4 @@
-package com.mussonindustrial.ignition.embr.charts
+package com.mussonindustrial.ignition.embr.periscope
 
 import com.inductiveautomation.ignition.common.licensing.LicenseState
 import com.inductiveautomation.ignition.designer.model.AbstractDesignerModuleHook
@@ -6,9 +6,10 @@ import com.inductiveautomation.ignition.designer.model.DesignerContext
 import com.inductiveautomation.perspective.designer.DesignerComponentRegistry
 import com.inductiveautomation.perspective.designer.api.ComponentDesignDelegateRegistry
 import com.inductiveautomation.perspective.designer.api.PerspectiveDesignerInterface
-import com.mussonindustrial.ignition.embr.charts.Meta.SHORT_MODULE_ID
-import com.mussonindustrial.ignition.embr.charts.component.asDesignerDescriptor
-import com.mussonindustrial.ignition.embr.charts.component.chart.ChartJs
+import com.mussonindustrial.ignition.embr.periscope.Meta.SHORT_MODULE_ID
+import com.mussonindustrial.ignition.embr.periscope.component.asDesignerDescriptor
+import com.mussonindustrial.ignition.embr.periscope.component.embedding.AdvancedFlexRepeater
+import com.mussonindustrial.ignition.embr.periscope.component.embedding.Swiper
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -22,7 +23,7 @@ class DesignerHook : AbstractDesignerModuleHook() {
     private lateinit var delegateRegistry: ComponentDesignDelegateRegistry
 
     override fun startup(context: DesignerContext, activationState: LicenseState) {
-        logger.info("Embr-Charts module started.")
+        logger.info("Embr-Periscope module started.")
         this.context = context
 
         val pdi: PerspectiveDesignerInterface = PerspectiveDesignerInterface.get(context)
@@ -30,11 +31,13 @@ class DesignerHook : AbstractDesignerModuleHook() {
         componentRegistry = pdi.designerComponentRegistry
         delegateRegistry = pdi.componentDesignDelegateRegistry
 
-        componentRegistry.registerComponent(ChartJs.DESCRIPTOR.asDesignerDescriptor())
+        componentRegistry.registerComponent(AdvancedFlexRepeater.DESCRIPTOR.asDesignerDescriptor())
+        componentRegistry.registerComponent(Swiper.DESCRIPTOR.asDesignerDescriptor())
     }
 
     override fun shutdown() {
-        logger.info("Shutting down Embr-Charts module and removing registered components.")
-        componentRegistry.removeComponent(ChartJs.COMPONENT_ID)
+        logger.info("Shutting down Embr-Periscope module and removing registered components.")
+        componentRegistry.removeComponent(AdvancedFlexRepeater.COMPONENT_ID)
+        componentRegistry.removeComponent(Swiper.COMPONENT_ID)
     }
 }

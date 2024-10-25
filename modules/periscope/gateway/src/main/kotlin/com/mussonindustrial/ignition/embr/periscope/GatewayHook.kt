@@ -1,4 +1,4 @@
-package com.mussonindustrial.ignition.embr.charts
+package com.mussonindustrial.ignition.embr.periscope
 
 import com.inductiveautomation.ignition.common.licensing.LicenseState
 import com.inductiveautomation.ignition.gateway.model.AbstractGatewayModuleHook
@@ -6,8 +6,9 @@ import com.inductiveautomation.ignition.gateway.model.GatewayContext
 import com.inductiveautomation.perspective.common.api.ComponentRegistry
 import com.inductiveautomation.perspective.gateway.api.ComponentModelDelegateRegistry
 import com.inductiveautomation.perspective.gateway.api.PerspectiveContext
-import com.mussonindustrial.ignition.embr.charts.Meta.SHORT_MODULE_ID
-import com.mussonindustrial.ignition.embr.charts.component.chart.ChartJs
+import com.mussonindustrial.ignition.embr.periscope.Meta.SHORT_MODULE_ID
+import com.mussonindustrial.ignition.embr.periscope.component.embedding.AdvancedFlexRepeater
+import com.mussonindustrial.ignition.embr.periscope.component.embedding.Swiper
 import java.util.*
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -26,19 +27,21 @@ class GatewayHook : AbstractGatewayModuleHook() {
     }
 
     override fun startup(activationState: LicenseState) {
-        logger.info("Embr-Charts module started.")
+        logger.info("Embr-Periscope module started.")
 
         perspectiveContext = PerspectiveContext.get(this.context)
         componentRegistry = perspectiveContext.componentRegistry
         modelDelegateRegistry = perspectiveContext.componentModelDelegateRegistry
 
         logger.info("Registering components...")
-        componentRegistry.registerComponent(ChartJs.DESCRIPTOR)
+        componentRegistry.registerComponent(AdvancedFlexRepeater.DESCRIPTOR)
+        componentRegistry.registerComponent(Swiper.DESCRIPTOR)
     }
 
     override fun shutdown() {
-        logger.info("Shutting down Embr-Charts module and removing registered components.")
-        componentRegistry.removeComponent(ChartJs.COMPONENT_ID)
+        logger.info("Shutting down Embr-Periscope module and removing registered components.")
+        componentRegistry.removeComponent(AdvancedFlexRepeater.COMPONENT_ID)
+        componentRegistry.removeComponent(Swiper.COMPONENT_ID)
     }
 
     override fun getMountedResourceFolder(): Optional<String> {
