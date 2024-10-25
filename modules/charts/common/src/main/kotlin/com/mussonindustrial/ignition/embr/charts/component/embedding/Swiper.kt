@@ -10,7 +10,7 @@ import com.mussonindustrial.ignition.embr.charts.component.addPaletteEntry
 
 class Swiper {
     companion object {
-        var COMPONENT_ID: String = "embr.chart.swiper"
+        var COMPONENT_ID: String = "embr.embedding.swiper"
         var SCHEMA: JsonSchema =
             JsonSchema.parse(Components::class.java.getResourceAsStream("/swiper.props.json"))
 

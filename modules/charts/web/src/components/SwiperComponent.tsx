@@ -14,6 +14,7 @@ import {
   View,
 } from '@inductiveautomation/perspective-client'
 
+import 'swiper/css/bundle';
 import { Swiper, SwiperSlide, SwiperProps, SwiperRef, useSwiperSlide } from 'swiper/react'
 import { Virtual,
   Keyboard,
@@ -40,12 +41,11 @@ import { Virtual,
   Thumbs 
 } from 'swiper/modules'
 
-import 'swiper/css/bundle';
 import { debounce, unset } from 'lodash';
 import { transformProps } from '@embr-js/utils';
 import { emitStyles, formatStyleNames, getScriptTransform, mergeStyles, resolve } from '../util';
 
-const COMPONENT_TYPE = 'embr.chart.swiper'
+const COMPONENT_TYPE = 'embr.embedding.swiper'
 
 const EnabledSwiperModules = [
   Virtual,
