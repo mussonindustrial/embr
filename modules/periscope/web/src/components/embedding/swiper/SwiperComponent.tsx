@@ -4,11 +4,11 @@ import {
   ComponentMeta,
   ComponentProps,
   JsObject,
+  OutputListener,
   PageStore,
   PComponent,
   PlainObject,
   PropertyTree,
-  ReactResizeDetector,
   SizeObject,
   StyleObject,
   View,
@@ -81,6 +81,7 @@ type SwiperComponentProps = {
 }
 
 type EmbeddedViewProps = {
+  key: React.Key
   viewPath: string
   viewParams: JsObject
   viewStyle: StyleObject
@@ -96,22 +97,25 @@ type EmbeddedSlideViewProps = {
   mountPath: string
   view: EmbeddedViewProps
   listenResize?: boolean
-  onResize:() => void
+  onResize?: () => void
+  key: React.Key
+  outputListener?: OutputListener
 }
 
 function getChildMountPath(props: ComponentProps<PlainObject>, childIndex: any) {
   return `${props.store.viewMountPath}$${props.store.addressPathString}[${childIndex}]`
 }
 
-function resolveViewProps(props: SwiperComponentProps, slideIndex: number): EmbeddedViewProps {
-  const view = props.instances[slideIndex]
+function resolveViewProps(props: SwiperComponentProps, index: number): EmbeddedViewProps {
+  const view = props.instances[index]
 
   return {
+    key: view.key && view.key !== '' ? view.key : index,
       viewPath: resolve([view.viewPath, props.instanceCommon.viewPath]),
       viewParams: {
         ...props.instanceCommon.viewParams,
         ...view.viewParams,
-        index: slideIndex
+        index
       },
       viewStyle: mergeStyles([props.instanceCommon.viewStyle, view.viewStyle]),
       slideStyle: mergeStyles([props.instanceCommon.slideStyle, view.slideStyle]),
@@ -122,7 +126,7 @@ function resolveViewProps(props: SwiperComponentProps, slideIndex: number): Embe
   }
 }
 
-const EmbeddedSlideView = memo(({ store, mountPath, view, listenResize, onResize }: EmbeddedSlideViewProps) => {
+const EmbeddedSlideView = memo(({ store, mountPath, view, onResize, outputListener }: EmbeddedSlideViewProps) => {
   const slide = useSwiperSlide()
 
   return (
@@ -140,6 +144,8 @@ const EmbeddedSlideView = memo(({ store, mountPath, view, listenResize, onResize
           ...view.viewParams,
           swiperSlide: slide,
         }}
+        outputListener={outputListener}
+        onViewSizeChange={() => onResize?.()}
         rootStyle={{
           width: view.useDefaultWidth ? undefined : '100%',
           height: view.useDefaultHeight ? undefined : '100%',
@@ -147,7 +153,6 @@ const EmbeddedSlideView = memo(({ store, mountPath, view, listenResize, onResize
           classes: formatStyleNames(view.viewStyle.classes)
         }}
       />
-      {listenResize && <ReactResizeDetector onResize={onResize} handleWidth handleHeight />}
     </>
   )
 })
@@ -191,7 +196,8 @@ export function SwiperComponent(props: ComponentProps<SwiperComponentProps>) {
       return applyClassTransforms(transformed)
     }, [props.props.settings])
 
-    const handleResize = debounce(() => { 
+    const onResize = debounce(() => { 
+      console.log('updatingSlides')
       swiperRef.current?.swiper.updateSlides()
     }, 100, {
       leading: true,
@@ -211,16 +217,20 @@ export function SwiperComponent(props: ComponentProps<SwiperComponentProps>) {
           { props.props.instances.map((_, index) => {
             const mountPath = getChildMountPath(props, index)
             const viewProps = resolveViewProps(props.props, index)
-            viewProps.viewParams.index = index
+            const outputListener = (outputName: string, outputValue: any): void => {
+              props.store.props.write(`instances[${index}].viewParams.${outputName}`, outputValue)
+            }
 
             return (
-              <SwiperSlide { ...emitStyles(viewProps.slideStyle) } virtualIndex={index} key={index}>
+              <SwiperSlide { ...emitStyles(viewProps.slideStyle) } virtualIndex={index} key={viewProps.key}>
                 <EmbeddedSlideView 
                   store={props.store.view.page.parent} 
                   view={viewProps}
                   mountPath={mountPath}
                   listenResize={transformedSettings.slidesPerView === 'auto'}
-                  onResize={handleResize}
+                  onResize={onResize}
+                  key={viewProps.key}
+                  outputListener={outputListener}
                 />
               </SwiperSlide>
             )

@@ -4,6 +4,7 @@ import {
   ComponentMeta,
   ComponentProps,
   JsObject,
+  OutputListener,
   PageStore,
   PComponent,
   PlainObject,
@@ -33,6 +34,7 @@ type AdvancedFlexRepeaterProps = {
 }
 
 type EmbeddedViewProps = {
+  key: string
   viewPath: string
   viewParams: JsObject
   viewStyle: StyleObject
@@ -46,21 +48,23 @@ type EmbeddedSlideViewProps = {
   store: ClientStore
   mountPath: string
   view: EmbeddedViewProps
+  outputListener?: OutputListener
 }
 
-function getChildMountPath(props: ComponentProps<PlainObject>, childIndex: any) {
-  return `${props.store.viewMountPath}$${props.store.addressPathString}[${childIndex}]`
+function getChildMountPath(props: ComponentProps<PlainObject>, key: string) {
+  return `${props.store.viewMountPath}$${props.store.addressPathString}.${key}`
 }
 
 function resolveViewProps(props: AdvancedFlexRepeaterProps, index: number): EmbeddedViewProps {
   const view = props.instances[index]
 
   return {
+      key: view.key && view.key !== '' ? view.key : index.toString(),
       viewPath: resolve([view.viewPath, props.instanceCommon.viewPath]),
       viewParams: {
         ...props.instanceCommon.viewParams,
         ...view.viewParams,
-        index: index
+        index
       },
       viewStyle: mergeStyles([props.instanceCommon.viewStyle, view.viewStyle]),
       useDefaultHeight: resolve([view.useDefaultHeight, props.instanceCommon.useDefaultHeight]),
@@ -70,7 +74,7 @@ function resolveViewProps(props: AdvancedFlexRepeaterProps, index: number): Embe
   }
 }
 
-const EmbeddedView = memo(({ store, mountPath, view }: EmbeddedSlideViewProps) => {
+const EmbeddedView = memo(({ store, mountPath, view, outputListener }: EmbeddedSlideViewProps) => {
   return (
     <>        
       <View
@@ -83,6 +87,7 @@ const EmbeddedView = memo(({ store, mountPath, view }: EmbeddedSlideViewProps) =
         useDefaultMinWidth={view.useDefaultMinWidth}
         useDefaultWidth={view.useDefaultWidth}
         params={view.viewParams}
+        outputListener={outputListener}
         rootStyle={{
           ...view.viewStyle,
           classes: formatStyleNames(view.viewStyle.classes)
@@ -93,8 +98,6 @@ const EmbeddedView = memo(({ store, mountPath, view }: EmbeddedSlideViewProps) =
 })
 
 export function AdvancedFlexRepeaterComponent(props: ComponentProps<AdvancedFlexRepeaterProps>) {    
-
-    props.store.view.custom
 
     const containerProps = props.emit()
     containerProps.style = {
@@ -109,19 +112,23 @@ export function AdvancedFlexRepeaterComponent(props: ComponentProps<AdvancedFlex
 
     return (
       <div { ...containerProps } >
-       { props.props.instances.map((_, index) => {
-            const mountPath = getChildMountPath(props, index)
-            const viewProps = resolveViewProps(props.props, index)
-            viewProps.viewParams.index = index
+        { props.props.instances.map((_, index) => {
+          const viewProps = resolveViewProps(props.props, index)
+          const mountPath = getChildMountPath(props, viewProps.key)
+          const outputListener = (outputName: string, outputValue: any): void => {
+            props.store.props.write(`instances[${index}].viewParams.${outputName}`, outputValue)
+          }
 
-            return (
-                <EmbeddedView 
-                  store={props.store.view.page.parent} 
-                  view={viewProps}
-                  mountPath={mountPath}
-                />
-            )
-          })}
+          return (
+              <EmbeddedView 
+                store={props.store.view.page.parent} 
+                view={viewProps}
+                mountPath={mountPath}
+                key={viewProps.key}
+                outputListener={outputListener}
+              />
+          )
+        })}
       </div>
     )
 }
