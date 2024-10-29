@@ -1,6 +1,11 @@
 # Embr Periscope Module [<img src="https://cdn.mussonindustrial.com/files/public/images/emblem.svg" alt="Musson Industrial Logo" width="90" height="40" align="right">][embr]
 
-An Ignition module that adds a collection of enhanced Perspective charting components.
+<div style="border-left: 4px solid #4CAF50; padding: 10px; font-family: Arial, sans-serif;">
+<h3 style="color: #red; margin-top: 0;">Periscope</h3>
+  <p><em>A periscope provides a new perspective</em> by allowing users to see over, around, or through obstacles, offering a unique view otherwise obstructed.</p>
+</div>
+
+An Ignition module that includes design extensions and enhancements for Perspective.
 
 ## Getting Started
 1. Download the [latest version] from [releases].
@@ -10,10 +15,10 @@ An Ignition module that adds a collection of enhanced Perspective charting compo
 - `#TODO` [Module documentation][documentation]
 
 ### Component Directory
-| Name                                               | Category  | Description                                                                                                                                                                                                                                                                                       |
-|----------------------------------------------------|-----------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| [Chart.js Component](./docs/components/chartjs.md) | Charting  | Chart.js renders chart elements on an HTML5 canvas unlike other D3.js-based charting libraries that render as SVG. Canvas rendering makes Chart.js very performant, especially for large datasets and complex visualizations that would otherwise require thousands of SVG nodes in the DOM tree. | 
-| [Swiper Component](./docs/components/swiper.md)    | Embedding | Swiper is the most modern free and open source mobile touch slider with hardware accelerated transitions and amazing native behavior.                                                                                                                                                             |
+| Name                                                            | Category  | Description                                                                                                                           |
+|-----------------------------------------------------------------|-----------|---------------------------------------------------------------------------------------------------------------------------------------|
+| [Flex Repeater + Component](./docs/components/flex-repeater.md) | Embedding | An enhanced Flex Repeater with support for unique view paths, common view parameters/styling, and load ahead optimizations.           | 
+| [Swiper Component](./docs/components/swiper.md)                 | Embedding | Swiper is the most modern free and open source mobile touch slider with hardware accelerated transitions and amazing native behavior. |
 
 ---
 ## Changelog

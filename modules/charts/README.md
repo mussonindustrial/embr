@@ -12,8 +12,7 @@ An Ignition module that adds a collection of enhanced Perspective charting compo
 ### Component Directory
 | Name                                               | Category  | Description                                                                                                                                                                                                                                                                                       |
 |----------------------------------------------------|-----------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| [Chart.js Component](./docs/components/chartjs.md) | Charting  | Chart.js renders chart elements on an HTML5 canvas unlike other D3.js-based charting libraries that render as SVG. Canvas rendering makes Chart.js very performant, especially for large datasets and complex visualizations that would otherwise require thousands of SVG nodes in the DOM tree. | 
-| [Swiper Component](./docs/components/swiper.md)    | Embedding | Swiper is the most modern free and open source mobile touch slider with hardware accelerated transitions and amazing native behavior.                                                                                                                                                             |
+| [Chart.js Component](./docs/components/chartjs.md) | Charting  | Chart.js renders chart elements on an HTML5 canvas unlike other D3.js-based charting libraries that render as SVG. Canvas rendering makes Chart.js very performant, especially for large datasets and complex visualizations that would otherwise require thousands of SVG nodes in the DOM tree. |  |
 
 ---
 ## Changelog
