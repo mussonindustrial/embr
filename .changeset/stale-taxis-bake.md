@@ -1,5 +1,5 @@
 ---
-"@embr-modules/charts": minor
+"@embr-modules/periscope": minor
 ---
 
-(New Component) Add Swiper.js component.
+Initial Release (Flex Repeater + and Swiper components)
