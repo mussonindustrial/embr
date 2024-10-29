@@ -43,7 +43,7 @@ import { Virtual,
 
 import { debounce } from 'lodash';
 import { transformProps } from '@embr-js/utils';
-import { emitStyles, formatStyleNames, getScriptTransform, mergeStyles, resolve } from '../../../util';
+import { emitStyles, formatStyleNames, getScriptTransform, mergeStyles, resolve } from '../../util';
 
 const COMPONENT_TYPE = 'embr.periscope.embedding.swiper'
 

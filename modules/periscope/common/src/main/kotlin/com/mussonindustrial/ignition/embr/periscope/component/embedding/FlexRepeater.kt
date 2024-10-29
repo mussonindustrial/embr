@@ -8,15 +8,15 @@ import com.mussonindustrial.ignition.embr.periscope.Meta.MODULE_ID
 import com.mussonindustrial.ignition.embr.periscope.component.PaletteEntry
 import com.mussonindustrial.ignition.embr.periscope.component.addPaletteEntry
 
-class AdvancedFlexRepeater {
+class FlexRepeater {
     companion object {
-        var COMPONENT_ID: String = "embr.periscope.embedding.advanced-flex-repeater"
+        var COMPONENT_ID: String = "embr.periscope.embedding.flex-repeater"
         var SCHEMA: JsonSchema =
             JsonSchema.parse(
                 Components::class
                     .java
                     .getResourceAsStream(
-                        "/schemas/components/embr.periscope.embedding.advanced-flex-repeater/props.json"
+                        "/schemas/components/embr.periscope.embedding.flex-repeater/props.json"
                     )
             )
 
@@ -54,7 +54,7 @@ class AdvancedFlexRepeater {
                 .addPaletteEntry(VARIANT_BASE)
                 .addPaletteEntry(VARIANT_ROW)
                 .addPaletteEntry(VARIANT_COLUMN)
-                .setDefaultMetaName("AdvancedFlexRepeater")
+                .setDefaultMetaName("FlexRepeaterPlus")
                 .setResources(Components.BROWSER_RESOURCES)
                 .build()
     }

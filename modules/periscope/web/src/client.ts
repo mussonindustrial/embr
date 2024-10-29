@@ -2,17 +2,17 @@ import { ComponentRegistry } from '@inductiveautomation/perspective-client'
 import {
     SwiperComponent,
     SwiperComponentMeta,
-    AdvancedFlexRepeaterComponent,
-    AdvancedFlexRepeaterComponentMeta
+    FlexRepeaterComponent,
+    FlexRepeaterComponentMeta
 } from './components'
 
 export { 
-    AdvancedFlexRepeaterComponent,
+    FlexRepeaterComponent,
     SwiperComponent,
 }
 
 const components = [
-    new AdvancedFlexRepeaterComponentMeta(),
+    new FlexRepeaterComponentMeta(),
     new SwiperComponentMeta(),
 ]
 

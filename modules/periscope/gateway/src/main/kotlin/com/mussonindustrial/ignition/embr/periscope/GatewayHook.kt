@@ -7,8 +7,8 @@ import com.inductiveautomation.perspective.common.api.ComponentRegistry
 import com.inductiveautomation.perspective.gateway.api.ComponentModelDelegateRegistry
 import com.inductiveautomation.perspective.gateway.api.PerspectiveContext
 import com.mussonindustrial.ignition.embr.periscope.Meta.SHORT_MODULE_ID
-import com.mussonindustrial.ignition.embr.periscope.component.embedding.AdvancedFlexRepeater
-import com.mussonindustrial.ignition.embr.periscope.component.embedding.AdvancedFlexRepeaterModelDelegate
+import com.mussonindustrial.ignition.embr.periscope.component.embedding.FlexRepeater
+import com.mussonindustrial.ignition.embr.periscope.component.embedding.FlexRepeaterModelDelegate
 import com.mussonindustrial.ignition.embr.periscope.component.embedding.Swiper
 import java.util.*
 import org.slf4j.Logger
@@ -35,18 +35,16 @@ class GatewayHook : AbstractGatewayModuleHook() {
         modelDelegateRegistry = perspectiveContext.componentModelDelegateRegistry
 
         logger.info("Registering components...")
-        componentRegistry.registerComponent(AdvancedFlexRepeater.DESCRIPTOR)
-        modelDelegateRegistry.register(AdvancedFlexRepeater.COMPONENT_ID) {
-            AdvancedFlexRepeaterModelDelegate(it)
-        }
+        componentRegistry.registerComponent(FlexRepeater.DESCRIPTOR)
+        modelDelegateRegistry.register(FlexRepeater.COMPONENT_ID) { FlexRepeaterModelDelegate(it) }
 
         componentRegistry.registerComponent(Swiper.DESCRIPTOR)
     }
 
     override fun shutdown() {
         logger.info("Shutting down Embr-Periscope module and removing registered components.")
-        componentRegistry.removeComponent(AdvancedFlexRepeater.COMPONENT_ID)
-        modelDelegateRegistry.remove(AdvancedFlexRepeater.COMPONENT_ID)
+        componentRegistry.removeComponent(FlexRepeater.COMPONENT_ID)
+        modelDelegateRegistry.remove(FlexRepeater.COMPONENT_ID)
 
         componentRegistry.removeComponent(Swiper.COMPONENT_ID)
     }

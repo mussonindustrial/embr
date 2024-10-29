@@ -23,7 +23,7 @@ import java.lang.reflect.Method
 import java.util.*
 import org.python.core.PyObject
 
-class AdvancedFlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(component) {
+class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(component) {
 
     private val logger = this.getLogger()
     private val pyArgsOverloads = PyArgOverloads()

@@ -1,2 +1,2 @@
-export * from './advanced-flex-repeater'
+export * from './flex-repeater'
 export * from './swiper'

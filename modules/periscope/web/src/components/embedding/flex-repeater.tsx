@@ -16,11 +16,11 @@ import {
   View,
 } from '@inductiveautomation/perspective-client'
 
-import {  formatStyleNames, mergeStyles, resolve } from '../../../util';
+import {  formatStyleNames, mergeStyles, resolve } from '../../util';
 
-const COMPONENT_TYPE = 'embr.periscope.embedding.advanced-flex-repeater'
+const COMPONENT_TYPE = 'embr.periscope.embedding.flex-repeater'
 
-type AdvancedFlexRepeaterSettings = {
+type FlexRepeaterSettings = {
   direction: 'row' | 'row-reverse' | 'column' | 'column-reverse'
   wrap: 'nowrap' | 'wrap' | 'wrap-reverse'
   justify: 'flex-start' | 'flex-end' | 'center' | 'space-between' | 'space-around' | 'space-evenly'
@@ -35,10 +35,10 @@ type FlexPositionProps = {
   shrink: number
 }
 
-type AdvancedFlexRepeaterProps = {
+type FlexRepeaterProps = {
   instances: EmbeddedViewProps[]
   instanceCommon: EmbeddedViewProps
-  settings?: AdvancedFlexRepeaterSettings
+  settings?: FlexRepeaterSettings
   style?: StyleObject
 }
 
@@ -74,7 +74,7 @@ function getChildMountPath(props: ComponentProps<PlainObject>, key: string) {
   return `${props.store.viewMountPath}$${props.store.addressPathString}.${key}`
 }
 
-function resolveViewProps(props: AdvancedFlexRepeaterProps, index: number): EmbeddedViewProps {
+function resolveViewProps(props: FlexRepeaterProps, index: number): EmbeddedViewProps {
   const view = props.instances[index]
 
   return {
@@ -120,9 +120,9 @@ const EmbeddedView = memo(({ store, mountPath, view, outputListener }: EmbeddedS
   )
 })
 
-export function AdvancedFlexRepeaterComponent(props: ComponentProps<AdvancedFlexRepeaterProps>) {    
+export function FlexRepeaterComponent(props: ComponentProps<FlexRepeaterProps>) {    
 
-    const containerProps = props.emit()
+    const containerProps = props.emit({ classes: ['view-parent'] })
     containerProps.style = {
       ...containerProps.style,
       display: 'flex',
@@ -156,7 +156,7 @@ export function AdvancedFlexRepeaterComponent(props: ComponentProps<AdvancedFlex
     )
 }
 
-export class AdvancedFlexRepeaterGatewayDelegate extends ComponentStoreDelegate {
+export class FlexRepeaterGatewayDelegate extends ComponentStoreDelegate {
 
   handleEvent(eventName: string, eventObject: JsObject): void {
     console.log(`event: ${eventName} = ${eventObject}`)
@@ -168,13 +168,13 @@ export class AdvancedFlexRepeaterGatewayDelegate extends ComponentStoreDelegate 
   
 }
 
-export class AdvancedFlexRepeaterComponentMeta implements ComponentMeta {
+export class FlexRepeaterComponentMeta implements ComponentMeta {
   getComponentType(): string {
     return COMPONENT_TYPE
   }
 
   createDelegate(component: AbstractUIElementStore): ComponentStoreDelegate | undefined {
-      return new AdvancedFlexRepeaterGatewayDelegate(component)
+      return new FlexRepeaterGatewayDelegate(component)
   }
 
   getDefaultSize(): SizeObject {
@@ -184,7 +184,7 @@ export class AdvancedFlexRepeaterComponentMeta implements ComponentMeta {
     }
   }
 
-  getPropsReducer(tree: PropertyTree): AdvancedFlexRepeaterProps {
+  getPropsReducer(tree: PropertyTree): FlexRepeaterProps {
     return {
       instances: tree.read('instances', []),
       instanceCommon: tree.read('instanceCommon', {}),
@@ -194,6 +194,6 @@ export class AdvancedFlexRepeaterComponentMeta implements ComponentMeta {
   }
 
   getViewComponent(): PComponent {
-    return AdvancedFlexRepeaterComponent as PComponent
+    return FlexRepeaterComponent as PComponent
   }
 }
