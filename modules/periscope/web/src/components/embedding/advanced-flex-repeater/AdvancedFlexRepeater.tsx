@@ -1,8 +1,10 @@
 import React, { memo } from 'react'
 import {
+  AbstractUIElementStore,
   ClientStore,
   ComponentMeta,
   ComponentProps,
+  ComponentStoreDelegate,
   JsObject,
   OutputListener,
   PageStore,
@@ -63,8 +65,7 @@ function resolveViewProps(props: AdvancedFlexRepeaterProps, index: number): Embe
       viewPath: resolve([view.viewPath, props.instanceCommon.viewPath]),
       viewParams: {
         ...props.instanceCommon.viewParams,
-        ...view.viewParams,
-        index
+        ...view.viewParams
       },
       viewStyle: mergeStyles([props.instanceCommon.viewStyle, view.viewStyle]),
       useDefaultHeight: resolve([view.useDefaultHeight, props.instanceCommon.useDefaultHeight]),
@@ -133,9 +134,25 @@ export function AdvancedFlexRepeaterComponent(props: ComponentProps<AdvancedFlex
     )
 }
 
+export class AdvancedFlexRepeaterGatewayDelegate extends ComponentStoreDelegate {
+
+  handleEvent(eventName: string, eventObject: JsObject): void {
+    console.log(`event: ${eventName} = ${eventObject}`)
+  }
+
+  constructor(componentStore: AbstractUIElementStore) {
+      super(componentStore);
+  }
+  
+}
+
 export class AdvancedFlexRepeaterComponentMeta implements ComponentMeta {
   getComponentType(): string {
     return COMPONENT_TYPE
+  }
+
+  createDelegate(component: AbstractUIElementStore): ComponentStoreDelegate | undefined {
+      return new AdvancedFlexRepeaterGatewayDelegate(component)
   }
 
   getDefaultSize(): SizeObject {

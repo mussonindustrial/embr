@@ -8,6 +8,7 @@ import com.inductiveautomation.perspective.gateway.api.ComponentModelDelegateReg
 import com.inductiveautomation.perspective.gateway.api.PerspectiveContext
 import com.mussonindustrial.ignition.embr.periscope.Meta.SHORT_MODULE_ID
 import com.mussonindustrial.ignition.embr.periscope.component.embedding.AdvancedFlexRepeater
+import com.mussonindustrial.ignition.embr.periscope.component.embedding.AdvancedFlexRepeaterModelDelegate
 import com.mussonindustrial.ignition.embr.periscope.component.embedding.Swiper
 import java.util.*
 import org.slf4j.Logger
@@ -35,12 +36,18 @@ class GatewayHook : AbstractGatewayModuleHook() {
 
         logger.info("Registering components...")
         componentRegistry.registerComponent(AdvancedFlexRepeater.DESCRIPTOR)
+        modelDelegateRegistry.register(AdvancedFlexRepeater.COMPONENT_ID) {
+            AdvancedFlexRepeaterModelDelegate(it)
+        }
+
         componentRegistry.registerComponent(Swiper.DESCRIPTOR)
     }
 
     override fun shutdown() {
         logger.info("Shutting down Embr-Periscope module and removing registered components.")
         componentRegistry.removeComponent(AdvancedFlexRepeater.COMPONENT_ID)
+        modelDelegateRegistry.remove(AdvancedFlexRepeater.COMPONENT_ID)
+
         componentRegistry.removeComponent(Swiper.COMPONENT_ID)
     }
 
