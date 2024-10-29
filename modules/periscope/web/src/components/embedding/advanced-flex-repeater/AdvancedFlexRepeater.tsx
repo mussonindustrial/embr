@@ -28,6 +28,13 @@ type AdvancedFlexRepeaterSettings = {
   alignContent: 'flex-start' | 'flex-end'| 'center' | 'space-between' | 'space-around' | 'stretch'
 }
 
+type FlexPositionProps = {
+  align: string
+  basis: string | number
+  grow: number
+  shrink: number
+}
+
 type AdvancedFlexRepeaterProps = {
   instances: EmbeddedViewProps[]
   instanceCommon: EmbeddedViewProps
@@ -40,6 +47,7 @@ type EmbeddedViewProps = {
   viewPath: string
   viewParams: JsObject
   viewStyle: StyleObject
+  viewPosition: FlexPositionProps
   useDefaultHeight: boolean
   useDefaultMinHeight: boolean
   useDefaultMinWidth: boolean
@@ -51,6 +59,15 @@ type EmbeddedSlideViewProps = {
   mountPath: string
   view: EmbeddedViewProps
   outputListener?: OutputListener
+}
+
+function emitFlexPosition(props: FlexPositionProps): React.CSSProperties {
+  return {
+    alignSelf: props.align,
+    flexBasis: props.basis,
+    flexGrow: props.grow,
+    flexShrink: props.shrink
+  }
 }
 
 function getChildMountPath(props: ComponentProps<PlainObject>, key: string) {
@@ -68,6 +85,10 @@ function resolveViewProps(props: AdvancedFlexRepeaterProps, index: number): Embe
         ...view.viewParams
       },
       viewStyle: mergeStyles([props.instanceCommon.viewStyle, view.viewStyle]),
+      viewPosition: {
+        ...props.instanceCommon.viewPosition,
+        ...view.viewPosition
+      },
       useDefaultHeight: resolve([view.useDefaultHeight, props.instanceCommon.useDefaultHeight]),
       useDefaultMinHeight: resolve([view.useDefaultMinHeight, props.instanceCommon.useDefaultMinHeight]),
       useDefaultMinWidth: resolve([view.useDefaultMinWidth, props.instanceCommon.useDefaultMinWidth]),
@@ -90,6 +111,7 @@ const EmbeddedView = memo(({ store, mountPath, view, outputListener }: EmbeddedS
         params={view.viewParams}
         outputListener={outputListener}
         rootStyle={{
+          ...emitFlexPosition(view.viewPosition),
           ...view.viewStyle,
           classes: formatStyleNames(view.viewStyle.classes)
         }}

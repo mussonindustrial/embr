@@ -7,8 +7,7 @@
                 "viewPath": {
                     "type": "string",
                     "format": "view-path",
-                    "description": "View path of this instance.",
-                    "default": ""
+                    "description": "View path of this instance."
                 },
                 "viewParams": {
                     "type": "object",
@@ -26,25 +25,55 @@
                         "classes": ""
                     }
                 },
+                "viewPosition": {
+                    "type": "object",
+                    "description": "Instance position properties.",
+                    "default": {},
+                    "properties": {
+                        "grow": {
+                            "type": "number",
+                            "description": "Flex grow property."
+                        },
+                        "shrink": {
+                            "type": "number",
+                            "description": "Flex shrink property."
+                        },
+                        "basis": {
+                            "type": [
+                                "number",
+                                "string"
+                            ],
+                            "description": "Flex basis property."
+                        },
+                        "align": {
+                            "type": "string",
+                            "description": "Align self property.",
+                            "enum": [
+                                "auto",
+                                "flex-start",
+                                "flex-end",
+                                "center",
+                                "baseline",
+                                "stretch"
+                            ]
+                        }
+                    }
+                },
                 "useDefaultHeight": {
                     "type": "boolean",
-                    "description": "Use default view height.",
-                    "default": false
+                    "description": "Use default view height."
                 },
                 "useDefaultMinHeight": {
                     "type": "boolean",
-                    "description": "Use default minimum view height.",
-                    "default": false
+                    "description": "Use default minimum view height."
                 },
                 "useDefaultMinWidth": {
                     "type": "boolean",
-                    "description": "Use default minimum view height.",
-                    "default": false
+                    "description": "Use default minimum view height."
                 },
                 "useDefaultWidth": {
                     "type": "boolean",
-                    "description": "Use default view width.",
-                    "default": false
+                    "description": "Use default view width."
                 }
             }
         }
@@ -63,7 +92,12 @@
             "description": "Properties shared between all view instances.",
             "default": {
                 "viewParams": {},
-                "viewStyle": { "classes":  "" }
+                "viewStyle": { "classes":  "" },
+                "viewPosition": {
+                    "grow": 0,
+                    "shrink": 0,
+                    "basis": "auto"
+                }
             }
         },
         "settings": {
@@ -71,7 +105,7 @@
             "properties": {
                 "direction": {
                     "type": "string",
-                    "description": "",
+                    "description": "Direction of layout of repeated views.",
                     "default": "row",
                     "enum": [
                         "row",
@@ -82,7 +116,7 @@
                 },
                 "wrap": {
                     "type": "string",
-                    "description": "",
+                    "description": "Whether the container should allow repeated views to wrap to next line if space has run out.",
                     "default": "nowrap",
                     "enum": [
                         "nowrap",
@@ -92,7 +126,7 @@
                 },
                 "justify": {
                     "type": "string",
-                    "description": "",
+                    "description": "Adjust placement of repeated views along the main axis when there is extra space, which may be used to fill areas before, after, or in-between.",
                     "default": "flex-start",
                     "enum": [
                         "flex-start",
@@ -105,7 +139,7 @@
                 },
                 "alignItems": {
                     "type": "string",
-                    "description": "",
+                    "description": "Adjusts placement of repeated views along the cross axis when there is extra space.",
                     "default": "stretch",
                     "enum": [
                         "flex-start",
@@ -117,7 +151,7 @@
                 },
                 "alignContent": {
                     "type": "string",
-                    "description": "",
+                    "description": "Adjust alignment of repeated views when there is free space in the cross axis.",
                     "default": "stretch",
                     "enum": [
                         "flex-start",

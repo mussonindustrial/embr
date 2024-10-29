@@ -28,6 +28,22 @@ class AdvancedFlexRepeater {
                 "Creates multiple instances of views for display in another view."
             )
 
+        private var VARIANT_ROW =
+            PaletteEntry(
+                COMPONENT_ID,
+                "row",
+                "Row",
+                "Creates multiple instances of views for display in another view."
+            )
+
+        private var VARIANT_COLUMN =
+            PaletteEntry(
+                COMPONENT_ID,
+                "column",
+                "Column",
+                "Creates multiple instances of views for display in another view."
+            )
+
         var DESCRIPTOR: ComponentDescriptor =
             ComponentDescriptorImpl.ComponentBuilder.newBuilder()
                 .setPaletteCategory("embedding")
@@ -36,6 +52,8 @@ class AdvancedFlexRepeater {
                 .setSchema(SCHEMA)
                 .setName("Flex Repeater +")
                 .addPaletteEntry(VARIANT_BASE)
+                .addPaletteEntry(VARIANT_ROW)
+                .addPaletteEntry(VARIANT_COLUMN)
                 .setDefaultMetaName("AdvancedFlexRepeater")
                 .setResources(Components.BROWSER_RESOURCES)
                 .build()
