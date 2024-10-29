@@ -5,4 +5,6 @@ plugins {
 dependencies {
     compileOnly(libs.bundles.common)
     compileOnly(libs.bundles.perspectiveCommon)
+
+    modlImplementation(projects.jvm.perspectiveCommon)
 }

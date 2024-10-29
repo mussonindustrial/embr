@@ -8,23 +8,28 @@ import java.io.InputStreamReader
 import javax.imageio.ImageIO
 
 data class PaletteEntry(
+    val clazz: Class<*>,
+    val componentId: String,
     val variantId: String,
     val label: String,
     val tooltip: String,
     val thumbnail: BufferedImage?,
-    val props: JsonObject?,
+    val props: JsonObject?
 ) {
     constructor(
-        source: Class<*>,
+        clazz: Class<*>,
+        componentId: String,
         variantId: String,
         label: String,
         tooltip: String
     ) : this(
+        clazz,
+        componentId,
         variantId,
         label,
         tooltip,
-        getImage(source, "/images/components/thumbnails/$variantId.png"),
-        getJsonProps(source, "/variants/$variantId.props.json"),
+        getImage(clazz, "/images/components/${componentId}/thumbnails/${variantId}.png"),
+        getJsonProps(clazz, "/schemas/components/${componentId}/variants/${variantId}.props.json")
     )
 }
 
@@ -33,23 +38,17 @@ fun ComponentBuilder.addPaletteEntry(entry: PaletteEntry): ComponentBuilder {
     return this
 }
 
-fun getImage(
-    source: Class<*>,
-    path: String,
-): BufferedImage? {
-    val resource = source.getResource(path)
+fun getImage(clazz: Class<*>, path: String): BufferedImage? {
+    val resource = clazz::class.java.getResource(path)
     resource?.let {
         return ImageIO.read(it)
     }
     return null
 }
 
-fun getJsonProps(
-    source: Class<*>,
-    path: String,
-): JsonObject {
+fun getJsonProps(clazz: Class<*>, path: String): JsonObject {
     return JsonParser.parseReader(
-            source.getResourceAsStream(path)?.let { InputStreamReader(it) },
+            PaletteEntry::class.java.getResourceAsStream(path)?.let { InputStreamReader(it) }
         )
         .asJsonObject
 }
