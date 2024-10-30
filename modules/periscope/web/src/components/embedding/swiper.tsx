@@ -197,7 +197,6 @@ export function SwiperComponent(props: ComponentProps<SwiperComponentProps>) {
     }, [props.props.settings])
 
     const onResize = debounce(() => { 
-      console.log('updatingSlides')
       swiperRef.current?.swiper.updateSlides()
     }, 100, {
       leading: true,
