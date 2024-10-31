@@ -21,6 +21,7 @@ import com.mussonindustrial.embr.common.reflect.getSuperPrivateProperty
 import com.mussonindustrial.embr.common.scripting.PyArgOverloadBuilder
 import java.lang.reflect.Method
 import java.util.*
+import java.util.concurrent.atomic.AtomicBoolean
 import org.python.core.PyObject
 
 class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(component) {
@@ -32,19 +33,28 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
 
     private var UNSTABLE_pageModelHandler: Any? = null
     private var UNSTABLE_startView: Method? = null
+    private val doingPreempt = AtomicBoolean(false)
 
     override fun onStartup() {
-        logger.debug("Model Delegate starting for ${component.componentAddressPath}")
+        logger.trace("Model Delegate starting for ${component.componentAddressPath}")
         configurePreemptiveLoad()
 
         props = component.getPropertyTreeOf(PropertyType.props)!!
 
-        repairInstances()
-        instancesListener = props.subscribe("instances", Origin.ANY) { repairInstances() }
+        props.queue.submit {
+            repairInstances()
+            doPreemptiveChildUpdate()
+        }
+
+        instancesListener =
+            props.subscribe("instances", Origin.ANY) {
+                repairInstances()
+                doPreemptiveChildUpdate()
+            }
     }
 
     override fun onShutdown() {
-        logger.debug("Model Delegate stopping for ${component.componentAddressPath}")
+        logger.trace("Model Delegate stopping for ${component.componentAddressPath}")
         instancesListener.unsubscribe()
     }
 
@@ -101,7 +111,10 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
 
     private fun repairInstances() {
         val instances = getInstances()
-        repairInstances(instances)
+        repairInstances(
+            instances,
+            false,
+        )
     }
 
     private fun repairInstances(instances: JsonArray?) {
@@ -122,11 +135,21 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
 
         if (updateCount > 0 || forceWrite == true) {
             logger.trace("${component.componentAddressPath} - performing instance repair")
-            props.queue.submit {
-                props.write("instances", instances, Origin.Delegate, this)
-                doPreemptiveChildUpdate()
-            }
+            props.queue.submit { props.write("instances", instances, Origin.Delegate, this) }
         }
+    }
+
+    private fun regenKeys(instances: JsonArray?) {
+
+        instances?.forEachIndexed { _, instance ->
+            val viewParams = instance.asJsonObject?.getAsJsonObject("viewParams") ?: JsonObject()
+            viewParams.addProperty("key", UUID.randomUUID().toString())
+
+            instance.asJsonObject.add("viewParams", viewParams)
+        }
+
+        logger.trace("${component.componentAddressPath} - force updating keys")
+        props.queue.submit { props.write("instances", instances, Origin.Delegate, this) }
     }
 
     private fun getInstances(): JsonArray? {
@@ -152,12 +175,9 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
         val instances = getInstances()
 
         return instances?.associateWith {
-            val key = it.asJsonObject.get("key").asString
-            val view =
-                page?.views?.find { view ->
-                    view.qualifiedPath.contains("${component.componentAddressPath}.$key")
-                }
-            view
+            page?.views?.find { view ->
+                view.view?.id?.mountPath == getChildMountPath(it.asJsonObject)
+            }
         }
     }
 
@@ -181,18 +201,23 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
     }
 
     private fun doPreemptiveChildUpdate() {
-        getChildViews()?.forEach { (instance, view) ->
-            if (view != null) {
-                updateChildViewParams(instance.asJsonObject, view)
-            } else {
-                UNSTABLE_startViewForInstance(instance.asJsonObject)
+        if (!doingPreempt.getAndSet(true)) {
+            val childViews = getChildViews()
+            childViews?.forEach { (instance, view) ->
+                if (view != null) {
+                    updateChildViewParams(instance.asJsonObject, view)
+                } else {
+                    UNSTABLE_startViewForInstance(instance.asJsonObject)
+                }
             }
+            doingPreempt.set(false)
         }
     }
 
     private fun updateChildViewParams(instance: JsonObject, view: ViewModel) {
+        logger.info("${getChildMountPath(instance)}: Updating child view params")
         val childParams = view.getPropertyTreeOf(PropertyType.params)
-        val viewParams = getChildViewParams(instance.asJsonObject)
+        val viewParams = getChildViewParams(instance)
 
         val writes = JsonObject()
         viewParams.keySet().forEach { writes.add(it, viewParams.get(it)) }
@@ -220,6 +245,7 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
     }
 
     private fun UNSTABLE_startViewForInstance(instance: JsonObject) {
+        logger.info("${getChildMountPath(instance)}: Starting new view")
         val viewPath = getChildViewPath(instance)
         val mountPath = getChildMountPath(instance)
         val params = getChildViewParams(instance)
@@ -288,7 +314,10 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
                             )
                         }
 
-                        repairInstances(newInstances, true)
+                        props.queue.submit {
+                            repairInstances(newInstances, true)
+                            doPreemptiveChildUpdate()
+                        }
                     },
                     "instance" to PyObject::class,
                 )
@@ -327,7 +356,10 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
                             }
                         }
 
-                        repairInstances(newInstances, true)
+                        props.queue.submit {
+                            repairInstances(newInstances, true)
+                            doPreemptiveChildUpdate()
+                        }
                     },
                     "index" to Int::class,
                     "instance" to PyObject::class
