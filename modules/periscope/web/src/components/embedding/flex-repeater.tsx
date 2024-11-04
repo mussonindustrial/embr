@@ -4,12 +4,12 @@ import {
   ClientStore,
   ComponentMeta,
   ComponentProps,
+  ComponentStore,
   ComponentStoreDelegate,
   JsObject,
   OutputListener,
   PageStore,
   PComponent,
-  PlainObject,
   PropertyTree,
   SizeObject,
   StyleObject,
@@ -70,8 +70,8 @@ function emitFlexPosition(props: FlexPositionProps): React.CSSProperties {
   }
 }
 
-function getChildMountPath(props: ComponentProps<PlainObject>, key: string) {
-  return `${props.store.viewMountPath}$${props.store.addressPathString}.${key}`
+function getChildMountPath(store: ComponentStore, key: string) {
+  return `${store.viewMountPath}$${store.addressPathString}.${key}`
 }
 
 function resolveViewProps(props: FlexRepeaterProps, index: number): EmbeddedViewProps {
@@ -98,7 +98,7 @@ function resolveViewProps(props: FlexRepeaterProps, index: number): EmbeddedView
 
 const EmbeddedView = memo(({ store, mountPath, view, outputListener }: EmbeddedSlideViewProps) => {
   return (
-    <>        
+    <>
       <View
         key={PageStore.instanceKeyFor(view.viewPath, mountPath)}
         store={store}
@@ -120,35 +120,31 @@ const EmbeddedView = memo(({ store, mountPath, view, outputListener }: EmbeddedS
   )
 })
 
-export function FlexRepeaterComponent(props: ComponentProps<FlexRepeaterProps>) {    
+export function FlexRepeaterComponent({props, store, emit}: ComponentProps<FlexRepeaterProps>) {    
 
-    const containerProps = props.emit({ classes: ['view-parent'] })
+    const containerProps = emit({ classes: ['view-parent'] })
     containerProps.style = {
       ...containerProps.style,
       display: 'flex',
-      flexDirection: props.props.settings?.direction,
-      flexWrap: props.props.settings?.wrap,
-      justifyContent: props.props.settings?.justify,
-      alignItems: props.props.settings?.alignItems,
-      alignContent: props.props.settings?.alignContent
-    }
+      flexDirection: props.settings?.direction,
+      flexWrap: props.settings?.wrap,
+      justifyContent: props.settings?.justify,
+      alignItems: props.settings?.alignItems,
+      alignContent: props.settings?.alignContent
+    }    
 
     return (
       <div { ...containerProps } >
-        { props.props.instances.map((_, index) => {
-          const viewProps = resolveViewProps(props.props, index)
-          const mountPath = getChildMountPath(props, viewProps.key)
-          const outputListener = (outputName: string, outputValue: any): void => {
-            props.store.props.write(`instances[${index}].viewParams.${outputName}`, outputValue)
-          }
+        { props.instances.map((_, index) => {
+          const viewProps = resolveViewProps(props, index)
+          const mountPath = getChildMountPath(store, viewProps.key)
 
           return (
               <EmbeddedView 
-                store={props.store.view.page.parent} 
+                store={store.view.page.parent} 
                 view={viewProps}
                 mountPath={mountPath}
                 key={viewProps.key}
-                outputListener={outputListener}
               />
           )
         })}
