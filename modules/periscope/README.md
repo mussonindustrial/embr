@@ -22,7 +22,7 @@ An Ignition module that includes design extensions and enhancements for Perspect
 
 ---
 ## Changelog
-The [changelog](https://github.com/mussonindustrial/embr/blob/main/modules/embr-chart-js/CHANGELOG.md) is regularly updated to reflect what's changed in each new release.
+The [changelog](./CHANGELOG.md) is regularly updated to reflect what's changed in each new release.
 
 
 ## Sponsors
