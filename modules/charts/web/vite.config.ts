@@ -1,7 +1,7 @@
 import { defineConfig } from 'vite'
 import { resolve } from 'path'
 
-const packageName = 'embr-chart-js'
+const packageName = 'embr-charts'
 
 export default defineConfig(({ mode }) => ({
     build: {
@@ -11,7 +11,7 @@ export default defineConfig(({ mode }) => ({
             fileName: (_, entryName) => {
                 return `${packageName}-${entryName}.js`
             },
-            name: 'EmbrChartJs',
+            name: 'EmbrCharts',
             formats: ['umd'],
         },
         rollupOptions: {

@@ -2426,6 +2426,19 @@
                     "$ref": "#/$defs/animations"
                 }
             }
+        },
+        "update_mode": {
+            "type": ["string", "null"],
+            "suggestions": [
+                "resize",
+                "reset",
+                "none",
+                "hide",
+                "show",
+                "default",
+                "active",
+                "zoom"
+            ]
         }
     },
     "properties": {
@@ -2449,6 +2462,14 @@
         "plugins": {
             "description": "Manually registered plugins.",
             "$ref": "#/$defs/chart_plugins"
+        },
+        "redraw": {
+            "description": "Teardown and redraw chart on every update.",
+            "type": ["boolean", "null"]
+        },
+        "updateMode": {
+            "description": "A mode string to indicate which transition configuration should be used.",
+            "$ref": "#/$defs/update_mode"
         },
         "style": {
             "$ref": "urn:ignition-schema:schemas/style-properties.schema.json",
