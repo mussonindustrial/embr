@@ -5,7 +5,10 @@
   "fixed": [
     [ "@embr-jvm/core-*" ],
     [ "@embr-jvm/perspective-*" ],
-    [ "@embr-modules/charts*"]
+    [ "@embr-modules/charts*"],
+    [ "@embr-modules/event-stream*"],
+    [ "@embr-modules/periscope*"],
+    [ "@embr-modules/thermo*"]
   ],
   "linked": [],
   "access": "public",
