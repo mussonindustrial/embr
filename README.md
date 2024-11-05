@@ -29,6 +29,7 @@
 |-----------------------------------------------------|---------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------|
 | [embr-charts](modules/charts/README.md)             | A collection of enhanced Perspective charting components.                             | [![version](https://img.shields.io/github/v/release/mussonindustrial/embr?filter=*charts*&label=%20)](modules/charts/CHANGELOG.md)             |
 | [embr-event-stream](modules/event-stream/README.md) | Provides an API for high-speed streaming of tag changes via SSE (server-sent events). | [![version](https://img.shields.io/github/v/release/mussonindustrial/embr?filter=*event-stream*&label=%20)](modules/event-stream/CHANGELOG.md) |
+| [embr-periscope](modules/periscope/README.md)       | Design extensions and enhancements for Perspective.                                   | [![version](https://img.shields.io/github/v/release/mussonindustrial/embr?filter=*periscope*&label=%20)](modules/event-stream/CHANGELOG.md)    |
 | [embr-thermodynamics](modules/thermo/README.md)     | Scripting functions for computing thermodynamic properties.                           | [![version](https://img.shields.io/github/v/release/mussonindustrial/embr?filter=*thermo*&label=%20)](modules/thermo/CHANGELOG.md)             |
 
 </div>
