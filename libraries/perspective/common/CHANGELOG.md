@@ -1,5 +1,11 @@
 # @mussonindustrial/embr-jvm-perspective-core
 
+## 0.5.0
+
+### Patch Changes
+
+- 0a9d03e: Move Perspective component descriptor extensions to shared libraries.
+
 ## 0.4.0
 
 ### Minor Changes

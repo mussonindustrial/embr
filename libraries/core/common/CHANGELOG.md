@@ -1,5 +1,11 @@
 # @mussonindustrial/embr-jvm-core-common
 
+## 0.4.1
+
+### Patch Changes
+
+- 0a9d03e: (ReflectUtils) Add methods for accessing private methods and properties through super classes.
+
 ## 0.4.0
 
 ### Minor Changes
