@@ -1,7 +1,7 @@
 {
     "name": "@embr-modules/periscope-web",
     "private": true,
-    "version": "0.1.2",
+    "version": "0.2.0",
     "scripts": {
         "dev": "vite",
         "build": "tsc && nx vite:build && nx vite:test --run",
@@ -21,7 +21,7 @@
     "devDependencies": {
         "@embr-js/eslint-config": "*",
         "@embr-js/tsconfig": "*",
-        "@embr-js/utils": "0.3.0",
+        "@embr-js/utils": "0.4.0",
         "@types/lodash": "^4.14.202",
         "@types/react": "^18.2.56",
         "eslint": "^8.56.0",

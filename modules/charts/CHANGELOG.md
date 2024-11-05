@@ -1,5 +1,15 @@
 # @mussonindustrial/embr-charts
 
+## 1.3.5
+
+### Patch Changes
+
+- 0a9d03e: Move Perspective component descriptor extensions to shared libraries.
+- Updated dependencies [0a9d03e]
+  - @embr-jvm/core-common@0.4.1
+  - @embr-jvm/core-designer@0.4.1
+  - @embr-modules/charts-web@1.3.5
+
 ## 1.3.4
 
 ### Patch Changes
