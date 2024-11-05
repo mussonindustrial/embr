@@ -1,0 +1,20 @@
+{
+    "name": "@embr-modules/periscope",
+    "version": "0.2.0",
+    "private": false,
+    "keywords": [
+        "ignition",
+        "module",
+        "perspective",
+        "components"
+    ],
+    "files": [
+        "**/*.modl",
+        "!**/*.unsigned.modl"
+    ],
+    "dependencies": {
+        "@embr-modules/periscope-web": "0.2.0",
+        "@embr-jvm/core-common": "0.4.1",
+        "@embr-jvm/core-designer": "0.4.1"
+    }
+}

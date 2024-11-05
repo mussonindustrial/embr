@@ -111,7 +111,7 @@ jobs:
 
         - name: Publish Artifacts to Releases
           run: |
-            gh release upload ${{ steps.meta.outputs.tag_name }} ./build/modules.zip
+            gh release upload ${{ steps.meta.outputs.tag_name }} ./build/modules/*
           env:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 

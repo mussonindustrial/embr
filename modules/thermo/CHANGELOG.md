@@ -1,5 +1,12 @@
 # @embr-modules/thermo
 
+## 0.1.5
+
+### Patch Changes
+
+- Updated dependencies [0a9d03e]
+  - @embr-jvm/core-common@0.4.1
+
 ## 0.1.4
 
 ### Patch Changes

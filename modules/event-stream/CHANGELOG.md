@@ -1,5 +1,13 @@
 # @mussonindustrial/embr-tag-stream
 
+## 0.4.3
+
+### Patch Changes
+
+- Updated dependencies [0a9d03e]
+  - @embr-jvm/core-common@0.4.1
+  - @embr-jvm/core-servlets@0.4.1
+
 ## 0.4.2
 
 ### Patch Changes

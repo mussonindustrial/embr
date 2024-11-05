@@ -1,1 +1,1 @@
-export * from './chartjs'
+export * from './ChartjsComponent'

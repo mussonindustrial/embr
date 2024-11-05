@@ -41,11 +41,11 @@ class GatewayHook : AbstractGatewayModuleHook() {
         componentRegistry.removeComponent(ChartJs.COMPONENT_ID)
     }
 
-    override fun getMountedResourceFolder(): Optional<String>? {
+    override fun getMountedResourceFolder(): Optional<String> {
         return Optional.of("static")
     }
 
-    override fun getMountPathAlias(): Optional<String>? {
+    override fun getMountPathAlias(): Optional<String> {
         return Optional.of(SHORT_MODULE_ID)
     }
 

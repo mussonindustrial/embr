@@ -9,8 +9,7 @@
         "release": "gradlew release"
     },
     "workspaces": [
-        "js/*",
-        "jvm/*",
+        "libraries/**",
         "modules/**"
     ],
     "dependencies": {

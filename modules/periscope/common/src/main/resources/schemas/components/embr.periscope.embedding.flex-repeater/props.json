@@ -1,0 +1,177 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$defs": {
+        "embedded_view_config": {
+            "type": "object",
+            "properties": {
+                "viewPath": {
+                    "type": "string",
+                    "format": "view-path",
+                    "description": "View path of this instance."
+                },
+                "viewParams": {
+                    "type": "object",
+                    "description": "Parameters for this instance.",
+                    "default": {},
+                    "extension": {
+                        "view-params": {
+                            "path":"../viewPath"
+                        }
+                    }
+                },
+                "viewStyle": {
+                    "$ref": "urn:ignition-schema:schemas/style-properties.schema.json",
+                    "default": {
+                        "classes": ""
+                    }
+                },
+                "viewPosition": {
+                    "type": "object",
+                    "description": "Instance position properties.",
+                    "default": {},
+                    "properties": {
+                        "grow": {
+                            "type": "number",
+                            "description": "Flex grow property."
+                        },
+                        "shrink": {
+                            "type": "number",
+                            "description": "Flex shrink property."
+                        },
+                        "basis": {
+                            "type": [
+                                "number",
+                                "string"
+                            ],
+                            "description": "Flex basis property."
+                        },
+                        "align": {
+                            "type": "string",
+                            "description": "Align self property.",
+                            "enum": [
+                                "auto",
+                                "flex-start",
+                                "flex-end",
+                                "center",
+                                "baseline",
+                                "stretch"
+                            ]
+                        }
+                    }
+                },
+                "useDefaultHeight": {
+                    "type": "boolean",
+                    "description": "Use default view height."
+                },
+                "useDefaultMinHeight": {
+                    "type": "boolean",
+                    "description": "Use default minimum view height."
+                },
+                "useDefaultMinWidth": {
+                    "type": "boolean",
+                    "description": "Use default minimum view height."
+                },
+                "useDefaultWidth": {
+                    "type": "boolean",
+                    "description": "Use default view width."
+                }
+            }
+        }
+    },
+    "properties": {
+        "instances": {
+            "type": "array",
+            "description": "Array of view instances.",
+            "default": [],
+            "items": {
+                "$ref": "#/$defs/embedded_view_config"
+            }
+        },
+        "instanceCommon": {
+            "$ref": "#/$defs/embedded_view_config",
+            "description": "Properties shared between all view instances.",
+            "default": {
+                "viewParams": {},
+                "viewStyle": { "classes":  "" },
+                "viewPosition": {
+                    "grow": 0,
+                    "shrink": 0,
+                    "basis": "auto"
+                }
+            }
+        },
+        "settings": {
+            "type": "object",
+            "properties": {
+                "direction": {
+                    "type": "string",
+                    "description": "Direction of layout of repeated views.",
+                    "default": "row",
+                    "enum": [
+                        "row",
+                        "row-reverse",
+                        "column",
+                        "column-reverse"
+                    ]
+                },
+                "wrap": {
+                    "type": "string",
+                    "description": "Whether the container should allow repeated views to wrap to next line if space has run out.",
+                    "default": "nowrap",
+                    "enum": [
+                        "nowrap",
+                        "wrap",
+                        "wrap-reverse"
+                    ]
+                },
+                "justify": {
+                    "type": "string",
+                    "description": "Adjust placement of repeated views along the main axis when there is extra space, which may be used to fill areas before, after, or in-between.",
+                    "default": "flex-start",
+                    "enum": [
+                        "flex-start",
+                        "flex-end",
+                        "center",
+                        "space-between",
+                        "space-around",
+                        "space-evenly"
+                    ]
+                },
+                "alignItems": {
+                    "type": "string",
+                    "description": "Adjusts placement of repeated views along the cross axis when there is extra space.",
+                    "default": "stretch",
+                    "enum": [
+                        "flex-start",
+                        "flex-end",
+                        "center",
+                        "baseline",
+                        "stretch"
+                    ]
+                },
+                "alignContent": {
+                    "type": "string",
+                    "description": "Adjust alignment of repeated views when there is free space in the cross axis.",
+                    "default": "stretch",
+                    "enum": [
+                        "flex-start",
+                        "flex-end",
+                        "center",
+                        "space-between",
+                        "space-around",
+                        "stretch"
+                    ]
+                }
+            }
+        },
+        "style": {
+            "$ref": "urn:ignition-schema:schemas/style-properties.schema.json",
+            "default": {
+                "classes": "",
+                "overflow": "auto"
+            }
+        }
+    },
+    "type": "object",
+    "required": ["instances", "settings"]
+}
