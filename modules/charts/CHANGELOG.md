@@ -1,5 +1,18 @@
 # @mussonindustrial/embr-charts
 
+## 1.4.0
+
+### Minor Changes
+
+- 60d382e: (Web) Memoize property transforms.
+- 60d382e: Add optional `updateMode` and `redraw` component properties.
+
+### Patch Changes
+
+- 60d382e: (Web) Reorganize javascript exports.
+- 60d382e: (Web) Register `TreeChart` and `TreeController` controllers from `chartjs-chart-graph`.
+  - @embr-modules/charts-web@1.4.0
+
 ## 1.3.5
 
 ### Patch Changes
