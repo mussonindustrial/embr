@@ -4,8 +4,8 @@ plugins {
 
 dependencies {
     compileOnly(libs.bundles.common)
-    modlImplementation(projects.jvm.coreCommon)
     modlImplementation(libs.if97)
+    modlImplementation(projects.libraries.core.common)
 }
 
 tasks.compileKotlin {

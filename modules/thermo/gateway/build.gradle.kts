@@ -3,12 +3,9 @@ plugins {
 }
 
 dependencies {
-    compileOnly(libs.bundles.common)
-    compileOnly(projects.jvm.coreCommon)
-    compileOnly(projects.modules.thermo.common)
-
     compileOnly(libs.bundles.gateway)
-    modlImplementation(projects.jvm.coreGateway)
-
     compileOnly(libs.if97)
+    compileOnly(projects.libraries.core.common)
+    modlImplementation(projects.libraries.core.gateway)
+    compileOnly(projects.modules.thermo.common)
 }

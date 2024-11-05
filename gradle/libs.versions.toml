@@ -39,17 +39,17 @@ mockk = { group = "io.mockk", name = "mockk", version = "1.13.12" }
 
 [bundles]
 common = [
-    "ignition-common",
-    "ignition-gson"
+    "ignition-gson",
+    "ignition-common"
 ]
 gateway = [
-    "ignition-common",
     "ignition-gson",
+    "ignition-common",
     "ignition-gateway-api",
 ]
 designer = [
-    "ignition-common",
     "ignition-gson",
+    "ignition-common",
     "ignition-designer-api",
 ]
 client = [
@@ -58,13 +58,21 @@ client = [
     "ignition-vision-client-api",
 ]
 perspectiveCommon = [
+    "ignition-gson",
+    "ignition-common",
     "ignition-perspective-common",
 ]
 perspectiveDesigner = [
+    "ignition-gson",
+    "ignition-common",
+    "ignition-designer-api",
     "ignition-perspective-common",
     "ignition-perspective-designer",
 ]
 perspectiveGateway = [
+    "ignition-gson",
+    "ignition-common",
+    "ignition-gateway-api",
     "ignition-perspective-common",
     "ignition-perspective-gateway",
 ]

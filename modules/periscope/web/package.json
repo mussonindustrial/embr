@@ -1,0 +1,32 @@
+{
+    "name": "@embr-modules/periscope-web",
+    "private": true,
+    "version": "0.1.2",
+    "scripts": {
+        "dev": "vite",
+        "build": "tsc && nx vite:build && nx vite:test --run",
+        "clean": "s",
+        "test": "nx vite:test --run",
+        "preview": "nx vite:test --preview",
+        "lint": "eslint src/**/*.ts",
+        "lint:prettier": "prettier -c . --cache --ignore-path=../../.prettierignore"
+    },
+    "dependencies": {
+        "@inductiveautomation/perspective-client": "2.1.33",
+        "lodash": "^4.17.21",
+        "react": "^18",
+        "react-dom": "^18",
+        "swiper": "^11.1.14"
+    },
+    "devDependencies": {
+        "@embr-js/eslint-config": "*",
+        "@embr-js/tsconfig": "*",
+        "@embr-js/utils": "0.3.0",
+        "@types/lodash": "^4.14.202",
+        "@types/react": "^18.2.56",
+        "eslint": "^8.56.0",
+        "typescript": "^5.3.3",
+        "vite": "^5.0.10",
+        "vitest": "^1.6.0"
+    }
+}

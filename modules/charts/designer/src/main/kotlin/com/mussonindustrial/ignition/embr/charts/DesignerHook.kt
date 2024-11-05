@@ -6,8 +6,8 @@ import com.inductiveautomation.ignition.designer.model.DesignerContext
 import com.inductiveautomation.perspective.designer.DesignerComponentRegistry
 import com.inductiveautomation.perspective.designer.api.ComponentDesignDelegateRegistry
 import com.inductiveautomation.perspective.designer.api.PerspectiveDesignerInterface
+import com.mussonindustrial.embr.perspective.designer.component.asDesignerDescriptor
 import com.mussonindustrial.ignition.embr.charts.Meta.SHORT_MODULE_ID
-import com.mussonindustrial.ignition.embr.charts.component.asDesignerDescriptor
 import com.mussonindustrial.ignition.embr.charts.component.chart.ChartJs
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory

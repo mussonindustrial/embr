@@ -9,8 +9,7 @@
         "test": "nx vite:test --run",
         "preview": "nx vite:test --preview",
         "lint": "eslint src/**/*.ts",
-        "lint:prettier": "prettier -c . --cache --ignore-path=../../.prettierignore",
-        "genTypes": "npx typescript-json-schema .\\src\\components\\BaseChartComponentProps.ts ChartJSComponentProps -o=\"dist/chart-js.props.json\" --excludePrivate --constAsEnum --aliasRefs"
+        "lint:prettier": "prettier -c . --cache --ignore-path=../../.prettierignore"
     },
     "dependencies": {
         "@inductiveautomation/perspective-client": "2.1.33",
@@ -42,9 +41,9 @@
         "react-dom": "^18"
     },
     "devDependencies": {
+        "@embr-js/eslint-config": "*",
         "@embr-js/tsconfig": "*",
         "@embr-js/utils": "0.3.0",
-        "@embr-js/eslint-config": "*",
         "@types/lodash": "^4.14.202",
         "@types/react": "^18.2.56",
         "eslint": "^8.56.0",
