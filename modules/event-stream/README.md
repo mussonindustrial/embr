@@ -109,7 +109,7 @@ data: {"tag_id":0,"count":1,"displayPath":"","eventData":{"eventValue":"false","
 ---
 ## Changelog
 
-The [changelog](https://github.com/mussonindustrial/embr/blob/main/modules/embr-chart-js/CHANGELOG.md) is regularly updated to reflect what's changed in each new release.
+The [changelog](./CHANGELOG.md)) is regularly updated to reflect what's changed in each new release.
 
 ## Copyright and Licensing
 

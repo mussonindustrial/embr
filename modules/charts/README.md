@@ -16,7 +16,7 @@ An Ignition module that adds a collection of enhanced Perspective charting compo
 
 ---
 ## Changelog
-The [changelog](https://github.com/mussonindustrial/embr/blob/main/modules/embr-chart-js/CHANGELOG.md) is regularly updated to reflect what's changed in each new release.
+The [changelog](./CHANGELOG.md) is regularly updated to reflect what's changed in each new release.
 
 
 ## Sponsors
