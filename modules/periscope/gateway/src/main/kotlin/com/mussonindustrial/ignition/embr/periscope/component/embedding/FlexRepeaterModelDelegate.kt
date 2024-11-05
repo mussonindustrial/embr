@@ -21,7 +21,7 @@ import com.inductiveautomation.perspective.gateway.property.PropertyTree
 import com.inductiveautomation.perspective.gateway.property.PropertyTree.Subscription
 import com.inductiveautomation.perspective.gateway.property.PropertyTreeChangeEvent
 import com.mussonindustrial.embr.common.scripting.PyArgOverloadBuilder
-import com.mussonindustrial.ignition.embr.periscope.util.ViewLoader
+import com.mussonindustrial.embr.perspective.gateway.reflect.ViewLoader
 import java.util.*
 import org.python.core.PyObject
 
@@ -32,20 +32,39 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
     private val id = "${component.view?.id?.resourcePath}${component.componentAddressPath}"
 
     private val queue = component.session.queue()
-    private lateinit var props: PropertyTree
-
     private val pyArgsOverloads = PyArgOverloads()
-    private val viewLoader = ViewLoader.get(component.page as PageModel)
-    private lateinit var instancesListener: Subscription
+    private val viewLoader = ViewLoader(component.page as PageModel)
     private val viewOutputListeners: WeakHashMap<ViewModel, List<Subscription>?> = WeakHashMap()
+    private val props = component.getPropertyTreeOf(PropertyType.props)!!
+    private val instancesListener = createInstanceListener()
+
+    private var instances: JsonArray
+        get() {
+            val instancesProp = props.read("instances")
+            if (instancesProp.isEmpty) {
+                return JsonArray()
+            }
+
+            return toJsonDeep(instancesProp.get()).asJsonArray
+        }
+        set(value) {
+            props.write("instances", value, Origin.Delegate, this)
+        }
+
+    private val instanceCommon: JsonObject
+        get() {
+            val instanceCommon = props.read("instanceCommon")
+            if (instanceCommon.isEmpty) {
+                return JsonObject()
+            }
+
+            return toJsonDeep(instanceCommon.get()).asJsonObject
+        }
 
     override fun onStartup() {
         log.debug("$id: Startup")
-        props = component.getPropertyTreeOf(PropertyType.props)!!
-        instancesListener = createInstanceListener()
-
         queue.submit {
-            repairInstances(instances, forceWrite = false)
+            updateInstances(instances, forceWrite = false)
             updateChildViews()
         }
     }
@@ -59,7 +78,7 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
     private fun createInstanceListener(): Subscription {
         return props.subscribe("instances", Origin.allBut(Origin.Delegate)) {
             queue.submit {
-                repairInstances(
+                updateInstances(
                     it.readValue().value as? JsonArray ?: JsonArray(),
                     forceWrite = false
                 )
@@ -68,30 +87,7 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
         }
     }
 
-    private var instances: JsonArray
-        get() {
-            val instancesProp = props.read("instances")
-            if (instancesProp.isEmpty) {
-                return JsonArray()
-            }
-
-            return toJsonDeep(instancesProp.get()).asJsonArray
-        }
-        set(newInstances) {
-            props.write("instances", newInstances, Origin.Delegate, this)
-        }
-
-    private val instanceCommon: JsonObject
-        get() {
-            val instanceCommon = props.read("instanceCommon")
-            if (instanceCommon.isEmpty) {
-                return JsonObject()
-            }
-
-            return toJsonDeep(instanceCommon.get()).asJsonObject
-        }
-
-    private fun repairInstances(newInstances: JsonArray, forceWrite: Boolean?) {
+    private fun updateInstances(newInstances: JsonArray, forceWrite: Boolean?) {
         var updateCount = 0
 
         newInstances.forEachIndexed { index, instance ->
@@ -222,17 +218,17 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
                 val mountPath = getChildMountPath(instance.asJsonObject)
                 val viewInstanceId = ViewInstanceId(viewPath, mountPath)
 
-                val maybeView = viewLoader?.waitForView(viewInstanceId, queue, 10000)
-
-                maybeView?.thenAcceptAsync(
-                    {
-                        if (it.isEmpty) {
-                            return@thenAcceptAsync
-                        }
-                        block(ViewInstance(index, instance, it.get()))
-                    },
-                    queue::submit
-                )
+                viewLoader
+                    .waitForView(viewInstanceId, queue, 10000)
+                    .thenAcceptAsync(
+                        {
+                            if (it.isEmpty) {
+                                return@thenAcceptAsync
+                            }
+                            block(ViewInstance(index, instance, it.get()))
+                        },
+                        queue::submit
+                    )
             }
         }
     }
@@ -274,14 +270,14 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
                     {
                         val newInstances = instances
                         newInstances.remove(it[0] as Int)
-                        repairInstances(newInstances, true)
+                        updateInstances(newInstances, true)
                     },
                     "index" to Int::class,
                 )
                 .addOverload({
                     val newInstances = instances
                     newInstances.remove(newInstances.size() - 1)
-                    repairInstances(newInstances, true)
+                    updateInstances(newInstances, true)
                 })
                 .build()
 
@@ -304,7 +300,7 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
                         }
 
                         queue.submit {
-                            repairInstances(newInstances, true)
+                            updateInstances(newInstances, true)
                             updateChildViews()
                         }
                     },
@@ -341,7 +337,7 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
                         }
 
                         queue.submit {
-                            repairInstances(newInstances, true)
+                            updateInstances(newInstances, true)
                             updateChildViews()
                         }
                     },

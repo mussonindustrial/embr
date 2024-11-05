@@ -3,9 +3,7 @@ plugins {
 }
 
 dependencies {
-    compileOnly(libs.bundles.common)
     compileOnly(libs.bundles.perspectiveCommon)
-
-    modlImplementation(projects.jvm.perspectiveCommon)
-    modlImplementation(projects.jvm.coreCommon)
+    modlImplementation(projects.libraries.core.common)
+    modlImplementation(projects.libraries.perspective.common)
 }

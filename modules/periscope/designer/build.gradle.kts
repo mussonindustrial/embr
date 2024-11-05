@@ -3,9 +3,10 @@ plugins {
 }
 
 dependencies {
-    compileOnly(libs.bundles.designer)
     compileOnly(libs.bundles.perspectiveDesigner)
+    compileOnly(projects.libraries.core.common)
+    modlImplementation(projects.libraries.core.designer)
+    modlImplementation(projects.libraries.perspective.designer)
 
-    modlImplementation(projects.jvm.perspectiveDesigner)
     compileOnly(projects.modules.periscope.common)
 }

@@ -2,9 +2,10 @@ plugins {
     id("embr.ignition-module-library-conventions")
 }
 
-dependencies {
-    compileOnly(libs.bundles.common)
-    compileOnly(libs.bundles.perspectiveCommon)
+group = "com.mussonindustrial.embr.charts"
 
-    modlImplementation(projects.jvm.perspectiveCommon)
+dependencies {
+    compileOnly(libs.bundles.perspectiveCommon)
+    modlImplementation(projects.libraries.core.common)
+    modlImplementation(projects.libraries.perspective.common)
 }

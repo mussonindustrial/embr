@@ -1,5 +1,5 @@
 plugins {
-    id("embr.kotlin-library-conventions")
+    id("embr.library-core-conventions")
 }
 
 dependencies {

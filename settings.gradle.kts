@@ -10,15 +10,17 @@ pluginManagement {
 include(
     ":",
 
-    ":jvm:core-client",
-    ":jvm:core-common",
-    ":jvm:core-designer",
-    ":jvm:core-gateway",
-    ":jvm:core-servlets",
-    ":jvm:perspective-common",
-    ":jvm:perspective-designer",
+    ":libraries:core:client",
+    ":libraries:core:common",
+    ":libraries:core:designer",
+    ":libraries:core:gateway",
+    ":libraries:core:servlets",
 
-    ":js:event-stream",
+    ":libraries:perspective:common",
+    ":libraries:perspective:designer",
+    ":libraries:perspective:gateway",
+
+    ":libraries:javascript:event-stream",
 
     ":modules:charts:common",
     ":modules:charts:designer",

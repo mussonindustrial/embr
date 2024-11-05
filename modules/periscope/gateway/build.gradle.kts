@@ -3,11 +3,10 @@ plugins {
 }
 
 dependencies {
-    compileOnly(libs.bundles.gateway)
     compileOnly(libs.bundles.perspectiveGateway)
+    compileOnly(projects.libraries.core.common)
+    modlImplementation(projects.libraries.core.gateway)
+    modlImplementation(projects.libraries.perspective.gateway)
     compileOnly(projects.modules.periscope.common)
     modlImplementation(projects.modules.periscope.web)
-
-    compileOnly(projects.jvm.coreCommon)
-    modlImplementation(projects.jvm.coreGateway)
 }

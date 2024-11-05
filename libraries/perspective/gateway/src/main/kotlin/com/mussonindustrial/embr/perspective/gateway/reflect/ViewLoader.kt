@@ -1,4 +1,4 @@
-package com.mussonindustrial.ignition.embr.periscope.util
+package com.mussonindustrial.embr.perspective.gateway.reflect
 
 import com.inductiveautomation.ignition.common.gson.JsonObject
 import com.inductiveautomation.ignition.common.util.ExecutionQueue
@@ -11,17 +11,7 @@ import java.util.*
 import java.util.concurrent.CompletableFuture
 import kotlin.time.TimeSource
 
-class ViewLoader private constructor(page: PageModel) {
-
-    companion object {
-        fun get(page: PageModel): ViewLoader? {
-            return try {
-                ViewLoader(page)
-            } catch (e: Throwable) {
-                null
-            }
-        }
-    }
+class ViewLoader(page: PageModel) {
 
     private val _handlers = page.getSuperPrivateProperty("handlers")
     private val _startView =
@@ -38,6 +28,7 @@ class ViewLoader private constructor(page: PageModel) {
         _startView.invoke(_handlers, viewPath, mountPath, birthDate, params)
     }
 
+    @Suppress("UNCHECKED_CAST")
     fun findView(viewId: ViewInstanceId): CompletableFuture<Optional<ViewModel>> {
         return _findView.invoke(_handlers, viewId) as CompletableFuture<Optional<ViewModel>>
     }
