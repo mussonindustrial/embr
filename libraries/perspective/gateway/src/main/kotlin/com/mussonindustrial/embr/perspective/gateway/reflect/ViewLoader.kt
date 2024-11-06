@@ -9,9 +9,10 @@ import com.mussonindustrial.embr.common.reflect.getSuperPrivateMethod
 import com.mussonindustrial.embr.common.reflect.getSuperPrivateProperty
 import java.util.*
 import java.util.concurrent.CompletableFuture
+import java.util.concurrent.ScheduledExecutorService
 import kotlin.time.TimeSource
 
-class ViewLoader(page: PageModel) {
+class ViewLoader(page: PageModel, val executor: ScheduledExecutorService) {
 
     private val _handlers = page.getSuperPrivateProperty("handlers")
     private val _startView =
@@ -47,16 +48,12 @@ class ViewLoader(page: PageModel) {
                 return
             }
 
-            findView(viewInstanceId)
-                .thenApplyAsync(
-                    { viewModel ->
-                        viewModel.ifPresentOrElse(
-                            { result.complete(viewModel) },
-                            { queue.submit { tryLoad(result) } }
-                        )
-                    },
-                    queue::submit
+            findView(viewInstanceId).thenApply { viewModel ->
+                viewModel.ifPresentOrElse(
+                    { result.complete(viewModel) },
+                    { queue.submit { tryLoad(result) } }
                 )
+            }
         }
         tryLoad(maybeView)
         return maybeView

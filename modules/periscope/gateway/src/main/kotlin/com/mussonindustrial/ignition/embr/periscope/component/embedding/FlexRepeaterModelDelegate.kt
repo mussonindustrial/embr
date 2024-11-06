@@ -6,8 +6,6 @@ import com.inductiveautomation.ignition.common.gson.JsonArray
 import com.inductiveautomation.ignition.common.gson.JsonElement
 import com.inductiveautomation.ignition.common.gson.JsonObject
 import com.inductiveautomation.ignition.common.script.builtin.KeywordArgs
-import com.inductiveautomation.ignition.common.util.LogUtil
-import com.inductiveautomation.ignition.common.util.LoggerEx
 import com.inductiveautomation.perspective.common.api.PropertyType
 import com.inductiveautomation.perspective.common.property.Origin
 import com.inductiveautomation.perspective.gateway.api.Component
@@ -22,18 +20,19 @@ import com.inductiveautomation.perspective.gateway.property.PropertyTree.Subscri
 import com.inductiveautomation.perspective.gateway.property.PropertyTreeChangeEvent
 import com.mussonindustrial.embr.common.scripting.PyArgOverloadBuilder
 import com.mussonindustrial.embr.perspective.gateway.reflect.ViewLoader
+import com.mussonindustrial.ignition.embr.periscope.PeriscopeGatewayContext
 import java.util.*
 import org.python.core.PyObject
 
 class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(component) {
 
-    private val log: LoggerEx =
-        LogUtil.getModuleLogger("embr-periscope", "FlexRepeaterModelDelegate")
     private val id = "${component.view?.id?.resourcePath}${component.componentAddressPath}"
+    private val context = PeriscopeGatewayContext.instance
 
     private val queue = component.session.queue()
     private val pyArgsOverloads = PyArgOverloads()
-    private val viewLoader = ViewLoader(component.page as PageModel)
+    private val viewLoader =
+        ViewLoader(component.page as PageModel, context.perspectiveContext.scheduler)
     private val viewOutputListeners: WeakHashMap<ViewModel, List<Subscription>?> = WeakHashMap()
     private val props = component.getPropertyTreeOf(PropertyType.props)!!
     private val instancesListener = createInstanceListener()
@@ -218,17 +217,32 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
                 val mountPath = getChildMountPath(instance.asJsonObject)
                 val viewInstanceId = ViewInstanceId(viewPath, mountPath)
 
-                viewLoader
-                    .waitForView(viewInstanceId, queue, 10000)
-                    .thenAcceptAsync(
-                        {
-                            if (it.isEmpty) {
-                                return@thenAcceptAsync
-                            }
-                            block(ViewInstance(index, instance, it.get()))
-                        },
-                        queue::submit
-                    )
+                viewLoader.findView(viewInstanceId).thenAccept { maybeView ->
+                    if (maybeView.isEmpty) {
+                        viewLoader.apply {
+                            startView(
+                                viewPath,
+                                mountPath,
+                                Date().time,
+                                getChildViewParams(instance.asJsonObject)
+                            )
+                            waitForView(viewInstanceId, queue, 10000)
+                                .thenAcceptAsync(
+                                    {
+                                        if (it.isEmpty) {
+                                            return@thenAcceptAsync
+                                        }
+                                        block(ViewInstance(index, instance, it.get()))
+                                    },
+                                    queue::submit
+                                )
+                        }
+                    }
+
+                    if (maybeView.isPresent) {
+                        block(ViewInstance(index, instance, maybeView.get()))
+                    }
+                }
             }
         }
     }

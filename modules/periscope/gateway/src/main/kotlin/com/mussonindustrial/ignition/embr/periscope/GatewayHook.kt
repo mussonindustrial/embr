@@ -18,19 +18,19 @@ import org.slf4j.LoggerFactory
 class GatewayHook : AbstractGatewayModuleHook() {
 
     private val logger: Logger = LoggerFactory.getLogger(SHORT_MODULE_ID)
-    private lateinit var context: GatewayContext
+    private lateinit var context: PeriscopeGatewayContext
     private lateinit var perspectiveContext: PerspectiveContext
     private lateinit var componentRegistry: ComponentRegistry
     private lateinit var modelDelegateRegistry: ComponentModelDelegateRegistry
 
     override fun setup(context: GatewayContext) {
-        this.context = context
+        this.context = PeriscopeGatewayContext(context)
     }
 
     override fun startup(activationState: LicenseState) {
         logger.info("Embr-Periscope module started.")
 
-        perspectiveContext = PerspectiveContext.get(this.context)
+        perspectiveContext = context.perspectiveContext
         componentRegistry = perspectiveContext.componentRegistry
         modelDelegateRegistry = perspectiveContext.componentModelDelegateRegistry
 

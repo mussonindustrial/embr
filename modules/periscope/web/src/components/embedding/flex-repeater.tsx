@@ -14,6 +14,8 @@ import {
   SizeObject,
   StyleObject,
   View,
+  ViewProps,
+  ViewStore,
 } from '@inductiveautomation/perspective-client'
 
 import {  formatStyleNames, mergeStyles, resolve } from '../../util';
@@ -96,10 +98,28 @@ function resolveViewProps(props: FlexRepeaterProps, index: number): EmbeddedView
   }
 }
 
+export class ServerStartedView extends View {
+  constructor(props: ViewProps) {
+      super(props)
+      this.installViewStore = this.installViewStore.bind(this);
+  }
+
+  override installViewStore(viewStore: ViewStore): void {
+      super.installViewStore(silenceStartup(viewStore))
+  }
+}
+
+function silenceStartup(viewStore: ViewStore) {
+  Reflect.defineProperty(viewStore, 'startup', { value: () => {
+      viewStore.running = true
+  }})
+  return viewStore
+}
+
 const EmbeddedView = memo(({ store, mountPath, view, outputListener }: EmbeddedSlideViewProps) => {
   return (
     <>
-      <View
+      <ServerStartedView
         key={PageStore.instanceKeyFor(view.viewPath, mountPath)}
         store={store}
         mountPath={mountPath}
