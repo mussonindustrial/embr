@@ -9,10 +9,9 @@ import com.mussonindustrial.embr.common.reflect.getSuperPrivateMethod
 import com.mussonindustrial.embr.common.reflect.getSuperPrivateProperty
 import java.util.*
 import java.util.concurrent.CompletableFuture
-import java.util.concurrent.ScheduledExecutorService
 import kotlin.time.TimeSource
 
-class ViewLoader(page: PageModel, val executor: ScheduledExecutorService) {
+class ViewLoader(page: PageModel) {
 
     private val _handlers = page.getSuperPrivateProperty("handlers")
     private val _startView =

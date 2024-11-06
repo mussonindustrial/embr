@@ -6,6 +6,9 @@ import com.inductiveautomation.ignition.common.gson.JsonArray
 import com.inductiveautomation.ignition.common.gson.JsonElement
 import com.inductiveautomation.ignition.common.gson.JsonObject
 import com.inductiveautomation.ignition.common.script.builtin.KeywordArgs
+import com.inductiveautomation.ignition.common.util.LogUtil
+import com.inductiveautomation.ignition.common.util.LoggerEx
+import com.inductiveautomation.ignition.common.util.get
 import com.inductiveautomation.perspective.common.api.PropertyType
 import com.inductiveautomation.perspective.common.property.Origin
 import com.inductiveautomation.perspective.gateway.api.Component
@@ -20,19 +23,20 @@ import com.inductiveautomation.perspective.gateway.property.PropertyTree.Subscri
 import com.inductiveautomation.perspective.gateway.property.PropertyTreeChangeEvent
 import com.mussonindustrial.embr.common.scripting.PyArgOverloadBuilder
 import com.mussonindustrial.embr.perspective.gateway.reflect.ViewLoader
-import com.mussonindustrial.ignition.embr.periscope.PeriscopeGatewayContext
+import com.mussonindustrial.embr.perspective.gateway.reflect.getHandlers
+import com.mussonindustrial.ignition.embr.periscope.page.ViewJoinMsg
 import java.util.*
 import org.python.core.PyObject
 
 class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(component) {
 
+    private val log: LoggerEx =
+        LogUtil.getModuleLogger("embr-periscope", "FlexRepeaterModelDelegate")
     private val id = "${component.view?.id?.resourcePath}${component.componentAddressPath}"
-    private val context = PeriscopeGatewayContext.instance
 
     private val queue = component.session.queue()
     private val pyArgsOverloads = PyArgOverloads()
-    private val viewLoader =
-        ViewLoader(component.page as PageModel, context.perspectiveContext.scheduler)
+    private val viewLoader = ViewLoader(component.page as PageModel)
     private val viewOutputListeners: WeakHashMap<ViewModel, List<Subscription>?> = WeakHashMap()
     private val props = component.getPropertyTreeOf(PropertyType.props)!!
     private val instancesListener = createInstanceListener()
@@ -62,6 +66,7 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
 
     override fun onStartup() {
         log.debug("$id: Startup")
+        maybeRegisterHandlers()
         queue.submit {
             updateInstances(instances, forceWrite = false)
             updateChildViews()
@@ -72,6 +77,18 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
         log.debug("$id: Shutdown")
         instancesListener.unsubscribe()
         shutdownChildViewListeners()
+    }
+
+    private fun maybeRegisterHandlers() {
+        val pageModel = component.page as PageModel
+        val nativeHandlers = pageModel.getHandlers()
+        if (!nativeHandlers.handles(ViewJoinMsg.PROTOCOL)) {
+            nativeHandlers.register(
+                ViewJoinMsg.PROTOCOL,
+                ViewJoinMsg.joinOrStart(pageModel),
+                ViewJoinMsg::class.java
+            )
+        }
     }
 
     private fun createInstanceListener(): Subscription {
@@ -172,8 +189,14 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
         log.trace("$id: createChildViewListeners - creating listeners")
         val listeners =
             tree.rootKeys?.map { rootKey ->
-                tree.subscribe(rootKey, Origin.allBut(Origin.Delegate)) {
-                    this.onViewOutputChanged(view.viewModel!!, it)
+                tree.subscribe(rootKey, Origin.allBut(Origin.Delegate)) { event ->
+                    if (this.isRunning && view.viewModel?.isRunning == true) {
+                        this.onViewOutputChanged(view.viewModel, event)
+                    } else {
+                        log.warn("$id: orphaned child view listener fired, cleaning up.")
+                        viewOutputListeners[view.viewModel]?.forEach { it.unsubscribe() }
+                        viewOutputListeners[view.viewModel] = null
+                    }
                 }
             }
         viewOutputListeners[view.viewModel] = listeners
@@ -184,6 +207,7 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
         viewOutputListeners.forEach { listenerSet ->
             listenerSet.value?.forEach { it.unsubscribe() }
         }
+        viewOutputListeners.clear()
     }
 
     private fun onViewOutputChanged(viewModel: ViewModel, event: PropertyTreeChangeEvent) {
@@ -192,7 +216,19 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
             instances.indexOfFirst { getChildMountPath(it.asJsonObject) == viewModel.id.mountPath }
 
         if (instanceIndex == -1) {
-            log.warn("$id: Received a view-output-changed event for a missing viewInstance.")
+            log.warn("$id: Received a view-output-changed event for an unknown instance.")
+            return
+        }
+
+        val path = "instances[${instanceIndex}].viewParams.${event.listeningPath}"
+
+        var currentValue: Any? = null
+        val maybeCurrentValue = props.read(path)
+        if (maybeCurrentValue.isPresent) {
+            currentValue = maybeCurrentValue.get().value
+        }
+
+        if (currentValue == event.readValue().value) {
             return
         }
 
@@ -217,39 +253,54 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
                 val mountPath = getChildMountPath(instance.asJsonObject)
                 val viewInstanceId = ViewInstanceId(viewPath, mountPath)
 
-                viewLoader.findView(viewInstanceId).thenAccept { maybeView ->
-                    if (maybeView.isEmpty) {
-                        viewLoader.apply {
-                            startView(
-                                viewPath,
-                                mountPath,
-                                Date().time,
-                                getChildViewParams(instance.asJsonObject)
-                            )
-                            waitForView(viewInstanceId, queue, 10000)
-                                .thenAcceptAsync(
-                                    {
-                                        if (it.isEmpty) {
-                                            return@thenAcceptAsync
-                                        }
-                                        block(ViewInstance(index, instance, it.get()))
-                                    },
-                                    queue::submit
+                val futureView = viewLoader.findView(viewInstanceId)
+                futureView.thenAcceptAsync(
+                    { maybeViewModel ->
+                        maybeViewModel.ifPresentOrElse(
+                            {
+                                val viewModel = maybeViewModel.get()
+                                block(ViewInstance(index, instance, viewModel))
+                            },
+                            {
+                                viewLoader.startView(
+                                    viewPath,
+                                    mountPath,
+                                    Date().time,
+                                    getChildViewParams(instance.asJsonObject)
                                 )
-                        }
-                    }
 
-                    if (maybeView.isPresent) {
-                        block(ViewInstance(index, instance, maybeView.get()))
-                    }
-                }
+                                viewLoader
+                                    .waitForView(viewInstanceId, queue, 10000)
+                                    .thenAcceptAsync(
+                                        {
+                                            if (it.isEmpty) {
+                                                return@thenAcceptAsync
+                                            }
+                                            block(ViewInstance(index, instance, it.get()))
+                                        },
+                                        queue::submit
+                                    )
+                            }
+                        )
+                    },
+                    queue::submit
+                )
             }
         }
     }
 
     private fun getChildViewPath(instance: JsonObject): String {
-        return instance.get("viewPath")?.asString
-            ?: props.read("instanceCommon.viewPath").get().value as String
+        val viewPath = instance.get("viewPath")
+        if (viewPath != null) {
+            return viewPath.asString
+        }
+
+        val maybeCommonPath = props.read("instanceCommon.viewPath")
+        if (maybeCommonPath.isPresent) {
+            return maybeCommonPath.get().value as? String ?: ""
+        }
+
+        return ""
     }
 
     @ScriptCallable

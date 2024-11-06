@@ -1,13 +1,9 @@
 import React, { memo } from 'react'
 import {
-  AbstractUIElementStore,
-  ClientStore,
   ComponentMeta,
   ComponentProps,
   ComponentStore,
-  ComponentStoreDelegate,
   JsObject,
-  OutputListener,
   PageStore,
   PComponent,
   PropertyTree,
@@ -18,7 +14,7 @@ import {
   ViewStore,
 } from '@inductiveautomation/perspective-client'
 
-import {  formatStyleNames, mergeStyles, resolve } from '../../util';
+import { formatStyleNames, mergeStyles, resolve } from '../../util';
 
 const COMPONENT_TYPE = 'embr.periscope.embedding.flex-repeater'
 
@@ -56,13 +52,6 @@ type EmbeddedViewProps = {
   useDefaultWidth: boolean
 }
     
-type EmbeddedSlideViewProps = {
-  store: ClientStore
-  mountPath: string
-  view: EmbeddedViewProps
-  outputListener?: OutputListener
-}
-
 function emitFlexPosition(props: FlexPositionProps): React.CSSProperties {
   return {
     alignSelf: props.align,
@@ -83,6 +72,7 @@ function resolveViewProps(props: FlexRepeaterProps, index: number): EmbeddedView
       key: view.key && view.key !== '' ? view.key : index.toString(),
       viewPath: resolve([view.viewPath, props.instanceCommon.viewPath]),
       viewParams: {
+        index,
         ...props.instanceCommon.viewParams,
         ...view.viewParams
       },
@@ -98,47 +88,32 @@ function resolveViewProps(props: FlexRepeaterProps, index: number): EmbeddedView
   }
 }
 
-export class ServerStartedView extends View {
+const JoinableView = memo(class extends View {
   constructor(props: ViewProps) {
       super(props)
       this.installViewStore = this.installViewStore.bind(this);
   }
 
   override installViewStore(viewStore: ViewStore): void {
-      super.installViewStore(silenceStartup(viewStore))
+      super.installViewStore(joinOnStartup(viewStore))
   }
-}
+})
 
-function silenceStartup(viewStore: ViewStore) {
+function joinOnStartup(viewStore: ViewStore) {
   Reflect.defineProperty(viewStore, 'startup', { value: () => {
+      const channel = viewStore.page.parent.connection
+      const params = viewStore.running ? viewStore.params.readEncoded('', false) : viewStore.initialParams
+
+      channel.send('view-join', {
+          resourcePath: viewStore.resourcePath,
+          mountPath: viewStore.mountPath,
+          birthDate: viewStore.birthDate,
+          params
+      })
       viewStore.running = true
   }})
   return viewStore
 }
-
-const EmbeddedView = memo(({ store, mountPath, view, outputListener }: EmbeddedSlideViewProps) => {
-  return (
-    <>
-      <ServerStartedView
-        key={PageStore.instanceKeyFor(view.viewPath, mountPath)}
-        store={store}
-        mountPath={mountPath}
-        resourcePath={view.viewPath}
-        useDefaultHeight={view.useDefaultHeight}
-        useDefaultMinHeight={view.useDefaultMinHeight}
-        useDefaultMinWidth={view.useDefaultMinWidth}
-        useDefaultWidth={view.useDefaultWidth}
-        params={view.viewParams}
-        outputListener={outputListener}
-        rootStyle={{
-          ...emitFlexPosition(view.viewPosition),
-          ...view.viewStyle,
-          classes: formatStyleNames(view.viewStyle.classes)
-        }}
-      />
-    </>
-  )
-})
 
 export function FlexRepeaterComponent({props, store, emit}: ComponentProps<FlexRepeaterProps>) {    
 
@@ -156,15 +131,25 @@ export function FlexRepeaterComponent({props, store, emit}: ComponentProps<FlexR
     return (
       <div { ...containerProps } >
         { props.instances.map((_, index) => {
-          const viewProps = resolveViewProps(props, index)
-          const mountPath = getChildMountPath(store, viewProps.key)
+          const view = resolveViewProps(props, index)
+          const mountPath = getChildMountPath(store, view.key)
 
           return (
-              <EmbeddedView 
+              <JoinableView 
+                key={PageStore.instanceKeyFor(view.viewPath, mountPath)}
                 store={store.view.page.parent} 
-                view={viewProps}
                 mountPath={mountPath}
-                key={viewProps.key}
+                resourcePath={view.viewPath}
+                useDefaultHeight={view.useDefaultHeight}
+                useDefaultMinHeight={view.useDefaultMinHeight}
+                useDefaultMinWidth={view.useDefaultMinWidth}
+                useDefaultWidth={view.useDefaultWidth}
+                params={view.viewParams}
+                rootStyle={{
+                  ...emitFlexPosition(view.viewPosition),
+                  ...view.viewStyle,
+                  classes: formatStyleNames(view.viewStyle.classes)
+                }}
               />
           )
         })}
@@ -172,25 +157,9 @@ export function FlexRepeaterComponent({props, store, emit}: ComponentProps<FlexR
     )
 }
 
-export class FlexRepeaterGatewayDelegate extends ComponentStoreDelegate {
-
-  handleEvent(eventName: string, eventObject: JsObject): void {
-    console.log(`event: ${eventName} = ${eventObject}`)
-  }
-
-  constructor(componentStore: AbstractUIElementStore) {
-      super(componentStore);
-  }
-  
-}
-
 export class FlexRepeaterComponentMeta implements ComponentMeta {
   getComponentType(): string {
     return COMPONENT_TYPE
-  }
-
-  createDelegate(component: AbstractUIElementStore): ComponentStoreDelegate | undefined {
-      return new FlexRepeaterGatewayDelegate(component)
   }
 
   getDefaultSize(): SizeObject {
