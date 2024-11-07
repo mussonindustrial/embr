@@ -3,12 +3,10 @@ package com.mussonindustrial.ignition.embr.periscope.component.embedding
 import com.inductiveautomation.ignition.common.JsonPath
 import com.inductiveautomation.ignition.common.TypeUtilities
 import com.inductiveautomation.ignition.common.gson.JsonArray
-import com.inductiveautomation.ignition.common.gson.JsonElement
 import com.inductiveautomation.ignition.common.gson.JsonObject
 import com.inductiveautomation.ignition.common.script.builtin.KeywordArgs
 import com.inductiveautomation.ignition.common.util.LogUtil
 import com.inductiveautomation.ignition.common.util.LoggerEx
-import com.inductiveautomation.ignition.common.util.get
 import com.inductiveautomation.perspective.common.api.PropertyType
 import com.inductiveautomation.perspective.common.property.Origin
 import com.inductiveautomation.perspective.gateway.api.Component
@@ -21,6 +19,7 @@ import com.inductiveautomation.perspective.gateway.model.ViewModel
 import com.inductiveautomation.perspective.gateway.property.PropertyTree
 import com.inductiveautomation.perspective.gateway.property.PropertyTree.Subscription
 import com.inductiveautomation.perspective.gateway.property.PropertyTreeChangeEvent
+import com.inductiveautomation.perspective.gateway.session.MessageProtocolDispatcher
 import com.mussonindustrial.embr.common.scripting.PyArgOverloadBuilder
 import com.mussonindustrial.embr.perspective.gateway.reflect.ViewLoader
 import com.mussonindustrial.embr.perspective.gateway.reflect.getHandlers
@@ -32,55 +31,40 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
 
     private val log: LoggerEx =
         LogUtil.getModuleLogger("embr-periscope", "FlexRepeaterModelDelegate")
-    private val id = "${component.view?.id?.resourcePath}${component.componentAddressPath}"
 
     private val queue = component.session.queue()
+    private val props = PropsHandler(component.getPropertyTreeOf(PropertyType.props)!!)
     private val pyArgsOverloads = PyArgOverloads()
     private val viewLoader = ViewLoader(component.page as PageModel)
     private val viewOutputListeners: WeakHashMap<ViewModel, List<Subscription>?> = WeakHashMap()
-    private val props = component.getPropertyTreeOf(PropertyType.props)!!
     private val instancesListener = createInstanceListener()
 
-    private var instances: JsonArray
-        get() {
-            val instancesProp = props.read("instances")
-            if (instancesProp.isEmpty) {
-                return JsonArray()
-            }
-
-            return toJsonDeep(instancesProp.get()).asJsonArray
-        }
-        set(value) {
-            props.write("instances", value, Origin.Delegate, this)
-        }
-
-    private val instanceCommon: JsonObject
-        get() {
-            val instanceCommon = props.read("instanceCommon")
-            if (instanceCommon.isEmpty) {
-                return JsonObject()
-            }
-
-            return toJsonDeep(instanceCommon.get()).asJsonObject
-        }
-
     override fun onStartup() {
-        log.debug("$id: Startup")
-        maybeRegisterHandlers()
+        log.debug("Startup")
+        createHandlers(component.page as PageModel)
         queue.submit {
-            updateInstances(instances, forceWrite = false)
+            updateInstances(props.instances, forceWrite = false)
             updateChildViews()
         }
     }
 
     override fun onShutdown() {
-        log.debug("$id: Shutdown")
+        log.debug("Shutdown")
         instancesListener.unsubscribe()
         shutdownChildViewListeners()
     }
 
-    private fun maybeRegisterHandlers() {
-        val pageModel = component.page as PageModel
+    private fun shutdownChildViewListeners() {
+        component.mdc {
+            log.debug("Removing child view listeners")
+            viewOutputListeners.forEach { listenerSet ->
+                listenerSet.value?.forEach { it.unsubscribe() }
+            }
+            viewOutputListeners.clear()
+        }
+    }
+
+    private fun createHandlers(pageModel: PageModel): MessageProtocolDispatcher {
         val nativeHandlers = pageModel.getHandlers()
         if (!nativeHandlers.handles(ViewJoinMsg.PROTOCOL)) {
             nativeHandlers.register(
@@ -89,10 +73,11 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
                 ViewJoinMsg::class.java
             )
         }
+        return nativeHandlers
     }
 
     private fun createInstanceListener(): Subscription {
-        return props.subscribe("instances", Origin.allBut(Origin.Delegate)) {
+        return props.tree.subscribe("instances", Origin.allBut(Origin.Delegate)) {
             queue.submit {
                 updateInstances(
                     it.readValue().value as? JsonArray ?: JsonArray(),
@@ -117,18 +102,19 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
 
         if (updateCount > 0 || forceWrite == true) {
             if (log.isTraceEnabled) {
-                log.trace("${component.componentAddressPath} - performing instance repair")
-                log.trace("Instances: $newInstances")
+                component.mdc {
+                    log.trace("${component.componentAddressPath} - performing instance repair")
+                    log.trace("Instances: $newInstances")
+                }
             }
 
-            instances = newInstances
+            props.instances = newInstances
         }
     }
 
     private fun updateKey(instance: JsonObject): Int {
         val currentKey = instance.get("key")
         if (currentKey == null || currentKey.toString() == "") {
-            log.trace("$id: updating key for $instance")
             instance.addProperty("key", UUID.randomUUID().toString())
             return 1
         }
@@ -138,92 +124,55 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
     private fun updateIndex(index: Int, viewParams: JsonObject): Int {
         val currentIndex = viewParams.get("index")
         if (currentIndex == null || currentIndex.toString() != index.toString()) {
-            log.trace("$id: updating index for $viewParams")
             viewParams.addProperty("index", index)
             return 1
         }
         return 0
     }
 
-    private fun getChildMountPath(instance: JsonObject): String {
-        return "${component.view?.id?.mountPath}$${component.componentAddressPath}.${instance.get("key").asString}"
-    }
-
     private fun updateChildViews() =
-        onInstanceViews(instances) { view ->
-            val tree =
-                view.viewModel?.getPropertyTreeOf(PropertyType.params) ?: return@onInstanceViews
+        runOnViews(props.instances) { view ->
+            if (view.viewModel == null) {
+                return@runOnViews
+            }
 
-            updateChildViewParams(tree, view)
+            view.updateViewModel()
+
             if (viewOutputListeners[view.viewModel] == null) {
-                createChildViewListeners(tree, view)
-            }
-        }
-
-    private fun updateChildViewParams(tree: PropertyTree, view: ViewInstance) {
-        val childParams = toJsonDeep(tree.read(JsonPath.ROOT).get().value) as JsonObject
-        val viewParams = getChildViewParams(view.configuration.asJsonObject)
-
-        val writes = JsonObject()
-        viewParams.keySet().forEach {
-            if (childParams.get(it) != viewParams.get(it)) {
-                writes.add(it, viewParams.get(it))
-            }
-        }
-        if (!writes.isEmpty) {
-            queue.submit { tree.writeAll(writes, Origin.Delegate, this) }
-        }
-    }
-
-    private fun getChildViewParams(instance: JsonObject): JsonObject {
-        val instanceCommonParams = instanceCommon.get("viewParams")?.asJsonObject
-        val childParams = instance.get("viewParams")?.asJsonObject
-
-        return JsonObject().apply {
-            instanceCommonParams?.entrySet()?.forEach { add(it.key, it.value) }
-            childParams?.entrySet()?.forEach { add(it.key, it.value) }
-        }
-    }
-
-    private fun createChildViewListeners(tree: PropertyTree, view: ViewInstance) {
-        log.trace("$id: createChildViewListeners - creating listeners")
-        val listeners =
-            tree.rootKeys?.map { rootKey ->
-                tree.subscribe(rootKey, Origin.allBut(Origin.Delegate)) { event ->
-                    if (this.isRunning && view.viewModel?.isRunning == true) {
-                        this.onViewOutputChanged(view.viewModel, event)
-                    } else {
-                        log.warn("$id: orphaned child view listener fired, cleaning up.")
-                        viewOutputListeners[view.viewModel]?.forEach { it.unsubscribe() }
-                        viewOutputListeners[view.viewModel] = null
+                val listeners =
+                    view.createRootParamSubscriptions { event ->
+                        if (this.isRunning && view.viewModel!!.isRunning) {
+                            this.onViewOutputChanged(view.viewModel!!, event)
+                        } else {
+                            component.mdc {
+                                log.warn("Orphaned child view listener fired, cleaning up.")
+                                viewOutputListeners[view.viewModel]?.forEach { it.unsubscribe() }
+                                viewOutputListeners[view.viewModel] = null
+                            }
+                        }
                     }
-                }
-            }
-        viewOutputListeners[view.viewModel] = listeners
-    }
 
-    private fun shutdownChildViewListeners() {
-        log.debug("$id: Removing child view listeners")
-        viewOutputListeners.forEach { listenerSet ->
-            listenerSet.value?.forEach { it.unsubscribe() }
+                viewOutputListeners[view.viewModel] = listeners
+            }
         }
-        viewOutputListeners.clear()
-    }
 
     private fun onViewOutputChanged(viewModel: ViewModel, event: PropertyTreeChangeEvent) {
-
         val instanceIndex =
-            instances.indexOfFirst { getChildMountPath(it.asJsonObject) == viewModel.id.mountPath }
+            props.instances.indexOfFirst {
+                ViewInstance(it.asJsonObject, null).mountPath == viewModel.id.mountPath
+            }
 
         if (instanceIndex == -1) {
-            log.warn("$id: Received a view-output-changed event for an unknown instance.")
+            component.mdc {
+                log.warn("Received a view-output-changed event for an unknown instance.")
+            }
             return
         }
 
         val path = "instances[${instanceIndex}].viewParams.${event.listeningPath}"
 
         var currentValue: Any? = null
-        val maybeCurrentValue = props.read(path)
+        val maybeCurrentValue = props.tree.read(path)
         if (maybeCurrentValue.isPresent) {
             currentValue = maybeCurrentValue.get().value
         }
@@ -232,75 +181,147 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
             return
         }
 
-        props.write(
-            "instances[${instanceIndex}].viewParams.${event.listeningPath}",
-            event.readValue(),
-            Origin.BindingWriteback,
-            this
-        )
+        props.tree.write(path, event.readValue(), Origin.BindingWriteback, this)
     }
 
-    data class ViewInstance(
-        val index: Int,
-        val configuration: JsonElement,
-        val viewModel: ViewModel?
-    )
-
-    private fun onInstanceViews(instances: JsonArray, block: (ViewInstance) -> Unit) {
-        instances.forEachIndexed { index, instance ->
+    private fun runOnViews(instances: JsonArray, block: (ViewInstance) -> Unit) {
+        instances.forEach { instance ->
             queue.submitOrRun {
-                val viewPath = getChildViewPath(instance.asJsonObject)
-                val mountPath = getChildMountPath(instance.asJsonObject)
-                val viewInstanceId = ViewInstanceId(viewPath, mountPath)
+                val view = ViewInstance(instance.asJsonObject, null)
+                val futureView = viewLoader.findView(view.viewInstanceId)
 
-                val futureView = viewLoader.findView(viewInstanceId)
-                futureView.thenAcceptAsync(
-                    { maybeViewModel ->
-                        maybeViewModel.ifPresentOrElse(
-                            {
-                                val viewModel = maybeViewModel.get()
-                                block(ViewInstance(index, instance, viewModel))
-                            },
-                            {
-                                viewLoader.startView(
-                                    viewPath,
-                                    mountPath,
-                                    Date().time,
-                                    getChildViewParams(instance.asJsonObject)
-                                )
-
-                                viewLoader
-                                    .waitForView(viewInstanceId, queue, 10000)
-                                    .thenAcceptAsync(
-                                        {
-                                            if (it.isEmpty) {
-                                                return@thenAcceptAsync
-                                            }
-                                            block(ViewInstance(index, instance, it.get()))
-                                        },
-                                        queue::submit
-                                    )
-                            }
-                        )
-                    },
-                    queue::submit
-                )
+                futureView.thenAcceptAsync({ runOrLoadView(it, view, 10000, block) }, queue::submit)
             }
         }
     }
 
-    private fun getChildViewPath(instance: JsonObject): String {
-        val viewPath = instance.get("viewPath")
-        if (viewPath != null) {
-            return viewPath.asString
+    private fun runOrLoadView(
+        maybeViewModel: Optional<ViewModel>,
+        viewInstance: ViewInstance,
+        waitLimitMs: Int,
+        block: (ViewInstance) -> Unit
+    ) {
+        if (maybeViewModel.isPresent) {
+            viewInstance.viewModel = maybeViewModel.get()
+            block(viewInstance)
+            return
+        } else {
+            viewLoader.startView(
+                viewInstance.viewPath,
+                viewInstance.mountPath,
+                Date().time,
+                viewInstance.viewParams
+            )
+
+            viewLoader
+                .waitForView(viewInstance.viewInstanceId, queue, waitLimitMs)
+                .thenAcceptAsync(
+                    {
+                        if (it.isEmpty) {
+                            return@thenAcceptAsync
+                        }
+                        viewInstance.viewModel = maybeViewModel.get()
+                        block(viewInstance)
+                        return@thenAcceptAsync
+                    },
+                    queue::submit
+                )
+            return
+        }
+    }
+
+    inner class ViewInstance(val configuration: JsonObject, var viewModel: ViewModel?) {
+
+        val key: String
+            get() = configuration.get("key").asString
+
+        val viewParams: JsonObject
+            get() {
+                val instanceCommonParams = props.instanceCommon.get("viewParams")?.asJsonObject
+                val childParams = configuration.get("viewParams")?.asJsonObject
+
+                return JsonObject().apply {
+                    instanceCommonParams?.entrySet()?.forEach { add(it.key, it.value) }
+                    childParams?.entrySet()?.forEach { add(it.key, it.value) }
+                }
+            }
+
+        val viewPath: String
+            get() {
+                val viewPath = configuration.get("viewPath")
+                if (viewPath != null) {
+                    return viewPath.asString
+                }
+
+                val maybeCommonPath = props.tree.read("instanceCommon.viewPath")
+                if (maybeCommonPath.isPresent) {
+                    return maybeCommonPath.get().value as? String ?: ""
+                }
+
+                return ""
+            }
+
+        val mountPath: String
+            get() {
+                return "${component.view?.id?.mountPath}$${component.componentAddressPath}.${key}"
+            }
+
+        val viewInstanceId: ViewInstanceId
+            get() = ViewInstanceId(viewPath, mountPath)
+
+        fun updateViewModel() {
+            val tree = viewModel?.getPropertyTreeOf(PropertyType.params) ?: return
+            val childParams = toJsonDeep(tree.read(JsonPath.ROOT).get().value) as JsonObject
+
+            val writes = JsonObject()
+            viewParams.keySet().forEach {
+                if (childParams.get(it) != viewParams.get(it)) {
+                    writes.add(it, viewParams.get(it))
+                }
+            }
+            if (!writes.isEmpty) {
+                queue.submit { tree.writeAll(writes, Origin.Delegate, this) }
+            }
         }
 
-        val maybeCommonPath = props.read("instanceCommon.viewPath")
-        if (maybeCommonPath.isPresent) {
-            return maybeCommonPath.get().value as? String ?: ""
-        }
+        fun createRootParamSubscriptions(
+            block: (PropertyTreeChangeEvent) -> Unit
+        ): List<Subscription>? {
+            val tree = viewModel?.getPropertyTreeOf(PropertyType.params) ?: return null
 
-        return ""
+            if (log.isTraceEnabled) {
+                component.mdc { log.trace("createChildViewListeners - creating listeners") }
+            }
+
+            return tree.rootKeys?.map { rootKey ->
+                tree.subscribe(rootKey, Origin.allBut(Origin.Delegate), block)
+            }
+        }
+    }
+
+    class PropsHandler(val tree: PropertyTree) {
+        var instances: JsonArray
+            get() {
+                val instancesProp = tree.read("instances")
+                if (instancesProp.isEmpty) {
+                    return JsonArray()
+                }
+
+                return toJsonDeep(instancesProp.get()).asJsonArray
+            }
+            set(value) {
+                tree.write("instances", value, Origin.Delegate, this)
+            }
+
+        val instanceCommon: JsonObject
+            get() {
+                val instanceCommon = tree.read("instanceCommon")
+                if (instanceCommon.isEmpty) {
+                    return JsonObject()
+                }
+
+                return toJsonDeep(instanceCommon.get()).asJsonObject
+            }
     }
 
     @ScriptCallable
@@ -309,7 +330,7 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
         types = [Int::class],
     )
     fun popInstance(args: Array<PyObject>, keywords: Array<String>) =
-        queue.submit { pyArgsOverloads.popInstance.call(args, keywords) }
+        queue.submit { component.mdc { pyArgsOverloads.popInstance.call(args, keywords) } }
 
     @ScriptCallable
     @KeywordArgs(
@@ -317,7 +338,7 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
         types = [PyObject::class],
     )
     fun pushInstance(args: Array<PyObject>, keywords: Array<String>) =
-        queue.submit { pyArgsOverloads.pushInstance.call(args, keywords) }
+        queue.submit { component.mdc { pyArgsOverloads.pushInstance.call(args, keywords) } }
 
     @ScriptCallable
     @KeywordArgs(
@@ -325,7 +346,7 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
         types = [Int::class, PyObject::class],
     )
     fun insertInstance(args: Array<PyObject>, keywords: Array<String>) =
-        queue.submit { pyArgsOverloads.insertInstance.call(args, keywords) }
+        queue.submit { component.mdc { pyArgsOverloads.insertInstance.call(args, keywords) } }
 
     inner class PyArgOverloads {
         val popInstance =
@@ -333,14 +354,14 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
                 .setName("popInstance")
                 .addOverload(
                     {
-                        val newInstances = instances
+                        val newInstances = props.instances
                         newInstances.remove(it[0] as Int)
                         updateInstances(newInstances, true)
                     },
                     "index" to Int::class,
                 )
                 .addOverload({
-                    val newInstances = instances
+                    val newInstances = props.instances
                     newInstances.remove(newInstances.size() - 1)
                     updateInstances(newInstances, true)
                 })
@@ -352,7 +373,7 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
                 .addOverload(
                     {
                         val instance = TypeUtilities.pyToGson(it[0] as PyObject?)
-                        val newInstances = instances
+                        val newInstances = props.instances
 
                         if (instance.isJsonObject) {
                             newInstances.add(instance)
@@ -381,7 +402,7 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
                         val index = it[0] as Int
                         val instance = TypeUtilities.pyToGson(it[1] as PyObject?)
 
-                        val existingInstances = instances
+                        val existingInstances = props.instances
                         val newInstances =
                             JsonArray().apply {
                                 existingInstances.take(index).forEach { instance -> add(instance) }
