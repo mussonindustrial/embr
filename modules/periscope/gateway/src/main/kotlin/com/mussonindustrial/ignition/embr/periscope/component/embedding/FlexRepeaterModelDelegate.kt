@@ -9,29 +9,24 @@ import com.inductiveautomation.ignition.common.util.LogUtil
 import com.inductiveautomation.ignition.common.util.LoggerEx
 import com.inductiveautomation.perspective.common.api.PropertyType
 import com.inductiveautomation.perspective.common.property.Origin
-import com.inductiveautomation.perspective.gateway.api.Component
-import com.inductiveautomation.perspective.gateway.api.ComponentModelDelegate
-import com.inductiveautomation.perspective.gateway.api.ScriptCallable
-import com.inductiveautomation.perspective.gateway.api.ViewInstanceId
+import com.inductiveautomation.perspective.gateway.api.*
 import com.inductiveautomation.perspective.gateway.binding.BindingUtils.toJsonDeep
+import com.inductiveautomation.perspective.gateway.messages.EventFiredMsg
 import com.inductiveautomation.perspective.gateway.model.PageModel
 import com.inductiveautomation.perspective.gateway.model.ViewModel
 import com.inductiveautomation.perspective.gateway.property.PropertyTree
 import com.inductiveautomation.perspective.gateway.property.PropertyTree.Subscription
 import com.inductiveautomation.perspective.gateway.property.PropertyTreeChangeEvent
-import com.inductiveautomation.perspective.gateway.session.MessageProtocolDispatcher
 import com.mussonindustrial.embr.common.scripting.PyArgOverloadBuilder
 import com.mussonindustrial.embr.perspective.gateway.reflect.ViewLoader
-import com.mussonindustrial.embr.perspective.gateway.reflect.getHandlers
 import com.mussonindustrial.ignition.embr.periscope.page.ViewJoinMsg
 import java.util.*
 import org.python.core.PyObject
+import org.slf4j.MDC
 
 class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(component) {
 
-    private val log: LoggerEx =
-        LogUtil.getModuleLogger("embr-periscope", "FlexRepeaterModelDelegate")
-
+    private val log = LogUtil.getModuleLogger("embr-periscope", "FlexRepeaterModelDelegate")
     private val queue = component.session.queue()
     private val props = PropsHandler(component.getPropertyTreeOf(PropertyType.props)!!)
     private val pyArgsOverloads = PyArgOverloads()
@@ -41,7 +36,6 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
 
     override fun onStartup() {
         log.debug("Startup")
-        createHandlers(component.page as PageModel)
         queue.submit {
             updateInstances(props.instances, forceWrite = false)
             updateChildViews()
@@ -56,7 +50,7 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
 
     private fun shutdownChildViewListeners() {
         component.mdc {
-            log.debug("Removing child view listeners")
+            log.debug("Removing child view listeners.")
             viewOutputListeners.forEach { listenerSet ->
                 listenerSet.value?.forEach { it.unsubscribe() }
             }
@@ -64,16 +58,26 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
         }
     }
 
-    private fun createHandlers(pageModel: PageModel): MessageProtocolDispatcher {
-        val nativeHandlers = pageModel.getHandlers()
-        if (!nativeHandlers.handles(ViewJoinMsg.PROTOCOL)) {
-            nativeHandlers.register(
-                ViewJoinMsg.PROTOCOL,
-                ViewJoinMsg.joinOrStart(pageModel),
-                ViewJoinMsg::class.java
-            )
+    override fun handleEvent(message: EventFiredMsg) {
+        if (message.eventName == ViewJoinMsg.PROTOCOL) {
+            val instanceId =
+                ViewInstanceId(
+                    message.event.get("resourcePath").asString,
+                    message.event.get("mountPath").asString
+                )
+
+            viewLoader.findView(instanceId).thenAccept { maybeView ->
+                if (maybeView.isEmpty) {
+                    viewLoader.startView(
+                        message.event.get("resourcePath").asString,
+                        message.event.get("mountPath").asString,
+                        message.event.get("birthDate").asLong,
+                        message.event.get("params").asJsonObject
+                    )
+                }
+                updateChildViews()
+            }
         }
-        return nativeHandlers
     }
 
     private fun createInstanceListener(): Subscription {
@@ -102,10 +106,7 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
 
         if (updateCount > 0 || forceWrite == true) {
             if (log.isTraceEnabled) {
-                component.mdc {
-                    log.trace("${component.componentAddressPath} - performing instance repair")
-                    log.trace("Instances: $newInstances")
-                }
+                component.mdc { log.trace("Performing instance repair: $newInstances") }
             }
 
             props.instances = newInstances
@@ -130,15 +131,20 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
         return 0
     }
 
-    private fun updateChildViews() =
+    private fun updateChildViews() {
         runOnViews(props.instances) { view ->
             if (view.viewModel == null) {
+                component.mdc { log.warn("Missing viewModel for ${view.mountPath}") }
                 return@runOnViews
             }
 
             view.updateViewModel()
-
             if (viewOutputListeners[view.viewModel] == null) {
+
+                if (log.isTraceEnabled) {
+                    view.viewModel?.mdc { log.trace("Creating view output listeners.") }
+                }
+
                 val listeners =
                     view.createRootParamSubscriptions { event ->
                         if (this.isRunning && view.viewModel!!.isRunning) {
@@ -155,11 +161,18 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
                 viewOutputListeners[view.viewModel] = listeners
             }
         }
+    }
 
     private fun onViewOutputChanged(viewModel: ViewModel, event: PropertyTreeChangeEvent) {
+        if (log.isTraceEnabled) {
+            component.mdc {
+                log.trace("View output change event: ${event.listeningPath}=${event.readValue()}")
+            }
+        }
+
         val instanceIndex =
             props.instances.indexOfFirst {
-                ViewInstance(it.asJsonObject, null).mountPath == viewModel.id.mountPath
+                ViewInstance(0, it.asJsonObject, null).mountPath == viewModel.id.mountPath
             }
 
         if (instanceIndex == -1) {
@@ -178,16 +191,26 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
         }
 
         if (currentValue == event.readValue().value) {
+            component.mdc {
+                if (log.isTraceEnabled) {
+                    log.trace("No value change, skipping.")
+                }
+            }
             return
         }
 
+        component.mdc {
+            if (log.isTraceEnabled) {
+                log.trace("Writing $path=[${event.readValue()}]")
+            }
+        }
         props.tree.write(path, event.readValue(), Origin.BindingWriteback, this)
     }
 
     private fun runOnViews(instances: JsonArray, block: (ViewInstance) -> Unit) {
-        instances.forEach { instance ->
-            queue.submitOrRun {
-                val view = ViewInstance(instance.asJsonObject, null)
+        instances.forEachIndexed { index, instance ->
+            queue.submit {
+                val view = ViewInstance(index, instance.asJsonObject, null)
                 val futureView = viewLoader.findView(view.viewInstanceId)
 
                 futureView.thenAcceptAsync({ runOrLoadView(it, view, 10000, block) }, queue::submit)
@@ -203,25 +226,40 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
     ) {
         if (maybeViewModel.isPresent) {
             viewInstance.viewModel = maybeViewModel.get()
-            block(viewInstance)
+            queue.submitOrRun { block(viewInstance) }
             return
         } else {
+            if (log.isTraceEnabled) {
+                viewInstance.mdc {
+                    log.trace("${viewInstance.viewInstanceId.id} isn't running, starting...")
+                }
+            }
+
             viewLoader.startView(
                 viewInstance.viewPath,
                 viewInstance.mountPath,
                 Date().time,
                 viewInstance.viewParams
             )
-
             viewLoader
                 .waitForView(viewInstance.viewInstanceId, queue, waitLimitMs)
                 .thenAcceptAsync(
                     {
-                        if (it.isEmpty) {
-                            return@thenAcceptAsync
+                        viewInstance.mdc {
+                            if (it.isEmpty) {
+                                viewInstance.mdc {
+                                    log.warn("Could not find or start view within wait limit.")
+                                }
+                                return@mdc
+                            }
+                            viewInstance.viewModel = it.get()
+
+                            if (log.isTraceEnabled) {
+                                viewInstance.mdc { log.trace("View started.") }
+                            }
+                            block(viewInstance)
                         }
-                        viewInstance.viewModel = maybeViewModel.get()
-                        block(viewInstance)
+
                         return@thenAcceptAsync
                     },
                     queue::submit
@@ -230,9 +268,13 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
         }
     }
 
-    inner class ViewInstance(val configuration: JsonObject, var viewModel: ViewModel?) {
+    inner class ViewInstance(
+        private val index: Int,
+        private val configuration: JsonObject,
+        var viewModel: ViewModel?
+    ) : LoggingContext {
 
-        val key: String
+        private val key: String
             get() = configuration.get("key").asString
 
         val viewParams: JsonObject
@@ -287,15 +329,33 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
         fun createRootParamSubscriptions(
             block: (PropertyTreeChangeEvent) -> Unit
         ): List<Subscription>? {
+            mdc {}
             val tree = viewModel?.getPropertyTreeOf(PropertyType.params) ?: return null
 
             if (log.isTraceEnabled) {
-                component.mdc { log.trace("createChildViewListeners - creating listeners") }
+                mdc { log.trace("Creating subscriptions for ${tree.rootKeys}") }
             }
 
-            return tree.rootKeys?.map { rootKey ->
-                tree.subscribe(rootKey, Origin.allBut(Origin.Delegate), block)
-            }
+            val listeners =
+                tree.rootKeys?.map { rootKey ->
+                    tree.subscribe(rootKey, Origin.allBut(Origin.Delegate), block)
+                }
+
+            return listeners
+        }
+
+        override fun getLogger(): LoggerEx = log
+
+        override fun getMdcParent(): Component = component
+
+        override fun mdcSetup() {
+            MDC.put("instances.index", index.toString())
+            MDC.put("instance.view", viewInstanceId.id)
+        }
+
+        override fun mdcTeardown() {
+            MDC.remove("instances.index")
+            MDC.remove("instance.view")
         }
     }
 

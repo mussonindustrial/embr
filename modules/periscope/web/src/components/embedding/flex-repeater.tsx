@@ -1,8 +1,10 @@
 import React, { memo } from 'react'
 import {
+  AbstractUIElementStore,
   ComponentMeta,
   ComponentProps,
   ComponentStore,
+  ComponentStoreDelegate,
   JsObject,
   PageStore,
   PComponent,
@@ -88,27 +90,33 @@ function resolveViewProps(props: FlexRepeaterProps, index: number): EmbeddedView
   }
 }
 
+type JoinableViewProps = ViewProps & {
+  delegate: ComponentStoreDelegate 
+}
+
 const JoinableView = memo(class extends View {
-  constructor(props: ViewProps) {
+  delegate: ComponentStoreDelegate 
+
+  constructor(props: JoinableViewProps) {
       super(props)
+      this.delegate = props.delegate
       this.installViewStore = this.installViewStore.bind(this);
   }
 
   override installViewStore(viewStore: ViewStore): void {
-      super.installViewStore(joinOnStartup(viewStore))
+      super.installViewStore(joinOnStartup(viewStore, this.delegate))
   }
 })
 
-function joinOnStartup(viewStore: ViewStore) {
+function joinOnStartup(viewStore: ViewStore, delegate: ComponentStoreDelegate ) {
   Reflect.defineProperty(viewStore, 'startup', { value: () => {
-      const channel = viewStore.page.parent.connection
       const params = viewStore.running ? viewStore.params.readEncoded('', false) : viewStore.initialParams
 
-      channel.send('view-join', {
-          resourcePath: viewStore.resourcePath,
-          mountPath: viewStore.mountPath,
-          birthDate: viewStore.birthDate,
-          params
+      delegate.fireEvent('view-join', {
+        resourcePath: viewStore.resourcePath,
+        mountPath: viewStore.mountPath,
+        birthDate: viewStore.birthDate,
+        params
       })
       viewStore.running = true
   }})
@@ -150,11 +158,18 @@ export function FlexRepeaterComponent({props, store, emit}: ComponentProps<FlexR
                   ...view.viewStyle,
                   classes: formatStyleNames(view.viewStyle.classes)
                 }}
+                delegate={store.delegate!!}
               />
           )
         })}
       </div>
     )
+}
+
+export class FlexRepeaterComponentDelegate extends ComponentStoreDelegate {
+
+  handleEvent(_eventName: string, _eventObject: JsObject): void { }
+  
 }
 
 export class FlexRepeaterComponentMeta implements ComponentMeta {
@@ -167,6 +182,10 @@ export class FlexRepeaterComponentMeta implements ComponentMeta {
       width: 300,
       height: 300,
     }
+  }
+
+  createDelegate(component: AbstractUIElementStore): ComponentStoreDelegate {
+      return new FlexRepeaterComponentDelegate(component)
   }
 
   getPropsReducer(tree: PropertyTree): FlexRepeaterProps {
