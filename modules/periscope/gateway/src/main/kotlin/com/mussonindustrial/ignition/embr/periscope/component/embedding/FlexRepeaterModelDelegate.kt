@@ -18,19 +18,21 @@ import com.inductiveautomation.perspective.gateway.property.PropertyTree
 import com.inductiveautomation.perspective.gateway.property.PropertyTree.Subscription
 import com.inductiveautomation.perspective.gateway.property.PropertyTreeChangeEvent
 import com.mussonindustrial.embr.common.scripting.PyArgOverloadBuilder
-import com.mussonindustrial.embr.perspective.gateway.reflect.ViewLoader
+import com.mussonindustrial.ignition.embr.periscope.PeriscopeGatewayContext
 import com.mussonindustrial.ignition.embr.periscope.page.ViewJoinMsg
 import java.util.*
+import java.util.concurrent.TimeUnit
 import org.python.core.PyObject
 import org.slf4j.MDC
 
 class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(component) {
 
     private val log = LogUtil.getModuleLogger("embr-periscope", "FlexRepeaterModelDelegate")
+    private val context = PeriscopeGatewayContext.instance
     private val queue = component.session.queue()
     private val props = PropsHandler(component.getPropertyTreeOf(PropertyType.props)!!)
     private val pyArgsOverloads = PyArgOverloads()
-    private val viewLoader = ViewLoader(component.page as PageModel)
+    private val viewLoader = context.getViewLoader(component.page as PageModel)
     private val viewOutputListeners: WeakHashMap<ViewModel, List<Subscription>?> = WeakHashMap()
     private val instancesListener = createInstanceListener()
 
@@ -60,23 +62,12 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
 
     override fun handleEvent(message: EventFiredMsg) {
         if (message.eventName == ViewJoinMsg.PROTOCOL) {
-            val instanceId =
-                ViewInstanceId(
-                    message.event.get("resourcePath").asString,
-                    message.event.get("mountPath").asString
-                )
+            val event = ViewJoinMsg(message.event)
 
-            viewLoader.findView(instanceId).thenAccept { maybeView ->
-                if (maybeView.isEmpty) {
-                    viewLoader.startView(
-                        message.event.get("resourcePath").asString,
-                        message.event.get("mountPath").asString,
-                        message.event.get("birthDate").asLong,
-                        message.event.get("params").asJsonObject
-                    )
-                }
-                updateChildViews()
-            }
+            viewLoader
+                .findOrStartView(event.resourcePath, event.mountPath, event.birthDate, event.params)
+                .orTimeout(10000, TimeUnit.MILLISECONDS)
+                .thenAccept { updateChildViews() }
         }
     }
 
@@ -211,62 +202,77 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
         instances.forEachIndexed { index, instance ->
             queue.submit {
                 val view = ViewInstance(index, instance.asJsonObject, null)
-                val futureView = viewLoader.findView(view.viewInstanceId)
 
-                futureView.thenAcceptAsync({ runOrLoadView(it, view, 10000, block) }, queue::submit)
-            }
-        }
-    }
-
-    private fun runOrLoadView(
-        maybeViewModel: Optional<ViewModel>,
-        viewInstance: ViewInstance,
-        waitLimitMs: Int,
-        block: (ViewInstance) -> Unit
-    ) {
-        if (maybeViewModel.isPresent) {
-            viewInstance.viewModel = maybeViewModel.get()
-            queue.submitOrRun { block(viewInstance) }
-            return
-        } else {
-            if (log.isTraceEnabled) {
-                viewInstance.mdc {
-                    log.trace("${viewInstance.viewInstanceId.id} isn't running, starting...")
-                }
-            }
-
-            viewLoader.startView(
-                viewInstance.viewPath,
-                viewInstance.mountPath,
-                Date().time,
-                viewInstance.viewParams
-            )
-            viewLoader
-                .waitForView(viewInstance.viewInstanceId, queue, waitLimitMs)
-                .thenAcceptAsync(
-                    {
-                        viewInstance.mdc {
-                            if (it.isEmpty) {
-                                viewInstance.mdc {
-                                    log.warn("Could not find or start view within wait limit.")
+                viewLoader
+                    .findOrStartView(view.viewPath, view.mountPath, Date().time, view.viewParams)
+                    .orTimeout(10000L, TimeUnit.MILLISECONDS)
+                    .thenAcceptAsync(
+                        { maybeViewModel ->
+                            if (maybeViewModel.isEmpty) {
+                                component.mdc {
+                                    log.warn("Failed to find view to operate on: $view.viewPath")
                                 }
-                                return@mdc
+                            } else {
+                                view.viewModel = maybeViewModel.get()
+                                block(view)
                             }
-                            viewInstance.viewModel = it.get()
-
-                            if (log.isTraceEnabled) {
-                                viewInstance.mdc { log.trace("View started.") }
-                            }
-                            block(viewInstance)
-                        }
-
-                        return@thenAcceptAsync
-                    },
-                    queue::submit
-                )
-            return
+                        },
+                        queue::submit
+                    )
+            }
         }
     }
+
+    //    private fun runOrLoadView(
+    //        maybeViewModel: Optional<ViewModel>,
+    //        viewInstance: ViewInstance,
+    //        waitLimitMs: Int,
+    //        block: (ViewInstance) -> Unit
+    //    ) {
+    //        if (maybeViewModel.isPresent) {
+    //            viewInstance.viewModel = maybeViewModel.get()
+    //            queue.submitOrRun { block(viewInstance) }
+    //            return
+    //        } else {
+    //            if (log.isTraceEnabled) {
+    //                viewInstance.mdc {
+    //                    log.trace("${viewInstance.viewInstanceId.id} isn't running, starting...")
+    //                }
+    //            }
+    //
+    //            viewLoader.startView(
+    //                viewInstance.viewPath,
+    //                viewInstance.mountPath,
+    //                Date().time,
+    //                viewInstance.viewParams
+    //            )
+    //            viewLoader
+    //                .waitForView(viewInstance.viewInstanceId, queue, waitLimitMs)
+    //                .thenAcceptAsync(
+    //                    {
+    //                        viewInstance.mdc {
+    //                            if (it.isEmpty) {
+    //                                viewInstance.mdc {
+    //                                    log.warn("Could not find or start view within wait
+    // limit.")
+    //                                }
+    //                                return@mdc
+    //                            }
+    //                            viewInstance.viewModel = it.get()
+    //
+    //                            if (log.isTraceEnabled) {
+    //                                viewInstance.mdc { log.trace("View started.") }
+    //                            }
+    //                            block(viewInstance)
+    //                        }
+    //
+    //                        return@thenAcceptAsync
+    //                    },
+    //                    queue::submit
+    //                )
+    //            return
+    //        }
+    //    }
 
     inner class ViewInstance(
         private val index: Int,

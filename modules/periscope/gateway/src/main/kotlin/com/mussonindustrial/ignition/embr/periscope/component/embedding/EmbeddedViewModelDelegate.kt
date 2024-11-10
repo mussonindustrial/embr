@@ -58,8 +58,18 @@ class EmbeddedViewModelDelegate(component: Component) : ComponentModelDelegate(c
     override fun handleEvent(message: EventFiredMsg) {
         if (message.eventName == ViewJoinMsg.PROTOCOL) {
             val event = ViewJoinMsg(message.event)
+
+            if (event.resourcePath != props.viewPath || event.mountPath != props.mountPath) {
+                component.mdc { log.warn("Client requested unexpected resource or mount path.") }
+            }
+
             viewLoader
-                .findOrStartView(event.resourcePath, event.mountPath, event.birthDate, event.params)
+                .findOrStartView(
+                    event.resourcePath,
+                    event.mountPath,
+                    event.birthDate,
+                    props.viewParams
+                )
                 .orTimeout(viewTimeoutMs, TimeUnit.MILLISECONDS)
                 .thenAccept {
                     if (it.isPresent) {

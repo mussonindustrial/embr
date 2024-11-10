@@ -5,7 +5,7 @@ import com.inductiveautomation.perspective.gateway.api.PerspectiveContext
 import com.inductiveautomation.perspective.gateway.model.PageModel
 import com.mussonindustrial.embr.gateway.EmbrGatewayContext
 import com.mussonindustrial.embr.gateway.EmbrGatewayContextImpl
-import com.mussonindustrial.ignition.embr.periscope.page.ViewLoaderNew
+import com.mussonindustrial.ignition.embr.periscope.page.ViewLoader
 import java.util.WeakHashMap
 
 class PeriscopeGatewayContext(private val context: GatewayContext) :
@@ -21,14 +21,14 @@ class PeriscopeGatewayContext(private val context: GatewayContext) :
         perspectiveContext = PerspectiveContext.get(context)
     }
 
-    private val viewLoaders = WeakHashMap<PageModel, ViewLoaderNew>()
+    private val viewLoaders = WeakHashMap<PageModel, ViewLoader>()
 
-    fun getViewLoader(pageModel: PageModel): ViewLoaderNew {
+    fun getViewLoader(pageModel: PageModel): ViewLoader {
         viewLoaders[pageModel]?.apply {
             return this
         }
 
-        val newViewLoader = ViewLoaderNew(pageModel)
+        val newViewLoader = ViewLoader(pageModel)
         viewLoaders[pageModel] = newViewLoader
         return newViewLoader
     }
