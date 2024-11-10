@@ -91,7 +91,6 @@ export function EmbeddedViewComponent({
         useDefaultMinHeight={props.useDefaultMinHeight}
         useDefaultMinWidth={props.useDefaultMinWidth}
         useDefaultWidth={props.useDefaultWidth}
-        // params={props.viewParams}
         rootStyle={{
           ...props.viewStyle,
           classes: formatStyleNames(props.viewStyle.classes),
@@ -127,7 +126,6 @@ export class EmbeddedViewComponentMeta implements ComponentMeta {
   getPropsReducer(tree: PropertyTree): EmbeddedViewProps {
     return {
       viewPath: tree.readString('viewPath', ''),
-      // viewParams: tree.readEncoded('viewParams'),
       viewStyle: tree.read('viewStyle', {}),
       useDefaultHeight: tree.readBoolean('useDefaultHeight'),
       useDefaultMinHeight: tree.readBoolean('useDefaultMinHeight'),
