@@ -16,16 +16,28 @@ import {
   ViewStore,
 } from '@inductiveautomation/perspective-client'
 
-import { formatStyleNames, mergeStyles, resolve } from '../../util';
+import { formatStyleNames, mergeStyles, resolve } from '../../util'
 
 const COMPONENT_TYPE = 'embr.periscope.embedding.flex-repeater'
 
 type FlexRepeaterSettings = {
   direction: 'row' | 'row-reverse' | 'column' | 'column-reverse'
   wrap: 'nowrap' | 'wrap' | 'wrap-reverse'
-  justify: 'flex-start' | 'flex-end' | 'center' | 'space-between' | 'space-around' | 'space-evenly'
-  alignItems: 'flex-start' | 'flex-end'| 'center' | 'baseline' | 'stretch'
-  alignContent: 'flex-start' | 'flex-end'| 'center' | 'space-between' | 'space-around' | 'stretch'
+  justify:
+    | 'flex-start'
+    | 'flex-end'
+    | 'center'
+    | 'space-between'
+    | 'space-around'
+    | 'space-evenly'
+  alignItems: 'flex-start' | 'flex-end' | 'center' | 'baseline' | 'stretch'
+  alignContent:
+    | 'flex-start'
+    | 'flex-end'
+    | 'center'
+    | 'space-between'
+    | 'space-around'
+    | 'stretch'
 }
 
 type FlexPositionProps = {
@@ -53,13 +65,13 @@ type EmbeddedViewProps = {
   useDefaultMinWidth: boolean
   useDefaultWidth: boolean
 }
-    
+
 function emitFlexPosition(props: FlexPositionProps): React.CSSProperties {
   return {
     alignSelf: props.align,
     flexBasis: props.basis,
     flexGrow: props.grow,
-    flexShrink: props.shrink
+    flexShrink: props.shrink,
   }
 }
 
@@ -67,109 +79,133 @@ function getChildMountPath(store: ComponentStore, key: string) {
   return `${store.viewMountPath}$${store.addressPathString}.${key}`
 }
 
-function resolveViewProps(props: FlexRepeaterProps, index: number): EmbeddedViewProps {
+function resolveViewProps(
+  props: FlexRepeaterProps,
+  index: number
+): EmbeddedViewProps {
   const view = props.instances[index]
 
   return {
-      key: view.key && view.key !== '' ? view.key : index.toString(),
-      viewPath: resolve([view.viewPath, props.instanceCommon.viewPath]),
-      viewParams: {
-        index,
-        ...props.instanceCommon.viewParams,
-        ...view.viewParams
-      },
-      viewStyle: mergeStyles([props.instanceCommon.viewStyle, view.viewStyle]),
-      viewPosition: {
-        ...props.instanceCommon.viewPosition,
-        ...view.viewPosition
-      },
-      useDefaultHeight: resolve([view.useDefaultHeight, props.instanceCommon.useDefaultHeight]),
-      useDefaultMinHeight: resolve([view.useDefaultMinHeight, props.instanceCommon.useDefaultMinHeight]),
-      useDefaultMinWidth: resolve([view.useDefaultMinWidth, props.instanceCommon.useDefaultMinWidth]),
-      useDefaultWidth: resolve([view.useDefaultWidth, props.instanceCommon.useDefaultWidth])
+    key: view.key && view.key !== '' ? view.key : index.toString(),
+    viewPath: resolve([view.viewPath, props.instanceCommon.viewPath]),
+    viewParams: {
+      index,
+      ...props.instanceCommon.viewParams,
+      ...view.viewParams,
+    },
+    viewStyle: mergeStyles([props.instanceCommon.viewStyle, view.viewStyle]),
+    viewPosition: {
+      ...props.instanceCommon.viewPosition,
+      ...view.viewPosition,
+    },
+    useDefaultHeight: resolve([
+      view.useDefaultHeight,
+      props.instanceCommon.useDefaultHeight,
+    ]),
+    useDefaultMinHeight: resolve([
+      view.useDefaultMinHeight,
+      props.instanceCommon.useDefaultMinHeight,
+    ]),
+    useDefaultMinWidth: resolve([
+      view.useDefaultMinWidth,
+      props.instanceCommon.useDefaultMinWidth,
+    ]),
+    useDefaultWidth: resolve([
+      view.useDefaultWidth,
+      props.instanceCommon.useDefaultWidth,
+    ]),
   }
 }
 
 type JoinableViewProps = ViewProps & {
-  delegate: ComponentStoreDelegate 
+  delegate: ComponentStoreDelegate
 }
 
-const JoinableView = memo(class extends View {
-  delegate: ComponentStoreDelegate 
+const JoinableView = memo(
+  class extends View {
+    delegate: ComponentStoreDelegate
 
-  constructor(props: JoinableViewProps) {
+    constructor(props: JoinableViewProps) {
       super(props)
       this.delegate = props.delegate
-      this.installViewStore = this.installViewStore.bind(this);
-  }
+      this.installViewStore = this.installViewStore.bind(this)
+    }
 
-  override installViewStore(viewStore: ViewStore): void {
+    override installViewStore(viewStore: ViewStore): void {
       super.installViewStore(joinOnStartup(viewStore, this.delegate))
+    }
   }
-})
+)
 
-function joinOnStartup(viewStore: ViewStore, delegate: ComponentStoreDelegate ) {
-  Reflect.defineProperty(viewStore, 'startup', { value: () => {
-      const params = viewStore.running ? viewStore.params.readEncoded('', false) : viewStore.initialParams
+function joinOnStartup(viewStore: ViewStore, delegate: ComponentStoreDelegate) {
+  Reflect.defineProperty(viewStore, 'startup', {
+    value: () => {
+      const params = viewStore.running
+        ? viewStore.params.readEncoded('', false)
+        : viewStore.initialParams
 
       delegate.fireEvent('view-join', {
         resourcePath: viewStore.resourcePath,
         mountPath: viewStore.mountPath,
         birthDate: viewStore.birthDate,
-        params
+        params,
       })
       viewStore.running = true
-  }})
+    },
+  })
   return viewStore
 }
 
-export function FlexRepeaterComponent({props, store, emit}: ComponentProps<FlexRepeaterProps>) {    
+export function FlexRepeaterComponent({
+  props,
+  store,
+  emit,
+}: ComponentProps<FlexRepeaterProps>) {
+  const containerProps = emit({ classes: ['view-parent'] })
+  containerProps.style = {
+    ...containerProps.style,
+    display: 'flex',
+    flexDirection: props.settings?.direction,
+    flexWrap: props.settings?.wrap,
+    justifyContent: props.settings?.justify,
+    alignItems: props.settings?.alignItems,
+    alignContent: props.settings?.alignContent,
+  }
 
-    const containerProps = emit({ classes: ['view-parent'] })
-    containerProps.style = {
-      ...containerProps.style,
-      display: 'flex',
-      flexDirection: props.settings?.direction,
-      flexWrap: props.settings?.wrap,
-      justifyContent: props.settings?.justify,
-      alignItems: props.settings?.alignItems,
-      alignContent: props.settings?.alignContent
-    }    
+  return (
+    <div {...containerProps}>
+      {props.instances.map((_, index) => {
+        const view = resolveViewProps(props, index)
+        const mountPath = getChildMountPath(store, view.key)
 
-    return (
-      <div { ...containerProps } >
-        { props.instances.map((_, index) => {
-          const view = resolveViewProps(props, index)
-          const mountPath = getChildMountPath(store, view.key)
-
-          return (
-              <JoinableView 
-                key={PageStore.instanceKeyFor(view.viewPath, mountPath)}
-                store={store.view.page.parent} 
-                mountPath={mountPath}
-                resourcePath={view.viewPath}
-                useDefaultHeight={view.useDefaultHeight}
-                useDefaultMinHeight={view.useDefaultMinHeight}
-                useDefaultMinWidth={view.useDefaultMinWidth}
-                useDefaultWidth={view.useDefaultWidth}
-                params={view.viewParams}
-                rootStyle={{
-                  ...emitFlexPosition(view.viewPosition),
-                  ...view.viewStyle,
-                  classes: formatStyleNames(view.viewStyle.classes)
-                }}
-                delegate={store.delegate!!}
-              />
-          )
-        })}
-      </div>
-    )
+        return (
+          <JoinableView
+            key={PageStore.instanceKeyFor(view.viewPath, mountPath)}
+            store={store.view.page.parent}
+            mountPath={mountPath}
+            resourcePath={view.viewPath}
+            useDefaultHeight={view.useDefaultHeight}
+            useDefaultMinHeight={view.useDefaultMinHeight}
+            useDefaultMinWidth={view.useDefaultMinWidth}
+            useDefaultWidth={view.useDefaultWidth}
+            params={view.viewParams}
+            rootStyle={{
+              ...emitFlexPosition(view.viewPosition),
+              ...view.viewStyle,
+              classes: formatStyleNames(view.viewStyle.classes),
+            }}
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            delegate={store.delegate!}
+          />
+        )
+      })}
+    </div>
+  )
 }
 
 export class FlexRepeaterComponentDelegate extends ComponentStoreDelegate {
-
-  handleEvent(_eventName: string, _eventObject: JsObject): void { }
-  
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-empty-function
+  handleEvent(_eventName: string, _eventObject: JsObject): void {}
 }
 
 export class FlexRepeaterComponentMeta implements ComponentMeta {
@@ -185,7 +221,7 @@ export class FlexRepeaterComponentMeta implements ComponentMeta {
   }
 
   createDelegate(component: AbstractUIElementStore): ComponentStoreDelegate {
-      return new FlexRepeaterComponentDelegate(component)
+    return new FlexRepeaterComponentDelegate(component)
   }
 
   getPropsReducer(tree: PropertyTree): FlexRepeaterProps {
