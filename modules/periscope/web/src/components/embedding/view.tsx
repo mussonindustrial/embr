@@ -5,6 +5,7 @@ import {
   ComponentProps,
   ComponentStore,
   ComponentStoreDelegate,
+  Emitter,
   JsObject,
   PageStore,
   PComponent,
@@ -13,6 +14,7 @@ import {
   StyleObject,
   View,
   ViewProps,
+  ViewStateDisplay,
   ViewStore,
 } from '@inductiveautomation/perspective-client'
 
@@ -73,12 +75,35 @@ function joinOnStartup(viewStore: ViewStore, delegate: ComponentStoreDelegate) {
   return viewStore
 }
 
+function MissingComponentDelegate({ emit }: { emit: Emitter }) {
+  return (
+    <div {...emit({ classes: ['view-parent'] })}>
+      <ViewStateDisplay
+        primaryMessage="View Failed to Load"
+        secondaryMessage={`No component delegate was found`}
+        icon={
+          <svg className="view-state-icon">
+            <use xlinkHref="/res/perspective/icons/material-icons.svg#warning" />
+          </svg>
+        }
+      />
+    </div>
+  )
+}
+
 export function EmbeddedViewComponent({
   props,
   store,
   emit,
 }: ComponentProps<EmbeddedViewProps>) {
   const mountPath = getChildMountPath(store)
+
+  if (store.delegate == undefined) {
+    console.warn(
+      `No delegate found for component ${COMPONENT_TYPE} at ${mountPath}`
+    )
+    return <MissingComponentDelegate emit={emit} />
+  }
 
   return (
     <div {...emit({ classes: ['view-parent'] })}>
