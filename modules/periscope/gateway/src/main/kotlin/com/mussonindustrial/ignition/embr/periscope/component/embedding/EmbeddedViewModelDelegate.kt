@@ -97,9 +97,6 @@ class EmbeddedViewModelDelegate(component: Component) : ComponentModelDelegate(c
 
     private fun onViewInputChanged(event: PropertyTreeChangeEvent) {
         if (event.source == this) {
-            if (log.isTraceEnabled) {
-                component.mdc { log.trace("Self triggered input change, skipping...") }
-            }
             return
         }
 
@@ -112,42 +109,27 @@ class EmbeddedViewModelDelegate(component: Component) : ComponentModelDelegate(c
     }
 
     private fun onViewOutputChanged(event: PropertyTreeChangeEvent) {
-        try {
-            component.mdcSetup()
-            if (event.source === this) {
-                return
-            }
-
-            val newValue =
-                toJsonDeep(event.readValue().value, BindingUtils.JsonEncoding.DollarQualified)
-
-            if (log.isTraceEnabled) {
-                log.trace("View output change event: ${event.listeningPath}=${newValue}")
-            }
-
-            val path = "viewParams.${event.listeningPath}"
-            var currentValue: Any? = null
-
-            val maybeCurrentValue = props.tree.read(path)
-            if (maybeCurrentValue.isPresent) {
-                currentValue =
-                    toJsonDeep(maybeCurrentValue.get(), BindingUtils.JsonEncoding.DollarQualified)
-            }
-
-            if (currentValue == newValue) {
-                if (log.isTraceEnabled) {
-                    log.trace("No value change ($currentValue == $newValue), skipping...")
-                }
-                return
-            }
-
-            if (log.isTraceEnabled) {
-                log.trace("Writing $path=[${newValue}]")
-            }
-            props.tree.write(path, newValue, Origin.BindingWriteback, this)
-        } finally {
-            component.mdcTeardown()
+        if (event.source === this) {
+            return
         }
+
+        val newValue =
+            toJsonDeep(event.readValue().value, BindingUtils.JsonEncoding.DollarQualified)
+
+        val path = "viewParams.${event.listeningPath}"
+        var currentValue: Any? = null
+
+        val maybeCurrentValue = props.tree.read(path)
+        if (maybeCurrentValue.isPresent) {
+            currentValue =
+                toJsonDeep(maybeCurrentValue.get(), BindingUtils.JsonEncoding.DollarQualified)
+        }
+
+        if (currentValue == newValue) {
+            return
+        }
+
+        props.tree.write(path, newValue, Origin.BindingWriteback, this)
     }
 
     private fun onView(block: (ViewModel) -> Unit) {
@@ -160,7 +142,7 @@ class EmbeddedViewModelDelegate(component: Component) : ComponentModelDelegate(c
             .orTimeout(viewTimeoutMs, TimeUnit.MILLISECONDS)
             .thenAccept { maybeViewModel ->
                 if (maybeViewModel.isEmpty) {
-                    log.warn("Failed to find view to operate on: $resourcePath")
+                    component.mdc { log.warn("Failed to find view to operate on: $resourcePath") }
                 } else {
                     block(maybeViewModel.get())
                 }
