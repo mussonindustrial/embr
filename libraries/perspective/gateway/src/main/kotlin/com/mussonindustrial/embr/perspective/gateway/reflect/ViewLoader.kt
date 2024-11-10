@@ -1,4 +1,4 @@
-package com.mussonindustrial.ignition.embr.periscope.page
+package com.mussonindustrial.embr.perspective.gateway.reflect
 
 import com.inductiveautomation.ignition.common.gson.JsonObject
 import com.inductiveautomation.ignition.common.util.LogUtil

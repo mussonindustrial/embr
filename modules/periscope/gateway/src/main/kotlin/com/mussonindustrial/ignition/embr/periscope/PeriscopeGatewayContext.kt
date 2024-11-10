@@ -5,7 +5,7 @@ import com.inductiveautomation.perspective.gateway.api.PerspectiveContext
 import com.inductiveautomation.perspective.gateway.model.PageModel
 import com.mussonindustrial.embr.gateway.EmbrGatewayContext
 import com.mussonindustrial.embr.gateway.EmbrGatewayContextImpl
-import com.mussonindustrial.ignition.embr.periscope.page.ViewLoader
+import com.mussonindustrial.embr.perspective.gateway.reflect.ViewLoader
 import java.util.WeakHashMap
 
 class PeriscopeGatewayContext(private val context: GatewayContext) :
