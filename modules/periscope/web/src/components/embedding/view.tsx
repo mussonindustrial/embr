@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useRef, useState } from 'react'
 import {
   AbstractUIElementStore,
   ComponentMeta,
@@ -15,10 +15,9 @@ import {
   View,
   ViewProps,
   ViewStateDisplay,
+  ViewStateType,
   ViewStore,
 } from '@inductiveautomation/perspective-client'
-
-import { formatStyleNames } from '../../util'
 
 const COMPONENT_TYPE = 'embr.periscope.embedding.view'
 
@@ -118,7 +117,9 @@ export function EmbeddedViewComponent({
   store,
   emit,
 }: ComponentProps<EmbeddedViewProps>) {
+  const ref = useRef<JoinableView>(null)
   const mountPath = getChildMountPath(store)
+  ref.current?.onViewLoading
 
   if (store.delegate == null) {
     console.warn(
@@ -127,10 +128,14 @@ export function EmbeddedViewComponent({
     return <MissingComponentDelegate emit={emit} />
   }
 
+  const [viewState, setViewState] = useState(ViewStateType.NOT_SPECIFIED)
+
   return (
     <div {...emit({ classes: ['view-parent'] })}>
       <JoinableView
+        ref={ref}
         key={PageStore.instanceKeyFor(props.viewPath, mountPath)}
+        parent={store.parent ? store.parent : undefined}
         store={store.view.page.parent}
         mountPath={mountPath}
         resourcePath={props.viewPath}
@@ -140,8 +145,11 @@ export function EmbeddedViewComponent({
         useDefaultWidth={props.useDefaultWidth}
         rootStyle={{
           ...props.viewStyle,
-          classes: formatStyleNames(props.viewStyle.classes),
+          classes: props.viewStyle.classes,
+          display:
+            viewState == ViewStateType.VALID ? props.viewStyle.display : 'none',
         }}
+        onViewStateChange={(state) => setViewState(state)}
         delegate={store.delegate}
       />
     </div>
@@ -172,12 +180,12 @@ export class EmbeddedViewComponentMeta implements ComponentMeta {
   getPropsReducer(tree: PropertyTree): EmbeddedViewProps {
     return {
       viewPath: tree.readString('viewPath', ''),
-      viewStyle: tree.readObject('viewStyle', {}),
+      viewStyle: tree.readStyle('viewStyle'),
       useDefaultHeight: tree.readBoolean('useDefaultHeight'),
       useDefaultMinHeight: tree.readBoolean('useDefaultMinHeight'),
       useDefaultMinWidth: tree.readBoolean('useDefaultMinWidth'),
       useDefaultWidth: tree.readBoolean('useDefaultWidth'),
-      style: tree.readObject('style', {}),
+      style: tree.readStyle('style'),
     } as never
   }
 

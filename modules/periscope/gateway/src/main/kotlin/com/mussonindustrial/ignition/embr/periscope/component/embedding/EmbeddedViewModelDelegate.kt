@@ -35,14 +35,14 @@ class EmbeddedViewModelDelegate(component: Component) : ComponentModelDelegate(c
 
     override fun onStartup() {
         component.mdc {
-            log.debug("Startup")
-            queue.submit { initializeView() }
+            log.debugf("Startup")
+            initializeView()
         }
     }
 
     override fun onShutdown() {
         component.mdc {
-            log.debug("Shutdown")
+            log.debugf("Shutdown")
             viewPathListener.unsubscribe()
             viewParamsListener.unsubscribe()
             shutdownViewOutputListeners()
@@ -57,9 +57,7 @@ class EmbeddedViewModelDelegate(component: Component) : ComponentModelDelegate(c
 
     private fun shutdownViewOutputListeners() {
         component.mdc {
-            if (log.isTraceEnabled) {
-                log.trace("Removing view output listeners.")
-            }
+            log.tracef("Removing view output listeners.")
 
             viewOutputListeners.forEach { listenerSet ->
                 listenerSet.value?.forEach { it.value.unsubscribe() }
@@ -70,9 +68,8 @@ class EmbeddedViewModelDelegate(component: Component) : ComponentModelDelegate(c
 
     private fun shutdownViewOutputListeners(viewModel: ViewModel) {
         component.mdc {
-            if (log.isTraceEnabled) {
-                log.trace("Removing view output listeners.")
-            }
+            log.tracef("Removing view output listeners.")
+
             viewOutputListeners[viewModel]?.forEach { it.value.unsubscribe() }
             viewOutputListeners.clear()
         }
@@ -81,19 +78,17 @@ class EmbeddedViewModelDelegate(component: Component) : ComponentModelDelegate(c
     override fun handleEvent(message: EventFiredMsg) {
         try {
             component.mdcSetup()
-            log.debug("Received '${message.eventName}' component message.")
+            log.debugf("Received {} component message.", message.eventName)
 
             if (message.eventName == ViewJoinMsg.PROTOCOL) {
                 val event = ViewJoinMsg(message.event)
                 if (event.resourcePath != props.viewPath || event.mountPath != props.mountPath) {
                     component.mdc {
-                        log.warn("Client requested unexpected resource or mount path.")
+                        log.warnf("Client requested unexpected resource or mount path.")
                     }
                 }
 
-                if (log.isTraceEnabled) {
-                    log.trace("Client is requesting to join view ${event.instanceId().id}")
-                }
+                log.tracef("Client is requesting to join view {}", event.instanceId().id)
 
                 viewLoader
                     .findOrStartView(
@@ -115,21 +110,21 @@ class EmbeddedViewModelDelegate(component: Component) : ComponentModelDelegate(c
     }
 
     private fun createViewPathListener(): Subscription {
-        return props.tree.subscribe("viewPath", Origin.allBut(Origin.Delegate)) {
-            queue.submit { initializeView() }
-        }
+        return props.tree.subscribe("viewPath", Origin.allBut(Origin.Delegate)) { initializeView() }
     }
 
     private fun createViewParamsListener(): Subscription {
         return props.tree.subscribe("viewParams", Origin.allBut(Origin.Delegate)) {
-            queue.submit { onViewInputChanged(it) }
+            onViewInputChanged(it)
         }
     }
 
     private fun initializeView() = onView { viewModel -> initializeView(viewModel) }
 
     private fun initializeView(viewModel: ViewModel) {
-        viewModel.writeToParams(props.viewParams, Origin.Delegate, this, queue)
+        if (viewOutputListeners[viewModel] == null) {
+            viewModel.writeToParams(props.viewParams, Origin.Delegate, this, queue)
+        }
 
         viewOutputListeners[viewModel]?.apply { shutdownViewOutputListeners(viewModel) }
         viewOutputListeners[viewModel] = createViewOutputListeners(viewModel)
@@ -182,7 +177,7 @@ class EmbeddedViewModelDelegate(component: Component) : ComponentModelDelegate(c
             .orTimeout(viewTimeoutMs, TimeUnit.MILLISECONDS)
             .thenAccept { maybeViewModel ->
                 if (maybeViewModel.isEmpty) {
-                    component.mdc { log.warn("Failed to find view to operate on: $resourcePath") }
+                    component.mdc { log.warnf("Failed to find view to operate on: $resourcePath") }
                 } else {
                     block(maybeViewModel.get())
                 }

@@ -37,7 +37,7 @@ fun ViewModel.writeToParams(
     }
 
     if (!writes.isEmpty) {
-        queue.submit { tree.writeAll(writes, origin, source) }
+        tree.writeAll(writes, origin, source)
     }
 }
 
@@ -55,7 +55,7 @@ fun ViewModel.writeToParams(
     }
 
     val tree = this.getPropertyTreeOf(PropertyType.params) ?: return
-    queue.submit { tree.write(param, value, origin, source) }
+    tree.write(param, value, origin, source)
 }
 
 fun ViewModel.subscribeToParams(
