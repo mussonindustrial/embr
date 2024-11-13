@@ -1,4 +1,4 @@
-import React, { memo } from 'react'
+import React from 'react'
 import {
   AbstractUIElementStore,
   ComponentMeta,
@@ -40,23 +40,27 @@ type JoinableViewProps = ViewProps & {
   delegate: ComponentStoreDelegate
 }
 
-const JoinableView = memo(
-  class extends View {
-    delegate: ComponentStoreDelegate
+class JoinableView extends View {
+  props: JoinableViewProps
+  delegate: ComponentStoreDelegate
 
-    constructor(props: JoinableViewProps) {
-      super(props)
-      this.delegate = props.delegate
-      this.installViewStore = this.installViewStore.bind(this)
-    }
-
-    override installViewStore(viewStore: ViewStore): void {
-      super.installViewStore(joinOnStartup(viewStore, this.delegate))
-    }
+  constructor(props: JoinableViewProps) {
+    super(props)
+    this.props = props
+    this.delegate = props.delegate
+    this.installViewStore = this.installViewStore.bind(this)
   }
-)
 
-function joinOnStartup(viewStore: ViewStore, delegate: ComponentStoreDelegate) {
+  override installViewStore(viewStore: ViewStore): void {
+    const injectedViewStore = injectBehavior(viewStore, this.delegate)
+    super.installViewStore(injectedViewStore)
+  }
+}
+
+function injectBehavior(
+  viewStore: ViewStore,
+  delegate: ComponentStoreDelegate
+) {
   Reflect.defineProperty(viewStore, 'startup', {
     value: () => {
       const params = viewStore.running
@@ -72,6 +76,14 @@ function joinOnStartup(viewStore: ViewStore, delegate: ComponentStoreDelegate) {
       viewStore.running = true
     },
   })
+
+  // Reflect.defineProperty(viewStore.page, 'isLoadAheadSafe', {
+  //   value: (): boolean => {
+  //     console.log(`load-ahead-safe`)
+  //     return true
+  //   },
+  // })
+
   return viewStore
 }
 
@@ -91,6 +103,16 @@ function MissingComponentDelegate({ emit }: { emit: Emitter }) {
   )
 }
 
+// declare global {
+//   interface Window {
+//     '--batchSize': number
+//     '--chunkCount': number
+//   }
+// }
+
+// window['--batchSize'] = 5000
+// window['--chunkCount'] = 5000
+
 export function EmbeddedViewComponent({
   props,
   store,
@@ -98,7 +120,7 @@ export function EmbeddedViewComponent({
 }: ComponentProps<EmbeddedViewProps>) {
   const mountPath = getChildMountPath(store)
 
-  if (store.delegate == undefined) {
+  if (store.delegate == null) {
     console.warn(
       `No delegate found for component ${COMPONENT_TYPE} at ${mountPath}`
     )
@@ -120,16 +142,15 @@ export function EmbeddedViewComponent({
           ...props.viewStyle,
           classes: formatStyleNames(props.viewStyle.classes),
         }}
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        delegate={store.delegate!}
+        delegate={store.delegate}
       />
     </div>
   )
 }
 
 export class EmbeddedViewComponentDelegate extends ComponentStoreDelegate {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-empty-function
-  handleEvent(_eventName: string, _eventObject: JsObject): void {}
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  handleEvent(): void {}
 }
 
 export class EmbeddedViewComponentMeta implements ComponentMeta {
@@ -151,12 +172,12 @@ export class EmbeddedViewComponentMeta implements ComponentMeta {
   getPropsReducer(tree: PropertyTree): EmbeddedViewProps {
     return {
       viewPath: tree.readString('viewPath', ''),
-      viewStyle: tree.read('viewStyle', {}),
+      viewStyle: tree.readObject('viewStyle', {}),
       useDefaultHeight: tree.readBoolean('useDefaultHeight'),
       useDefaultMinHeight: tree.readBoolean('useDefaultMinHeight'),
       useDefaultMinWidth: tree.readBoolean('useDefaultMinWidth'),
       useDefaultWidth: tree.readBoolean('useDefaultWidth'),
-      style: tree.read('style', {}),
+      style: tree.readObject('style', {}),
     } as never
   }
 

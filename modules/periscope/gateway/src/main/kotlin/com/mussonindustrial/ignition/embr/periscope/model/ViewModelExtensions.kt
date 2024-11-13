@@ -1,4 +1,4 @@
-package com.mussonindustrial.ignition.embr.periscope.component.embedding
+package com.mussonindustrial.ignition.embr.periscope.model
 
 import com.inductiveautomation.ignition.common.JsonPath
 import com.inductiveautomation.ignition.common.gson.JsonElement

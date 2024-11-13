@@ -6,13 +6,12 @@ import com.inductiveautomation.perspective.gateway.api.ViewInstanceId
 import com.inductiveautomation.perspective.gateway.model.PageModel
 import com.inductiveautomation.perspective.gateway.model.ViewModel
 import com.mussonindustrial.embr.common.reflect.getSuperPrivateMethod
-import com.mussonindustrial.embr.common.reflect.getSuperPrivateProperty
 import java.util.*
 import java.util.concurrent.CompletableFuture
 
 class ViewLoader(page: PageModel) {
 
-    private val _handlers = page.getSuperPrivateProperty("handlers")
+    private val _handlers = page.getHandlers()
     private val _startView =
         _handlers.getSuperPrivateMethod(
             "startView",
