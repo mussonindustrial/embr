@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React from 'react'
 import {
   AbstractUIElementStore,
   ComponentMeta,
@@ -12,12 +12,9 @@ import {
   PropertyTree,
   SizeObject,
   StyleObject,
-  View,
-  ViewProps,
   ViewStateDisplay,
-  ViewStateType,
-  ViewStore,
 } from '@inductiveautomation/perspective-client'
+import { JoinableView } from './JoinableView'
 
 const COMPONENT_TYPE = 'embr.periscope.embedding.view'
 
@@ -33,57 +30,6 @@ type EmbeddedViewProps = {
 
 function getChildMountPath(store: ComponentStore) {
   return `${store.viewMountPath}.${store.addressPathString}`
-}
-
-type JoinableViewProps = ViewProps & {
-  delegate: ComponentStoreDelegate
-}
-
-class JoinableView extends View {
-  props: JoinableViewProps
-  delegate: ComponentStoreDelegate
-
-  constructor(props: JoinableViewProps) {
-    super(props)
-    this.props = props
-    this.delegate = props.delegate
-    this.installViewStore = this.installViewStore.bind(this)
-  }
-
-  override installViewStore(viewStore: ViewStore): void {
-    const injectedViewStore = injectBehavior(viewStore, this.delegate)
-    super.installViewStore(injectedViewStore)
-  }
-}
-
-function injectBehavior(
-  viewStore: ViewStore,
-  delegate: ComponentStoreDelegate
-) {
-  Reflect.defineProperty(viewStore, 'startup', {
-    value: () => {
-      const params = viewStore.running
-        ? viewStore.params.readEncoded('', false)
-        : viewStore.initialParams
-
-      delegate.fireEvent('view-join', {
-        resourcePath: viewStore.resourcePath,
-        mountPath: viewStore.mountPath,
-        birthDate: viewStore.birthDate,
-        params,
-      })
-      viewStore.running = true
-    },
-  })
-
-  // Reflect.defineProperty(viewStore.page, 'isLoadAheadSafe', {
-  //   value: (): boolean => {
-  //     console.log(`load-ahead-safe`)
-  //     return true
-  //   },
-  // })
-
-  return viewStore
 }
 
 function MissingComponentDelegate({ emit }: { emit: Emitter }) {
@@ -117,9 +63,7 @@ export function EmbeddedViewComponent({
   store,
   emit,
 }: ComponentProps<EmbeddedViewProps>) {
-  const ref = useRef<JoinableView>(null)
   const mountPath = getChildMountPath(store)
-  ref.current?.onViewLoading
 
   if (store.delegate == null) {
     console.warn(
@@ -128,12 +72,11 @@ export function EmbeddedViewComponent({
     return <MissingComponentDelegate emit={emit} />
   }
 
-  const [viewState, setViewState] = useState(ViewStateType.NOT_SPECIFIED)
+  store.view.page.parent
 
   return (
     <div {...emit({ classes: ['view-parent'] })}>
       <JoinableView
-        ref={ref}
         key={PageStore.instanceKeyFor(props.viewPath, mountPath)}
         parent={store.parent ? store.parent : undefined}
         store={store.view.page.parent}
@@ -146,10 +89,7 @@ export function EmbeddedViewComponent({
         rootStyle={{
           ...props.viewStyle,
           classes: props.viewStyle.classes,
-          display:
-            viewState == ViewStateType.VALID ? props.viewStyle.display : 'none',
         }}
-        onViewStateChange={(state) => setViewState(state)}
         delegate={store.delegate}
       />
     </div>

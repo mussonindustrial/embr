@@ -1,7 +1,6 @@
 package com.mussonindustrial.ignition.embr.periscope.component.embedding
 
 import com.inductiveautomation.ignition.common.gson.JsonObject
-import com.inductiveautomation.ignition.common.model.values.BasicQualifiedValue
 import com.inductiveautomation.ignition.common.util.LogUtil
 import com.inductiveautomation.perspective.common.api.PropertyType
 import com.inductiveautomation.perspective.common.property.Origin
@@ -17,7 +16,6 @@ import com.inductiveautomation.perspective.gateway.property.PropertyTreeChangeEv
 import com.mussonindustrial.ignition.embr.periscope.PeriscopeGatewayContext
 import com.mussonindustrial.ignition.embr.periscope.model.subscribeToParams
 import com.mussonindustrial.ignition.embr.periscope.model.writeToParams
-import com.mussonindustrial.ignition.embr.periscope.page.ViewJoinMsg
 import java.util.*
 import java.util.concurrent.TimeUnit
 
@@ -28,7 +26,7 @@ class EmbeddedViewModelDelegate(component: Component) : ComponentModelDelegate(c
     private val queue = component.session.queue()
     private val props = PropsHandler(component.getPropertyTreeOf(PropertyType.props)!!)
     private val viewLoader = context.getViewLoader(component.page as PageModel)
-    private val viewOutputListeners = WeakHashMap<ViewModel, Map<String, Subscription>?>()
+    private val viewOutputListeners = WeakHashMap<ViewModel, Map<String, Subscription>>()
     private val viewPathListener = createViewPathListener()
     private val viewParamsListener = createViewParamsListener()
     private val viewTimeoutMs = 10_000L
@@ -56,29 +54,23 @@ class EmbeddedViewModelDelegate(component: Component) : ComponentModelDelegate(c
     }
 
     private fun shutdownViewOutputListeners() {
-        component.mdc {
-            log.tracef("Removing view output listeners.")
-
-            viewOutputListeners.forEach { listenerSet ->
-                listenerSet.value?.forEach { it.value.unsubscribe() }
-            }
-            viewOutputListeners.clear()
-        }
+        viewOutputListeners.keys.forEach { shutdownViewOutputListeners(it) }
     }
 
     private fun shutdownViewOutputListeners(viewModel: ViewModel) {
-        component.mdc {
-            log.tracef("Removing view output listeners.")
-
-            viewOutputListeners[viewModel]?.forEach { it.value.unsubscribe() }
-            viewOutputListeners.clear()
+        viewOutputListeners[viewModel]?.apply {
+            component.mdc {
+                log.tracef("Removing output listeners for view %s", viewModel.id)
+                forEach { it.value.unsubscribe() }
+            }
+            viewOutputListeners[viewModel] = null
         }
     }
 
     override fun handleEvent(message: EventFiredMsg) {
         try {
             component.mdcSetup()
-            log.debugf("Received {} component message.", message.eventName)
+            log.tracef("Received '%s' component message.", message.eventName)
 
             if (message.eventName == ViewJoinMsg.PROTOCOL) {
                 val event = ViewJoinMsg(message.event)
@@ -88,7 +80,7 @@ class EmbeddedViewModelDelegate(component: Component) : ComponentModelDelegate(c
                     }
                 }
 
-                log.tracef("Client is requesting to join view {}", event.instanceId().id)
+                log.tracef("Client is requesting to join view %s", event.instanceId().id)
 
                 viewLoader
                     .findOrStartView(
@@ -98,11 +90,14 @@ class EmbeddedViewModelDelegate(component: Component) : ComponentModelDelegate(c
                         props.viewParams
                     )
                     .orTimeout(viewTimeoutMs, TimeUnit.MILLISECONDS)
-                    .thenAccept {
-                        if (it.isPresent) {
-                            initializeView(it.get())
-                        }
-                    }
+                    .thenAcceptAsync(
+                        {
+                            if (it.isPresent) {
+                                initializeView(it.get(), true)
+                            }
+                        },
+                        queue::submit
+                    )
             }
         } finally {
             component.mdcTeardown()
@@ -122,7 +117,11 @@ class EmbeddedViewModelDelegate(component: Component) : ComponentModelDelegate(c
     private fun initializeView() = onView { viewModel -> initializeView(viewModel) }
 
     private fun initializeView(viewModel: ViewModel) {
-        if (viewOutputListeners[viewModel] == null) {
+        initializeView(viewModel, forceWrite = false)
+    }
+
+    private fun initializeView(viewModel: ViewModel, forceWrite: Boolean) {
+        if (viewOutputListeners[viewModel] == null || forceWrite) {
             viewModel.writeToParams(props.viewParams, Origin.Delegate, this, queue)
         }
 
@@ -175,27 +174,29 @@ class EmbeddedViewModelDelegate(component: Component) : ComponentModelDelegate(c
         viewLoader
             .findOrStartView(resourcePath, mountPath, Date().time, viewParams)
             .orTimeout(viewTimeoutMs, TimeUnit.MILLISECONDS)
-            .thenAccept { maybeViewModel ->
-                if (maybeViewModel.isEmpty) {
-                    component.mdc { log.warnf("Failed to find view to operate on: $resourcePath") }
-                } else {
-                    block(maybeViewModel.get())
-                }
-            }
+            .thenAcceptAsync(
+                { maybeViewModel ->
+                    if (maybeViewModel.isEmpty) {
+                        component.mdc {
+                            log.warnf("Failed to find view '%s' to operate on", resourcePath)
+                        }
+                    } else {
+                        block(maybeViewModel.get())
+                    }
+                },
+                queue::submit
+            )
     }
 
     inner class PropsHandler(val tree: PropertyTree) {
-        var viewPath: String
+        val viewPath: String
             get() {
-                val instancesProp = tree.read("viewPath")
-                if (instancesProp.isEmpty) {
+                val viewPath = tree.read("viewPath")
+                if (viewPath.isEmpty) {
                     return ""
                 }
 
-                return toJsonDeep(instancesProp.get()).asString
-            }
-            set(value) {
-                tree.write("viewPath", BasicQualifiedValue(value), Origin.Delegate, this)
+                return toJsonDeep(viewPath.get()).asString
             }
 
         val viewParams: JsonObject
@@ -213,5 +214,24 @@ class EmbeddedViewModelDelegate(component: Component) : ComponentModelDelegate(c
             get() {
                 return "${component.view?.id?.mountPath}.${component.componentAddressPath}"
             }
+
+        val instanceId: ViewInstanceId
+            get() {
+                return ViewInstanceId(this.viewPath, this.mountPath)
+            }
+    }
+
+    class ViewJoinMsg(event: JsonObject) {
+        companion object {
+            const val PROTOCOL: String = "view-join"
+        }
+
+        val resourcePath: String = event.get("resourcePath")?.asString ?: ""
+        val mountPath: String = event.get("mountPath")?.asString ?: ""
+        val birthDate: Long = event.get("birthDate")?.asLong ?: 0
+
+        fun instanceId(): ViewInstanceId {
+            return ViewInstanceId(this.resourcePath, this.mountPath)
+        }
     }
 }
