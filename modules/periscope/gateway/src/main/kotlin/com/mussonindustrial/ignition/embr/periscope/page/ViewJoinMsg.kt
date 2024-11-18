@@ -11,7 +11,6 @@ class ViewJoinMsg(event: JsonObject) {
     val resourcePath: String = event.get("resourcePath")?.asString ?: ""
     val mountPath: String = event.get("mountPath")?.asString ?: ""
     val birthDate: Long = event.get("birthDate")?.asLong ?: 0
-    val params: JsonObject = event.get("params")?.asJsonObject ?: JsonObject()
 
     fun instanceId(): ViewInstanceId {
         return ViewInstanceId(this.resourcePath, this.mountPath)

@@ -1,22 +1,25 @@
-import React, { memo } from 'react'
+import React from 'react'
 import {
   AbstractUIElementStore,
   ComponentMeta,
   ComponentProps,
   ComponentStore,
   ComponentStoreDelegate,
-  JsObject,
+  Emitter,
   PageStore,
   PComponent,
   PropertyTree,
   SizeObject,
   StyleObject,
-  View,
-  ViewProps,
-  ViewStore,
+  ViewStateDisplay,
 } from '@inductiveautomation/perspective-client'
 
-import { formatStyleNames, mergeStyles, resolve } from '../../util'
+import {
+  formatStyleNames,
+  JoinableView,
+  mergeStyles,
+  resolve,
+} from '../../util'
 
 const COMPONENT_TYPE = 'embr.periscope.embedding.flex-repeater'
 
@@ -57,7 +60,7 @@ type FlexRepeaterProps = {
 type EmbeddedViewProps = {
   key: string
   viewPath: string
-  viewParams: JsObject
+  // viewParams: JsObject
   viewStyle: StyleObject
   viewPosition: FlexPositionProps
   useDefaultHeight: boolean
@@ -88,11 +91,11 @@ function resolveViewProps(
   return {
     key: view.key && view.key !== '' ? view.key : index.toString(),
     viewPath: resolve([view.viewPath, props.instanceCommon.viewPath]),
-    viewParams: {
-      index,
-      ...props.instanceCommon.viewParams,
-      ...view.viewParams,
-    },
+    // viewParams: {
+    //   index,
+    //   ...props.instanceCommon.viewParams,
+    //   ...view.viewParams,
+    // },
     viewStyle: mergeStyles([props.instanceCommon.viewStyle, view.viewStyle]),
     viewPosition: {
       ...props.instanceCommon.viewPosition,
@@ -117,43 +120,59 @@ function resolveViewProps(
   }
 }
 
-type JoinableViewProps = ViewProps & {
-  delegate: ComponentStoreDelegate
-}
+// type JoinableViewProps = ViewProps & {
+//   delegate: ComponentStoreDelegate
+// }
 
-const JoinableView = memo(
-  class extends View {
-    delegate: ComponentStoreDelegate
+// const JoinableView = memo(
+//   class extends View {
+//     delegate: ComponentStoreDelegate
 
-    constructor(props: JoinableViewProps) {
-      super(props)
-      this.delegate = props.delegate
-      this.installViewStore = this.installViewStore.bind(this)
-    }
+//     constructor(props: JoinableViewProps) {
+//       super(props)
+//       this.delegate = props.delegate
+//       this.installViewStore = this.installViewStore.bind(this)
+//     }
 
-    override installViewStore(viewStore: ViewStore): void {
-      super.installViewStore(joinOnStartup(viewStore, this.delegate))
-    }
-  }
-)
+//     override installViewStore(viewStore: ViewStore): void {
+//       super.installViewStore(joinOnStartup(viewStore, this.delegate))
+//     }
+//   }
+// )
 
-function joinOnStartup(viewStore: ViewStore, delegate: ComponentStoreDelegate) {
-  Reflect.defineProperty(viewStore, 'startup', {
-    value: () => {
-      const params = viewStore.running
-        ? viewStore.params.readEncoded('', false)
-        : viewStore.initialParams
+// function joinOnStartup(viewStore: ViewStore, delegate: ComponentStoreDelegate) {
+//   Reflect.defineProperty(viewStore, 'startup', {
+//     value: () => {
+//       const params = viewStore.running
+//         ? viewStore.params.readEncoded('', false)
+//         : viewStore.initialParams
 
-      delegate.fireEvent('view-join', {
-        resourcePath: viewStore.resourcePath,
-        mountPath: viewStore.mountPath,
-        birthDate: viewStore.birthDate,
-        params,
-      })
-      viewStore.running = true
-    },
-  })
-  return viewStore
+//       delegate.fireEvent('view-join', {
+//         resourcePath: viewStore.resourcePath,
+//         mountPath: viewStore.mountPath,
+//         birthDate: viewStore.birthDate,
+//         params,
+//       })
+//       viewStore.running = true
+//     },
+//   })
+//   return viewStore
+// }
+
+function MissingComponentDelegate({ emit }: { emit: Emitter }) {
+  return (
+    <div {...emit({ classes: ['view-parent'] })}>
+      <ViewStateDisplay
+        primaryMessage="View Failed to Load"
+        secondaryMessage={`No component delegate was found`}
+        icon={
+          <svg className="view-state-icon">
+            <use xlinkHref="/res/perspective/icons/material-icons.svg#warning" />
+          </svg>
+        }
+      />
+    </div>
+  )
 }
 
 export function FlexRepeaterComponent({
@@ -177,10 +196,18 @@ export function FlexRepeaterComponent({
       {props.instances.map((_, index) => {
         const view = resolveViewProps(props, index)
         const mountPath = getChildMountPath(store, view.key)
+        const key = PageStore.instanceKeyFor(view.viewPath, mountPath)
+
+        if (store.delegate == null) {
+          console.warn(
+            `No delegate found for component ${COMPONENT_TYPE} at ${mountPath}`
+          )
+          return <MissingComponentDelegate key={key} emit={emit} />
+        }
 
         return (
           <JoinableView
-            key={PageStore.instanceKeyFor(view.viewPath, mountPath)}
+            key={key}
             store={store.view.page.parent}
             mountPath={mountPath}
             resourcePath={view.viewPath}
@@ -188,14 +215,12 @@ export function FlexRepeaterComponent({
             useDefaultMinHeight={view.useDefaultMinHeight}
             useDefaultMinWidth={view.useDefaultMinWidth}
             useDefaultWidth={view.useDefaultWidth}
-            params={view.viewParams}
             rootStyle={{
               ...emitFlexPosition(view.viewPosition),
               ...view.viewStyle,
               classes: formatStyleNames(view.viewStyle.classes),
             }}
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            delegate={store.delegate!}
+            delegate={store.delegate}
           />
         )
       })}
@@ -204,8 +229,9 @@ export function FlexRepeaterComponent({
 }
 
 export class FlexRepeaterComponentDelegate extends ComponentStoreDelegate {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-empty-function
-  handleEvent(_eventName: string, _eventObject: JsObject): void {}
+  handleEvent(): void {
+    return
+  }
 }
 
 export class FlexRepeaterComponentMeta implements ComponentMeta {

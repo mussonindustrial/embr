@@ -16,6 +16,7 @@ import com.inductiveautomation.perspective.gateway.property.PropertyTreeChangeEv
 import com.mussonindustrial.ignition.embr.periscope.PeriscopeGatewayContext
 import com.mussonindustrial.ignition.embr.periscope.model.subscribeToParams
 import com.mussonindustrial.ignition.embr.periscope.model.writeToParams
+import com.mussonindustrial.ignition.embr.periscope.page.ViewJoinMsg
 import java.util.*
 import java.util.concurrent.TimeUnit
 
@@ -219,19 +220,5 @@ class EmbeddedViewModelDelegate(component: Component) : ComponentModelDelegate(c
             get() {
                 return ViewInstanceId(this.viewPath, this.mountPath)
             }
-    }
-
-    class ViewJoinMsg(event: JsonObject) {
-        companion object {
-            const val PROTOCOL: String = "view-join"
-        }
-
-        val resourcePath: String = event.get("resourcePath")?.asString ?: ""
-        val mountPath: String = event.get("mountPath")?.asString ?: ""
-        val birthDate: Long = event.get("birthDate")?.asLong ?: 0
-
-        fun instanceId(): ViewInstanceId {
-            return ViewInstanceId(this.resourcePath, this.mountPath)
-        }
     }
 }
