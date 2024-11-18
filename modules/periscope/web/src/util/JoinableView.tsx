@@ -12,7 +12,6 @@ export type JoinableViewProps = ViewProps & {
 /**
  * A `View` that sends a `view-join` message to a component delegate on startup,
  * instead of sending a `view-start` message to the page.
- * This allows for more control over how views are started.
  */
 export class JoinableView extends View {
   props: JoinableViewProps

@@ -14,7 +14,7 @@ import {
   StyleObject,
   ViewStateDisplay,
 } from '@inductiveautomation/perspective-client'
-import { JoinableView } from './JoinableView'
+import { JoinableView } from '../../util/JoinableView'
 
 const COMPONENT_TYPE = 'embr.periscope.embedding.view'
 
@@ -48,16 +48,6 @@ function MissingComponentDelegate({ emit }: { emit: Emitter }) {
   )
 }
 
-// declare global {
-//   interface Window {
-//     '--batchSize': number
-//     '--chunkCount': number
-//   }
-// }
-
-// window['--batchSize'] = 5000
-// window['--chunkCount'] = 5000
-
 export function EmbeddedViewComponent({
   props,
   store,
@@ -71,8 +61,6 @@ export function EmbeddedViewComponent({
     )
     return <MissingComponentDelegate emit={emit} />
   }
-
-  store.view.page.parent
 
   return (
     <div {...emit({ classes: ['view-parent'] })}>
@@ -97,8 +85,9 @@ export function EmbeddedViewComponent({
 }
 
 export class EmbeddedViewComponentDelegate extends ComponentStoreDelegate {
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  handleEvent(): void {}
+  handleEvent(): void {
+    return
+  }
 }
 
 export class EmbeddedViewComponentMeta implements ComponentMeta {

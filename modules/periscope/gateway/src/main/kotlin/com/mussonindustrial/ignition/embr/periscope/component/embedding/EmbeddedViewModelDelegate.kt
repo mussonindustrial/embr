@@ -62,8 +62,8 @@ class EmbeddedViewModelDelegate(component: Component) : ComponentModelDelegate(c
             component.mdc {
                 log.tracef("Removing output listeners for view %s", viewModel.id)
                 forEach { it.value.unsubscribe() }
+                viewOutputListeners[viewModel] = null
             }
-            viewOutputListeners[viewModel] = null
         }
     }
 
