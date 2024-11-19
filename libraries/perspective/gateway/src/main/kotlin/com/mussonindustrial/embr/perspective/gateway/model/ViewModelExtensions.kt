@@ -1,9 +1,8 @@
-package com.mussonindustrial.ignition.embr.periscope.model
+package com.mussonindustrial.embr.perspective.gateway.model
 
 import com.inductiveautomation.ignition.common.JsonPath
 import com.inductiveautomation.ignition.common.gson.JsonElement
 import com.inductiveautomation.ignition.common.gson.JsonObject
-import com.inductiveautomation.ignition.common.util.ExecutionQueue
 import com.inductiveautomation.perspective.common.api.PropertyType
 import com.inductiveautomation.perspective.common.config.ParamType
 import com.inductiveautomation.perspective.common.property.Origin
@@ -16,7 +15,6 @@ fun ViewModel.writeToParams(
     params: JsonObject,
     origin: Origin,
     source: Any,
-    queue: ExecutionQueue
 ) {
     val tree = this.getPropertyTreeOf(PropertyType.params) ?: return
     val currentParams = toJsonDeep(tree.read(JsonPath.ROOT).get().value) as JsonObject
@@ -46,7 +44,6 @@ fun ViewModel.writeToParams(
     value: JsonElement,
     origin: Origin,
     source: Any,
-    queue: ExecutionQueue
 ) {
 
     val paramType = this.config.paramDefinitions.toList().find { (key, _) -> key == param }?.value
@@ -78,15 +75,4 @@ fun ViewModel.subscribeToParams(
         outputKeys.associateWith { rootKey -> tree.subscribe(rootKey, acceptableOrigins, block) }
 
     return listeners
-}
-
-fun ViewModel.readParams(): JsonObject? {
-    val tree = this.getPropertyTreeOf(PropertyType.params) ?: return null
-
-    val maybeRoot = tree.read(JsonPath.ROOT)
-    if (maybeRoot.isEmpty) {
-        return null
-    }
-
-    return toJsonDeep(maybeRoot.get()).asJsonObject
 }

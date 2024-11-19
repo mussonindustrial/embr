@@ -19,9 +19,9 @@ import com.inductiveautomation.perspective.gateway.property.PropertyTree
 import com.inductiveautomation.perspective.gateway.property.PropertyTree.Subscription
 import com.inductiveautomation.perspective.gateway.property.PropertyTreeChangeEvent
 import com.mussonindustrial.embr.common.scripting.PyArgOverloadBuilder
+import com.mussonindustrial.embr.perspective.gateway.model.subscribeToParams
+import com.mussonindustrial.embr.perspective.gateway.model.writeToParams
 import com.mussonindustrial.ignition.embr.periscope.PeriscopeGatewayContext
-import com.mussonindustrial.ignition.embr.periscope.model.subscribeToParams
-import com.mussonindustrial.ignition.embr.periscope.model.writeToParams
 import com.mussonindustrial.ignition.embr.periscope.page.ViewJoinMsg
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -206,7 +206,7 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
         forceWrite: Boolean
     ) {
         if (viewOutputListeners[viewModel] == null || forceWrite) {
-            viewModel.writeToParams(instance.viewParams, Origin.Delegate, this, queue)
+            viewModel.writeToParams(instance.viewParams, Origin.Delegate, this)
         }
 
         viewOutputListeners[viewModel]?.apply { shutdownViewOutputListeners(viewModel) }
@@ -222,7 +222,7 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
             val path = event.path.toString().replace("${instance.treePath}.viewParams.", "")
             val value =
                 toJsonDeep(event.readCausalValue(), BindingUtils.JsonEncoding.DollarQualified)
-            viewModel.writeToParams(path, value, Origin.Delegate, this, queue)
+            viewModel.writeToParams(path, value, Origin.Delegate, this)
         }
     }
 
