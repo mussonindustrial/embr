@@ -66,7 +66,7 @@ export function EmbeddedViewComponent({
     <div {...emit({ classes: ['view-parent'] })}>
       <JoinableView
         key={PageStore.instanceKeyFor(props.viewPath, mountPath)}
-        parent={store.parent ? store.parent : undefined}
+        parent={store}
         store={store.view.page.parent}
         mountPath={mountPath}
         resourcePath={props.viewPath}

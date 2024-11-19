@@ -26,7 +26,7 @@ class FlexRepeater {
                 COMPONENT_ID,
                 "base",
                 "Flex Repeater +",
-                "Creates multiple instances of views for display in another view."
+                "Creates multiple instances of views for display in another view. View props are handled server-side for decreased latency."
             )
 
         private var VARIANT_ROW =
@@ -35,7 +35,7 @@ class FlexRepeater {
                 COMPONENT_ID,
                 "row",
                 "Row",
-                "Creates multiple instances of views for display in another view."
+                "Creates multiple instances of views for display in another view. View props are handled server-side for decreased latency."
             )
 
         private var VARIANT_COLUMN =
@@ -44,12 +44,12 @@ class FlexRepeater {
                 COMPONENT_ID,
                 "column",
                 "Column",
-                "Creates multiple instances of views for display in another view."
+                "Creates multiple instances of views for display in another view. View props are handled server-side for decreased latency."
             )
 
         var DESCRIPTOR: ComponentDescriptor =
             ComponentDescriptorImpl.ComponentBuilder.newBuilder()
-                .setPaletteCategory("embedding")
+                .setPaletteCategory("Embedding +")
                 .setId(COMPONENT_ID)
                 .setModuleId(MODULE_ID)
                 .setSchema(SCHEMA)

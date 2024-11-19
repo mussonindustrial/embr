@@ -26,12 +26,12 @@ class EmbeddedView {
                 COMPONENT_ID,
                 "base",
                 "Embedded View +",
-                "Enables an entire view to be embedded within another view."
+                "Enables an entire view to be embedded within another view. View props are handled server-side for decreased latency."
             )
 
         var DESCRIPTOR: ComponentDescriptor =
             ComponentDescriptorImpl.ComponentBuilder.newBuilder()
-                .setPaletteCategory("embedding")
+                .setPaletteCategory("Embedding +")
                 .setId(COMPONENT_ID)
                 .setModuleId(MODULE_ID)
                 .setSchema(SCHEMA)

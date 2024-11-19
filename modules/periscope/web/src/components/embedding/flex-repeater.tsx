@@ -159,6 +159,7 @@ const DelegateEmbeddedView = memo(function DelegateEmbeddedView({
       store={store.view.page.parent}
       mountPath={mountPath}
       resourcePath={view.viewPath}
+      parent={store}
       useDefaultHeight={view.useDefaultHeight}
       useDefaultMinHeight={view.useDefaultMinHeight}
       useDefaultMinWidth={view.useDefaultMinWidth}
