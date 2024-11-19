@@ -27,8 +27,6 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.collections.Iterable
 import kotlin.collections.Map
-import kotlin.collections.component1
-import kotlin.collections.component2
 import kotlin.collections.drop
 import kotlin.collections.firstOrNull
 import kotlin.collections.forEach
@@ -194,6 +192,7 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
     private fun initializeView(instance: InstancePropsHandler) =
         instance.onView { viewModel -> initializeView(instance, viewModel) }
 
+    @Suppress("SameParameterValue")
     private fun initializeView(instance: InstancePropsHandler, forceWrite: Boolean) =
         instance.onView { viewModel -> initializeView(instance, viewModel, forceWrite) }
 
@@ -258,7 +257,7 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
         props.tree.write(path, newValue, Origin.BindingWriteback, this)
     }
 
-    inner class InstancePropsHandler(val tree: PropertyTree, val index: Int) {
+    inner class InstancePropsHandler(private val tree: PropertyTree, private val index: Int) {
 
         val treePath: JsonPath = JsonPath.parse("instances[$index]")
         private var cachedViewModel: ViewModel? = null
@@ -321,7 +320,7 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
                 }
             }
 
-        val key: String
+        private val key: String
             get() {
                 val hasKey = tree.hasProperty("$treePath.key")
                 if (hasKey) {
@@ -454,6 +453,7 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
         names = ["index"],
         types = [Int::class],
     )
+    @Suppress("unused")
     fun popInstance(args: Array<PyObject>, keywords: Array<String>) =
         queue.submit { component.mdc { methods.popInstance.call(args, keywords) } }
 
@@ -462,6 +462,7 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
         names = ["instance"],
         types = [PyObject::class],
     )
+    @Suppress("unused")
     fun pushInstance(args: Array<PyObject>, keywords: Array<String>) =
         queue.submit { component.mdc { methods.pushInstance.call(args, keywords) } }
 
@@ -470,6 +471,7 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
         names = ["index", "instance"],
         types = [Int::class, PyObject::class],
     )
+    @Suppress("unused")
     fun insertInstance(args: Array<PyObject>, keywords: Array<String>) =
         queue.submit { component.mdc { methods.insertInstance.call(args, keywords) } }
 

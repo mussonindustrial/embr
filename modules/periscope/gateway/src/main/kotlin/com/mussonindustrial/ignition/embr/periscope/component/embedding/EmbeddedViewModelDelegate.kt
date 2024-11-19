@@ -213,10 +213,5 @@ class EmbeddedViewModelDelegate(component: Component) : ComponentModelDelegate(c
             get() {
                 return "${component.view?.id?.mountPath}.${component.componentAddressPath}"
             }
-
-        val instanceId: ViewInstanceId
-            get() {
-                return ViewInstanceId(this.viewPath, this.mountPath)
-            }
     }
 }
