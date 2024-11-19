@@ -1,0 +1,13 @@
+{
+  "instances": [],
+  "settings": {
+    "direction": "row",
+    "alignContent": "stretch",
+    "alignItems": "stretch",
+    "justify": "flex-start",
+    "wrap": "nowrap"
+  },
+  "style": {
+    "classes": ""
+  }
+}

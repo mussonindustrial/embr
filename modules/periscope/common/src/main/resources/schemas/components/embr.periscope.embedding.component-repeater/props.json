@@ -1,0 +1,106 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$defs": {
+        "embedded_component_config": {
+            "type": "object",
+            "properties": {
+                "version": {
+                    "type": "number",
+                    "description": "Component version of this instance."
+                },
+                "type": {
+                    "type": "string",
+                    "description": "Component type of this instance."
+                },
+                "props": {
+                    "type": "object",
+                    "description": "Props for this instance.",
+                    "default": {}
+                }
+            }
+        }
+    },
+    "properties": {
+        "instances": {
+            "type": "array",
+            "description": "Array of component instances.",
+            "default": [],
+            "items": {
+                "$ref": "#/$defs/embedded_component_config"
+            }
+        },
+        "settings": {
+            "type": "object",
+            "properties": {
+                "direction": {
+                    "type": "string",
+                    "description": "Direction of layout of repeated component.",
+                    "default": "row",
+                    "enum": [
+                        "row",
+                        "row-reverse",
+                        "column",
+                        "column-reverse"
+                    ]
+                },
+                "wrap": {
+                    "type": "string",
+                    "description": "Whether the container should allow repeated component to wrap to next line if space has run out.",
+                    "default": "nowrap",
+                    "enum": [
+                        "nowrap",
+                        "wrap",
+                        "wrap-reverse"
+                    ]
+                },
+                "justify": {
+                    "type": "string",
+                    "description": "Adjust placement of repeated component along the main axis when there is extra space, which may be used to fill areas before, after, or in-between.",
+                    "default": "flex-start",
+                    "enum": [
+                        "flex-start",
+                        "flex-end",
+                        "center",
+                        "space-between",
+                        "space-around",
+                        "space-evenly"
+                    ]
+                },
+                "alignItems": {
+                    "type": "string",
+                    "description": "Adjusts placement of repeated component along the cross axis when there is extra space.",
+                    "default": "stretch",
+                    "enum": [
+                        "flex-start",
+                        "flex-end",
+                        "center",
+                        "baseline",
+                        "stretch"
+                    ]
+                },
+                "alignContent": {
+                    "type": "string",
+                    "description": "Adjust alignment of repeated component when there is free space in the cross axis.",
+                    "default": "stretch",
+                    "enum": [
+                        "flex-start",
+                        "flex-end",
+                        "center",
+                        "space-between",
+                        "space-around",
+                        "stretch"
+                    ]
+                }
+            }
+        },
+        "style": {
+            "$ref": "urn:ignition-schema:schemas/style-properties.schema.json",
+            "default": {
+                "classes": "",
+                "overflow": "auto"
+            }
+        }
+    },
+    "type": "object",
+    "required": ["instances", "settings"]
+}

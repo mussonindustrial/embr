@@ -3,15 +3,19 @@ import {
     SwiperComponent,
     SwiperComponentMeta,
     FlexRepeaterComponent,
-    FlexRepeaterComponentMeta
+    FlexRepeaterComponentMeta,
+    ComponentRepeaterComponent,
+    ComponentRepeaterComponentMeta
 } from './components'
 
 export { 
+    ComponentRepeaterComponent,
     FlexRepeaterComponent,
     SwiperComponent,
 }
 
 const components = [
+    new ComponentRepeaterComponentMeta(),
     new FlexRepeaterComponentMeta(),
     new SwiperComponentMeta(),
 ]

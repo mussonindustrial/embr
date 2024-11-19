@@ -8,6 +8,7 @@ import com.inductiveautomation.perspective.designer.api.ComponentDesignDelegateR
 import com.inductiveautomation.perspective.designer.api.PerspectiveDesignerInterface
 import com.mussonindustrial.embr.perspective.designer.component.asDesignerDescriptor
 import com.mussonindustrial.ignition.embr.periscope.Meta.SHORT_MODULE_ID
+import com.mussonindustrial.ignition.embr.periscope.component.embedding.ComponentRepeater
 import com.mussonindustrial.ignition.embr.periscope.component.embedding.FlexRepeater
 import com.mussonindustrial.ignition.embr.periscope.component.embedding.Swiper
 import org.slf4j.Logger
@@ -31,12 +32,14 @@ class DesignerHook : AbstractDesignerModuleHook() {
         componentRegistry = pdi.designerComponentRegistry
         delegateRegistry = pdi.componentDesignDelegateRegistry
 
+        componentRegistry.registerComponent(ComponentRepeater.DESCRIPTOR.asDesignerDescriptor())
         componentRegistry.registerComponent(FlexRepeater.DESCRIPTOR.asDesignerDescriptor())
         componentRegistry.registerComponent(Swiper.DESCRIPTOR.asDesignerDescriptor())
     }
 
     override fun shutdown() {
         logger.info("Shutting down Embr-Periscope module and removing registered components.")
+        componentRegistry.removeComponent(ComponentRepeater.COMPONENT_ID)
         componentRegistry.removeComponent(FlexRepeater.COMPONENT_ID)
         componentRegistry.removeComponent(Swiper.COMPONENT_ID)
     }

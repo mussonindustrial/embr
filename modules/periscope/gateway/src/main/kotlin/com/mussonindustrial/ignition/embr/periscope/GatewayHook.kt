@@ -7,6 +7,7 @@ import com.inductiveautomation.perspective.common.api.ComponentRegistry
 import com.inductiveautomation.perspective.gateway.api.ComponentModelDelegateRegistry
 import com.inductiveautomation.perspective.gateway.api.PerspectiveContext
 import com.mussonindustrial.ignition.embr.periscope.Meta.SHORT_MODULE_ID
+import com.mussonindustrial.ignition.embr.periscope.component.embedding.ComponentRepeater
 import com.mussonindustrial.ignition.embr.periscope.component.embedding.FlexRepeater
 import com.mussonindustrial.ignition.embr.periscope.component.embedding.FlexRepeaterModelDelegate
 import com.mussonindustrial.ignition.embr.periscope.component.embedding.Swiper
@@ -39,6 +40,8 @@ class GatewayHook : AbstractGatewayModuleHook() {
         modelDelegateRegistry.register(FlexRepeater.COMPONENT_ID) { FlexRepeaterModelDelegate(it) }
 
         componentRegistry.registerComponent(Swiper.DESCRIPTOR)
+
+        componentRegistry.registerComponent(ComponentRepeater.DESCRIPTOR)
     }
 
     override fun shutdown() {
@@ -47,6 +50,7 @@ class GatewayHook : AbstractGatewayModuleHook() {
         modelDelegateRegistry.remove(FlexRepeater.COMPONENT_ID)
 
         componentRegistry.removeComponent(Swiper.COMPONENT_ID)
+        componentRegistry.removeComponent(ComponentRepeater.COMPONENT_ID)
     }
 
     override fun getMountedResourceFolder(): Optional<String> {
