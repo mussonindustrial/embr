@@ -20,7 +20,6 @@ import com.inductiveautomation.perspective.gateway.property.PropertyTree.Subscri
 import com.inductiveautomation.perspective.gateway.property.PropertyTreeChangeEvent
 import com.mussonindustrial.embr.common.scripting.PyArgOverloadBuilder
 import com.mussonindustrial.ignition.embr.periscope.PeriscopeGatewayContext
-import com.mussonindustrial.ignition.embr.periscope.model.readParams
 import com.mussonindustrial.ignition.embr.periscope.model.subscribeToParams
 import com.mussonindustrial.ignition.embr.periscope.model.writeToParams
 import com.mussonindustrial.ignition.embr.periscope.page.ViewJoinMsg
@@ -52,13 +51,13 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
     private val viewOutputListeners = WeakHashMap<ViewModel, Map<String, Subscription>>()
     private val viewTimeoutMs = 10_000L
 
-    private var instanceCount = 0
+    private var instanceCount = props.instances.json.size()
     private val instanceMatch = Regex("instances\\[(\\d+)]\\.(.*+)")
 
     override fun onStartup() {
         component.mdc {
             log.debugf("Startup")
-            props.instances.forEach { it.initialize(forceWrite = false) }
+            props.instances.forEach { initializeView(it) }
         }
     }
 
@@ -73,28 +72,23 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
     }
 
     private fun shutdownViewOutputListeners() {
-        component.mdc {
-            viewOutputListeners.forEach { (_, params) ->
-                params?.forEach { (_, subscription) -> subscription.unsubscribe() }
-            }
-            viewOutputListeners.clear()
-        }
+        viewOutputListeners.keys.forEach { shutdownViewOutputListeners(it) }
     }
 
     private fun shutdownViewOutputListeners(viewModel: ViewModel) {
-        component.mdc {
-            log.tracef("Removing view output listeners for view [%s]", viewModel.id.mountPath)
-            viewOutputListeners[viewModel]?.forEach { (_, subscription) ->
-                subscription.unsubscribe()
+        viewOutputListeners[viewModel]?.apply {
+            component.mdc {
+                log.tracef("Removing view output listeners for view %s", viewModel.id.mountPath)
+                forEach { it.value.unsubscribe() }
+                viewOutputListeners[viewModel] = null
             }
-            viewOutputListeners.clear()
         }
     }
 
     override fun handleEvent(message: EventFiredMsg) {
         try {
             component.mdcSetup()
-            log.debugf("Received %s component message.", message.eventName)
+            log.debugf("Received '%s' component message.", message.eventName)
 
             if (message.eventName == ViewJoinMsg.PROTOCOL) {
                 joinView(ViewJoinMsg(message.event))
@@ -118,7 +112,7 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
             return
         }
 
-        log.tracef("Client is requesting to join view %s", event.instanceId().id)
+        log.tracef("Client is requesting to join view %s", event.mountPath)
 
         viewLoader
             .findOrStartView(
@@ -128,19 +122,21 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
                 instance.viewParams
             )
             .orTimeout(viewTimeoutMs, TimeUnit.MILLISECONDS)
-            .thenAccept {
-                if (it.isPresent) {
-                    instance.cachedViewModel = it.get()
-                    instance.initialize(forceWrite = true)
-                }
-            }
+            .thenAcceptAsync(
+                {
+                    if (it.isPresent) {
+                        initializeView(instance, it.get())
+                    }
+                },
+                queue::submit
+            )
     }
 
     private fun createCommonViewPathListener(): Subscription {
         return props.tree.subscribe("instanceCommon.viewPath", Origin.allBut(Origin.Delegate)) {
             props.instances.forEach { instance ->
                 if (instance.instanceViewPath == "") {
-                    instance.initialize(forceWrite = false)
+                    initializeView(instance)
                 }
             }
         }
@@ -148,13 +144,13 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
 
     private fun createCommonViewParamsListener(): Subscription {
         return props.tree.subscribe("instanceCommon.viewParams", Origin.allBut(Origin.Delegate)) {
-            props.instances.forEach { instance -> instance.onViewInputChange(it) }
+            props.instances.forEach { instance -> onViewInputChange(instance, it) }
         }
     }
 
     private fun createInstancesListener(): Subscription {
         return props.tree.subscribe("instances", Origin.allBut(Origin.Delegate)) { event ->
-            if (event.source === this) {
+            if (event.source == this) {
                 return@subscribe
             }
 
@@ -170,7 +166,10 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
                 val changeRoot =
                     event.path.toString().replace(instance.treePath.toString() + ".", "")
                 if (changeRoot.startsWith("viewParams")) {
-                    instance.onViewInputChange(event)
+                    log.trace(
+                        "Dispatching change event on ${event.path} to instance ${instance.mountPath}"
+                    )
+                    this.onViewInputChange(instance, event)
                 }
             }
 
@@ -179,14 +178,57 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
             if (newInstanceCount != instanceCount) {
                 log.tracef("Number of instances changed, initializing views.")
                 instanceCount = newInstanceCount
-                props.instances.forEach { it.initialize(forceWrite = true) }
+                props.instances.forEach { initializeView(it, forceWrite = true) }
             }
         }
     }
 
+    private fun createViewOutputListeners(viewModel: ViewModel): Map<String, Subscription>? {
+        component.mdc { log.tracef("Subscribing to view outputs: ${viewModel.id.mountPath}") }
+        return viewModel.subscribeToParams(Origin.allBut(Origin.Delegate)) {
+            viewModel.mdc { log.tracef("Outputs changed, firing: ${it.path}") }
+            this.onViewOutputChanged(viewModel, it)
+        }
+    }
+
+    private fun initializeView(instance: InstancePropsHandler) =
+        instance.onView { viewModel -> initializeView(instance, viewModel) }
+
+    private fun initializeView(instance: InstancePropsHandler, forceWrite: Boolean) =
+        instance.onView { viewModel -> initializeView(instance, viewModel, forceWrite) }
+
+    private fun initializeView(instance: InstancePropsHandler, viewModel: ViewModel) {
+        initializeView(instance, viewModel, forceWrite = false)
+    }
+
+    private fun initializeView(
+        instance: InstancePropsHandler,
+        viewModel: ViewModel,
+        forceWrite: Boolean
+    ) {
+        if (viewOutputListeners[viewModel] == null || forceWrite) {
+            viewModel.writeToParams(instance.viewParams, Origin.Delegate, this, queue)
+        }
+
+        viewOutputListeners[viewModel]?.apply { shutdownViewOutputListeners(viewModel) }
+        viewOutputListeners[viewModel] = createViewOutputListeners(viewModel)
+    }
+
+    private fun onViewInputChange(instance: InstancePropsHandler, event: PropertyTreeChangeEvent) {
+        if (event.source == this) {
+            return
+        }
+
+        instance.onView { viewModel ->
+            val path = event.path.toString().replace("${instance.treePath}.viewParams.", "")
+            val value =
+                toJsonDeep(event.readCausalValue(), BindingUtils.JsonEncoding.DollarQualified)
+            viewModel.writeToParams(path, value, Origin.Delegate, this, queue)
+        }
+    }
+
     private fun onViewOutputChanged(viewModel: ViewModel, event: PropertyTreeChangeEvent) {
-        if (event.source === this) {
-            log.tracef("onViewOutputChanged - self change detected. Skipping.")
+        if (event.source == this) {
             return
         }
 
@@ -203,22 +245,23 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
             toJsonDeep(event.readValue().value, BindingUtils.JsonEncoding.DollarQualified)
 
         val path = "${instance.treePath}.viewParams.${event.listeningPath}"
-        val maybeCurrentValue = instance.viewParams.get(event.listeningPath.toString())
-        val currentValue = toJsonDeep(maybeCurrentValue, BindingUtils.JsonEncoding.DollarQualified)
+        val currentValue =
+            toJsonDeep(
+                instance.viewParams.get(event.listeningPath.toString()),
+                BindingUtils.JsonEncoding.DollarQualified
+            )
 
         if (currentValue == newValue) {
-            log.tracef("onViewOutputChanged - %s == %s, skipping", currentValue, newValue)
             return
         }
 
-        log.tracef("onViewOutputChanged - Writing %s to %s", newValue, path)
-        instance.tree.write(path, newValue, Origin.BindingWriteback, this)
+        props.tree.write(path, newValue, Origin.BindingWriteback, this)
     }
 
     inner class InstancePropsHandler(val tree: PropertyTree, val index: Int) {
 
         val treePath: JsonPath = JsonPath.parse("instances[$index]")
-        var cachedViewModel: ViewModel? = null
+        private var cachedViewModel: ViewModel? = null
 
         private val commonViewPath: String
             get() {
@@ -228,7 +271,7 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
                     ?.asString ?: ""
             }
 
-        var instanceViewPath: String
+        val instanceViewPath: String
             get() {
                 return toJsonDeep(
                         tree
@@ -236,14 +279,6 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
                             .orElse(BasicQualifiedValue(""))
                     )
                     ?.asString ?: ""
-            }
-            set(value) {
-                tree.write(
-                    treePath.createChildPath("viewPath"),
-                    BasicQualifiedValue(value),
-                    Origin.Delegate,
-                    this@FlexRepeaterModelDelegate
-                )
             }
 
         private val commonViewParams: JsonObject
@@ -257,7 +292,7 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
                     ?.asJsonObject ?: JsonObject()
             }
 
-        var instanceViewParams: JsonObject
+        private val instanceViewParams: JsonObject
             get() {
                 return toJsonDeep(
                         tree
@@ -266,14 +301,6 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
                         BindingUtils.JsonEncoding.DollarQualified
                     )
                     ?.asJsonObject ?: JsonObject()
-            }
-            set(value) {
-                tree.write(
-                    treePath.createChildPath("viewParams"),
-                    BasicQualifiedValue(value),
-                    Origin.Delegate,
-                    this@FlexRepeaterModelDelegate
-                )
             }
 
         val viewPath: String
@@ -294,30 +321,22 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
                 }
             }
 
-        var key: String
+        val key: String
             get() {
-                return toJsonDeep(tree.read("$treePath.key").orElse(BasicQualifiedValue(index)))
-                    ?.asString ?: ""
-            }
-            set(value) {
-                tree.write("$treePath.key", BasicQualifiedValue(value), Origin.Delegate, this)
+                val hasKey = tree.hasProperty("$treePath.key")
+                if (hasKey) {
+                    return toJsonDeep(tree.read("$treePath.key").get()).asString
+                } else {
+                    val newKey = UUID.randomUUID().toString()
+                    tree.write("$treePath.key", BasicQualifiedValue(newKey), Origin.Delegate, this)
+                    return newKey
+                }
             }
 
         val mountPath: String
             get() {
                 return "${component.view?.id?.mountPath}$${component.componentAddressPath}.$key"
             }
-
-        fun initialize(forceWrite: Boolean) {
-            onView { viewModel ->
-                if (viewOutputListeners[viewModel] == null || forceWrite) {
-                    syncParams(viewModel)
-                }
-
-                viewOutputListeners[viewModel]?.apply { shutdownViewOutputListeners(viewModel) }
-                viewOutputListeners[viewModel] = subscribeToViewOutputs(viewModel)
-            }
-        }
 
         fun onView(block: (ViewModel) -> Unit) {
             if (cachedViewModel !== null) {
@@ -338,57 +357,6 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
                     }
             }
         }
-
-        fun onViewInputChange(event: PropertyTreeChangeEvent) {
-            if (event.source === this@FlexRepeaterModelDelegate) {
-                return
-            }
-
-            onView { viewModel ->
-                val path = event.path.toString().replace("${treePath}.viewParams.", "")
-                val value =
-                    toJsonDeep(event.readCausalValue(), BindingUtils.JsonEncoding.DollarQualified)
-                viewModel.writeToParams(
-                    path,
-                    value,
-                    Origin.Delegate,
-                    this@FlexRepeaterModelDelegate,
-                    queue
-                )
-            }
-        }
-
-        private fun subscribeToViewOutputs(viewModel: ViewModel): Map<String, Subscription>? {
-            return viewModel.subscribeToParams(Origin.allBut(Origin.Delegate)) {
-                onViewOutputChanged(viewModel, it)
-            }
-        }
-
-        fun syncParams(viewModel: ViewModel) {
-            log.info("syncParams")
-            val writes = JsonObject()
-
-            val newParams = viewParams
-            val currentParams = viewModel.readParams()
-            newParams.keySet().forEach {
-                val newValue = newParams.get(it)
-                val currentValue = currentParams?.get(it)
-
-                if (newValue != currentValue) {
-                    writes.add(it, newValue)
-                }
-            }
-
-            if (!writes.isEmpty) {
-                log.info("${this.mountPath}, syncing params $writes")
-                viewModel.writeToParams(
-                    writes,
-                    Origin.Delegate,
-                    this@FlexRepeaterModelDelegate,
-                    queue
-                )
-            }
-        }
     }
 
     inner class InstancesPropsHandlers(private val tree: PropertyTree) :
@@ -405,12 +373,37 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
                     ?.asJsonArray ?: JsonArray()
             }
             set(value) {
+                val modifiedInstances = mutableListOf<Int>()
+
+                value.forEachIndexed { index, instance ->
+                    var updateCount = 0
+                    val viewParams =
+                        instance.asJsonObject?.getAsJsonObject("viewParams") ?: JsonObject()
+
+                    updateCount += updateKey(instance.asJsonObject)
+                    updateCount += updateIndex(index, viewParams)
+
+                    instance.asJsonObject.add("viewParams", viewParams)
+
+                    if (updateCount > 0) {
+                        modifiedInstances.add(index)
+                    }
+                }
+
                 tree.write(
                     treePath,
                     BasicQualifiedValue(value),
                     Origin.Delegate,
                     this@FlexRepeaterModelDelegate
                 )
+
+                instanceCount = value.size()
+                modifiedInstances.forEach {
+                    val instance = this[it]
+                    if (instance != null) {
+                        initializeView(instance, forceWrite = true)
+                    }
+                }
             }
 
         private val size: Int
@@ -433,39 +426,23 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
             }
         }
 
-        //        private fun updateInstances(newInstances: JsonArray): JsonArray {
-        //            var updateCount = 0
-        //
-        //            newInstances.forEachIndexed { index, instance ->
-        //                val viewParams =
-        //                    instance.asJsonObject?.getAsJsonObject("viewParams") ?: JsonObject()
-        //
-        //                updateCount += updateKey(instance.asJsonObject)
-        //                updateCount += updateIndex(index, viewParams)
-        //
-        //                instance.asJsonObject.add("viewParams", viewParams)
-        //            }
-        //
-        //            return newInstances
-        //        }
-        //
-        //        private fun updateKey(instance: JsonObject): Int {
-        //            val currentKey = instance.get("key")
-        //            if (currentKey == null || currentKey.toString() == "") {
-        //                instance.addProperty("key", UUID.randomUUID().toString())
-        //                return 1
-        //            }
-        //            return 0
-        //        }
-        //
-        //        private fun updateIndex(index: Int, viewParams: JsonObject): Int {
-        //            val currentIndex = viewParams.get("index")
-        //            if (currentIndex == null || currentIndex.toString() != index.toString()) {
-        //                viewParams.addProperty("index", index)
-        //                return 1
-        //            }
-        //            return 0
-        //        }
+        private fun updateKey(instance: JsonObject): Int {
+            val currentKey = instance.get("key")
+            if (currentKey == null || currentKey.toString() == "") {
+                instance.addProperty("key", UUID.randomUUID().toString())
+                return 1
+            }
+            return 0
+        }
+
+        private fun updateIndex(index: Int, viewParams: JsonObject): Int {
+            val currentIndex = viewParams.get("index")
+            if (currentIndex == null || currentIndex.toString() != index.toString()) {
+                viewParams.addProperty("index", index)
+                return 1
+            }
+            return 0
+        }
     }
 
     inner class PropsHandler(val tree: PropertyTree) {

@@ -62,7 +62,7 @@ class EmbeddedViewModelDelegate(component: Component) : ComponentModelDelegate(c
     private fun shutdownViewOutputListeners(viewModel: ViewModel) {
         viewOutputListeners[viewModel]?.apply {
             component.mdc {
-                log.tracef("Removing output listeners for view %s", viewModel.id)
+                log.tracef("Removing output listeners for view %s", viewModel.id.mountPath)
                 forEach { it.value.unsubscribe() }
                 viewOutputListeners[viewModel] = null
             }
@@ -85,9 +85,10 @@ class EmbeddedViewModelDelegate(component: Component) : ComponentModelDelegate(c
     private fun joinView(event: ViewJoinMsg) {
         if (event.resourcePath != props.viewPath || event.mountPath != props.mountPath) {
             component.mdc { log.warnf("Client requested unexpected resource or mount path.") }
+            return
         }
 
-        log.tracef("Client is requesting to join view %s", event.instanceId().id)
+        log.tracef("Client is requesting to join view %s", event.mountPath)
 
         viewLoader
             .findOrStartView(event.resourcePath, event.mountPath, event.birthDate, props.viewParams)

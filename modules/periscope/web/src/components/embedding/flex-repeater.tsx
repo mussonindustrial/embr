@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { memo } from 'react'
 import {
   AbstractUIElementStore,
   ComponentMeta,
@@ -71,6 +71,7 @@ type EmbeddedViewProps = {
 }
 
 function emitFlexPosition(props: FlexPositionProps): React.CSSProperties {
+  ComponentStore
   return {
     alignSelf: props.align,
     flexBasis: props.basis,
@@ -133,6 +134,45 @@ function MissingComponentDelegate({ emit }: { emit: Emitter }) {
   )
 }
 
+type DelegateEmbeddedViewProps = {
+  view: EmbeddedViewProps
+  mountPath: string
+  key: string
+  store: ComponentStore
+}
+const DelegateEmbeddedView = memo(function DelegateEmbeddedView({
+  view,
+  mountPath,
+  key,
+  store,
+}: DelegateEmbeddedViewProps) {
+  if (store.delegate == null) {
+    console.warn(
+      `No delegate found for component ${COMPONENT_TYPE} at ${mountPath}`
+    )
+    return <MissingComponentDelegate key={key} emit={store.emitterFactory()} />
+  }
+
+  return (
+    <JoinableView
+      key={key}
+      store={store.view.page.parent}
+      mountPath={mountPath}
+      resourcePath={view.viewPath}
+      useDefaultHeight={view.useDefaultHeight}
+      useDefaultMinHeight={view.useDefaultMinHeight}
+      useDefaultMinWidth={view.useDefaultMinWidth}
+      useDefaultWidth={view.useDefaultWidth}
+      rootStyle={{
+        ...emitFlexPosition(view.viewPosition),
+        ...view.viewStyle,
+        classes: formatStyleNames(view.viewStyle.classes),
+      }}
+      delegate={store.delegate}
+    />
+  )
+})
+
 export function FlexRepeaterComponent({
   props,
   store,
@@ -156,29 +196,12 @@ export function FlexRepeaterComponent({
         const mountPath = getChildMountPath(store, view.key)
         const key = PageStore.instanceKeyFor(view.viewPath, mountPath)
 
-        if (store.delegate == null) {
-          console.warn(
-            `No delegate found for component ${COMPONENT_TYPE} at ${mountPath}`
-          )
-          return <MissingComponentDelegate key={key} emit={emit} />
-        }
-
         return (
-          <JoinableView
+          <DelegateEmbeddedView
             key={key}
-            store={store.view.page.parent}
             mountPath={mountPath}
-            resourcePath={view.viewPath}
-            useDefaultHeight={view.useDefaultHeight}
-            useDefaultMinHeight={view.useDefaultMinHeight}
-            useDefaultMinWidth={view.useDefaultMinWidth}
-            useDefaultWidth={view.useDefaultWidth}
-            rootStyle={{
-              ...emitFlexPosition(view.viewPosition),
-              ...view.viewStyle,
-              classes: formatStyleNames(view.viewStyle.classes),
-            }}
-            delegate={store.delegate}
+            view={view}
+            store={store}
           />
         )
       })}
