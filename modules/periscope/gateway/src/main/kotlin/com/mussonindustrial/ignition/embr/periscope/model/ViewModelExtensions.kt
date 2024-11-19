@@ -79,3 +79,14 @@ fun ViewModel.subscribeToParams(
 
     return listeners
 }
+
+fun ViewModel.readParams(): JsonObject? {
+    val tree = this.getPropertyTreeOf(PropertyType.params) ?: return null
+
+    val maybeRoot = tree.read(JsonPath.ROOT)
+    if (maybeRoot.isEmpty) {
+        return null
+    }
+
+    return toJsonDeep(maybeRoot.get()).asJsonObject
+}

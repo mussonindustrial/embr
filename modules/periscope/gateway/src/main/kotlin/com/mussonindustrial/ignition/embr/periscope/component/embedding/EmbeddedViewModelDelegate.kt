@@ -27,9 +27,10 @@ class EmbeddedViewModelDelegate(component: Component) : ComponentModelDelegate(c
     private val queue = component.session.queue()
     private val props = PropsHandler(component.getPropertyTreeOf(PropertyType.props)!!)
     private val viewLoader = context.getViewLoader(component.page as PageModel)
-    private val viewOutputListeners = WeakHashMap<ViewModel, Map<String, Subscription>>()
+
     private val viewPathListener = createViewPathListener()
     private val viewParamsListener = createViewParamsListener()
+    private val viewOutputListeners = WeakHashMap<ViewModel, Map<String, Subscription>>()
     private val viewTimeoutMs = 10_000L
 
     override fun onStartup() {
@@ -74,35 +75,31 @@ class EmbeddedViewModelDelegate(component: Component) : ComponentModelDelegate(c
             log.tracef("Received '%s' component message.", message.eventName)
 
             if (message.eventName == ViewJoinMsg.PROTOCOL) {
-                val event = ViewJoinMsg(message.event)
-                if (event.resourcePath != props.viewPath || event.mountPath != props.mountPath) {
-                    component.mdc {
-                        log.warnf("Client requested unexpected resource or mount path.")
-                    }
-                }
-
-                log.tracef("Client is requesting to join view %s", event.instanceId().id)
-
-                viewLoader
-                    .findOrStartView(
-                        event.resourcePath,
-                        event.mountPath,
-                        event.birthDate,
-                        props.viewParams
-                    )
-                    .orTimeout(viewTimeoutMs, TimeUnit.MILLISECONDS)
-                    .thenAcceptAsync(
-                        {
-                            if (it.isPresent) {
-                                initializeView(it.get(), true)
-                            }
-                        },
-                        queue::submit
-                    )
+                joinView(ViewJoinMsg(message.event))
             }
         } finally {
             component.mdcTeardown()
         }
+    }
+
+    private fun joinView(event: ViewJoinMsg) {
+        if (event.resourcePath != props.viewPath || event.mountPath != props.mountPath) {
+            component.mdc { log.warnf("Client requested unexpected resource or mount path.") }
+        }
+
+        log.tracef("Client is requesting to join view %s", event.instanceId().id)
+
+        viewLoader
+            .findOrStartView(event.resourcePath, event.mountPath, event.birthDate, props.viewParams)
+            .orTimeout(viewTimeoutMs, TimeUnit.MILLISECONDS)
+            .thenAcceptAsync(
+                {
+                    if (it.isPresent) {
+                        initializeView(it.get(), true)
+                    }
+                },
+                queue::submit
+            )
     }
 
     private fun createViewPathListener(): Subscription {

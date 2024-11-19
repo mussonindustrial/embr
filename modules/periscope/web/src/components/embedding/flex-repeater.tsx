@@ -6,6 +6,7 @@ import {
   ComponentStore,
   ComponentStoreDelegate,
   Emitter,
+  JsObject,
   PageStore,
   PComponent,
   PropertyTree,
@@ -60,7 +61,7 @@ type FlexRepeaterProps = {
 type EmbeddedViewProps = {
   key: string
   viewPath: string
-  // viewParams: JsObject
+  viewParams: JsObject
   viewStyle: StyleObject
   viewPosition: FlexPositionProps
   useDefaultHeight: boolean
@@ -91,11 +92,7 @@ function resolveViewProps(
   return {
     key: view.key && view.key !== '' ? view.key : index.toString(),
     viewPath: resolve([view.viewPath, props.instanceCommon.viewPath]),
-    // viewParams: {
-    //   index,
-    //   ...props.instanceCommon.viewParams,
-    //   ...view.viewParams,
-    // },
+    viewParams: {},
     viewStyle: mergeStyles([props.instanceCommon.viewStyle, view.viewStyle]),
     viewPosition: {
       ...props.instanceCommon.viewPosition,
@@ -119,45 +116,6 @@ function resolveViewProps(
     ]),
   }
 }
-
-// type JoinableViewProps = ViewProps & {
-//   delegate: ComponentStoreDelegate
-// }
-
-// const JoinableView = memo(
-//   class extends View {
-//     delegate: ComponentStoreDelegate
-
-//     constructor(props: JoinableViewProps) {
-//       super(props)
-//       this.delegate = props.delegate
-//       this.installViewStore = this.installViewStore.bind(this)
-//     }
-
-//     override installViewStore(viewStore: ViewStore): void {
-//       super.installViewStore(joinOnStartup(viewStore, this.delegate))
-//     }
-//   }
-// )
-
-// function joinOnStartup(viewStore: ViewStore, delegate: ComponentStoreDelegate) {
-//   Reflect.defineProperty(viewStore, 'startup', {
-//     value: () => {
-//       const params = viewStore.running
-//         ? viewStore.params.readEncoded('', false)
-//         : viewStore.initialParams
-
-//       delegate.fireEvent('view-join', {
-//         resourcePath: viewStore.resourcePath,
-//         mountPath: viewStore.mountPath,
-//         birthDate: viewStore.birthDate,
-//         params,
-//       })
-//       viewStore.running = true
-//     },
-//   })
-//   return viewStore
-// }
 
 function MissingComponentDelegate({ emit }: { emit: Emitter }) {
   return (
