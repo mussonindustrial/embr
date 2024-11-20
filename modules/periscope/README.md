@@ -20,7 +20,7 @@ An Ignition module that includes design extensions and enhancements for Perspect
 
 | Name                                                  | Category    | Description                                                                                                                                                           |
 |-------------------------------------------------------|-------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| [Embedded View +](./docs/components/view.md) | Embedding + | An enhanced Embedded View component with load ahead optimizations and gateway-side property handling.                                                                 |
+| [Embedded View +](./docs/components/view.md)          | Embedding + | An enhanced Embedded View component with load ahead optimizations and gateway-side property handling.                                                                 |
 | [Flex Repeater +](./docs/components/flex-repeater.md) | Embedding + | An enhanced Flex Repeater component with support for unique view paths, common view parameters/styling, load ahead optimizations, and gateway-side property handling. |
 | [Swiper](./docs/components/swiper.md)                 | Embedding + | Swiper is the most modern free and open source mobile touch slider with hardware accelerated transitions and amazing native behavior.                                 |
 
