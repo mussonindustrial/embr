@@ -1,5 +1,11 @@
 # @mussonindustrial/embr-jvm-perspective-core
 
+## 0.6.0
+
+### Minor Changes
+
+- 2daa7d5: Change resource source for thumbnail images. Thumbnail images are now loaded by `PaletteEntry::class.java`.
+
 ## 0.5.0
 
 ### Patch Changes
