@@ -7,8 +7,6 @@ This module provides an enhanced Embedded View component.
 - Performs load ahead optimization (the gateway starts the embedded view before the client requests it).
 - Property passthrough (both in and out of the embedded view) is handled on the gateway, reducing latency.
 
----
-
 ## Changelog
 
 The [changelog](https://github.com/mussonindustrial/embr/blob/main/modules/embr-chart-js/CHANGELOG.md) is regularly updated to reflect what's changed in each new release.

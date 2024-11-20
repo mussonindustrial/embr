@@ -9,8 +9,6 @@ This module provides an enhanced Flex Repeater component.
 - Performs load ahead optimization (the gateway starts the embedded views before the client requests them).
 - Property passthrough (both in and out of the embedded views) is handled on the gateway, reducing latency.
 
----
-
 ## Changelog
 
 The [changelog](https://github.com/mussonindustrial/embr/blob/main/modules/embr-chart-js/CHANGELOG.md) is regularly updated to reflect what's changed in each new release.
