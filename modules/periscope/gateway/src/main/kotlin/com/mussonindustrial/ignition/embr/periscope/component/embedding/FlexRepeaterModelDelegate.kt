@@ -142,7 +142,7 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
 
     private fun createCommonViewParamsListener(): Subscription {
         return props.tree.subscribe("instanceCommon.viewParams", Origin.allBut(Origin.Delegate)) {
-            props.instances.forEach { instance -> onViewInputChange(instance, it) }
+            props.instances.forEach { instance -> onViewCommonChange(instance, it) }
         }
     }
 
@@ -211,6 +211,24 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
 
         viewOutputListeners[viewModel]?.apply { shutdownViewOutputListeners(viewModel) }
         viewOutputListeners[viewModel] = createViewOutputListeners(viewModel)
+    }
+
+    private fun onViewCommonChange(instance: InstancePropsHandler, event: PropertyTreeChangeEvent) {
+        if (event.source == this) {
+            return
+        }
+
+        val rootKey = event.path.pathElements[1]?.toString()
+        if (instance.instanceViewParams.has(rootKey)) {
+            return
+        }
+
+        instance.onView { viewModel ->
+            val path = event.path.toString().replace("instanceCommon.viewParams.", "")
+            val value =
+                toJsonDeep(event.readCausalValue(), BindingUtils.JsonEncoding.DollarQualified)
+            viewModel.writeToParams(path, value, Origin.Delegate, this)
+        }
     }
 
     private fun onViewInputChange(instance: InstancePropsHandler, event: PropertyTreeChangeEvent) {
@@ -291,7 +309,7 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
                     ?.asJsonObject ?: JsonObject()
             }
 
-        private val instanceViewParams: JsonObject
+        val instanceViewParams: JsonObject
             get() {
                 return toJsonDeep(
                         tree
