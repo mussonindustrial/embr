@@ -1,5 +1,10 @@
 # Embr Periscope Module [<img src="https://cdn.mussonindustrial.com/files/public/images/emblem.svg" alt="Musson Industrial Logo" width="90" height="40" align="right">][embr]
 
+[![Build](https://github.com/mussonindustrial/embr/actions/workflows/build.yml/badge.svg)]()
+[![version](https://img.shields.io/github/v/release/mussonindustrial/embr?filter=*periscope*&label=Latest)](CHANGELOG.md)
+[![Ignition](https://img.shields.io/badge/Ignition-8.1.33+-rebeccapurple.svg)](https://inductiveautomation.com/)
+[![Documentation](https://img.shields.io/badge/Documentation-docs.mussonindustrial.com-white.svg?logo=docusaurus)](https://docs.mussonindustrial.com/docs/ignition-modules/embr-periscope)
+
 <div style="border-left: 4px solid #4CAF50; padding: 10px; font-family: Arial, sans-serif;">
 <h3 style="color: #red; margin-top: 0;">Periscope</h3>
   <p><em>A periscope provides a new perspective</em> by allowing users to see over, around, or through obstacles, offering a unique view otherwise obstructed.</p>
@@ -14,7 +19,8 @@ An Ignition module that includes design extensions and enhancements for Perspect
 
 ### Module Documentation
 
-- `#TODO` [Module documentation][documentation]
+- [Module documentation] is available at [docs.mussonindustrial.com].
+
 
 ### Component Directory
 
@@ -35,7 +41,8 @@ If you'd like to sponsor this project and have your avatar or company logo appea
 
 [embr]: https://github.com/mussonindustrial/embr
 [releases]: https://github.com/mussonindustrial/embr/releases
-[documentation]: https://docs.mussonindustrial.com/
+[docs.mussonindustrial.com]: https://docs.mussonindustrial.com
+[Module documentation]: https://docs.mussonindustrial.com/docs/ignition-modules/embr-thermo
 [contributors]: https://github.com/JamesIves/github-pages-deploy-action/graphs/contributors
 [sponsors]: https://github.com/sponsors/mussonindustrial
 [latest version]: https://github.com/mussonindustrial/embr/releases?q=periscope&expanded=true
