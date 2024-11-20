@@ -14,7 +14,8 @@ An Ignition module that includes design extensions and enhancements for Perspect
 
 ### Module Documentation
 
-- `#TODO` [Module documentation][documentation]
+- [Module documentation] is available at [docs.mussonindustrial.com].
+
 
 ### Component Directory
 
@@ -35,7 +36,8 @@ If you'd like to sponsor this project and have your avatar or company logo appea
 
 [embr]: https://github.com/mussonindustrial/embr
 [releases]: https://github.com/mussonindustrial/embr/releases
-[documentation]: https://docs.mussonindustrial.com/
+[docs.mussonindustrial.com]: https://docs.mussonindustrial.com
+[Module documentation]: https://docs.mussonindustrial.com/docs/ignition-modules/embr-thermo
 [contributors]: https://github.com/JamesIves/github-pages-deploy-action/graphs/contributors
 [sponsors]: https://github.com/sponsors/mussonindustrial
 [latest version]: https://github.com/mussonindustrial/embr/releases?q=periscope&expanded=true
