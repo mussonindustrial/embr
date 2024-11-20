@@ -1,5 +1,11 @@
 # @embr-modules/thermo
 
+## 0.1.6
+
+### Patch Changes
+
+- 8f93be4: (docs) Fix scripting hint signature for `specificGibbsFreeEnergy`.
+
 ## 0.1.5
 
 ### Patch Changes

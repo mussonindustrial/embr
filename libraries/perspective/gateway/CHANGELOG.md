@@ -1,5 +1,11 @@
 # @embr-jvm/perspective-gateway
 
+## 0.6.0
+
+### Minor Changes
+
+- 2daa7d5: Add utility methods for writing/subscribing to ViewModel params.
+
 ## 0.5.0
 
 ### Minor Changes

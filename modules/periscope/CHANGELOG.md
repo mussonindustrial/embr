@@ -1,5 +1,16 @@
 # @embr-modules/periscope
 
+## 0.4.0
+
+### Minor Changes
+
+- 2daa7d5: (Embedded View +): Introduce `Embedded View +` component.
+- 2daa7d5: (Flex Repeater +): Rewrite `Flex Repeater +` based on experiences learned from `Embedded View +`.
+
+### Patch Changes
+
+- @embr-modules/periscope-web@0.4.0
+
 ## 0.2.0
 
 ### Minor Changes
