@@ -1,6 +1,6 @@
 module.exports = {
     root: true,
-    extends: ['@mussonindustrial/eslint-config-embr'],
+    extends: ['@embr-js/eslint-config'],
     env: {
         browser: true,
         commonjs: true,

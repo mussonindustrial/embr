@@ -1,13 +1,11 @@
-# Flex Repeater +  [<img src="https://cdn.mussonindustrial.com/files/public/images/emblem.svg" alt="Musson Industrial Logo" width="90" height="40" align="right">][embr]
+# Embedded View + [<img src="https://cdn.mussonindustrial.com/files/public/images/emblem.svg" alt="Musson Industrial Logo" width="90" height="40" align="right">][embr]
 
-This module provides an enhanced Flex Repeater component.
+This module provides an enhanced Embedded View component.
 
 ## Enhancements
 
-- Allows unique view paths for each instances.
-- Allows for shared parameters/stylings that are passed to all instances.
-- Performs load ahead optimization (the gateway starts the embedded views before the client requests them).
-- Property passthrough (both in and out of the embedded views) is handled on the gateway, reducing latency.
+- Performs load ahead optimization (the gateway starts the embedded view before the client requests it).
+- Property passthrough (both in and out of the embedded view) is handled on the gateway, reducing latency.
 
 ## Changelog
 

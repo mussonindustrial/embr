@@ -39,7 +39,7 @@ fun ComponentBuilder.addPaletteEntry(entry: PaletteEntry): ComponentBuilder {
 }
 
 fun getImage(clazz: Class<*>, path: String): BufferedImage? {
-    val resource = clazz::class.java.getResource(path)
+    val resource = PaletteEntry::class.java.getResource(path)
     resource?.let {
         return ImageIO.read(it)
     }

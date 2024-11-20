@@ -8,15 +8,15 @@ import com.mussonindustrial.embr.perspective.common.component.addPaletteEntry
 import com.mussonindustrial.ignition.embr.periscope.Components
 import com.mussonindustrial.ignition.embr.periscope.Meta.MODULE_ID
 
-class FlexRepeater {
+class EmbeddedView {
     companion object {
-        var COMPONENT_ID: String = "embr.periscope.embedding.flex-repeater"
+        var COMPONENT_ID: String = "embr.periscope.embedding.view"
         var SCHEMA: JsonSchema =
             JsonSchema.parse(
                 Components::class
                     .java
                     .getResourceAsStream(
-                        "/schemas/components/embr.periscope.embedding.flex-repeater/props.json"
+                        "/schemas/components/embr.periscope.embedding.view/props.json"
                     )
             )
 
@@ -25,26 +25,8 @@ class FlexRepeater {
                 this::class.java,
                 COMPONENT_ID,
                 "base",
-                "Flex Repeater +",
-                "Creates multiple instances of views for display in another view. View props are handled server-side for decreased latency."
-            )
-
-        private var VARIANT_ROW =
-            PaletteEntry(
-                this::class.java,
-                COMPONENT_ID,
-                "row",
-                "Row",
-                "Creates multiple instances of views for display in another view. View props are handled server-side for decreased latency."
-            )
-
-        private var VARIANT_COLUMN =
-            PaletteEntry(
-                this::class.java,
-                COMPONENT_ID,
-                "column",
-                "Column",
-                "Creates multiple instances of views for display in another view. View props are handled server-side for decreased latency."
+                "Embedded View +",
+                "Enables an entire view to be embedded within another view. View props are handled server-side for decreased latency."
             )
 
         var DESCRIPTOR: ComponentDescriptor =
@@ -53,11 +35,9 @@ class FlexRepeater {
                 .setId(COMPONENT_ID)
                 .setModuleId(MODULE_ID)
                 .setSchema(SCHEMA)
-                .setName("Flex Repeater +")
+                .setName("Embedded View +")
                 .addPaletteEntry(VARIANT_BASE)
-                .addPaletteEntry(VARIANT_ROW)
-                .addPaletteEntry(VARIANT_COLUMN)
-                .setDefaultMetaName("FlexRepeaterPlus")
+                .setDefaultMetaName("EmbeddedViewPlus")
                 .setResources(Components.BROWSER_RESOURCES)
                 .build()
     }

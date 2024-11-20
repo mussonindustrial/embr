@@ -63,7 +63,7 @@ class Swiper {
 
         var DESCRIPTOR: ComponentDescriptor =
             ComponentDescriptorImpl.ComponentBuilder.newBuilder()
-                .setPaletteCategory("embedding")
+                .setPaletteCategory("Embedding +")
                 .setId(COMPONENT_ID)
                 .setModuleId(MODULE_ID)
                 .setSchema(SCHEMA)

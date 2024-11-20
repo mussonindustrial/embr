@@ -6,12 +6,13 @@ This module provides a [Swiper] Perspective component.
 
 Swiper is the most modern free and open source mobile touch slider with hardware accelerated transitions and amazing native behavior.
 
-### Component Configuration
+## Component Configuration
 
 Details on how to configure the component can be found on the [Swiper documentation site][Swiper].
 All property configurations supported by Swiper are supported on the Perspective component.
 
 ### Module Support
+
 Swiper comprises many optional modules; all the currently supported modules are included and bundled with the module.
 However, not all the modules have been tested for full functionality.
 
@@ -19,7 +20,8 @@ However, not all the modules have been tested for full functionality.
 
 Details on configuring each module are outside the scope of this documentation. Please consult the [Swiper documentation site][Swiper] for complete details.
 
-#### Modules
+### Modules
+
 | Name                                                                     | Description                                                                                                                                                                                                | Tested |
 |--------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------|
 | [Navigation](https://swiperjs.com/swiper-api#navigation)                 | Arrow navigation                                                                                                                                                                                           | ✅      |
@@ -45,7 +47,9 @@ Details on configuring each module are outside the scope of this documentation. 
 | [Parallax](https://swiperjs.com/swiper-api#parallax)                     | Parallax transition effect                                                                                                                                                                                 | ❌      |
 
 ---
+
 ### Scriptable Options
+
 Swiper scriptable options are supported.
 
 Any component property value containing an arrow function `() =>` statement will be converted into a JavaScript function.
@@ -54,6 +58,7 @@ Any component property value containing an arrow function `() =>` statement will
 The function will have access to all parameters listed in the [Swiper documentation].
 
 #### Global Parameters
+
 In additional to the parameters provided by Chart.js, several Perspective specific global objects can be accessed in scriptable options.
 This global objects are implicitly available and do not need to be specified as function arguments.
 
@@ -64,8 +69,8 @@ This global objects are implicitly available and do not need to be specified as 
     - A reference to the root Perspective client store.
     - Allows access to Perspective client properties (i.e. `client.projectName`).
 
-
 #### Scriptable Option Example
+
 ```js
 // Log a message when the slide is changed.
 {
@@ -76,19 +81,18 @@ This global objects are implicitly available and do not need to be specified as 
 ```
 
 ---
+
 ## Changelog
+
 The [changelog](https://github.com/mussonindustrial/embr/blob/main/modules/embr-chart-js/CHANGELOG.md) is regularly updated to reflect what's changed in each new release.
 
-
 ## Sponsors
+
 Maintenance of this project is made possible by all the [contributors] and [sponsors].
 If you'd like to sponsor this project and have your avatar or company logo appear below [click here](https://github.com/sponsors/mussonindustrial). 💖
 
 [embr]: https://github.com/mussonindustrial/embr
-[releases]: https://github.com/mussonindustrial/embr/releases
-[documentation]: https://docs.mussonindustrial.com/
 [contributors]: https://github.com/JamesIves/github-pages-deploy-action/graphs/contributors
 [sponsors]: https://github.com/sponsors/mussonindustrial
-[latest version]: https://github.com/mussonindustrial/embr/releases?q=embr-charts&expanded=true
 [Swiper]: https://swiperjs.com/
 [Swiper documentation]: https://swiperjs.com/swiper-api#parameters

@@ -14,9 +14,16 @@ import {
   View,
 } from '@inductiveautomation/perspective-client'
 
-import 'swiper/css/bundle';
-import { Swiper, SwiperSlide, SwiperProps, SwiperRef, useSwiperSlide } from 'swiper/react'
-import { Virtual,
+import 'swiper/css/bundle'
+import {
+  Swiper,
+  SwiperSlide,
+  SwiperProps,
+  SwiperRef,
+  useSwiperSlide,
+} from 'swiper/react'
+import {
+  Virtual,
   Keyboard,
   Mousewheel,
   Navigation,
@@ -38,12 +45,18 @@ import { Virtual,
   EffectCoverflow,
   EffectCards,
   EffectCreative,
-  Thumbs 
+  Thumbs,
 } from 'swiper/modules'
 
-import { debounce } from 'lodash';
-import { transformProps } from '@embr-js/utils';
-import { emitStyles, formatStyleNames, getScriptTransform, mergeStyles, resolve } from '../../util';
+import { debounce } from 'lodash'
+import { transformProps } from '@embr-js/utils'
+import {
+  emitStyles,
+  formatStyleNames,
+  getScriptTransform,
+  mergeStyles,
+  resolve,
+} from '../../util'
 
 const COMPONENT_TYPE = 'embr.periscope.embedding.swiper'
 
@@ -70,7 +83,7 @@ const EnabledSwiperModules = [
   EffectCoverflow,
   EffectCards,
   EffectCreative,
-  Thumbs
+  Thumbs,
 ]
 
 type SwiperComponentProps = {
@@ -91,7 +104,7 @@ type EmbeddedViewProps = {
   useDefaultMinWidth: boolean
   useDefaultWidth: boolean
 }
-    
+
 type EmbeddedSlideViewProps = {
   store: ClientStore
   mountPath: string
@@ -102,83 +115,147 @@ type EmbeddedSlideViewProps = {
   outputListener?: OutputListener
 }
 
-function getChildMountPath(props: ComponentProps<PlainObject>, childIndex: any) {
+function getChildMountPath(
+  props: ComponentProps<PlainObject>,
+  childIndex: any
+) {
   return `${props.store.viewMountPath}$${props.store.addressPathString}[${childIndex}]`
 }
 
-function resolveViewProps(props: SwiperComponentProps, index: number): EmbeddedViewProps {
+function resolveViewProps(
+  props: SwiperComponentProps,
+  index: number
+): EmbeddedViewProps {
   const view = props.instances[index]
 
   return {
     key: view.key && view.key !== '' ? view.key : index,
-      viewPath: resolve([view.viewPath, props.instanceCommon.viewPath]),
-      viewParams: {
-        ...props.instanceCommon.viewParams,
-        ...view.viewParams,
-        index
-      },
-      viewStyle: mergeStyles([props.instanceCommon.viewStyle, view.viewStyle]),
-      slideStyle: mergeStyles([props.instanceCommon.slideStyle, view.slideStyle]),
-      useDefaultHeight: resolve([view.useDefaultHeight, props.instanceCommon.useDefaultHeight]),
-      useDefaultMinHeight: resolve([view.useDefaultMinHeight, props.instanceCommon.useDefaultMinHeight]),
-      useDefaultMinWidth: resolve([view.useDefaultMinWidth, props.instanceCommon.useDefaultMinWidth]),
-      useDefaultWidth: resolve([view.useDefaultWidth, props.instanceCommon.useDefaultWidth])
+    viewPath: resolve([view.viewPath, props.instanceCommon.viewPath]),
+    viewParams: {
+      ...props.instanceCommon.viewParams,
+      ...view.viewParams,
+      index,
+    },
+    viewStyle: mergeStyles([props.instanceCommon.viewStyle, view.viewStyle]),
+    slideStyle: mergeStyles([props.instanceCommon.slideStyle, view.slideStyle]),
+    useDefaultHeight: resolve([
+      view.useDefaultHeight,
+      props.instanceCommon.useDefaultHeight,
+    ]),
+    useDefaultMinHeight: resolve([
+      view.useDefaultMinHeight,
+      props.instanceCommon.useDefaultMinHeight,
+    ]),
+    useDefaultMinWidth: resolve([
+      view.useDefaultMinWidth,
+      props.instanceCommon.useDefaultMinWidth,
+    ]),
+    useDefaultWidth: resolve([
+      view.useDefaultWidth,
+      props.instanceCommon.useDefaultWidth,
+    ]),
   }
 }
 
-const EmbeddedSlideView = memo(({ store, mountPath, view, onResize, outputListener }: EmbeddedSlideViewProps) => {
-  const slide = useSwiperSlide()
+const EmbeddedSlideView = memo(
+  ({
+    store,
+    mountPath,
+    view,
+    onResize,
+    outputListener,
+  }: EmbeddedSlideViewProps) => {
+    const slide = useSwiperSlide()
 
-  return (
-    <>        
-      <View
-        key={PageStore.instanceKeyFor(view.viewPath, mountPath)}
-        store={store}
-        mountPath={mountPath}
-        resourcePath={view.viewPath}
-        useDefaultHeight={view.useDefaultHeight}
-        useDefaultMinHeight={view.useDefaultMinHeight}
-        useDefaultMinWidth={view.useDefaultMinWidth}
-        useDefaultWidth={view.useDefaultWidth}
-        params={{
-          ...view.viewParams,
-          swiperSlide: slide,
-        }}
-        outputListener={outputListener}
-        onViewSizeChange={() => onResize?.()}
-        rootStyle={{
-          width: view.useDefaultWidth ? undefined : '100%',
-          height: view.useDefaultHeight ? undefined : '100%',
-          ...view.viewStyle,
-          classes: formatStyleNames(view.viewStyle.classes)
-        }}
-      />
-    </>
-  )
-})
+    return (
+      <>
+        <View
+          key={PageStore.instanceKeyFor(view.viewPath, mountPath)}
+          store={store}
+          mountPath={mountPath}
+          resourcePath={view.viewPath}
+          useDefaultHeight={view.useDefaultHeight}
+          useDefaultMinHeight={view.useDefaultMinHeight}
+          useDefaultMinWidth={view.useDefaultMinWidth}
+          useDefaultWidth={view.useDefaultWidth}
+          params={{
+            ...view.viewParams,
+            swiperSlide: slide,
+          }}
+          outputListener={outputListener}
+          onViewSizeChange={() => onResize?.()}
+          rootStyle={{
+            width: view.useDefaultWidth ? undefined : '100%',
+            height: view.useDefaultHeight ? undefined : '100%',
+            ...view.viewStyle,
+            classes: formatStyleNames(view.viewStyle.classes),
+          }}
+        />
+      </>
+    )
+  }
+)
 
 function applyClassTransforms(settings: SwiperProps): SwiperProps {
   const transformProps = [
-    { setting: settings, keys: ['containerModifierClass', 'lazyPreloaderClass', 'noSwipingClass'] },
-    { setting: settings.navigation, keys: ['disabledClass', 'hiddenClass', 'lockClass', 'navigationDisabledClass'] },
-    { setting: settings.pagination, keys: ['bulletActiveClass', 'bulletClass', 'clickableClass', 'currentClass', 'hiddenClass', 'horizontalClass', 'lockClass', 'modifierClass', 'paginationDisabledClass', 'progressbarFillClass', 'progressbarOppositeClass', 'totalClass', 'verticalClass'] },
-    { setting: settings.scrollbar, keys: ['dragClass', 'horizontalClass', 'lockClass', 'scrollbarDisabledClass', 'verticalClass'] },
-    { setting: settings.thumbs, keys: ['slideThumbActiveClass', 'thumbsContainerClass'] },
+    {
+      setting: settings,
+      keys: ['containerModifierClass', 'lazyPreloaderClass', 'noSwipingClass'],
+    },
+    {
+      setting: settings.navigation,
+      keys: [
+        'disabledClass',
+        'hiddenClass',
+        'lockClass',
+        'navigationDisabledClass',
+      ],
+    },
+    {
+      setting: settings.pagination,
+      keys: [
+        'bulletActiveClass',
+        'bulletClass',
+        'clickableClass',
+        'currentClass',
+        'hiddenClass',
+        'horizontalClass',
+        'lockClass',
+        'modifierClass',
+        'paginationDisabledClass',
+        'progressbarFillClass',
+        'progressbarOppositeClass',
+        'totalClass',
+        'verticalClass',
+      ],
+    },
+    {
+      setting: settings.scrollbar,
+      keys: [
+        'dragClass',
+        'horizontalClass',
+        'lockClass',
+        'scrollbarDisabledClass',
+        'verticalClass',
+      ],
+    },
+    {
+      setting: settings.thumbs,
+      keys: ['slideThumbActiveClass', 'thumbsContainerClass'],
+    },
     { setting: settings.zoom, keys: ['containerClass', 'zoomedSlideClass'] },
     { setting: settings.mousewheel, keys: ['noMousewheelClass'] },
-    { setting: settings.a11y, keys: ['notificationClass'] }
+    { setting: settings.a11y, keys: ['notificationClass'] },
   ]
 
   transformProps.forEach(({ setting, keys }) => {
     if (typeof setting === 'object') {
-
       keys.forEach((key) => {
-        const property = (setting as any)[key] 
+        const property = (setting as any)[key]
         if (typeof property === 'string' && !property.startsWith('psc-')) {
-          (setting as any)[key] = formatStyleNames(property)
+          ;(setting as any)[key] = formatStyleNames(property)
         }
       })
-      
     }
   })
 
@@ -186,57 +263,71 @@ function applyClassTransforms(settings: SwiperProps): SwiperProps {
 }
 
 export function SwiperComponent(props: ComponentProps<SwiperComponentProps>) {
-    const swiperRef = useRef<SwiperRef>(null);
-    
-    const transformedSettings = useMemo(() => {
-      const settings = props.props.settings || {}
-      const transformed = transformProps(settings, [
-        getScriptTransform({ self: props, client: window.__client })
-      ]) as SwiperProps
-      return applyClassTransforms(transformed)
-    }, [props.props.settings])
+  const swiperRef = useRef<SwiperRef>(null)
 
-    const onResize = debounce(() => { 
+  const transformedSettings = useMemo(() => {
+    const settings = props.props.settings || {}
+    const transformed = transformProps(settings, [
+      getScriptTransform({ self: props, client: window.__client }),
+    ]) as SwiperProps
+    return applyClassTransforms(transformed)
+  }, [props.props.settings])
+
+  const onResize = debounce(
+    () => {
       swiperRef.current?.swiper.updateSlides()
-    }, 100, {
+    },
+    100,
+    {
       leading: true,
-      trailing: true
-    })
-    
-    return (
-      <div { ...props.emit() }>
-        <Swiper
-          { ...transformedSettings }
-          ref={swiperRef}
-          modules={EnabledSwiperModules}
-          observer
-          observeSlideChildren
-          style={{ height: '100%', width: '100%' }}
-        >
-          { props.props.instances.map((_, index) => {
-            const mountPath = getChildMountPath(props, index)
-            const viewProps = resolveViewProps(props.props, index)
-            const outputListener = (outputName: string, outputValue: any): void => {
-              props.store.props.write(`instances[${index}].viewParams.${outputName}`, outputValue)
-            }
+      trailing: true,
+    }
+  )
 
-            return (
-              <SwiperSlide { ...emitStyles(viewProps.slideStyle) } virtualIndex={index} key={viewProps.key}>
-                <EmbeddedSlideView 
-                  store={props.store.view.page.parent} 
-                  view={viewProps}
-                  mountPath={mountPath}
-                  listenResize={transformedSettings.slidesPerView === 'auto'}
-                  onResize={onResize}
-                  key={viewProps.key}
-                  outputListener={outputListener}
-                />
-              </SwiperSlide>
+  return (
+    <div {...props.emit()}>
+      <Swiper
+        {...transformedSettings}
+        ref={swiperRef}
+        modules={EnabledSwiperModules}
+        observer
+        observeSlideChildren
+        style={{ height: '100%', width: '100%' }}
+      >
+        {props.props.instances.map((_, index) => {
+          const mountPath = getChildMountPath(props, index)
+          const viewProps = resolveViewProps(props.props, index)
+          const outputListener = (
+            outputName: string,
+            outputValue: any
+          ): void => {
+            props.store.props.write(
+              `instances[${index}].viewParams.${outputName}`,
+              outputValue
             )
-          })}
-        </Swiper>
-      </div>
-    )
+          }
+
+          return (
+            <SwiperSlide
+              {...emitStyles(viewProps.slideStyle)}
+              virtualIndex={index}
+              key={viewProps.key}
+            >
+              <EmbeddedSlideView
+                store={props.store.view.page.parent}
+                view={viewProps}
+                mountPath={mountPath}
+                listenResize={transformedSettings.slidesPerView === 'auto'}
+                onResize={onResize}
+                key={viewProps.key}
+                outputListener={outputListener}
+              />
+            </SwiperSlide>
+          )
+        })}
+      </Swiper>
+    </div>
+  )
 }
 
 export class SwiperComponentMeta implements ComponentMeta {
