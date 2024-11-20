@@ -1,6 +1,14 @@
 # Embr Thermodynamics Module [<img src="https://cdn.mussonindustrial.com/files/public/images/emblem.svg" alt="Musson Industrial Logo" width="90" height="40" align="right">][embr]
 
+[![Build](https://github.com/mussonindustrial/embr/actions/workflows/build.yml/badge.svg)]()
+[![version](https://img.shields.io/github/v/release/mussonindustrial/embr?filter=*thermo*&label=Latest)](CHANGELOG.md)
+[![Ignition](https://img.shields.io/badge/Ignition-8.1.33+-rebeccapurple.svg)](https://inductiveautomation.com/)
+[![Documentation](https://img.shields.io/badge/Documentation-docs.mussonindustrial.com-white.svg?logo=docusaurus)](https://docs.mussonindustrial.com/docs/ignition-modules/embr-thermo)
+
 An Ignition module containing scripting and expression functions for computing properties of steam via an IF97 implementation.
+
+
+
 
 ## Getting Started
 

@@ -12,8 +12,10 @@
   
 [![Build](https://github.com/mussonindustrial/embr/actions/workflows/build.yml/badge.svg)]()
 [![Kotlin](https://img.shields.io/badge/kotlin-2.0.0-blue.svg?logo=kotlin)](http://kotlinlang.org)
-[![Ignition](https://img.shields.io/badge/Ignition-8.1.33+-purple.svg)](https://inductiveautomation.com/)
+[![Ignition](https://img.shields.io/badge/Ignition-8.1.33+-rebeccapurple.svg)](https://inductiveautomation.com/)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/mussonindustrial/embr/blob/main/LICENSE)
+
+[![Documentation](https://img.shields.io/badge/Documentation-docs.mussonindustrial.com-white.svg?logo=docusaurus&style=for-the-badge)](https://docs.mussonindustrial.com/)
 
 </p>
 </div>
