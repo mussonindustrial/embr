@@ -15,6 +15,9 @@
     "dependencies": {
         "@embr-modules/periscope-web": "0.4.0",
         "@embr-jvm/core-common": "0.4.1",
-        "@embr-jvm/core-designer": "0.4.1"
+        "@embr-jvm/core-designer": "0.4.1",
+        "@embr-jvm/perspective-common": "0.6.0",
+        "@embr-jvm/perspective-designer": "0.6.0",
+        "@embr-jvm/perspective-gateway": "0.6.0"
     }
 }
