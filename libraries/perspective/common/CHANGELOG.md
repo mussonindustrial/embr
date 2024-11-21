@@ -1,5 +1,11 @@
 # @mussonindustrial/embr-jvm-perspective-core
 
+## 0.7.0
+
+### Minor Changes
+
+- 6f46916: Rename from `@embr-jvm/perspective-core` to `@embr-jvm/perspective-common`
+
 ## 0.6.0
 
 ### Minor Changes

@@ -1,5 +1,16 @@
 # @embr-modules/periscope
 
+## 0.4.1
+
+### Patch Changes
+
+- 6f46916: (chore) Correct package.json dependencies to included `perspective-common`, `perspective-designer`, and `perspective-gateway` references.
+- Updated dependencies [6f46916]
+  - @embr-jvm/perspective-common@0.7.0
+  - @embr-jvm/perspective-designer@0.7.0
+  - @embr-jvm/perspective-gateway@0.7.0
+  - @embr-modules/periscope-web@0.4.1
+
 ## 0.4.0
 
 ### Minor Changes

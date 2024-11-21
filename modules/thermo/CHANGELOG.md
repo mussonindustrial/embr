@@ -1,5 +1,15 @@
 # @embr-modules/thermo
 
+## 1.0.0
+
+### Major Changes
+
+- 6f46916: First major release to coincide with release of public documentation. No changes from 0.1.6.
+
+### Patch Changes
+
+- 6f46916: (chore) Correct package.json dependencies to included `perspective-common`, `perspective-designer`, and `perspective-gateway` references.
+
 ## 0.1.6
 
 ### Patch Changes
