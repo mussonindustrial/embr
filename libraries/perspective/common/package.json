@@ -1,5 +1,5 @@
 {
-    "name": "@embr-jvm/perspective-core",
+    "name": "@embr-jvm/perspective-common",
     "version": "0.6.0",
     "private": true
 }

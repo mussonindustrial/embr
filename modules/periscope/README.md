@@ -3,7 +3,7 @@
 [![Build](https://github.com/mussonindustrial/embr/actions/workflows/build.yml/badge.svg)]()
 [![version](https://img.shields.io/github/v/release/mussonindustrial/embr?filter=*periscope*&label=Latest)](CHANGELOG.md)
 [![Ignition](https://img.shields.io/badge/Ignition-8.1.33+-rebeccapurple.svg)](https://inductiveautomation.com/)
-[![Documentation](https://img.shields.io/badge/Documentation-docs.mussonindustrial.com-white.svg?logo=docusaurus)](https://docs.mussonindustrial.com/docs/ignition-modules/embr-periscope)
+[![Documentation](https://img.shields.io/badge/Documentation-docs.mussonindustrial.com-white.svg?logo=docusaurus)](https://docs.mussonindustrial.com/ignition/embr-periscope)
 
 <div style="border-left: 4px solid #4CAF50; padding: 10px; font-family: Arial, sans-serif;">
 <h3 style="color: #red; margin-top: 0;">Periscope</h3>
