@@ -36,7 +36,7 @@ If you'd like to sponsor this project and have your avatar or company logo appea
 [embr]: https://github.com/mussonindustrial/embr
 [releases]: https://github.com/mussonindustrial/embr/releases
 [docs.mussonindustrial.com]: https://docs.mussonindustrial.com
-[Module documentation]: https://docs.mussonindustrial.com/docs/ignition-modules/embr-charts
+[Module documentation]: https://docs.mussonindustrial.com/ignition/embr-charts
 [contributors]: https://github.com/JamesIves/github-pages-deploy-action/graphs/contributors
 [sponsors]: https://github.com/sponsors/mussonindustrial
 [latest version]: https://github.com/mussonindustrial/embr/releases?q=embr-charts&expanded=true

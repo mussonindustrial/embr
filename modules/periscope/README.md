@@ -42,7 +42,7 @@ If you'd like to sponsor this project and have your avatar or company logo appea
 [embr]: https://github.com/mussonindustrial/embr
 [releases]: https://github.com/mussonindustrial/embr/releases
 [docs.mussonindustrial.com]: https://docs.mussonindustrial.com
-[Module documentation]: https://docs.mussonindustrial.com/docs/ignition-modules/embr-thermo
+[Module documentation]: https://docs.mussonindustrial.com/ignition/embr-periscope
 [contributors]: https://github.com/JamesIves/github-pages-deploy-action/graphs/contributors
 [sponsors]: https://github.com/sponsors/mussonindustrial
 [latest version]: https://github.com/mussonindustrial/embr/releases?q=periscope&expanded=true
