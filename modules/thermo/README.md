@@ -136,6 +136,6 @@ Free use of this software is granted under the terms of the MIT License.
 [embr]: https://github.com/mussonindustrial/embr
 [releases]: https://github.com/mussonindustrial/embr/releases
 [docs.mussonindustrial.com]: https://docs.mussonindustrial.com
-[Module documentation]: https://docs.mussonindustrial.com/docs/ignition-modules/embr-thermo
+[Module documentation]: https://docs.mussonindustrial.com/ignition/embr-thermodynamics
 [IAPWS-IF97]: http://www.iapws.org/relguide/IF97-Rev.html
 [IAPWS-IF95]: http://www.iapws.org/relguide/IAPWS-95.html
