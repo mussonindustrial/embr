@@ -1,6 +1,7 @@
 package com.mussonindustrial.gradle.ignition.gateway.task
 
 import com.mussonindustrial.gradle.ignition.gateway.container.ContainerLockFile
+import com.mussonindustrial.gradle.ignition.gateway.container.getLockFile
 import com.mussonindustrial.testcontainers.ignition.GatewayEdition
 import com.mussonindustrial.testcontainers.ignition.IgnitionContainer
 import com.mussonindustrial.testcontainers.ignition.IgnitionModule
@@ -88,6 +89,10 @@ open class StartGateway @Inject constructor(objects: ObjectFactory): DefaultTask
                 withCredentials(this@StartGateway.username.get(), this@StartGateway.password.get())
                 withEdition(edition.get())
                 withAdditionalArgs("-Dia.developer.moduleupload=true")
+
+                // Without this, 3rd party modules will not load.
+                // It's something filesystem related.
+                // Needs more testing.
                 withCreateContainerCmdModifier { cmd ->
                     cmd.withUser("0:0")
                 }
@@ -125,7 +130,7 @@ open class StartGateway @Inject constructor(objects: ObjectFactory): DefaultTask
 
             gateway.withReuse(true)
             gateway.start()
-            lockFile.lock(ContainerLockFile.Contents(gateway.containerId, gateway.gatewayUrl))
+            lockFile.lock(gateway.getLockFile())
 
             project.logger.lifecycle("Ignition Gateway started at: ${gateway.gatewayUrl}")
 

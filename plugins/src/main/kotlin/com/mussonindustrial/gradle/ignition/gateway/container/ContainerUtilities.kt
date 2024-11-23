@@ -1,5 +1,7 @@
 package com.mussonindustrial.gradle.ignition.gateway.container
 
+import com.mussonindustrial.testcontainers.ignition.IgnitionContainer
+
 fun isContainerRunning(id: String): Boolean {
     val process = ProcessBuilder("docker", "ps", "--no-trunc", "-qf", "id=${id}")
         .redirectErrorStream(true)
@@ -16,9 +18,9 @@ fun stopContainer(id: String): Boolean {
         .start()
     process.waitFor()
 
-    if (process.exitValue() == 0) {
-        return true
-    } else {
-        return false
-    }
+    return process.exitValue() == 0
+}
+
+fun IgnitionContainer.getLockFile(): ContainerLockFile.Contents {
+    return ContainerLockFile.Contents(this.containerId, this.gatewayUrl)
 }

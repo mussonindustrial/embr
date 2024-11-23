@@ -10,7 +10,6 @@ import java.io.File
 
 
 abstract class GatewaySettings(objects: ObjectFactory) {
-
     companion object {
         const val EXTENSION_NAME = "ignitionGateway"
     }
