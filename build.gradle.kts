@@ -1,8 +1,12 @@
 import com.github.gradle.node.npm.task.NpxTask
+import com.mussonindustrial.testcontainers.ignition.GatewayEdition
+import com.mussonindustrial.testcontainers.ignition.GatewayModule
+import io.ia.sdk.gradle.modl.task.Deploy
 
 plugins {
     base
     id("com.github.node-gradle.node")
+    id("com.mussonindustrial.gradle.ignition-gateway-plugin")
 }
 
 repositories {
@@ -59,4 +63,50 @@ val zipModules by tasks.registering(Zip::class) {
 
 tasks.build {
     dependsOn(zipModules)
+}
+
+tasks.clean {
+    dependsOn(tasks.stopGateway)
+}
+
+ignitionGateway {
+    gatewayName.set("embr-development")
+    username.set("admin")
+    password.set("password")
+    edition.set(GatewayEdition.STANDARD)
+    modules.set(
+        setOf(GatewayModule.PERSPECTIVE)
+    )
+    thirdPartyModules.set(
+        fileTree("build/modules").files
+    )
+}
+
+tasks.startGateway {
+    dependsOn(tasks.build)
+}
+
+val deployAll by tasks.registering {
+    group ="Ignition"
+
+    val deployModlTasks = subprojects.flatMap { subproject ->
+        subproject.tasks.named { it == "deployModl" }
+    }
+
+    val lockFile = tasks.startGateway.flatMap { it.lockFile }
+    val lockFileContents = lockFile.map { it.get()!! }
+    val url = lockFileContents.map { it.url }
+
+    deployModlTasks.forEach { task ->
+        (task as Deploy).setGateway(url.get())
+    }
+
+    dependsOn(deployModlTasks)
+}
+
+val watch by tasks.registering {
+    group = "Ignition"
+    dependsOn(tasks.startGateway)
+    dependsOn(deployAll)
+    inputs.dir(".")
 }
