@@ -1,7 +1,9 @@
 rootProject.name = "embr"
 
 pluginManagement {
+    includeBuild("plugins")
     repositories {
+        mavenLocal()
         mavenCentral()
         gradlePluginPortal()
     }

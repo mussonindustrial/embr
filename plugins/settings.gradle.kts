@@ -1,4 +1,4 @@
-rootProject.name = "buildSrc"
+rootProject.name = "plugins"
 
 dependencyResolutionManagement {
     versionCatalogs {
@@ -10,6 +10,7 @@ dependencyResolutionManagement {
 
 pluginManagement {
     repositories {
+        mavenLocal()
         mavenCentral()
         gradlePluginPortal()
     }
