@@ -65,17 +65,9 @@ class ContainerLockFile(private val file: File) {
         }
 
         val contents = this.get()!!
-        val process = ProcessBuilder("docker", "stop", contents.id)
-            .inheritIO()
-            .start()
-        process.waitFor()
-
-        if (process.exitValue() == 0) {
-            this.unlock()
-            return true
-        } else {
-            return false
-        }
+        val result = stopContainer(contents.id)
+        this.unlock()
+        return result
     }
 
 }
