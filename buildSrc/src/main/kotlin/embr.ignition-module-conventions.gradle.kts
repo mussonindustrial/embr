@@ -17,6 +17,7 @@ ignitionModule {
 
 tasks.deployModl {
     hostGateway = "http://localhost:8088"
+    dependsOn(tasks.build)
 }
 
 tasks.writeModuleXml {

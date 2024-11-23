@@ -6,7 +6,8 @@
         "build": "gradlew build",
         "test": "npx nx run-many -t test",
         "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-        "release": "gradlew release"
+        "release": "gradlew release",
+        "watch": "gradlew deployModl --continuous"
     },
     "workspaces": [
         "libraries/**",

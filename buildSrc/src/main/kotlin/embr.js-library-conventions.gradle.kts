@@ -41,8 +41,11 @@ val nxBuild = tasks.register<NpxTask>("nxBuild") {
     command.set("nx")
     args.set(listOf("build"))
 
-    // Let Nx do its own caching.
-    outputs.upToDateWhen { false }
+    inputs.files(fileTree(projectDir).matching {
+        exclude("**/node_modules/**", "**/dist/**", "**/build/**")
+    })
+
+    outputs.dir("${projectDir}/dist")
 }
 
 val nxClean = tasks.create<Delete>("nxClean") {
