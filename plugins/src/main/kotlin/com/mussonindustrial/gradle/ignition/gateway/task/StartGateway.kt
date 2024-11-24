@@ -1,5 +1,6 @@
 package com.mussonindustrial.gradle.ignition.gateway.task
 
+import com.mussonindustrial.gradle.ignition.gateway.container.Container
 import com.mussonindustrial.gradle.ignition.gateway.container.ContainerLockFile
 import com.mussonindustrial.gradle.ignition.gateway.container.getLockFile
 import com.mussonindustrial.testcontainers.ignition.GatewayEdition
@@ -8,6 +9,7 @@ import com.mussonindustrial.testcontainers.ignition.IgnitionModule
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.model.ObjectFactory
+import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.provider.SetProperty
 import org.gradle.api.tasks.*
@@ -29,19 +31,26 @@ open class StartGateway @Inject constructor(objects: ObjectFactory): DefaultTask
     @get:Input
     val lockFile: Property<ContainerLockFile> = objects.property(ContainerLockFile::class.java)
 
+    @get:Input
+    val acceptLicense: Property<Boolean> = objects.property(Boolean::class.java)
+
     @get:Optional
     @get:Input
     val gatewayName: Property<String> = objects.property(String::class.java)
 
+    @get:Optional
     @get:Input
     val username: Property<String> = objects.property(String::class.java)
 
+    @get:Optional
     @get:Input
     val password: Property<String>  = objects.property(String::class.java)
 
+    @get:Optional
     @get:Input
     val edition: Property<GatewayEdition>  = objects.property(GatewayEdition::class.java)
 
+    @get:Optional
     @get:Input
     val debugMode: Property<Boolean> = objects.property(Boolean::class.java)
 
@@ -57,21 +66,48 @@ open class StartGateway @Inject constructor(objects: ObjectFactory): DefaultTask
     @get:Input
     val thirdPartyModules: SetProperty<File> = objects.setProperty(File::class.java)
 
+    @get:Optional
+    @get:Input
+    val additionalArgs: ListProperty<String> = objects.listProperty(String::class.java)
+
+    @get:Optional
+    @get:Input
+    val maxMemory: Property<String> = objects.property(String::class.java)
+
     @TaskAction
     fun startContainer() {
         try {
             val lockFile = lockFile.get()
-            val isLocked = lockFile.isLocked()
-            val isRunning = lockFile.isContainerRunning()
+            if (lockFile.exists()) {
+                val contents = lockFile.get()
+                if (contents == null) {
+                    project.logger.lifecycle("Invalid container lockfile found. Reinitializing...")
+                    lockFile.unlock()
 
-            if (isLocked && !isRunning) {
-                project.logger.debug("Old lockfile present. Cleaning up.")
-                lockFile.unlock()
-            }
+                } else {
+                    val container = contents.getContainer()
+                    val state = container.state
+                    when (state) {
+                        Container.State.MISSING -> {
+                            project.logger.lifecycle("Expected container is missing. Reinitializing...")
+                            lockFile.unlock()
+                        }
 
-            if (isLocked && isRunning) {
-                project.logger.debug("Ignition Gateway is already running.")
-                return
+                        Container.State.RUNNING ->  {
+                            project.logger.lifecycle("Ignition container is already running: ${lockFile.get()?.url}")
+                            return
+                        }
+
+                        Container.State.STOPPED -> {
+                            if (container.start()) {
+                                project.logger.lifecycle("Existing Ignition container resumed: ${lockFile.get()?.url}")
+                            } else {
+                                project.logger.lifecycle("Failed to resume existing Ignition container")
+                            }
+                            return
+                        }
+                    }
+                }
             }
 
             // Work around for https://github.com/testcontainers/testcontainers-java/issues/6441
@@ -86,22 +122,39 @@ open class StartGateway @Inject constructor(objects: ObjectFactory): DefaultTask
             failFastAlways.set(false)
 
             val gateway = IgnitionContainer("inductiveautomation/ignition:8.1.33").apply {
-                withCredentials(this@StartGateway.username.get(), this@StartGateway.password.get())
-                withEdition(edition.get())
-                withAdditionalArgs("-Dia.developer.moduleupload=true")
-
                 // Without this, 3rd party modules will not load.
                 // It's something filesystem related.
                 // Needs more testing.
                 withCreateContainerCmdModifier { cmd ->
                     cmd.withUser("0:0")
                 }
-                acceptLicense()
+            }
+
+            if (acceptLicense.isPresent) {
+                val acceptLicense = acceptLicense.get()
+                if (acceptLicense) {
+                    project.logger.debug("Using Accept License: {}", acceptLicense)
+                    gateway.acceptLicense()
+                }
             }
 
             if (gatewayName.isPresent) {
-                project.logger.debug("Using Gateway Name: {}", gatewayName.get())
-                gateway.withGatewayName(gatewayName.get())
+                val gatewayName = gatewayName.get()
+                project.logger.debug("Using Gateway Name: {}", gatewayName)
+                gateway.withGatewayName(gatewayName)
+            }
+
+            if (username.isPresent && password.isPresent) {
+                val username = username.get()
+                val password = password.get()
+                project.logger.debug("Using credentials: {}:{}", username, password)
+                gateway.withCredentials(username, password)
+            }
+
+            if (edition.isPresent) {
+                val edition = edition.get()
+                project.logger.debug("Using Gateway Edition: {}", edition)
+                gateway.withEdition(edition)
             }
 
             if (debugMode.isPresent) {
@@ -128,11 +181,23 @@ open class StartGateway @Inject constructor(objects: ObjectFactory): DefaultTask
                 gateway.withThirdPartyModules(*thirdPartyModules.map { it.path }.toTypedArray())
             }
 
-            gateway.withReuse(true)
-            gateway.start()
-            lockFile.lock(gateway.getLockFile())
+            if (additionalArgs.isPresent) {
+                val additionalArgs = additionalArgs.get()
+                project.logger.debug("Using Additional Arguments: {}", additionalArgs)
+                gateway.withAdditionalArgs(*additionalArgs.toTypedArray())
+            }
 
-            project.logger.lifecycle("Ignition Gateway started at: ${gateway.gatewayUrl}")
+            if (maxMemory.isPresent) {
+                val maxMemory = maxMemory.get()
+                project.logger.debug("Using Max Memory: {}", maxMemory)
+                gateway.withMaxMemory(maxMemory)
+            }
+
+            gateway.start()
+
+            val lockFileContents = gateway.getLockFile()
+            lockFile.lock(lockFileContents)
+            project.logger.lifecycle("Gateway started: ${lockFileContents.url}")
 
         } catch (e: Throwable) {
             throw RuntimeException("Failed to start the Ignition Gateway container: ${e.message}", e)

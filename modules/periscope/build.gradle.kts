@@ -3,7 +3,7 @@ plugins {
 }
 
 ignitionModule {
-    name.set("Embr Periscope")
+    name.set("Embr Periscope2")
     moduleDescription.set("Design extensions and enhancements for Perspective.")
     id.set("com.mussonindustrial.embr.periscope")
     fileName.set("Embr-Periscope-${version}.modl")

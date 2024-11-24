@@ -1,8 +1,9 @@
 package com.mussonindustrial.gradle.ignition.gateway.container
 
-import java.io.File
+import org.gradle.api.file.RegularFile
+import org.gradle.api.provider.Provider
 
-class ContainerLockFile(private val file: File) {
+class ContainerLockFile(private val file: Provider<RegularFile>) {
 
     data class Contents(val id: String, val url: String) {
         companion object {
@@ -18,56 +19,39 @@ class ContainerLockFile(private val file: File) {
         fun serialize(): String {
             return "$id,$url"
         }
+
+        fun getContainer(): Container {
+            return Container(id)
+        }
     }
 
-
-    private fun isPresent(): Boolean {
-        return file.exists()
+    fun exists(): Boolean {
+        return file.get().asFile.exists()
     }
 
-    fun isLocked(): Boolean {
-        if (!isPresent()) {
+    private fun isLocked(): Boolean {
+        if (!this.exists()) {
             return false
         } else {
-            val contents = file.readText()
+            val contents =  file.get().asFile.readText()
             return contents != ""
         }
     }
 
     fun get(): Contents? {
         return if (isLocked()) {
-            Contents.deserialize(file.readText())
+            Contents.deserialize(file.get().asFile.readText())
         } else {
             null
         }
     }
 
     fun lock(container: Contents) {
-        file.writeText(container.serialize())
+        file.get().asFile.writeText(container.serialize())
     }
 
     fun unlock(): Boolean {
-        return file.delete()
-    }
-
-    fun isContainerRunning(): Boolean {
-        if (!this.isLocked()) {
-            return false
-        }
-
-        val contents = this.get()!!
-        return isContainerRunning(contents.id)
-    }
-
-    fun stopContainer(): Boolean {
-        if (!this.isContainerRunning()) {
-            return false
-        }
-
-        val contents = this.get()!!
-        val result = stopContainer(contents.id)
-        this.unlock()
-        return result
+        return  file.get().asFile.delete()
     }
 
 }
