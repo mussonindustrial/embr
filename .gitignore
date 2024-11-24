@@ -44,3 +44,4 @@ public/dist
 
 .nx/cache
 .nx/workspace-data
+.ignition-container.lock

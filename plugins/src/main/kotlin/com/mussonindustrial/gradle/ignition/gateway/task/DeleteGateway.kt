@@ -9,20 +9,20 @@ import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.TaskAction
 import javax.inject.Inject
 
-abstract class StopGateway @Inject constructor(objects: ObjectFactory): DefaultTask() {
+abstract class DeleteGateway @Inject constructor(objects: ObjectFactory): DefaultTask() {
 
     companion object {
-        const val ID = "stopGateway"
+        const val ID = "deleteGateway"
     }
 
     @get:Input
     val lockFile: Property<ContainerLockFile> = objects.property(ContainerLockFile::class.java)
 
     @TaskAction
-    fun stopContainer() {
+    fun deleteContainer() {
         val lockFile = lockFile.get()
         if (!lockFile.exists()) {
-            project.logger.lifecycle("No Ignition container to stop.")
+            project.logger.lifecycle("No Ignition container to delete.")
             return
         }
 
@@ -34,22 +34,17 @@ abstract class StopGateway @Inject constructor(objects: ObjectFactory): DefaultT
         }
 
         val container = contents.getContainer()
-        val state = container.state
-        if (state == Container.State.MISSING) {
+        if (container.state == Container.State.MISSING) {
             project.logger.lifecycle("Expected container is missing. Reinitializing...")
             lockFile.unlock()
             return
         }
 
-        if (state == Container.State.STOPPED) {
-            project.logger.lifecycle("Ignition container is already stopped.")
-            return
-        }
-
-        if (container.stop()) {
-            project.logger.lifecycle("Ignition container stopped successfully.")
+        if (container.remove(true)) {
+            project.logger.lifecycle("Ignition container deleted successfully.")
+            lockFile.unlock()
         } else {
-            project.logger.error("Failed to stop Ignition container.")
+            project.logger.error("Failed to delete Ignition container.")
         }
     }
 }
