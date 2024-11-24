@@ -17,6 +17,7 @@ repositories {
 }
 
 ignitionGateway {
+    acceptLicense.set(true)
     gatewayName.set("embr-development")
     username.set("admin")
     password.set("password")
@@ -26,6 +27,12 @@ ignitionGateway {
     )
     thirdPartyModules.set(
         fileTree("build/modules").files
+    )
+    additionalArgs.set(
+        listOf(
+            "-Dia.developer.moduleupload=true",
+            "-Dignition.allowunsignedmodules=true"
+        )
     )
 }
 
@@ -49,13 +56,6 @@ val deployAll by tasks.registering {
     }
 
     dependsOn(deployModlTasks)
-}
-
-val watch by tasks.registering {
-    group = "Ignition"
-    dependsOn(tasks.startGateway)
-    dependsOn(deployAll)
-    inputs.dir(".")
 }
 
 tasks.build {
