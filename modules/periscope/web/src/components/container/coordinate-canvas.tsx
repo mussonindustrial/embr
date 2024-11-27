@@ -65,7 +65,13 @@ function CoordinateWrapper(props: WrapperProps) {
 
   return (
     <div {...containerProps}>
-      <div {...bind()} className='coordinate-wrapper' style={{position: 'absolute', left: currentLeft, top: currentTop}}>
+      <div {...bind()} className='coordinate-wrapper' style={{
+        position: 'absolute', 
+        left: currentLeft, 
+        top: currentTop,
+        height: '100%',
+        width: '100%',
+      }}>
         {children}
       </div>
     </div>
