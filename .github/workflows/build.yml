@@ -55,7 +55,7 @@ jobs:
       - name: 'Initialize Node.js'
         run: |
           npm ci
-          npm nx reset
+          npx nx reset
 
       - name: 'Load Organization gradle.properties'
         env:
