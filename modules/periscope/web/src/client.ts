@@ -1,21 +1,24 @@
 import { ComponentRegistry } from '@inductiveautomation/perspective-client'
 import {
-  SwiperComponent,
-  SwiperComponentMeta,
-  FlexRepeaterComponent,
-  FlexRepeaterComponentMeta,
+  CoordinateCanvasComponent,
+  CoordinateCanvasComponentMeta,
   EmbeddedViewComponent,
   EmbeddedViewComponentMeta,
+  FlexRepeaterComponent,
+  FlexRepeaterComponentMeta,
+  SwiperComponent,
+  SwiperComponentMeta,
 } from './components'
 import { installExtensions } from './extensions'
 import { waitForClientStore } from '@embr-js/perspective-client'
 
-export { FlexRepeaterComponent, SwiperComponent, EmbeddedViewComponent }
+export { CoordinateCanvasComponent, FlexRepeaterComponent, SwiperComponent, EmbeddedViewComponent }
 
 const components = [
+  new CoordinateCanvasComponentMeta(),
+  new EmbeddedViewComponentMeta(),
   new FlexRepeaterComponentMeta(),
   new SwiperComponentMeta(),
-  new EmbeddedViewComponentMeta(),
 ]
 
 components.forEach((c) => ComponentRegistry.register(c))

@@ -13,6 +13,7 @@ import com.inductiveautomation.perspective.gateway.api.PerspectiveContext
 import com.mussonindustrial.embr.perspective.common.component.addResourcesTo
 import com.mussonindustrial.embr.perspective.common.component.removeResourcesFrom
 import com.mussonindustrial.ignition.embr.periscope.Meta.SHORT_MODULE_ID
+import com.mussonindustrial.ignition.embr.periscope.component.container.CoordinateCanvas
 import com.mussonindustrial.ignition.embr.periscope.component.embedding.*
 import com.mussonindustrial.ignition.embr.periscope.scripting.JavaScriptFunctions
 import java.util.*
@@ -47,13 +48,13 @@ class PeriscopeGatewayHook : AbstractGatewayModuleHook() {
         }
 
         logger.debug("Registering components...")
+        componentRegistry.registerComponent(CoordinateCanvas.DESCRIPTOR)
         componentRegistry.registerComponent(EmbeddedView.DESCRIPTOR)
-        modelDelegateRegistry.register(EmbeddedView.COMPONENT_ID) { EmbeddedViewModelDelegate(it) }
-
         componentRegistry.registerComponent(FlexRepeater.DESCRIPTOR)
-        modelDelegateRegistry.register(FlexRepeater.COMPONENT_ID) { FlexRepeaterModelDelegate(it) }
-
         componentRegistry.registerComponent(Swiper.DESCRIPTOR)
+
+        modelDelegateRegistry.register(FlexRepeater.COMPONENT_ID) { FlexRepeaterModelDelegate(it) }
+        modelDelegateRegistry.register(EmbeddedView.COMPONENT_ID) { EmbeddedViewModelDelegate(it) }
     }
 
     override fun shutdown() {
@@ -67,14 +68,14 @@ class PeriscopeGatewayHook : AbstractGatewayModuleHook() {
         componentRegistry.removeResourcesFrom(PeriscopeComponents.REQUIRED_RESOURCES) {
             it.moduleId() == PerspectiveModule.MODULE_ID
         }
+        componentRegistry.removeComponent(CoordinateCanvas.COMPONENT_ID)
 
         componentRegistry.removeComponent(EmbeddedView.COMPONENT_ID)
-        modelDelegateRegistry.remove(EmbeddedView.COMPONENT_ID)
-
         componentRegistry.removeComponent(FlexRepeater.COMPONENT_ID)
-        modelDelegateRegistry.remove(FlexRepeater.COMPONENT_ID)
-
         componentRegistry.removeComponent(Swiper.COMPONENT_ID)
+
+        modelDelegateRegistry.remove(EmbeddedView.COMPONENT_ID)
+        modelDelegateRegistry.remove(FlexRepeater.COMPONENT_ID)
     }
 
     override fun getMountedResourceFolder(): Optional<String> {

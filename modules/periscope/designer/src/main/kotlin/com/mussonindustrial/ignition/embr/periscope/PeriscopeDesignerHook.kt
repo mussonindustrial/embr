@@ -11,6 +11,8 @@ import com.mussonindustrial.embr.perspective.common.component.addResourcesTo
 import com.mussonindustrial.embr.perspective.common.component.removeResourcesFrom
 import com.mussonindustrial.embr.perspective.designer.component.asDesignerDescriptor
 import com.mussonindustrial.ignition.embr.periscope.Meta.SHORT_MODULE_ID
+import com.mussonindustrial.ignition.embr.periscope.component.container.CoordinateCanvas
+import com.mussonindustrial.ignition.embr.periscope.component.container.CoordinateCanvasDesignDelegate
 import com.mussonindustrial.ignition.embr.periscope.component.embedding.EmbeddedView
 import com.mussonindustrial.ignition.embr.periscope.component.embedding.FlexRepeater
 import com.mussonindustrial.ignition.embr.periscope.component.embedding.Swiper
@@ -41,9 +43,12 @@ class PeriscopeDesignerHook : AbstractDesignerModuleHook() {
             it.moduleId() == PerspectiveModule.MODULE_ID
         }
 
+        componentRegistry.registerComponent(CoordinateCanvas.DESCRIPTOR.asDesignerDescriptor())
         componentRegistry.registerComponent(EmbeddedView.DESCRIPTOR.asDesignerDescriptor())
         componentRegistry.registerComponent(FlexRepeater.DESCRIPTOR.asDesignerDescriptor())
         componentRegistry.registerComponent(Swiper.DESCRIPTOR.asDesignerDescriptor())
+
+        delegateRegistry.register(CoordinateCanvas.COMPONENT_ID, CoordinateCanvasDesignDelegate())
     }
 
     override fun shutdown() {
@@ -55,6 +60,7 @@ class PeriscopeDesignerHook : AbstractDesignerModuleHook() {
             it.moduleId() == PerspectiveModule.MODULE_ID
         }
 
+        componentRegistry.removeComponent(CoordinateCanvas.COMPONENT_ID)
         componentRegistry.removeComponent(EmbeddedView.COMPONENT_ID)
         componentRegistry.removeComponent(FlexRepeater.COMPONENT_ID)
         componentRegistry.removeComponent(Swiper.COMPONENT_ID)

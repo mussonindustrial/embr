@@ -12,9 +12,12 @@
         "lint:prettier": "prettier -c . --cache --ignore-path=../../.prettierignore"
     },
     "dependencies": {
-        "@inductiveautomation/perspective-client": "2.1.33",
         "@embr-js/utils": "0.6.0",
         "@embr-js/perspective-client": "0.2.0",
+        "@inductiveautomation/perspective-client": "2.1.44",
+        "@inductiveautomation/perspective-components": "2.1.44",
+        "@inductiveautomation/perspective-designer": "^2.1.44",
+        "@use-gesture/react": "^10.3.1",
         "lodash": "^4.17.21",
         "react": "^18",
         "react-dom": "^18",
@@ -25,9 +28,12 @@
         "@embr-js/tsconfig": "*",
         "@types/lodash": "^4.14.202",
         "@types/react": "^18.2.56",
-        "eslint": "^8.56.0",
+        "eslint": "^8",
         "typescript": "^5.3.3",
         "vite": "^5.0.10",
         "vitest": "^1.6.0"
+    },
+    "overrides": {
+        "react": "$react"
     }
 }
