@@ -1,9 +1,12 @@
 import { defineConfig } from 'vite'
-import { resolve } from 'path'
+import path, { resolve } from 'path'
 
 const packageName = 'embr-periscope'
 
 export default defineConfig(({ mode }) => ({
+    define: {
+        'process.env': {}
+    },
     build: {
         outDir: './dist',
         lib: {
@@ -14,21 +17,25 @@ export default defineConfig(({ mode }) => ({
             name: 'EmbrPeriscope',
             formats: ['umd'],
         },
+
         rollupOptions: {
             external: [
+                '@inductiveautomation/perspective-client',
+                '@inductiveautomation/perspective-components',
+                '@inductiveautomation/perspective-designer',
                 'react',
                 'react-dom',
-                '@inductiveautomation/perspective-client',
                 'moment',
             ],
             output: {
                 globals: {
+                    '@inductiveautomation/perspective-client': 'PerspectiveClient',
+                    '@inductiveautomation/perspective-components': 'PerspectiveComponents',
+                    '@inductiveautomation/perspective-designer': 'PerspectiveDesigner',
                     react: 'React',
                     'react-dom': 'ReactDOM',
                     moment: 'moment',
-                    '@inductiveautomation/perspective-client':
-                        'PerspectiveClient',
-                },
+                }
             },
         },
     },

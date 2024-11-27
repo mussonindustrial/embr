@@ -6,8 +6,10 @@ import com.mussonindustrial.ignition.embr.periscope.Meta.SHORT_MODULE_ID
 object Components {
     val BROWSER_RESOURCES: Set<BrowserResource> =
         mutableSetOf(
+            // HACK: Need to force our resources to load AFTER
+            // PerspectiveComponents.js. This seems to be alphabetical, so we add a prefix.
             BrowserResource(
-                "embr-periscope-client-js",
+                "zz-embr-periscope-client-js",
                 "/res/${SHORT_MODULE_ID}/embr-periscope-client.js",
                 BrowserResource.ResourceType.JS
             ),
