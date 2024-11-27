@@ -1,0 +1,5 @@
+package com.mussonindustrial.ignition.embr.periscope.component.container
+
+import com.inductiveautomation.perspective.designer.delegates.CoordinateContainerDesignDelegate
+
+class CoordinateCanvasDesignDelegate : CoordinateContainerDesignDelegate()

@@ -7,6 +7,7 @@ import com.inductiveautomation.perspective.common.api.ComponentRegistry
 import com.inductiveautomation.perspective.gateway.api.ComponentModelDelegateRegistry
 import com.inductiveautomation.perspective.gateway.api.PerspectiveContext
 import com.mussonindustrial.ignition.embr.periscope.Meta.SHORT_MODULE_ID
+import com.mussonindustrial.ignition.embr.periscope.component.container.CoordinateCanvas
 import com.mussonindustrial.ignition.embr.periscope.component.embedding.*
 import java.util.*
 import org.slf4j.Logger
@@ -33,24 +34,24 @@ class GatewayHook : AbstractGatewayModuleHook() {
         modelDelegateRegistry = perspectiveContext.componentModelDelegateRegistry
 
         logger.info("Registering components...")
+        componentRegistry.registerComponent(CoordinateCanvas.DESCRIPTOR)
         componentRegistry.registerComponent(EmbeddedView.DESCRIPTOR)
-        modelDelegateRegistry.register(EmbeddedView.COMPONENT_ID) { EmbeddedViewModelDelegate(it) }
-
         componentRegistry.registerComponent(FlexRepeater.DESCRIPTOR)
-        modelDelegateRegistry.register(FlexRepeater.COMPONENT_ID) { FlexRepeaterModelDelegate(it) }
-
         componentRegistry.registerComponent(Swiper.DESCRIPTOR)
+
+        modelDelegateRegistry.register(FlexRepeater.COMPONENT_ID) { FlexRepeaterModelDelegate(it) }
+        modelDelegateRegistry.register(EmbeddedView.COMPONENT_ID) { EmbeddedViewModelDelegate(it) }
     }
 
     override fun shutdown() {
         logger.info("Shutting down Embr-Periscope module and removing registered components.")
+        componentRegistry.removeComponent(CoordinateCanvas.COMPONENT_ID)
         componentRegistry.removeComponent(EmbeddedView.COMPONENT_ID)
-        modelDelegateRegistry.remove(EmbeddedView.COMPONENT_ID)
-
         componentRegistry.removeComponent(FlexRepeater.COMPONENT_ID)
-        modelDelegateRegistry.remove(FlexRepeater.COMPONENT_ID)
-
         componentRegistry.removeComponent(Swiper.COMPONENT_ID)
+
+        modelDelegateRegistry.remove(EmbeddedView.COMPONENT_ID)
+        modelDelegateRegistry.remove(FlexRepeater.COMPONENT_ID)
     }
 
     override fun getMountedResourceFolder(): Optional<String> {
