@@ -14,9 +14,11 @@
     "dependencies": {
         "@embr-js/utils": "0.6.0",
         "@embr-js/perspective-client": "0.2.0",
-        "@inductiveautomation/perspective-client": "2.1.44",
-        "@inductiveautomation/perspective-components": "2.1.44",
-        "@inductiveautomation/perspective-designer": "^2.1.44",
+        "@inductiveautomation/perspective-client": "2.1.33",
+        "@inductiveautomation/perspective-components": "2.1.33",
+        "@inductiveautomation/perspective-designer": "2.1.33",
+        "@inductiveautomation/perspective-drawing-common": "2.1.33",
+        "@react-spring/web": "^9.7.5",
         "@use-gesture/react": "^10.3.1",
         "lodash": "^4.17.21",
         "react": "^18",
@@ -32,8 +34,5 @@
         "typescript": "^5.3.3",
         "vite": "^5.0.10",
         "vitest": "^1.6.0"
-    },
-    "overrides": {
-        "react": "$react"
     }
 }
