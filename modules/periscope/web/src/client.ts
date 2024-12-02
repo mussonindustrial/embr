@@ -10,7 +10,12 @@ import {
   SwiperComponentMeta,
 } from './components'
 
-export { CoordinateCanvasComponent, FlexRepeaterComponent, SwiperComponent, EmbeddedViewComponent }
+export {
+  CoordinateCanvasComponent,
+  FlexRepeaterComponent,
+  SwiperComponent,
+  EmbeddedViewComponent,
+}
 
 const components = [
   new CoordinateCanvasComponentMeta(),
