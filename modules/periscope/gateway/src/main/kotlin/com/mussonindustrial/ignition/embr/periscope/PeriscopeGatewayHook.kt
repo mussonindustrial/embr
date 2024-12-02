@@ -14,6 +14,7 @@ import com.mussonindustrial.embr.perspective.common.component.addResourcesTo
 import com.mussonindustrial.embr.perspective.common.component.removeResourcesFrom
 import com.mussonindustrial.ignition.embr.periscope.Meta.SHORT_MODULE_ID
 import com.mussonindustrial.ignition.embr.periscope.component.container.CoordinateCanvas
+import com.mussonindustrial.ignition.embr.periscope.component.container.CoordinateCanvasModelDelegate
 import com.mussonindustrial.ignition.embr.periscope.component.embedding.*
 import com.mussonindustrial.ignition.embr.periscope.scripting.JavaScriptFunctions
 import java.util.*
@@ -53,6 +54,9 @@ class PeriscopeGatewayHook : AbstractGatewayModuleHook() {
         componentRegistry.registerComponent(FlexRepeater.DESCRIPTOR)
         componentRegistry.registerComponent(Swiper.DESCRIPTOR)
 
+        modelDelegateRegistry.register(CoordinateCanvas.COMPONENT_ID) {
+            CoordinateCanvasModelDelegate(it)
+        }
         modelDelegateRegistry.register(FlexRepeater.COMPONENT_ID) { FlexRepeaterModelDelegate(it) }
         modelDelegateRegistry.register(EmbeddedView.COMPONENT_ID) { EmbeddedViewModelDelegate(it) }
     }
@@ -74,6 +78,7 @@ class PeriscopeGatewayHook : AbstractGatewayModuleHook() {
         componentRegistry.removeComponent(FlexRepeater.COMPONENT_ID)
         componentRegistry.removeComponent(Swiper.COMPONENT_ID)
 
+        modelDelegateRegistry.remove(CoordinateCanvas.COMPONENT_ID)
         modelDelegateRegistry.remove(EmbeddedView.COMPONENT_ID)
         modelDelegateRegistry.remove(FlexRepeater.COMPONENT_ID)
     }

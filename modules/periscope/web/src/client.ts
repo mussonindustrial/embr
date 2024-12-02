@@ -12,7 +12,12 @@ import {
 import { installExtensions } from './extensions'
 import { waitForClientStore } from '@embr-js/perspective-client'
 
-export { CoordinateCanvasComponent, FlexRepeaterComponent, SwiperComponent, EmbeddedViewComponent }
+export {
+  CoordinateCanvasComponent,
+  FlexRepeaterComponent,
+  SwiperComponent,
+  EmbeddedViewComponent,
+}
 
 const components = [
   new CoordinateCanvasComponentMeta(),
