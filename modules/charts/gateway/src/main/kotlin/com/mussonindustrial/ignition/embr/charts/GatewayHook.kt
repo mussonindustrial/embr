@@ -6,8 +6,9 @@ import com.inductiveautomation.ignition.gateway.model.GatewayContext
 import com.inductiveautomation.perspective.common.api.ComponentRegistry
 import com.inductiveautomation.perspective.gateway.api.ComponentModelDelegateRegistry
 import com.inductiveautomation.perspective.gateway.api.PerspectiveContext
-import com.mussonindustrial.ignition.embr.charts.Meta.SHORT_MODULE_ID
+import com.mussonindustrial.embr.common.Embr
 import com.mussonindustrial.ignition.embr.charts.component.chart.ChartJs
+import com.mussonindustrial.ignition.embr.charts.component.chart.ChartJsModelDelegate
 import java.util.*
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -15,7 +16,7 @@ import org.slf4j.LoggerFactory
 @Suppress("unused")
 class GatewayHook : AbstractGatewayModuleHook() {
 
-    private val logger: Logger = LoggerFactory.getLogger(SHORT_MODULE_ID)
+    private val logger: Logger = LoggerFactory.getLogger(Embr.CHARTS.shortId)
     private lateinit var context: GatewayContext
     private lateinit var perspectiveContext: PerspectiveContext
     private lateinit var componentRegistry: ComponentRegistry
@@ -34,11 +35,13 @@ class GatewayHook : AbstractGatewayModuleHook() {
 
         logger.info("Registering components...")
         componentRegistry.registerComponent(ChartJs.DESCRIPTOR)
+        modelDelegateRegistry.register(ChartJs.COMPONENT_ID) { ChartJsModelDelegate(it) }
     }
 
     override fun shutdown() {
         logger.info("Shutting down Embr-Charts module and removing registered components.")
         componentRegistry.removeComponent(ChartJs.COMPONENT_ID)
+        modelDelegateRegistry.remove(ChartJs.COMPONENT_ID)
     }
 
     override fun getMountedResourceFolder(): Optional<String> {
@@ -46,7 +49,7 @@ class GatewayHook : AbstractGatewayModuleHook() {
     }
 
     override fun getMountPathAlias(): Optional<String> {
-        return Optional.of(SHORT_MODULE_ID)
+        return Optional.of(Embr.CHARTS.shortId)
     }
 
     override fun isFreeModule(): Boolean {
