@@ -33,6 +33,7 @@ import kotlin.collections.forEach
 import kotlin.collections.set
 import kotlin.collections.take
 import org.python.core.PyObject
+import kotlin.reflect.typeOf
 
 class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(component) {
 
@@ -504,7 +505,7 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
                         props.instances.json = newInstances
                         null
                     },
-                    "index" to Int::class,
+                    "index" to typeOf<Int>(),
                 )
                 .addOverload({
                     val newInstances = props.instances.json
@@ -534,7 +535,7 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
                         props.instances.json = newInstances
                         null
                     },
-                    "instance" to PyObject::class,
+                    "instance" to typeOf<PyObject>(),
                 )
                 .build()
 
@@ -569,8 +570,8 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
                         props.instances.json = newInstances
                         null
                     },
-                    "index" to Int::class,
-                    "instance" to PyObject::class
+                    "index" to typeOf<Int>(),
+                    "instance" to typeOf<PyObject>()
                 )
                 .build()
     }
