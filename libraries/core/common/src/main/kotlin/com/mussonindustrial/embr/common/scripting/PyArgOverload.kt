@@ -2,10 +2,10 @@ package com.mussonindustrial.embr.common.scripting
 
 import com.inductiveautomation.ignition.common.TypeUtilities
 import com.inductiveautomation.ignition.common.script.PyArgParser
-import org.python.core.Py
-import org.python.core.PyObject
 import kotlin.jvm.optionals.getOrNull
 import kotlin.reflect.javaType
+import org.python.core.Py
+import org.python.core.PyObject
 
 class PyArgOverload(
     val name: String,
@@ -31,7 +31,11 @@ class PyArgOverload(
         functions.forEach { f ->
             val signature = f.key
             val function = f.value
-            if (signature.parameters.all { argParser.containsKey(it.name) || it.type.isMarkedNullable }) {
+            if (
+                signature.parameters.all {
+                    argParser.containsKey(it.name) || it.type.isMarkedNullable
+                }
+            ) {
                 return function(
                     signature.parameters
                         .map {
