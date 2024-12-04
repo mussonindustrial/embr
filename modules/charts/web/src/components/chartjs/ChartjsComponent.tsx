@@ -1,7 +1,7 @@
-import React, { MutableRefObject, useMemo, useRef } from 'react'
+import React, {MutableRefObject, useEffect, useMemo, useRef} from 'react'
 import {
     ComponentMeta,
-    ComponentProps,
+    ComponentProps, ComponentStoreDelegate, JsObject,
     PComponent,
     PropertyTree,
     SizeObject,
@@ -11,6 +11,9 @@ import { Chart } from 'chart.js'
 import { getCSSTransform, getScriptTransform } from '../../util/propTransforms'
 import { transformProps } from '@embr-js/utils'
 import { unset, cloneDeep } from 'lodash'
+import {
+    AbstractUIElementStore
+} from "@inductiveautomation/perspective-client/build/dist/typedefs/stores/AbstractUIElementStore";
 
 export const COMPONENT_TYPE = 'embr.chart.chart-js'
 
@@ -67,6 +70,12 @@ export function ChartjsComponent(props: ComponentProps<PerspectiveChartProps>) {
     const chartRef: MutableRefObject<PerspectiveChart | undefined> =
         useRef(undefined)
 
+    useEffect(() => {
+        if (props.store.delegate !== undefined) {
+            (props.store.delegate as ChartJsComponentDelegate).setChart(chartRef.current)
+        }
+    }, [props.delegate, chartRef.current])
+
     const transformedProps = useMemo(
         () => {
             const { props: configProps, data } = extractPropsData(props.props)
@@ -98,6 +107,41 @@ export function ChartjsComponent(props: ComponentProps<PerspectiveChartProps>) {
     )
 }
 
+class ChartJsComponentDelegate extends ComponentStoreDelegate {
+    private chart: PerspectiveChart | undefined;
+
+    setChart(chart: PerspectiveChart | undefined) {
+        this.chart = chart
+    }
+
+    handleEvent(eventName: string, eventObject: JsObject): void {
+        console.log(eventName, eventObject)
+        switch (eventName) {
+            case 'pan': return this.pan(eventObject)
+            case 'resetZoom': return this.resetZoom(eventObject)
+            case 'zoom': return this.zoom(eventObject)
+            case 'zoomScale': return this.zoomScale(eventObject)
+        }
+    }
+
+    pan(event: JsObject): void {
+        this.chart?.pan(event['pan'], event['scales'], event['mode'])
+    }
+
+    resetZoom(event: JsObject): void {
+        console.log('chart', this.chart)
+        this.chart?.resetZoom(event['mode'])
+    }
+
+    zoom(event: JsObject): void {
+        this.chart?.zoom(event['zoom'], event['mode'])
+    }
+
+    zoomScale(event: JsObject): void {
+        this.chart?.zoomScale(event['id'], event['range'], event['mode'])
+    }
+}
+
 export const ChartjsComponentMeta: ComponentMeta = {
     getComponentType: function (): string {
         return COMPONENT_TYPE
@@ -107,6 +151,9 @@ export const ChartjsComponentMeta: ComponentMeta = {
             width: 300,
             height: 300,
         }
+    },
+    createDelegate: function (component: AbstractUIElementStore): ComponentStoreDelegate {
+        return new ChartJsComponentDelegate(component)
     },
     getPropsReducer(tree: PropertyTree): PerspectiveChartProps {
         return {

@@ -33,7 +33,7 @@
         "chartjs-plugin-gradient": "^0.6.1",
         "chartjs-plugin-hierarchical": "^4.4.0",
         "chartjs-plugin-stacked100": "^1.5.3",
-        "chartjs-plugin-zoom": "^2.0.1",
+        "chartjs-plugin-zoom": "2.2.0",
         "lodash": "^4.17.21",
         "moment": "^2.30.1",
         "react": "^18",
