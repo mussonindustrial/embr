@@ -7,6 +7,8 @@ import {
   EmbeddedViewComponent,
   EmbeddedViewComponentMeta,
 } from './components'
+import { waitForClientStore } from './util'
+import { installExtensions } from './extensions'
 
 export { FlexRepeaterComponent, SwiperComponent, EmbeddedViewComponent }
 
@@ -17,3 +19,5 @@ const components = [
 ]
 
 components.forEach((c) => ComponentRegistry.register(c))
+
+waitForClientStore((clientStore) => installExtensions(clientStore))

@@ -2,13 +2,16 @@ package com.mussonindustrial.embr.common.scripting
 
 import com.inductiveautomation.ignition.common.TypeUtilities
 import com.inductiveautomation.ignition.common.script.PyArgParser
+import kotlin.jvm.optionals.getOrNull
+import kotlin.reflect.javaType
 import org.python.core.Py
 import org.python.core.PyObject
 
 class PyArgOverload(
     val name: String,
-    private val functions: Map<FunctionSignature, (args: Array<Any>) -> Any?>
+    private val functions: Map<FunctionSignature, (args: Array<Any?>) -> Any?>
 ) {
+    @OptIn(ExperimentalStdlibApi::class)
     fun call(
         args: Array<PyObject>,
         keywords: Array<String>,
@@ -20,20 +23,30 @@ class PyArgOverload(
                 args,
                 keywords,
                 signatures.map { it.name }.toTypedArray(),
-                signatures.map { it.type.java }.toTypedArray(),
+                signatures.map { it.type.javaType as Class<*> }.toTypedArray(),
                 this.name,
             )
 
         functions.forEach { f ->
             val signature = f.key
             val function = f.value
-            if (signature.parameters.all { argParser.containsKey(it.name) }) {
+            if (
+                signature.parameters.all {
+                    argParser.containsKey(it.name) || it.type.isMarkedNullable
+                }
+            ) {
                 return function(
                     signature.parameters
                         .map {
-                            val pyValue = argParser.getPyObject(it.name).get()
-                            val jValue = TypeUtilities.pyToJava(pyValue)
-                            TypeUtilities.coerce(jValue, it.type.java)
+                            val pyValue = argParser.getPyObject(it.name).getOrNull()
+                            if (pyValue != null) {
+                                val jValue = TypeUtilities.pyToJava(pyValue)
+                                return@map TypeUtilities.coerce(
+                                    jValue,
+                                    it.type.javaType as Class<*>
+                                )
+                            }
+                            return@map null
                         }
                         .toTypedArray(),
                 )

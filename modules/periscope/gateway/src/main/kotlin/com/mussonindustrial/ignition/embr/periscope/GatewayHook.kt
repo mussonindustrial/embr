@@ -1,6 +1,7 @@
 package com.mussonindustrial.ignition.embr.periscope
 
 import com.inductiveautomation.ignition.common.licensing.LicenseState
+import com.inductiveautomation.ignition.common.script.ScriptManager
 import com.inductiveautomation.ignition.gateway.model.AbstractGatewayModuleHook
 import com.inductiveautomation.ignition.gateway.model.GatewayContext
 import com.inductiveautomation.perspective.common.api.ComponentRegistry
@@ -8,6 +9,7 @@ import com.inductiveautomation.perspective.gateway.api.ComponentModelDelegateReg
 import com.inductiveautomation.perspective.gateway.api.PerspectiveContext
 import com.mussonindustrial.ignition.embr.periscope.Meta.SHORT_MODULE_ID
 import com.mussonindustrial.ignition.embr.periscope.component.embedding.*
+import com.mussonindustrial.ignition.embr.periscope.scripting.PerspectiveExtensionsImpl
 import java.util.*
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -26,7 +28,8 @@ class GatewayHook : AbstractGatewayModuleHook() {
     }
 
     override fun startup(activationState: LicenseState) {
-        logger.info("Embr-Periscope module started.")
+        logger.debug("Embr-Periscope module started.")
+        Meta.addI18NBundle()
 
         perspectiveContext = context.perspectiveContext
         componentRegistry = perspectiveContext.componentRegistry
@@ -43,7 +46,9 @@ class GatewayHook : AbstractGatewayModuleHook() {
     }
 
     override fun shutdown() {
-        logger.info("Shutting down Embr-Periscope module and removing registered components.")
+        logger.debug("Shutting down Embr-Periscope module and removing registered components.")
+        Meta.removeI18NBundle()
+
         componentRegistry.removeComponent(EmbeddedView.COMPONENT_ID)
         modelDelegateRegistry.remove(EmbeddedView.COMPONENT_ID)
 
@@ -67,5 +72,9 @@ class GatewayHook : AbstractGatewayModuleHook() {
 
     override fun isMakerEditionCompatible(): Boolean {
         return true
+    }
+
+    override fun initializeScriptManager(manager: ScriptManager) {
+        manager.addScriptModule("system.perspective", PerspectiveExtensionsImpl())
     }
 }
