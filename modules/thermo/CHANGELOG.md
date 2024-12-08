@@ -1,5 +1,13 @@
 # @embr-modules/thermo
 
+## 1.0.1
+
+### Patch Changes
+
+- Updated dependencies [4d7f150]
+  - @embr-jvm/core-common@0.5.0
+  - @embr-jvm/core-gateway@0.5.0
+
 ## 1.0.0
 
 ### Major Changes

@@ -1,5 +1,11 @@
 # @mussonindustrial/embr-jvm-core-common
 
+## 0.5.0
+
+### Minor Changes
+
+- 4d7f150: (BREAKING) `PyArgOverloadBuilder` now works with KTypes instead of KClasses. This is to allow for nullability checks (KType contains nullability information).
+
 ## 0.4.1
 
 ### Patch Changes
