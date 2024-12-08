@@ -24,8 +24,9 @@ class DesignerHook : AbstractDesignerModuleHook() {
     private lateinit var delegateRegistry: ComponentDesignDelegateRegistry
 
     override fun startup(context: DesignerContext, activationState: LicenseState) {
-        logger.info("Embr-Periscope module started.")
+        logger.debug("Embr-Periscope module started.")
         this.context = context
+        Meta.addI18NBundle()
 
         val pdi: PerspectiveDesignerInterface = PerspectiveDesignerInterface.get(context)
 
@@ -38,7 +39,9 @@ class DesignerHook : AbstractDesignerModuleHook() {
     }
 
     override fun shutdown() {
-        logger.info("Shutting down Embr-Periscope module and removing registered components.")
+        logger.debug("Shutting down Embr-Periscope module and removing registered components.")
+        Meta.removeI18NBundle()
+
         componentRegistry.removeComponent(EmbeddedView.COMPONENT_ID)
         componentRegistry.removeComponent(FlexRepeater.COMPONENT_ID)
         componentRegistry.removeComponent(Swiper.COMPONENT_ID)

@@ -1,4 +1,4 @@
-package com.mussonindustrial.ignition.embr.periscope.page
+package com.mussonindustrial.ignition.embr.periscope.api
 
 import com.inductiveautomation.ignition.common.gson.JsonObject
 

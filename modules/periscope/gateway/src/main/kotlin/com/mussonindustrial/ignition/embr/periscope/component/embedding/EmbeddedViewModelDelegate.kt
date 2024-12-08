@@ -16,7 +16,7 @@ import com.inductiveautomation.perspective.gateway.property.PropertyTreeChangeEv
 import com.mussonindustrial.embr.perspective.gateway.model.subscribeToParams
 import com.mussonindustrial.embr.perspective.gateway.model.writeToParams
 import com.mussonindustrial.ignition.embr.periscope.PeriscopeGatewayContext
-import com.mussonindustrial.ignition.embr.periscope.page.ViewJoinMsg
+import com.mussonindustrial.ignition.embr.periscope.api.ViewJoinMsg
 import java.util.*
 import java.util.concurrent.TimeUnit
 

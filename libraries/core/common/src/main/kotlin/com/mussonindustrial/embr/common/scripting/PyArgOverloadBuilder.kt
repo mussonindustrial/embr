@@ -1,13 +1,13 @@
 package com.mussonindustrial.embr.common.scripting
 
-import kotlin.reflect.KClass
+import kotlin.reflect.KType
 
-data class FunctionParameter<T : Any>(val name: String, val type: KClass<T>)
+data class FunctionParameter(val name: String, val type: KType)
 
-data class FunctionSignature(val parameters: List<FunctionParameter<*>>)
+data class FunctionSignature(val parameters: List<FunctionParameter>)
 
 class PyArgOverloadBuilder {
-    private val functions = mutableMapOf<FunctionSignature, (args: Array<Any>) -> Any?>()
+    private val functions = mutableMapOf<FunctionSignature, (args: Array<Any?>) -> Any?>()
     private var name = "anonymous"
 
     fun setName(name: String): PyArgOverloadBuilder {
@@ -16,8 +16,8 @@ class PyArgOverloadBuilder {
     }
 
     fun addOverload(
-        function: (args: Array<Any>) -> Any?,
-        vararg args: Pair<String, KClass<*>>,
+        function: (args: Array<Any?>) -> Any?,
+        vararg args: Pair<String, KType>,
     ): PyArgOverloadBuilder {
         val signature =
             FunctionSignature(

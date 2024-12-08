@@ -1,4 +1,4 @@
-const expression = /^[\s\S]*?\(([^)]*?)\)[\s\S]*?=>[\s\S]?([\s\S]*)$/
+const expression = /^\s*(?:async\s*)?\(([^)]*?)\)\s*=>\s*([\s\S]*)$/
 export default function isFunction(string: string): boolean {
-    return expression.test(string)
+  return expression.test(string)
 }
