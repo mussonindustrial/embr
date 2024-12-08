@@ -1,5 +1,13 @@
 # @mussonindustrial/embr-js-utils
 
+## 0.5.0
+
+### Minor Changes
+
+- 4d7f150: (BREAKING) `toFunction` now throws an error if function parsing fails. This is a breaking change from the previous behavior.
+- 4d7f150: (`toFunction`) Add support for `async` function parsing.
+  (`isAsyncFunction`) Add utility function for matching `async` functions.
+
 ## 0.4.0
 
 ### Minor Changes

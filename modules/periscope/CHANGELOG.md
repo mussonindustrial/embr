@@ -1,5 +1,15 @@
 # @embr-modules/periscope
 
+## 0.4.3
+
+### Patch Changes
+
+- 4d7f150: (Scripting) Added `system.perspective.runJavaScriptBlocking()` and `system.perspective.runJavaScriptAsync()` functions.
+- Updated dependencies [4d7f150]
+  - @embr-jvm/core-common@0.5.0
+  - @embr-modules/periscope-web@0.4.3
+  - @embr-jvm/core-designer@0.5.0
+
 ## 0.4.1
 
 ### Patch Changes
