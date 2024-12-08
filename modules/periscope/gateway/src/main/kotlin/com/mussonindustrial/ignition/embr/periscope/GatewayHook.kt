@@ -1,7 +1,9 @@
 package com.mussonindustrial.ignition.embr.periscope
 
+import com.inductiveautomation.ignition.common.BundleUtil
 import com.inductiveautomation.ignition.common.licensing.LicenseState
 import com.inductiveautomation.ignition.common.script.ScriptManager
+import com.inductiveautomation.ignition.common.script.hints.PropertiesFileDocProvider
 import com.inductiveautomation.ignition.gateway.model.AbstractGatewayModuleHook
 import com.inductiveautomation.ignition.gateway.model.GatewayContext
 import com.inductiveautomation.perspective.common.api.ComponentRegistry
@@ -9,7 +11,7 @@ import com.inductiveautomation.perspective.gateway.api.ComponentModelDelegateReg
 import com.inductiveautomation.perspective.gateway.api.PerspectiveContext
 import com.mussonindustrial.ignition.embr.periscope.Meta.SHORT_MODULE_ID
 import com.mussonindustrial.ignition.embr.periscope.component.embedding.*
-import com.mussonindustrial.ignition.embr.periscope.scripting.PerspectiveExtensionsImpl
+import com.mussonindustrial.ignition.embr.periscope.scripting.JavaScriptFunctions
 import java.util.*
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -24,12 +26,13 @@ class GatewayHook : AbstractGatewayModuleHook() {
     private lateinit var modelDelegateRegistry: ComponentModelDelegateRegistry
 
     override fun setup(context: GatewayContext) {
+        logger.debug("Embr-Periscope module setup.")
         this.context = PeriscopeGatewayContext(context)
+        BundleUtil.get().addBundle(Meta.BUNDLE_PREFIX, this::class.java.classLoader, "localization")
     }
 
     override fun startup(activationState: LicenseState) {
-        logger.debug("Embr-Periscope module started.")
-        Meta.addI18NBundle()
+        logger.debug("Embr-Periscope module startup.")
 
         perspectiveContext = context.perspectiveContext
         componentRegistry = perspectiveContext.componentRegistry
@@ -46,8 +49,11 @@ class GatewayHook : AbstractGatewayModuleHook() {
     }
 
     override fun shutdown() {
-        logger.debug("Shutting down Embr-Periscope module and removing registered components.")
-        Meta.removeI18NBundle()
+        logger.debug("Embr-Periscope module shutdown.")
+        BundleUtil.get()
+            .removeBundle(
+                Meta.BUNDLE_PREFIX,
+            )
 
         componentRegistry.removeComponent(EmbeddedView.COMPONENT_ID)
         modelDelegateRegistry.remove(EmbeddedView.COMPONENT_ID)
@@ -75,6 +81,10 @@ class GatewayHook : AbstractGatewayModuleHook() {
     }
 
     override fun initializeScriptManager(manager: ScriptManager) {
-        manager.addScriptModule("system.perspective", PerspectiveExtensionsImpl())
+        manager.addScriptModule(
+            "system.perspective",
+            JavaScriptFunctions(this.context),
+            PropertiesFileDocProvider()
+        )
     }
 }

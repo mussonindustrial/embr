@@ -1,33 +1,55 @@
 import { toFunction } from '@embr-js/utils'
 import { ClientStore } from '@inductiveautomation/perspective-client'
 
-const PROTOCOL = 'periscope-runJavaScript'
-const PROTOCOL_RESULT = 'periscope-runJavaScript-result'
+export const PROTOCOL = {
+  RUN: 'periscope-js-run',
+  RESOLVE: 'periscope-js-resolve',
+  ERROR: 'periscope-js-error',
+}
 
 export function installRunJavaScript(clientStore: ClientStore) {
-  const globals = { client: clientStore }
+  const globals = {
+    context: {
+      client: clientStore,
+    },
+  }
 
-  clientStore.connection.handlers.set(PROTOCOL, (payload) => {
+  clientStore.connection.handlers.set(PROTOCOL.RUN, (payload) => {
     const { function: functionLiteral, args, id } = payload
-    const f = toFunction(functionLiteral, globals)
 
-    let responsePayload
+    function resolveSuccess(data: unknown) {
+      clientStore.connection.send(PROTOCOL.RESOLVE, {
+        id,
+        success: true,
+        data,
+      })
+    }
 
-    try {
-      const value = args !== undefined ? f(args) : f()
-      responsePayload = { id, result: { success: true, value } }
-    } catch (error) {
-      const value =
-        typeof error === 'string'
-          ? error.toUpperCase()
-          : error instanceof Error
-            ? error.message
-            : error
-      responsePayload = { id, result: { success: false, value } }
-      clientStore.connection.send(PROTOCOL_RESULT, responsePayload)
+    function resolveError(error: unknown) {
+      const errorData =
+        error instanceof Error
+          ? {
+              name: error.name,
+              message: error.message,
+              stack: error.stack,
+            }
+          : error
+
+      clientStore.connection.send(PROTOCOL.ERROR, {
+        id,
+        success: false,
+        error: errorData,
+      })
+
       throw error
     }
 
-    clientStore.connection.send(PROTOCOL_RESULT, responsePayload)
+    new Promise((resolve) => {
+      const f = toFunction(functionLiteral, globals)
+      const result = args !== undefined ? f(args) : f()
+      resolve(result)
+    })
+      .then((result: unknown) => resolveSuccess(result))
+      .catch((error: unknown) => resolveError(error))
   })
 }
