@@ -30,6 +30,14 @@ An Ignition module that includes design extensions and enhancements for Perspect
 | [Flex Repeater +](./docs/components/flex-repeater.md) | Embedding + | An enhanced Flex Repeater component with support for unique view paths, common view parameters/styling, load ahead optimizations, and gateway-side property handling. |
 | [Swiper](./docs/components/swiper.md)                 | Embedding + | Swiper is the most modern free and open source mobile touch slider with hardware accelerated transitions and amazing native behavior.                                 |
 
+### Scripting Directory
+
+| Name                                           | Category    | Description                                                 |
+|------------------------------------------------|-------------|-------------------------------------------------------------|
+| [`system.perspective.runJavaScriptAsync`]()    | Perspective | Asynchronously run JavaScript code on the client.           |
+| [`system.perspective.runJavaScriptBlocking`]() | Perspective | Run JavaScript code on the client and block for the result. |
+
+
 ## Changelog
 
 The [changelog](./CHANGELOG.md) is regularly updated to reflect what's changed in each new release.
