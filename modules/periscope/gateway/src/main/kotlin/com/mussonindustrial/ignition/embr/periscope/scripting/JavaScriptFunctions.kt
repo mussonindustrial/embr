@@ -32,7 +32,7 @@ class JavaScriptFunctions(private val context: PeriscopeGatewayContext) :
     private val log = LogUtil.getModuleLogger(Meta.SHORT_MODULE_ID, "RunJavaScriptFunctions")
     private val requestsInProgress = ConcurrentHashMap<String, CompletableFuture<PyObject?>>()
     private val overloads = ScriptOverloads()
-    private val timeout = 30000L
+    private val timeout = 30L
 
     override fun getContext(): PerspectiveContext {
         return context.perspectiveContext
