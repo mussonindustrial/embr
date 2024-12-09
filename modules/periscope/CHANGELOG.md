@@ -1,5 +1,12 @@
 # @embr-modules/periscope
 
+## 0.4.4
+
+### Patch Changes
+
+- 0302b5e: (Fix) Reduce `runJavaScript` timeout from 30,000 seconds to 30 seconds.
+  - @embr-modules/periscope-web@0.4.4
+
 ## 0.4.3
 
 ### Patch Changes
