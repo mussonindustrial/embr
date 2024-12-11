@@ -48,7 +48,7 @@ jobs:
         with:
           node-version: '${{ env.NODE_VERSION }}'
       - name: Initialize Node.js
-        run: npm ci
+        run: yarn install
 
       - name: Load Organization gradle.properties
         env:
