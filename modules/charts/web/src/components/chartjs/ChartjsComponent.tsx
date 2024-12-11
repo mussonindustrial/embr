@@ -11,9 +11,13 @@ import {
 import { Chart as Chartjs, ChartProps } from 'react-chartjs-2'
 import { Chart } from 'chart.js'
 import { getCSSTransform, getScriptTransform } from '../../util'
-import {getClientStore, toFunction, transformProps} from '@embr-js/utils'
+import { getClientStore, transformProps } from '@embr-js/utils'
 import _, { unset, cloneDeep } from 'lodash'
 import { AbstractUIElementStore } from '@inductiveautomation/perspective-client/build/dist/typedefs/stores/AbstractUIElementStore'
+import {
+  DelegateJavaScriptProxy,
+  JavaScriptRunEvent,
+} from './DelegateJavaScriptProxy'
 
 export const COMPONENT_TYPE = 'embr.chart.chart-js'
 
@@ -116,110 +120,30 @@ export function ChartjsComponent(props: ComponentProps<PerspectiveChartProps>) {
   )
 }
 
-const EVENTS = {
-  PROXY_CALL: 'proxy-call',
-  PROXY_GET: 'proxy-get',
-  PROXY_RUN: 'proxy-run',
-  PROXY_SET: 'proxy-set',
-  PROXY_RESOLVE: 'proxy-resolve',
-  PROXY_ERROR: 'proxy-error',
-}
-
-type ProxyCallEvent = {
-  id: string
-  path: string
-  args: string[]
-}
-
-type ProxyGetEvent = {
-  id: string
-  path: string
-}
-
-type ProxyRunEvent = {
-  id: string
-  function: string
-  args: any
-}
-
 class ChartJsComponentDelegate extends ComponentStoreDelegate {
   private chart: PerspectiveChart | undefined
+  private jsProxy = new DelegateJavaScriptProxy(this, {})
 
   setChart(chart: PerspectiveChart | undefined) {
     this.chart = chart
+
+    const client = getClientStore()
+    this.jsProxy.setGlobals({
+      context: {
+        client,
+        chart: this.chart,
+        component: this.component,
+        page: this.component.view.page,
+        view: this.component.view,
+      },
+    })
   }
 
   handleEvent(eventName: string, eventObject: JsObject): void {
     console.log(eventName, eventObject)
-    switch (eventName) {
-      case EVENTS.PROXY_CALL:
-        return this.proxyCall(eventObject as ProxyCallEvent)
-      case EVENTS.PROXY_GET:
-        return this.proxyGet(eventObject as ProxyGetEvent)
-      case EVENTS.PROXY_RUN:
-        return this.proxyRun(eventObject as ProxyRunEvent)
+    if (this.jsProxy.handles(eventName)) {
+      this.jsProxy.handleEvent(eventObject as JavaScriptRunEvent)
     }
-  }
-
-  resolveSuccess(id: string, data: unknown) {
-    this.fireEvent(EVENTS.PROXY_RESOLVE, {
-      id,
-      success: true,
-      data,
-    })
-  }
-
-  resolveError(id: string, error: unknown) {
-    const errorData =
-      error instanceof Error
-        ? {
-            name: error.name,
-            message: error.message,
-            stack: error.stack,
-          }
-        : error
-
-    this.fireEvent(EVENTS.PROXY_ERROR, {
-      id,
-      success: false,
-      error: errorData,
-    })
-
-    throw error
-  }
-
-  run(id: string, block: () => any) {
-    new Promise((resolve) => {
-      resolve(block())
-    })
-      .then((result: unknown) => this.resolveSuccess(id, result))
-      .catch((error: unknown) => this.resolveError(id, error))
-  }
-
-  proxyCall(event: ProxyCallEvent) {
-    this.run(event.id, () => {
-      return _.get(this, event.path)(...event.args)
-    })
-  }
-
-  proxyGet(event: ProxyGetEvent) {
-    this.run(event.id, () => {
-      return _.get(this, event.path)
-    })
-  }
-
-  proxyRun(event: ProxyRunEvent) {
-    this.run(event.id, () => {
-      const globals = {
-        context: {
-          client: getClientStore(),
-          chart: this.chart,
-        },
-      }
-
-      const f = toFunction(event.function, globals)
-      return event.args !== undefined ? f(event.args) : f()
-    })
   }
 }
 
