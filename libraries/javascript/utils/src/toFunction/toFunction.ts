@@ -10,24 +10,21 @@ export default function toFunction(string: string, globals = {}) {
     throw new Error('invalid function definition')
   }
 
-  const FunctionConstructor = isAsyncFunction(string)
-    ? // eslint-disable-next-line @typescript-eslint/no-empty-function
-      async function () {}.constructor
-    : Function
+  const async = isAsyncFunction(string) ? 'async' : ''
 
   let signature: string[] = []
   if (match[1].length > 0) {
     signature = match[1].split(',').map((param) => param.trim())
   }
-  const body = match[2].trim()
+  const body = `"use strict"; return ${async} () => ${match[2].trim()}`
 
   if (signature.length == 0) {
-    const f = FunctionConstructor(...Object.keys(globals), body)
-    return () => f(...Object.values(globals))
+    const f = Function(...Object.keys(globals), body)
+    return () => f(...Object.values(globals))()
   } else {
-    const f = FunctionConstructor(...Object.keys(globals), ...signature, body)
+    const f = Function(...Object.keys(globals), ...signature, body)
     return (params: UserScriptParams = {}) => {
-      return f(...Object.values(globals), ...Object.values(params))
+      return f(...Object.values(globals), ...Object.values(params))()
     }
   }
 }

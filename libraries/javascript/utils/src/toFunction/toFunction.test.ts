@@ -4,19 +4,19 @@ import toFunction from './toFunction'
 
 describe('toFunction', () => {
   it('parse a function without parameters', async () => {
-    const result = toFunction(`() => return 'testResult'`)()
+    const result = toFunction(`() => { return 'testResult' }`)()
     expect(result).toBe('testResult')
   })
 
   it('parse a function with a single parameter', async () => {
-    const result = toFunction(`(param1) => return param1;`)({
+    const result = toFunction(`(param1) => { return param1; }`)({
       param1: 'testResult',
     })
     expect(result).toBe('testResult')
   })
 
   it('parse a function without parameters but called with parameters', async () => {
-    const result = toFunction(`() => return 'testResult'`)({
+    const result = toFunction(`() => { return 'testResult' }`)({
       param1: 'value1',
       param2: 'value2',
     })
@@ -24,14 +24,14 @@ describe('toFunction', () => {
   })
 
   it('parse a function without parameters and global parameters', async () => {
-    const result = toFunction(`() => return self`, {
+    const result = toFunction(`() => { return self }`, {
       self: 'selfValue',
     })()
     expect(result).toBe('selfValue')
   })
 
   it('parse a function without parameters and unused global parameters', async () => {
-    const result = toFunction(`() => return 'test'`, {
+    const result = toFunction(`() => { return 'test' }`, {
       self: 'selfValue',
     })()
     expect(result).toBe('test')
@@ -39,7 +39,7 @@ describe('toFunction', () => {
 
   it('parse a function with multiple parameters', async () => {
     const script = toFunction(
-      `(param1, param2, param3) => return param1 + ' ' + param2 + ' ' + param3;`
+      `(param1, param2, param3) => { return param1 + ' ' + param2 + ' ' + param3; }`
     )
     const result = script({
       param1: 'result1',
@@ -50,7 +50,7 @@ describe('toFunction', () => {
   })
 
   it('parse a function with complex parameters', async () => {
-    const script = toFunction(`(p) => return p.nested1 + p.nested2;`)
+    const script = toFunction(`(p) => { return p.nested1 + p.nested2; }`)
     const result = script({
       p: {
         nested1: 40,
@@ -61,7 +61,9 @@ describe('toFunction', () => {
   })
 
   it('parse a function with beginning spaces', async () => {
-    const script = toFunction(`        (p) => return p.nested1 + p.nested2;`)
+    const script = toFunction(
+      `        (p) => { return p.nested1 + p.nested2; }`
+    )
     const result = script({
       p: {
         nested1: 67,
@@ -72,7 +74,7 @@ describe('toFunction', () => {
   })
 
   it('should parse a function with ending spaces', async () => {
-    const script = toFunction(`(p) => return p.nested1 + p.nested2;      `)
+    const script = toFunction(`(p) => { return p.nested1 + p.nested2;      }`)
     const result = script({
       p: {
         nested1: 140,
@@ -84,7 +86,7 @@ describe('toFunction', () => {
 
   it('should parse a function with beginning and ending spaces', async () => {
     const script = toFunction(
-      `         (p) => return p.nested1 + p.nested2;      `
+      `         (p) => { return p.nested1 + p.nested2;  }    `
     )
     const result = script({
       p: {
@@ -110,9 +112,10 @@ describe('toFunction', () => {
 
   it('should parse a function with a new line', async () => {
     const script = toFunction(
-      `         (p) => 
+      `         (p) => {
                 const result = p.nested1 + p.nested2;
-                return result;      `
+                return result;           
+      }`
     )
     const result = script({
       p: {
@@ -125,7 +128,7 @@ describe('toFunction', () => {
 
   it('should run a function called with global parameters', async () => {
     const script = toFunction(
-      `         ( self, test1 ) => return self.nested1 + ' ' + test1 + ' ' + extra.parameter;      `,
+      `         ( self, test1 ) => self.nested1 + ' ' + test1 + ' ' + extra.parameter;      `,
       {
         extra: {
           parameter: 'parameter',
@@ -140,6 +143,13 @@ describe('toFunction', () => {
       test1: 'a test value',
     })
     expect(result).toBe(`400 a test value parameter`)
+  })
+
+  it('parse a function without a return statement', async () => {
+    const result = toFunction(`() => 'test'`, {
+      self: 'selfValue',
+    })()
+    expect(result).toBe('test')
   })
 
   it('should parse an async function', async () => {
@@ -165,9 +175,17 @@ describe('toFunction', () => {
   })
 
   it('should fail to parse a function with an invalid parameter', async () => {
-    const script = toFunction(`() => return invalidParameter`)
+    const script = toFunction(`() => { return invalidParameter }`)
     expect(script).toThrowError(
       ReferenceError('invalidParameter is not defined')
     )
+  })
+
+  it('should fail strict validation', async () => {
+    const script = toFunction(`() => { 
+      x = 3.14;
+      return x;
+    }`)
+    expect(script).toThrowError(ReferenceError('x is not defined'))
   })
 })
