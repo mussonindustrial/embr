@@ -5,13 +5,15 @@ import com.inductiveautomation.perspective.gateway.api.Component
 import com.inductiveautomation.perspective.gateway.api.ComponentModelDelegate
 import com.inductiveautomation.perspective.gateway.api.ScriptCallable
 import com.inductiveautomation.perspective.gateway.messages.EventFiredMsg
+import com.mussonindustrial.embr.perspective.gateway.component.ComponentDelegateJavaScriptProxy
+import com.mussonindustrial.embr.perspective.gateway.javascript.JavaScriptProxy
 import org.python.core.PyObject
 
 class ChartJsModelDelegate(component: Component) :
     ComponentModelDelegate(component), JavaScriptProxy {
 
     private val log = LogUtil.getModuleLogger("embr-charts", "ChartJsModelDelegate")
-    private val jsProxy = JavaScriptDelegate(component, this)
+    private val jsProxy = ComponentDelegateJavaScriptProxy(component, this)
 
     override fun onStartup() {
         component.mdc { log.debugf("Startup") }

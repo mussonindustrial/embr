@@ -9,7 +9,7 @@ import org.python.core.PyObject
 
 class PyArgOverload(
     val name: String,
-    private val functions: Map<FunctionSignature, (args: Array<Any?>) -> Any?>
+    private val functions: Map<FunctionSignature, (args: Map<String, Any?>) -> Any?>
 ) {
 
     @OptIn(ExperimentalStdlibApi::class)
@@ -37,19 +37,19 @@ class PyArgOverload(
                 }
             ) {
                 return function(
-                    signature.parameters
-                        .map {
-                            val pyValue = argParser.getPyObject(it.name).getOrNull()
-                            if (pyValue != null) {
-                                val jValue = TypeUtilities.pyToJava(pyValue)
-                                return@map TypeUtilities.coerce(
-                                    jValue,
-                                    it.type.javaType as Class<*>
-                                )
-                            }
-                            return@map null
+                    signature.parameters.associateBy(
+                        { it.name },
+                        {
+                            val pyValue =
+                                argParser.getPyObject(it.name).getOrNull()
+                                    ?: return@associateBy null
+                            val jValue = TypeUtilities.pyToJava(pyValue)
+                            return@associateBy TypeUtilities.coerce(
+                                jValue,
+                                it.type.javaType as Class<*>
+                            )
                         }
-                        .toTypedArray(),
+                    )
                 )
             }
         }

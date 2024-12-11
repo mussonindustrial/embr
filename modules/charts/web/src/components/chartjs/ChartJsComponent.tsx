@@ -8,16 +8,16 @@ import {
   PropertyTree,
   SizeObject,
 } from '@inductiveautomation/perspective-client'
-import { Chart as Chartjs, ChartProps } from 'react-chartjs-2'
+import { Chart as ChartJs, ChartProps } from 'react-chartjs-2'
 import { Chart } from 'chart.js'
 import { getCSSTransform, getScriptTransform } from '../../util'
 import { getClientStore, transformProps } from '@embr-js/utils'
 import _, { unset, cloneDeep } from 'lodash'
 import { AbstractUIElementStore } from '@inductiveautomation/perspective-client/build/dist/typedefs/stores/AbstractUIElementStore'
 import {
-  DelegateJavaScriptProxy,
+  ComponentDelegateJavaScriptProxy,
   JavaScriptRunEvent,
-} from './DelegateJavaScriptProxy'
+} from './ComponentDelegateJavaScriptProxy'
 
 export const COMPONENT_TYPE = 'embr.chart.chart-js'
 
@@ -79,7 +79,7 @@ function installPropsData(
   })
 }
 
-export function ChartjsComponent(props: ComponentProps<PerspectiveChartProps>) {
+export function ChartJsComponent(props: ComponentProps<PerspectiveChartProps>) {
   const chartRef: MutableRefObject<PerspectiveChart | undefined> =
     useRef(undefined)
 
@@ -107,7 +107,7 @@ export function ChartjsComponent(props: ComponentProps<PerspectiveChartProps>) {
 
   return (
     <div {...props.emit()}>
-      <Chartjs
+      <ChartJs
         ref={chartRef}
         type={transformedProps.type}
         options={transformedProps.options}
@@ -122,19 +122,16 @@ export function ChartjsComponent(props: ComponentProps<PerspectiveChartProps>) {
 
 class ChartJsComponentDelegate extends ComponentStoreDelegate {
   private chart: PerspectiveChart | undefined
-  private jsProxy = new DelegateJavaScriptProxy(this, {})
+  private jsProxy = new ComponentDelegateJavaScriptProxy(this, {})
 
   setChart(chart: PerspectiveChart | undefined) {
     this.chart = chart
 
-    const client = getClientStore()
     this.jsProxy.setGlobals({
       context: {
-        client,
+        client: getClientStore(),
         chart: this.chart,
         component: this.component,
-        page: this.component.view.page,
-        view: this.component.view,
       },
     })
   }
@@ -147,7 +144,7 @@ class ChartJsComponentDelegate extends ComponentStoreDelegate {
   }
 }
 
-export const ChartjsComponentMeta: ComponentMeta = {
+export const ChartJsComponentMeta: ComponentMeta = {
   getComponentType: function (): string {
     return COMPONENT_TYPE
   },
@@ -174,6 +171,6 @@ export const ChartjsComponentMeta: ComponentMeta = {
     } as never
   },
   getViewComponent: function (): PComponent {
-    return ChartjsComponent as PComponent
+    return ChartJsComponent as PComponent
   },
 }

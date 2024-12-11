@@ -16,7 +16,7 @@ export type JavaScriptRunEvent = {
   args: any
 }
 
-export class DelegateJavaScriptProxy {
+export class ComponentDelegateJavaScriptProxy {
   private delegate: ComponentStoreDelegate
   private globals: JsObject
 

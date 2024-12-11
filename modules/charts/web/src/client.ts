@@ -1,12 +1,7 @@
-import {
-    ComponentRegistry,
-} from '@inductiveautomation/perspective-client'
+import { ComponentRegistry } from '@inductiveautomation/perspective-client'
 
-import {
-    ChartjsComponent,
-    ChartjsComponentMeta,
-} from './components'
+import { ChartJsComponent, ChartJsComponentMeta } from './components'
 
-export { ChartjsComponent }
+export { ChartJsComponent }
 
-ComponentRegistry.register(ChartjsComponentMeta)
+ComponentRegistry.register(ChartJsComponentMeta)

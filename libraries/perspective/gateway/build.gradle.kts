@@ -7,4 +7,5 @@ dependencies {
     compileOnly(libs.bundles.perspectiveGateway)
     compileOnly(projects.libraries.core.common)
     compileOnly(projects.libraries.core.gateway)
+    compileOnly(projects.libraries.perspective.common)
 }

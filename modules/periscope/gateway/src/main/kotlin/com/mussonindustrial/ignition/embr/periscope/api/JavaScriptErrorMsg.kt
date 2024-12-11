@@ -1,8 +1,8 @@
 package com.mussonindustrial.ignition.embr.periscope.api
 
 import com.inductiveautomation.ignition.common.gson.JsonElement
-import com.mussonindustrial.ignition.embr.periscope.exception.JavaScriptException
-import com.mussonindustrial.ignition.embr.periscope.exception.JavaScriptExecutionException
+import com.mussonindustrial.embr.perspective.common.exceptions.JavaScriptException
+import com.mussonindustrial.embr.perspective.common.exceptions.JavaScriptExecutionException
 
 class JavaScriptErrorMsg {
     companion object {
