@@ -21,12 +21,12 @@ describe('propTransforms', () => {
   })
 
   it('should evaluate a script string with extra context', async () => {
-    const scriptTransform = getScriptTransform({ self: 'selfValue' })
+    const scriptTransform = getScriptTransform({ prop: 'propValue' })
     const script = scriptTransform(
-      `(context, options) => context + ' ' + options + ' ' + self;`
+      `(context, options) => context + ' ' + options + ' ' + this.prop;`
     ) as CallableFunction
     expect(script('contextValue', 'optionsValue')).toBe(
-      'contextValue optionsValue selfValue'
+      'contextValue optionsValue propValue'
     )
   })
 })

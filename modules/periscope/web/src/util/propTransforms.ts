@@ -1,9 +1,9 @@
 import {
-  isFunction,
-  toFunction,
-  readCSSVar,
   isCSSVar,
+  isFunction,
   PropTransform,
+  readCSSVar,
+  toUserScript,
 } from '@embr-js/utils'
 
 export function getCSSTransform(
@@ -23,15 +23,14 @@ export function getCSSTransform(
 }
 
 export function getScriptTransform(
-  extraContext: object = {}
+  thisArg: object = {}
 ): PropTransform<unknown, string | CallableFunction> {
-  const transform = (prop: unknown) => {
+  return (prop: unknown) => {
     if (typeof prop === 'string' && isFunction(prop)) {
-      const f = toFunction(prop, extraContext)
-      return (...args: unknown[]) => f({ ...args })
+      const f = toUserScript(prop, thisArg)
+      return (...args: unknown[]) => f(...args)
     }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return prop as any
   }
-  return transform
 }

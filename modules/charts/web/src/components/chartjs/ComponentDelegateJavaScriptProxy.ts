@@ -2,7 +2,8 @@ import {
   ComponentStoreDelegate,
   JsObject,
 } from '@inductiveautomation/perspective-client'
-import { toFunction } from '@embr-js/utils'
+import { readCSSVar, toUserScript } from '@embr-js/utils'
+import _ from 'lodash'
 
 const EVENTS = {
   JS_ERROR: 'js-error',
@@ -12,29 +13,37 @@ const EVENTS = {
 
 export type JavaScriptRunEvent = {
   id: string
+  property: string
   function: string
   args: any
 }
 
 export class ComponentDelegateJavaScriptProxy {
-  private delegate: ComponentStoreDelegate
-  private globals: JsObject
+  private readonly delegate: ComponentStoreDelegate
+  private readonly props?: JsObject
+  private readonly thisArg: JsObject
 
-  constructor(delegate: ComponentStoreDelegate, globals: JsObject) {
+  constructor(delegate: ComponentStoreDelegate, props?: JsObject) {
     this.delegate = delegate
-    this.globals = globals
+    this.props = props
+    this.thisArg = {
+      component: delegate.component,
+      view: delegate.component.view,
+      page: delegate.component.view.page,
+      client: delegate.component.view.page.parent,
+      util: {
+        readCSSVar: readCSSVar.bind(this, props?.element),
+        readProperty: (property: string) =>
+          delegate.component.interpolate(property).$v,
+      },
+    }
   }
 
   handles(eventName: string) {
     return eventName == 'js-run'
   }
 
-  setGlobals(globals: JsObject) {
-    this.globals = globals
-  }
-
   private resolveSuccess(id: string, data: unknown) {
-    console.log('resolveSuccess', data)
     this.delegate.fireEvent(EVENTS.JS_RESOLVE, {
       id,
       success: true,
@@ -43,7 +52,6 @@ export class ComponentDelegateJavaScriptProxy {
   }
 
   private resolveError(id: string, error: unknown) {
-    console.log('resolveError', error)
     const errorData =
       error instanceof Error
         ? {
@@ -72,8 +80,10 @@ export class ComponentDelegateJavaScriptProxy {
 
   handleEvent(event: JavaScriptRunEvent) {
     this.run(event.id, () => {
-      const f = toFunction(event.function, this.globals)
-      return event.args !== undefined ? f(event.args) : f()
+      const property = _.get(this.props, event.property)
+
+      const f = toUserScript(event.function, { ...this.thisArg, property })
+      return event.args !== undefined ? f.runNamed(event.args) : f()
     })
   }
 }

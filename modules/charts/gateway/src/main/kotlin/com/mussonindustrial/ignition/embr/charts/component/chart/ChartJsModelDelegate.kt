@@ -6,14 +6,11 @@ import com.inductiveautomation.perspective.gateway.api.ComponentModelDelegate
 import com.inductiveautomation.perspective.gateway.api.ScriptCallable
 import com.inductiveautomation.perspective.gateway.messages.EventFiredMsg
 import com.mussonindustrial.embr.perspective.gateway.component.ComponentDelegateJavaScriptProxy
-import com.mussonindustrial.embr.perspective.gateway.javascript.JavaScriptProxy
-import org.python.core.PyObject
 
-class ChartJsModelDelegate(component: Component) :
-    ComponentModelDelegate(component), JavaScriptProxy {
+class ChartJsModelDelegate(component: Component) : ComponentModelDelegate(component) {
 
     private val log = LogUtil.getModuleLogger("embr-charts", "ChartJsModelDelegate")
-    private val jsProxy = ComponentDelegateJavaScriptProxy(component, this)
+    private val proxies = hashMapOf<String, ComponentDelegateJavaScriptProxy>()
 
     override fun onStartup() {
         component.mdc { log.debugf("Startup") }
@@ -24,18 +21,21 @@ class ChartJsModelDelegate(component: Component) :
     }
 
     override fun handleEvent(message: EventFiredMsg) {
-        if (jsProxy.handles(message)) {
-            jsProxy.handleEvent(message)
+        proxies.values.forEach {
+            if (it.handles(message)) {
+                it.handleEvent(message)
+            }
         }
     }
 
     @ScriptCallable
     @Suppress("unused")
-    override fun runJavaScriptAsync(args: Array<PyObject>, keywords: Array<String>) =
-        jsProxy.runJavaScriptAsync(args, keywords)
-
-    @ScriptCallable
-    @Suppress("unused")
-    override fun runJavaScriptBlocking(args: Array<PyObject>, keywords: Array<String>) =
-        jsProxy.runJavaScriptBlocking(args, keywords)
+    fun getJavaScriptProxy(property: String): ComponentDelegateJavaScriptProxy {
+        if (proxies.contains(property)) {
+            return proxies[property] as ComponentDelegateJavaScriptProxy
+        } else {
+            proxies[property] = ComponentDelegateJavaScriptProxy(component, this, property)
+            return proxies[property] as ComponentDelegateJavaScriptProxy
+        }
+    }
 }

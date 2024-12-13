@@ -95,7 +95,13 @@ export function ChartJsComponent(props: ComponentProps<PerspectiveChartProps>) {
     const { props: configProps, data } = extractPropsData(props.props)
 
     const transformedProps = transformProps(configProps, [
-      getScriptTransform({ self: props, client: window.__client }),
+      getScriptTransform({
+        chart: chartRef.current,
+        component: props,
+        view: props.store.view,
+        page: props.store.view.page,
+        client: getClientStore(),
+      }),
       getCSSTransform(chartRef.current?.canvas.parentElement),
     ]) as PerspectiveChartProps
 
@@ -121,23 +127,18 @@ export function ChartJsComponent(props: ComponentProps<PerspectiveChartProps>) {
 }
 
 class ChartJsComponentDelegate extends ComponentStoreDelegate {
-  private chart: PerspectiveChart | undefined
-  private jsProxy = new ComponentDelegateJavaScriptProxy(this, {})
+  public chart: PerspectiveChart | undefined
+  private jsProxy = new ComponentDelegateJavaScriptProxy(this)
 
   setChart(chart: PerspectiveChart | undefined) {
     this.chart = chart
-
-    this.jsProxy.setGlobals({
-      context: {
-        client: getClientStore(),
-        chart: this.chart,
-        component: this.component,
-      },
+    this.jsProxy = new ComponentDelegateJavaScriptProxy(this, {
+      element: this.chart?.canvas,
+      chart: this.chart,
     })
   }
 
   handleEvent(eventName: string, eventObject: JsObject): void {
-    console.log(eventName, eventObject)
     if (this.jsProxy.handles(eventName)) {
       this.jsProxy.handleEvent(eventObject as JavaScriptRunEvent)
     }

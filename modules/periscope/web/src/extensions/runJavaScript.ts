@@ -1,4 +1,4 @@
-import { toFunction } from '@embr-js/utils'
+import { toUserScript } from '@embr-js/utils'
 import { ClientStore } from '@inductiveautomation/perspective-client'
 
 export const PROTOCOL = {
@@ -8,10 +8,9 @@ export const PROTOCOL = {
 }
 
 export function installRunJavaScript(clientStore: ClientStore) {
-  const globals = {
-    context: {
-      client: clientStore,
-    },
+  const thisArg = {
+    client: clientStore,
+    page: clientStore.page,
   }
 
   clientStore.connection.handlers.set(PROTOCOL.RUN, (payload) => {
@@ -45,9 +44,8 @@ export function installRunJavaScript(clientStore: ClientStore) {
     }
 
     new Promise((resolve) => {
-      const f = toFunction(functionLiteral, globals)
-      const result = args !== undefined ? f(args) : f()
-      resolve(result)
+      const f = toUserScript(functionLiteral, thisArg)
+      resolve(f.runNamed(args))
     })
       .then((result: unknown) => resolveSuccess(result))
       .catch((error: unknown) => resolveError(error))

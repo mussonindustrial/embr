@@ -4,15 +4,15 @@
 
 ### Minor Changes
 
-- 4d7f150: (BREAKING) `toFunction` now throws an error if function parsing fails. This is a breaking change from the previous behavior.
-- 4d7f150: (`toFunction`) Add support for `async` function parsing.
+- 4d7f150: (BREAKING) `toUserScript` now throws an error if function parsing fails. This is a breaking change from the previous behavior.
+- 4d7f150: (`toUserScript`) Add support for `async` function parsing.
   (`isAsyncFunction`) Add utility function for matching `async` functions.
 
 ## 0.4.0
 
 ### Minor Changes
 
-- fa2f2e7: `toFunction` now supplies global context first when calling the generated function. This ensures that the global context is always correct and available when function parameters are omitted.
+- fa2f2e7: `toUserScript` now supplies global context first when calling the generated function. This ensures that the global context is always correct and available when function parameters are omitted.
 
 ## 0.3.0
 
