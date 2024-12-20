@@ -5,7 +5,7 @@
 [![Ignition](https://img.shields.io/badge/Ignition-8.1.33+-rebeccapurple.svg)](https://inductiveautomation.com/)
 [![Documentation](https://img.shields.io/badge/Documentation-docs.mussonindustrial.com-white.svg?logo=docusaurus)](https://docs.mussonindustrial.com/ignition/embr-charts)
 
-An Ignition module that adds a collection of enhanced Perspective charting components.
+A module for Ignition that adds a collection of enhanced Perspective charting components.
 
 ## Getting Started
 

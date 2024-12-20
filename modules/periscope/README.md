@@ -10,7 +10,7 @@
   <p><em>A periscope provides a new perspective</em> by allowing users to see over, around, or through obstacles, offering a unique view otherwise obstructed.</p>
 </div>
 
-An Ignition module that includes design extensions and enhancements for Perspective.
+A module for Ignition that includes design extensions and enhancements for Perspective.
 
 ## Getting Started
 

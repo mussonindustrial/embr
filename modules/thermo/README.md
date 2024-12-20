@@ -5,9 +5,7 @@
 [![Ignition](https://img.shields.io/badge/Ignition-8.1.33+-rebeccapurple.svg)](https://inductiveautomation.com/)
 [![Documentation](https://img.shields.io/badge/Documentation-docs.mussonindustrial.com-white.svg?logo=docusaurus)](https://docs.mussonindustrial.com/ignition/embr-thermodynamics/)
 
-An Ignition module containing scripting and expression functions for computing properties of steam via an IF97 implementation.
-
-
+A module for Ignition containing scripting and expression functions for computing properties of water and steam via an IF97 implementation.
 
 
 ## Getting Started
