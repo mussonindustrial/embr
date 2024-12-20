@@ -111,8 +111,8 @@ class ComponentDelegateJavaScriptProxy(
         types = [String::class, PyDictionary::class, String::class, String::class],
     )
     @Suppress("unused")
-    override fun runJavaScriptBlocking(args: Array<PyObject>, keywords: Array<String>): Any? {
-        return overloads.runJavaScriptBlocking.call(args, keywords)
+    override fun runBlocking(args: Array<PyObject>, keywords: Array<String>): Any? {
+        return overloads.runBlocking.call(args, keywords)
     }
 
     @ScriptCallable
@@ -122,12 +122,12 @@ class ComponentDelegateJavaScriptProxy(
             [String::class, PyDictionary::class, PyFunction::class, String::class, String::class],
     )
     @Suppress("unused")
-    override fun runJavaScriptAsync(args: Array<PyObject>, keywords: Array<String>) {
-        overloads.runJavaScriptAsync.call(args, keywords)
+    override fun runAsync(args: Array<PyObject>, keywords: Array<String>) {
+        overloads.runAsync.call(args, keywords)
     }
 
     inner class ScriptOverloads {
-        val runJavaScriptAsync =
+        val runAsync =
             PyArgOverloadBuilder()
                 .setName("runJavaScriptAsync")
                 .addOverload(
@@ -144,7 +144,7 @@ class ComponentDelegateJavaScriptProxy(
                 )
                 .build()
 
-        val runJavaScriptBlocking =
+        val runBlocking =
             PyArgOverloadBuilder()
                 .setName("runJavaScriptBlocking")
                 .addOverload(
@@ -177,7 +177,7 @@ class ComponentDelegateJavaScriptProxy(
 
     class JavaScriptErrorMsg(event: JsonObject) {
         val id: String = event.get("id").asString
-        val error: JsonElement = event.get("error")
+        private val error: JsonElement = event.get("error")
 
         fun getError(): Throwable {
             val commonMessage = "Error running client-side JavaScript."
@@ -198,7 +198,7 @@ class ComponentDelegateJavaScriptProxy(
 
     class JavaScriptResolveMsg(event: JsonObject) {
         val id: String = event.get("id").asString
-        val data: JsonElement? = if (event.has("data")) event.get("data") else null
+        private val data: JsonElement? = if (event.has("data")) event.get("data") else null
 
         fun getValue(): PyObject? {
             if (data == null) {

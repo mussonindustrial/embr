@@ -1,5 +1,6 @@
 import React, { MutableRefObject, useEffect, useMemo, useRef } from 'react'
 import {
+  AbstractUIElementStore,
   ComponentMeta,
   ComponentProps,
   ComponentStoreDelegate,
@@ -11,19 +12,17 @@ import {
 import { Chart as ChartJs, ChartProps } from 'react-chartjs-2'
 import { Chart } from 'chart.js'
 import { getCSSTransform, getScriptTransform } from '../../util'
-import { getClientStore, transformProps } from '@embr-js/utils'
-import _, { unset, cloneDeep } from 'lodash'
-import { AbstractUIElementStore } from '@inductiveautomation/perspective-client/build/dist/typedefs/stores/AbstractUIElementStore'
+import { transformProps } from '@embr-js/utils'
+import { unset, cloneDeep } from 'lodash'
 import {
   ComponentDelegateJavaScriptProxy,
   JavaScriptRunEvent,
-} from './ComponentDelegateJavaScriptProxy'
+} from '@embr-js/perspective-client'
 
 export const COMPONENT_TYPE = 'embr.chart.chart-js'
 
 type PerspectiveChart = Chart
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type PerspectiveChartData = any[]
+type PerspectiveChartData = unknown[]
 type ChartEvent = (chart: PerspectiveChart | undefined) => void
 type PerspectiveChartEvents = {
   beforeRender?: ChartEvent
@@ -84,24 +83,15 @@ export function ChartJsComponent(props: ComponentProps<PerspectiveChartProps>) {
     useRef(undefined)
 
   useEffect(() => {
-    if (props.store.delegate !== undefined) {
-      ;(props.store.delegate as ChartJsComponentDelegate).setChart(
-        chartRef.current
-      )
-    }
-  }, [props.delegate, chartRef.current])
+    const delegate = props.store.delegate as ChartJsComponentDelegate
+    delegate.setChart(chartRef.current)
+  }, [props.store.delegate, chartRef.current])
 
   const transformedProps = useMemo(() => {
     const { props: configProps, data } = extractPropsData(props.props)
 
     const transformedProps = transformProps(configProps, [
-      getScriptTransform({
-        chart: chartRef.current,
-        component: props,
-        view: props.store.view,
-        page: props.store.view.page,
-        client: getClientStore(),
-      }),
+      getScriptTransform(props, props.store),
       getCSSTransform(chartRef.current?.canvas.parentElement),
     ]) as PerspectiveChartProps
 
@@ -127,15 +117,12 @@ export function ChartJsComponent(props: ComponentProps<PerspectiveChartProps>) {
 }
 
 class ChartJsComponentDelegate extends ComponentStoreDelegate {
-  public chart: PerspectiveChart | undefined
-  private jsProxy = new ComponentDelegateJavaScriptProxy(this)
+  private proxyProps: JsObject = {}
 
-  setChart(chart: PerspectiveChart | undefined) {
-    this.chart = chart
-    this.jsProxy = new ComponentDelegateJavaScriptProxy(this, {
-      element: this.chart?.canvas,
-      chart: this.chart,
-    })
+  private jsProxy = new ComponentDelegateJavaScriptProxy(this, this.proxyProps)
+
+  setChart(chart?: PerspectiveChart) {
+    this.proxyProps.chart = chart
   }
 
   handleEvent(eventName: string, eventObject: JsObject): void {

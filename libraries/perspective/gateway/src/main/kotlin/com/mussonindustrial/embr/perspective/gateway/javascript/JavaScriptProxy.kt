@@ -4,7 +4,7 @@ import org.python.core.PyObject
 
 interface JavaScriptProxy {
 
-    fun runJavaScriptBlocking(args: Array<PyObject>, keywords: Array<String>): Any?
+    fun runBlocking(args: Array<PyObject>, keywords: Array<String>): Any?
 
-    fun runJavaScriptAsync(args: Array<PyObject>, keywords: Array<String>)
+    fun runAsync(args: Array<PyObject>, keywords: Array<String>)
 }

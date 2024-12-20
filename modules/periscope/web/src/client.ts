@@ -7,8 +7,8 @@ import {
   EmbeddedViewComponent,
   EmbeddedViewComponentMeta,
 } from './components'
-import { waitForClientStore } from './util'
 import { installExtensions } from './extensions'
+import { waitForClientStore } from '@embr-js/perspective-client'
 
 export { FlexRepeaterComponent, SwiperComponent, EmbeddedViewComponent }
 

@@ -1,0 +1,29 @@
+{
+    "name": "@embr-js/perspective-client",
+    "private": true,
+    "version": "0.1.0",
+    "description": "Perspective client extensions.",
+    "main": "src/index.ts",
+    "scripts": {
+        "dev": "vite",
+        "build": "tsc && nx vite:build",
+        "clean": "",
+        "test": "vitest run",
+        "preview": "vite preview",
+        "lint": "eslint src/**/*.ts",
+        "lint:prettier": "prettier -c . --cache --ignore-path=../../.prettierignore"
+    },
+    "dependencies": {
+        "lodash": "^4.17.21"
+    },
+    "devDependencies": {
+        "@inductiveautomation/perspective-client": "2.1.33",
+        "@embr-js/tsconfig": "*",
+        "@embr-js/eslint-config": "*",
+        "@embr-js/utils": "0.5.0",
+        "eslint": "^8.56.0",
+        "typescript": "^5.3.3",
+        "vite": "^5.0.10",
+        "vitest": "^1.6.0"
+    }
+}

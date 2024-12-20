@@ -2,10 +2,11 @@ import {
   ComponentStoreDelegate,
   JsObject,
 } from '@inductiveautomation/perspective-client'
-import { readCSSVar, toUserScript } from '@embr-js/utils'
+import { toUserScript } from '@embr-js/utils'
 import _ from 'lodash'
+import { createScriptingGlobals } from '../scripting/ScriptingGlobals'
 
-const EVENTS = {
+const MESSAGES = {
   JS_ERROR: 'js-error',
   JS_RESOLVE: 'js-resolve',
   JS_RUN: 'js-run',
@@ -15,28 +16,16 @@ export type JavaScriptRunEvent = {
   id: string
   property: string
   function: string
-  args: any
+  args: JsObject
 }
 
 export class ComponentDelegateJavaScriptProxy {
   private readonly delegate: ComponentStoreDelegate
   private readonly props?: JsObject
-  private readonly thisArg: JsObject
 
   constructor(delegate: ComponentStoreDelegate, props?: JsObject) {
     this.delegate = delegate
     this.props = props
-    this.thisArg = {
-      component: delegate.component,
-      view: delegate.component.view,
-      page: delegate.component.view.page,
-      client: delegate.component.view.page.parent,
-      util: {
-        readCSSVar: readCSSVar.bind(this, props?.element),
-        readProperty: (property: string) =>
-          delegate.component.interpolate(property).$v,
-      },
-    }
   }
 
   handles(eventName: string) {
@@ -44,7 +33,7 @@ export class ComponentDelegateJavaScriptProxy {
   }
 
   private resolveSuccess(id: string, data: unknown) {
-    this.delegate.fireEvent(EVENTS.JS_RESOLVE, {
+    this.delegate.fireEvent(MESSAGES.JS_RESOLVE, {
       id,
       success: true,
       data,
@@ -61,7 +50,7 @@ export class ComponentDelegateJavaScriptProxy {
           }
         : error
 
-    this.delegate.fireEvent(EVENTS.JS_ERROR, {
+    this.delegate.fireEvent(MESSAGES.JS_ERROR, {
       id,
       success: false,
       error: errorData,
@@ -70,7 +59,7 @@ export class ComponentDelegateJavaScriptProxy {
     throw error
   }
 
-  run(id: string, block: () => any) {
+  run(id: string, block: () => unknown) {
     new Promise((resolve) => {
       resolve(block())
     })
@@ -81,8 +70,14 @@ export class ComponentDelegateJavaScriptProxy {
   handleEvent(event: JavaScriptRunEvent) {
     this.run(event.id, () => {
       const property = _.get(this.props, event.property)
+      const globals = createScriptingGlobals({
+        client: this.delegate.component.view.page.parent,
+        page: this.delegate.component.view.page,
+        view: this.delegate.component.view,
+        component: this.delegate.component,
+      })
 
-      const f = toUserScript(event.function, { ...this.thisArg, property })
+      const f = toUserScript(event.function, property, globals)
       return event.args !== undefined ? f.runNamed(event.args) : f()
     })
   }

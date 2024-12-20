@@ -1,5 +1,3 @@
-export { default as getClientStore } from './getClientStore'
-
 export { default as isAsyncFunction } from './isAsyncFunction'
 export { default as isCSSVar } from './isCSSVar'
 export { default as isFunction } from './isFunction'

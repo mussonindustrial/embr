@@ -31,11 +31,8 @@ class ChartJsModelDelegate(component: Component) : ComponentModelDelegate(compon
     @ScriptCallable
     @Suppress("unused")
     fun getJavaScriptProxy(property: String): ComponentDelegateJavaScriptProxy {
-        if (proxies.contains(property)) {
-            return proxies[property] as ComponentDelegateJavaScriptProxy
-        } else {
-            proxies[property] = ComponentDelegateJavaScriptProxy(component, this, property)
-            return proxies[property] as ComponentDelegateJavaScriptProxy
+        return proxies.getOrPut(property) {
+            ComponentDelegateJavaScriptProxy(component, this, property)
         }
     }
 }

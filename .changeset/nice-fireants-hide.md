@@ -2,4 +2,14 @@
 '@embr-modules/charts': minor
 ---
 
-(Feature) Added `component.runJavaScriptAsync` and `component.runJavaScriptBlocking` functions for advanced use cases. These component functions allow you to directly interact with the client chart instance, calling methods and setting properties from the gateway.
+(Feature) Added `component.getJavaScriptProxy(property)` component function.
+This function allows you to access a JavaScriptProxy object by property name, then run client-side JavaScript against it.
+Current proxy-able properties: 
+- `chart`: Chart.js chart instance.
+
+Example: 
+```python
+# Component Event
+chart = self.getJavaScriptProxy('chart')
+chart.runAsync("() => this.resetZoom('resize')")
+```
