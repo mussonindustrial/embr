@@ -1,5 +1,39 @@
 # @embr-modules/periscope
 
+## 0.5.0
+
+### Minor Changes
+
+- 7f90e53: (BREAKING) New `this` and global context.
+
+  In `system.perspective.runJavaScript~` functions:
+
+  1. `this` is now a reference to the `clientStore`.
+  2. A new Perspective specific namespace, accessible through the global `perspective` object is provided.
+     - This object contains a `context` that can be used to access the `clientStore` (i.e. `perspective.context.client`).
+     - This object will be the home of future Perspective specific utilities.
+
+- 7f90e53: (BREAKING) Major changes in `toUserScript` parsing.
+  1. Strict mode is now enabled.
+  2. Function body now follows standard arrow function syntax. If the body of the arrow function is a block (contained within brackets {...}) then the body **MUST** use the _return_ keyword. If the body of the arrow function is not a block (like `() => 1 + 2`) then the body **MUST NOT** use the return keyword.
+
+### Patch Changes
+
+- 7f90e53: (`runJavaScript` Functions) More robust error handling. Errors are now properly logged in the gateway for both Async and Blocking calls.
+
+  (`runJavaScriptAsync`) The original view, page, and session thread local variables are now correctly restored before running the callback function.
+
+- Updated dependencies [7f90e53]
+- Updated dependencies [7f90e53]
+- Updated dependencies [7f90e53]
+- Updated dependencies [7f90e53]
+  - @embr-jvm/core-common@0.6.0
+  - @embr-jvm/perspective-gateway@0.7.1
+  - @embr-jvm/perspective-designer@0.7.1
+  - @embr-jvm/perspective-common@0.7.1
+  - @embr-jvm/core-designer@0.6.0
+  - @embr-modules/periscope-web@0.5.0
+
 ## 0.4.4
 
 ### Patch Changes
