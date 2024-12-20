@@ -1,6 +1,6 @@
 # Embr Event Stream Module [<img src="https://cdn.mussonindustrial.com/files/public/images/emblem.svg" alt="Musson Industrial Logo" width="90" height="40" align="right">][embr]
 
-An Ignition module that provides an API for high-speed streaming of tag changes and alarm events via SSE (server-sent events).
+A module for Ignition that provides an API for high-speed streaming of tag changes and alarm events via SSE (server-sent events).
 
 Server-Sent Events (SSE) is a server push technology enabling a client to receive automatic updates from a server via an HTTP connection.
 All modern browsers support server-sent events: Firefox 6+, Google Chrome 6+, Opera 11.5+, Safari 5+, Microsoft Edge 79+.
