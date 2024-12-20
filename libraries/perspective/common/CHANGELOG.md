@@ -1,5 +1,11 @@
 # @mussonindustrial/embr-jvm-perspective-core
 
+## 0.7.1
+
+### Patch Changes
+
+- 7f90e53: Move JavaScript error types to Perspective library.
+
 ## 0.7.0
 
 ### Minor Changes

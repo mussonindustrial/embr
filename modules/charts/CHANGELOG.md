@@ -1,5 +1,71 @@
 # @mussonindustrial/embr-charts
 
+## 2.0.0
+
+### Major Changes
+
+- 7f90e53: (BREAKING) New scriptable properties `this` and global context.
+
+  In scriptable property functions:
+
+  1.  `this` is now a reference to the component itself.
+  2.  Global variables `self` and `client` have been removed.
+      - These have been replaced with a Perspective specific namespace, accessible through the global `perspective` object.
+      - This object contains a `context` that can be used to access the `clientStore` (i.e. `perspective.context.client`).
+      -     - This object will be the home of future Perspective specific utilities.
+
+- 7f90e53: (BREAKING) Major changes in `toUserScript` parsing.
+  1. Strict mode is now enabled.
+  2. Function body now follows standard arrow function syntax. If the body of the arrow function is a block (contained within brackets {...}) then the body **MUST** use the _return_ keyword. If the body of the arrow function is not a block (like `() => 1 + 2`) then the body **MUST NOT** use the return keyword.
+
+### Minor Changes
+
+- 7f90e53: (Feature) Added `component.getJavaScriptProxy(property)` component function.
+  This function allows you to access a JavaScriptProxy object by property name, then run client-side JavaScript against it.
+  Current proxy-able properties:
+
+  - `chart`: Chart.js chart instance.
+
+  Example:
+
+  ```python
+  # Component Event
+  chart = self.getJavaScriptProxy('chart')
+  chart.runAsync("() => this.resetZoom('resize')")
+  ```
+
+- 7f90e53: (Chart.js) Update `chartjs-zoom-plugin` to 2.2.0
+
+### Patch Changes
+
+- 7f90e53: (Dependencies) Update `chartjs-chart-funnel` to `4.2.4`
+  (Dependencies) Update `chartjs-chart-geo` to `4.3.4`
+  (Dependencies) Update `chartjs-chart-graph` to `4.3.4`
+  (Dependencies) Fix `chartjs-chart-matrix` to `2.0.1`
+  (Dependencies) Update `chartjs-chart-pcp` to `4.3.4`
+  (Dependencies) Update `chartjs-chart-sankey` to `0.13.0`
+  (Dependencies) Update `chartjs-chart-treemap` to `3.1.0`
+  (Dependencies) Update `chartjs-chart-venn` to `4.3.5`
+  (Dependencies) Update `chartjs-chart-wordcloud` to `4.4.4`
+  (Dependencies) Update `chartjs-plugin-annotation` to `3.1.0`
+  (Dependencies) Update `chartjs-plugin-autocolors` to `0.3.1`
+  (Dependencies) Fix `chartjs-plugin-crosshair` to `2.0.0`
+  (Dependencies) Fix `chartjs-plugin-datalabels` to `2.2.0`
+  (Dependencies) Fix `chartjs-plugin-gradient` to `0.6.1`
+  (Dependencies) Update `chartjs-plugin-hierarchical` to `4.4.4`
+  (Dependencies) Update `chartjs-plugin-stacked100` to `1.7.0`
+  (Dependencies) Update `chartjs-plugin-zoom` to `2.2.0`
+- Updated dependencies [7f90e53]
+- Updated dependencies [7f90e53]
+- Updated dependencies [7f90e53]
+- Updated dependencies [7f90e53]
+  - @embr-jvm/core-common@0.6.0
+  - @embr-jvm/perspective-gateway@0.7.1
+  - @embr-jvm/perspective-designer@0.7.1
+  - @embr-jvm/perspective-common@0.7.1
+  - @embr-jvm/core-designer@0.6.0
+  - @embr-modules/charts-web@2.0.0
+
 ## 1.4.2
 
 ### Patch Changes

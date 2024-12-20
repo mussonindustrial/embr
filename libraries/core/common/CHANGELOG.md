@@ -1,5 +1,12 @@
 # @mussonindustrial/embr-jvm-core-common
 
+## 0.6.0
+
+### Minor Changes
+
+- 7f90e53: (BREAKING) Add support to `PyArgOverload` for nullable types. Arguments are now defined using `KType`'s, and nullability checks are applied during function matching. If an argument is missing it is considered null and if the argument is allowed to be null it is considered a valid match.
+- 7f90e53: (BREAKING) PyArgOverload overloads are passed function arguments as a map instead of a list. It should have been this way from the beginning, in order to reduce human error in extracting parameters.
+
 ## 0.5.0
 
 ### Minor Changes

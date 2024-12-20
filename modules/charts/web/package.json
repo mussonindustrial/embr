@@ -1,7 +1,7 @@
 {
     "name": "@embr-modules/charts-web",
     "private": true,
-    "version": "1.4.2",
+    "version": "2.0.0",
     "scripts": {
         "dev": "vite",
         "build": "tsc && nx vite:build && nx vite:test --run",
@@ -43,8 +43,8 @@
     "devDependencies": {
         "@embr-js/eslint-config": "*",
         "@embr-js/tsconfig": "*",
-        "@embr-js/utils": "0.5.0",
-        "@embr-js/perspective-client": "0.1.0",
+        "@embr-js/utils": "0.6.0",
+        "@embr-js/perspective-client": "0.2.0",
         "@types/lodash": "^4.14.202",
         "@types/react": "^18.2.56",
         "eslint": "^8.56.0",

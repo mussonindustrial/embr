@@ -1,7 +1,7 @@
 {
     "name": "@embr-js/perspective-client",
     "private": true,
-    "version": "0.1.0",
+    "version": "0.2.0",
     "description": "Perspective client extensions.",
     "main": "src/index.ts",
     "scripts": {
@@ -20,7 +20,7 @@
         "@inductiveautomation/perspective-client": "2.1.33",
         "@embr-js/tsconfig": "*",
         "@embr-js/eslint-config": "*",
-        "@embr-js/utils": "0.5.0",
+        "@embr-js/utils": "0.6.0",
         "eslint": "^8.56.0",
         "typescript": "^5.3.3",
         "vite": "^5.0.10",
