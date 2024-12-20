@@ -9,8 +9,8 @@ class JavaScriptResolveMsg {
         const val PROTOCOL: String = "periscope-js-resolve"
     }
 
-    lateinit var id: String
-    lateinit var data: JsonElement
+    var id: String? = null
+    var data: JsonElement? = null
 
     fun getValue(): PyObject? {
         return TypeUtilities.gsonToPy(data)

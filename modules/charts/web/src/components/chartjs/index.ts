@@ -1,2 +1,2 @@
 export * from './plugins'
-export * from './ChartjsComponent'
+export * from './ChartJsComponent'

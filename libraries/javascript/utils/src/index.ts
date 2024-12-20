@@ -3,8 +3,8 @@ export { default as isCSSVar } from './isCSSVar'
 export { default as isFunction } from './isFunction'
 export { default as readCSSVar } from './readCSSVar'
 export {
-  default as toFunction,
+  default as toUserScript,
   type UserScript,
   type UserScriptParams,
-} from './toFunction'
+} from './toUserScript'
 export { default as transformProps, type PropTransform } from './transformProps'

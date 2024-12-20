@@ -13,6 +13,8 @@
     },
     "dependencies": {
         "@inductiveautomation/perspective-client": "2.1.33",
+        "@embr-js/utils": "0.5.0",
+        "@embr-js/perspective-client": "0.1.0",
         "lodash": "^4.17.21",
         "react": "^18",
         "react-dom": "^18",
@@ -21,7 +23,6 @@
     "devDependencies": {
         "@embr-js/eslint-config": "*",
         "@embr-js/tsconfig": "*",
-        "@embr-js/utils": "0.5.0",
         "@types/lodash": "^4.14.202",
         "@types/react": "^18.2.56",
         "eslint": "^8.56.0",

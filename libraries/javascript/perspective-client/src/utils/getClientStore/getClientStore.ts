@@ -5,7 +5,7 @@ import getDesignerStore from '../getDesignerStore'
  * Get the current ClientStore.
  * @returns @ClientStore
  */
-export default function getClientStore(): ClientStore | null {
+export default function getClientStore(): ClientStore | undefined {
   if (window.__client !== undefined) {
     const clientStore = window.__client
     if (clientStore.isDesigner) {
@@ -16,6 +16,6 @@ export default function getClientStore(): ClientStore | null {
   } else if (getDesignerStore()) {
     return getDesignerStore()
   } else {
-    return null
+    return undefined
   }
 }

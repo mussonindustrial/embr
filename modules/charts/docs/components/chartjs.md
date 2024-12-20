@@ -67,22 +67,9 @@ Any component property value starting with `var(--` will use the corresponding C
 Chart.js scriptable options are supported.
 
 Any component property value containing an arrow function `() =>` statement will be converted into a JavaScript function.
-> **_NOTE:_** The converted functions do not support implicit return values. The `return` keyword must be used.
 
 The function will have access to all parameters listed in the [Chart.js documentation].
 See [ChartJs Documentation - Scriptable Options](https://www.chartjs.org/docs/latest/general/options.html#scriptable-options) for full details.
-
-#### Global Parameters
-In additional to the parameters provided by Chart.js, several Perspective specific global objects can be accessed in scriptable options.
-This global objects are implicitly available and do not need to be specified as function arguments.
-
-1. `self`
-    - A reference to the Perspective component props.
-    - Allows access to all properties on the Perspective component (i.e. `self.custom.myCustomProperty`).
-2. `client`
-    - A reference to the root Perspective client store.
-    - Allows access to Perspective client properties (i.e. `client.projectName`).
-
 
 #### Scriptable Option Example
 ```js
@@ -94,7 +81,7 @@ This global objects are implicitly available and do not need to be specified as 
     {
       "data": [...],
       "label": "Dataset",
-      "backgroundColor": "(context) => if (context.type == 'data') return context.parsed.y > 30 ? 'red' : 'blue'; else return 'green'; "
+      "backgroundColor": "(context) => { if (context.type == 'data') return context.parsed.y > 30 ? 'red' : 'blue'; else return 'green'; }"
     }
   ]
 }

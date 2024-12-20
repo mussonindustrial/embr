@@ -8,8 +8,11 @@ import com.inductiveautomation.ignition.common.util.ExecutionQueue
 import com.inductiveautomation.ignition.common.util.LogUtil
 import com.inductiveautomation.perspective.gateway.api.PerspectiveContext
 import com.inductiveautomation.perspective.gateway.model.MessageChannel
+import com.inductiveautomation.perspective.gateway.model.PageModel
 import com.inductiveautomation.perspective.gateway.script.AbstractScriptingFunctions
 import com.mussonindustrial.embr.common.scripting.PyArgOverloadBuilder
+import com.mussonindustrial.embr.perspective.gateway.model.ThreadContext
+import com.mussonindustrial.embr.perspective.gateway.model.withThreadContext
 import com.mussonindustrial.embr.perspective.gateway.reflect.getHandlers
 import com.mussonindustrial.ignition.embr.periscope.Meta
 import com.mussonindustrial.ignition.embr.periscope.PeriscopeGatewayContext
@@ -29,7 +32,7 @@ import org.python.core.PyString
 class JavaScriptFunctions(private val context: PeriscopeGatewayContext) :
     AbstractScriptingFunctions() {
 
-    private val log = LogUtil.getModuleLogger(Meta.SHORT_MODULE_ID, "RunJavaScriptFunctions")
+    private val log = LogUtil.getModuleLogger(Meta.SHORT_MODULE_ID, "JavaScriptFunctions")
     private val requestsInProgress = ConcurrentHashMap<String, CompletableFuture<PyObject?>>()
     private val overloads = ScriptOverloads()
     private val timeout = 30L
@@ -58,6 +61,21 @@ class JavaScriptFunctions(private val context: PeriscopeGatewayContext) :
         requestsInProgress[message.id]?.completeExceptionally(message.getError())
     }
 
+    private fun registerHandlers(page: PageModel) {
+        page.getHandlers().apply {
+            register(
+                JavaScriptResolveMsg.PROTOCOL,
+                this@JavaScriptFunctions::onJavaScriptResolve,
+                JavaScriptResolveMsg::class.java
+            )
+            register(
+                JavaScriptErrorMsg.PROTOCOL,
+                this@JavaScriptFunctions::onJavaScriptError,
+                JavaScriptErrorMsg::class.java
+            )
+        }
+    }
+
     private fun runJavaScript(
         function: String,
         args: PyDictionary?,
@@ -67,44 +85,45 @@ class JavaScriptFunctions(private val context: PeriscopeGatewayContext) :
     ): CompletableFuture<PyObject?> {
 
         val future = CompletableFuture<PyObject?>()
+        future.orTimeout(this.timeout, TimeUnit.SECONDS)
 
         this.operateOnPage(getPerspectiveArgumentMap(pageId, sessionId)) { page ->
+            val originalThreadContext = ThreadContext.get()
             val queue: ExecutionQueue = page.session.queue()
+
+            registerHandlers(page)
+
             val id = UUID.randomUUID().toString()
-
-            page.getHandlers().apply {
-                register(
-                    JavaScriptResolveMsg.PROTOCOL,
-                    this@JavaScriptFunctions::onJavaScriptResolve,
-                    JavaScriptResolveMsg::class.java
+            val message =
+                JavaScriptRunMsg(
+                    id,
+                    function,
+                    args,
+                    originalThreadContext,
                 )
-                register(
-                    JavaScriptErrorMsg.PROTOCOL,
-                    this@JavaScriptFunctions::onJavaScriptError,
-                    JavaScriptErrorMsg::class.java
-                )
-            }
-
             requestsInProgress[id] = future
 
-            future.orTimeout(this.timeout, TimeUnit.SECONDS)
-            future.whenCompleteAsync(
-                { result, error ->
-                    requestsInProgress.remove(id)
+            future
+                .thenAcceptAsync(
+                    { result ->
+                        if (callback != null) {
+                            withThreadContext(originalThreadContext) {
+                                page.session.scriptManager.runFunction(callback, result)
+                            }
+                        }
+                    },
+                    queue::submit
+                )
+                .exceptionally { error ->
+                    originalThreadContext.view.get()?.mdcSetup()
+                    page.session.sendErrorToDesigner(error.message, error)
+                    page.log.error("Exception occurred executing client-side JavaScript.", error)
+                    originalThreadContext.view.get()?.mdcTeardown()
+                    throw error
+                }
+                .whenCompleteAsync({ _, _ -> requestsInProgress.remove(id) }, queue::submit)
 
-                    if (result != null && callback != null) {
-                        page.session.scriptManager.runFunction(callback, result)
-                    }
-
-                    if (error != null) {
-                        page.session.sendErrorToDesigner(error.message, error)
-                        throw error
-                    }
-                },
-                queue::submit
-            )
-
-            page.send(JavaScriptRunMsg.PROTOCOL, JavaScriptRunMsg(id, function, args).getPayload())
+            page.send(JavaScriptRunMsg.PROTOCOL, message.getPayload())
         }
 
         return future
@@ -116,11 +135,11 @@ class JavaScriptFunctions(private val context: PeriscopeGatewayContext) :
                 .setName("runJavaScriptAsync")
                 .addOverload(
                     {
-                        val function = TypeUtilities.toString(it[0])!!
-                        val args = it[1] as? PyDictionary
-                        val callback = it[2] as? PyFunction
-                        val sessionId = it[3] as? String
-                        val pageId = it[4] as? String
+                        val function = TypeUtilities.toString(it["function"])!!
+                        val args = it["args"] as? PyDictionary
+                        val callback = it["callback"] as? PyFunction
+                        val sessionId = it["sessionId"] as? String
+                        val pageId = it["pageId"] as? String
                         runJavaScript(function, args, callback, sessionId, pageId)
                         null
                     },
@@ -137,10 +156,10 @@ class JavaScriptFunctions(private val context: PeriscopeGatewayContext) :
                 .setName("runJavaScriptBlocking")
                 .addOverload(
                     {
-                        val function = TypeUtilities.toString(it[0])!!
-                        val args = it[1] as? PyDictionary
-                        val sessionId = it[2] as? String
-                        val pageId = it[3] as? String
+                        val function = TypeUtilities.toString(it["function"])!!
+                        val args = it["args"] as? PyDictionary
+                        val sessionId = it["sessionId"] as? String
+                        val pageId = it["pageId"] as? String
                         runJavaScript(function, args, null, sessionId, pageId)
                             .get(30, TimeUnit.SECONDS)
                     },

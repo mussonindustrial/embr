@@ -501,7 +501,7 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
                 .addOverload(
                     {
                         val newInstances = props.instances.json
-                        newInstances.remove(it[0] as Int)
+                        newInstances.remove(it["index"] as Int)
                         props.instances.json = newInstances
                         null
                     },
@@ -520,7 +520,7 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
                 .setName("pushInstance")
                 .addOverload(
                     {
-                        val instance = TypeUtilities.pyToGson(it[0] as PyObject?)
+                        val instance = TypeUtilities.pyToGson(it["instance"] as PyObject?)
                         val newInstances = props.instances.json
 
                         if (instance.isJsonObject) {
@@ -544,8 +544,8 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
                 .setName("insertInstance")
                 .addOverload(
                     {
-                        val index = it[0] as Int
-                        val instance = TypeUtilities.pyToGson(it[1] as PyObject?)
+                        val index = it["index"] as Int
+                        val instance = TypeUtilities.pyToGson(it["instance"] as PyObject?)
 
                         val existingInstances = props.instances.json
                         val newInstances =
