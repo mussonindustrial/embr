@@ -101,7 +101,13 @@ class ComponentDelegateJavaScriptProxy(
             }
             .whenCompleteAsync({ _, _ -> requestsInProgress.remove(id) }, queue::submit)
 
-        delegate.fireEvent(MESSAGE_RUN, JavaScriptRunMsg(id, property, function, args).getPayload())
+        queue.submit {
+            delegate.fireEvent(
+                MESSAGE_RUN,
+                JavaScriptRunMsg(id, property, function, args).getPayload()
+            )
+        }
+
         return future
     }
 
