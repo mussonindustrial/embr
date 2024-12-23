@@ -7,6 +7,8 @@
 
 A module for Ignition that adds a collection of enhanced Perspective charting components.
 
+![chart-js.png](docs/examples/chart-js.png)
+
 ## Getting Started
 
 1. Download the [latest version] from [releases].
@@ -18,9 +20,9 @@ A module for Ignition that adds a collection of enhanced Perspective charting co
 
 ### Component Directory
 
-| Name                                               | Category  | Description                                                                                                                                                                                                                                                                                       |
-|----------------------------------------------------|-----------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| [Chart.js Component](./docs/components/chartjs.md) | Charting  | Chart.js renders chart elements on an HTML5 canvas unlike other D3.js-based charting libraries that render as SVG. Canvas rendering makes Chart.js very performant, especially for large datasets and complex visualizations that would otherwise require thousands of SVG nodes in the DOM tree. |  |
+| Name                                                                                              | Category | Description                                                                                                                                                                                                                                                                                       |
+|---------------------------------------------------------------------------------------------------|----------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| [Chart.js Component](https://docs.mussonindustrial.com/ignition/embr-charts/components/chart-js/) | Charting | Chart.js renders chart elements on an HTML5 canvas unlike other D3.js-based charting libraries that render as SVG. Canvas rendering makes Chart.js very performant, especially for large datasets and complex visualizations that would otherwise require thousands of SVG nodes in the DOM tree. |  |
 
 ---
 

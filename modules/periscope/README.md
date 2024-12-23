@@ -24,18 +24,18 @@ A module for Ignition that includes design extensions and enhancements for Persp
 
 ### Component Directory
 
-| Name                                                  | Category    | Description                                                                                                                                                           |
-|-------------------------------------------------------|-------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| [Embedded View +](./docs/components/view.md)          | Embedding + | An enhanced Embedded View component with load ahead optimizations and gateway-side property handling.                                                                 |
-| [Flex Repeater +](./docs/components/flex-repeater.md) | Embedding + | An enhanced Flex Repeater component with support for unique view paths, common view parameters/styling, load ahead optimizations, and gateway-side property handling. |
-| [Swiper](./docs/components/swiper.md)                 | Embedding + | Swiper is the most modern free and open source mobile touch slider with hardware accelerated transitions and amazing native behavior.                                 |
+| Name                                                                                                        | Category    | Description                                                                                                                                                           |
+|-------------------------------------------------------------------------------------------------------------|-------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| [Embedded View +](https://docs.mussonindustrial.com/ignition/embr-periscope/components/embedded-view-plus/) | Embedding + | An enhanced Embedded View component with load ahead optimizations and gateway-side property handling.                                                                 |
+| [Flex Repeater +](https://docs.mussonindustrial.com/ignition/embr-periscope/components/flex-repeater-plus/) | Embedding + | An enhanced Flex Repeater component with support for unique view paths, common view parameters/styling, load ahead optimizations, and gateway-side property handling. |
+| [Swiper](https://docs.mussonindustrial.com/ignition/embr-periscope/components/swiper/)                      | Embedding + | Swiper is the most modern free and open source mobile touch slider with hardware accelerated transitions and amazing native behavior.                                 |
 
 ### Scripting Directory
 
-| Name                                           | Category    | Description                                                 |
-|------------------------------------------------|-------------|-------------------------------------------------------------|
-| [`system.perspective.runJavaScriptAsync`]()    | Perspective | Asynchronously run JavaScript code on the client.           |
-| [`system.perspective.runJavaScriptBlocking`]() | Perspective | Run JavaScript code on the client and block for the result. |
+| Name                                                                                                                                                                   | Category    | Description                                                 |
+|------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------|-------------------------------------------------------------|
+| [`system.perspective.runJavaScriptAsync`](https://docs.mussonindustrial.com/ignition/embr-periscope/scripting/perspective/system-perspective-runJavaScriptAsync)       | Perspective | Asynchronously run JavaScript code on the client.           |
+| [`system.perspective.runJavaScriptBlocking`](https://docs.mussonindustrial.com/ignition/embr-periscope/scripting/perspective/system-perspective-runJavaScriptBlocking) | Perspective | Run JavaScript code on the client and block for the result. |
 
 
 ## Changelog
