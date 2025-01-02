@@ -6,6 +6,7 @@ import com.inductiveautomation.ignition.common.util.LogUtil
 import com.inductiveautomation.perspective.gateway.api.*
 import com.mussonindustrial.embr.common.scripting.PyArgOverloadBuilder
 import com.mussonindustrial.ignition.embr.periscope.PeriscopeGatewayContext
+import kotlin.reflect.typeOf
 import org.python.core.PyObject
 
 class CoordinateCanvasModelDelegate(component: Component) : ComponentModelDelegate(component) {
@@ -38,14 +39,14 @@ class CoordinateCanvasModelDelegate(component: Component) : ComponentModelDelega
                 .setName("fitChild")
                 .addOverload(
                     {
-                        val name = it[0] as String
+                        val name = it["name"] as String
                         log.info("Fitting to child $name")
                         fireEvent(
                             "fit-child",
                             JsonObject().apply { addProperty("addressPath", name) }
                         )
                     },
-                    "name" to String::class,
+                    "name" to typeOf<String>(),
                 )
                 .build()
     }

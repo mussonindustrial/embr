@@ -9,7 +9,7 @@ object Components {
             // HACK: Need to force our resources to load AFTER
             // PerspectiveComponents.js. This seems to be alphabetical, so we add a prefix.
             BrowserResource(
-                "zz-embr-periscope-client-js",
+                "zzzz-embr-periscope-client-js",
                 "/res/${SHORT_MODULE_ID}/embr-periscope-client.js",
                 BrowserResource.ResourceType.JS
             ),
