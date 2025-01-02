@@ -6,7 +6,13 @@ import React, {
   useRef,
   useState,
 } from 'react'
-import { animated, useSpring, useSpringRef } from '@react-spring/web'
+import {
+  animated,
+  SpringConfig,
+  SpringValue,
+  useSpring,
+  useSpringRef,
+} from '@react-spring/web'
 import { UserGestureConfig } from '@use-gesture/core/types'
 import {
   ChangeEvent,
@@ -15,6 +21,7 @@ import {
   WrapperApiProps,
   WrapperProps,
 } from './types'
+import { get } from 'lodash'
 
 function extractChildren(element: ReactElement) {
   const children = element.props.children
@@ -24,6 +31,10 @@ function extractChildren(element: ReactElement) {
     element,
     children,
   }
+}
+
+function getSpringGoal(spring: SpringValue<number>): number {
+  return spring.isAnimating ? spring.goal : spring.get()
 }
 
 function transformViewport(
@@ -70,8 +81,21 @@ export function CoordinateContainerWrapper(props: WrapperProps) {
   const apiRef = useSpringRef<WrapperApiProps>()
   const component = useRef<HTMLDivElement>(null)
   const container = useRef<HTMLDivElement>(null)
+  const [isDragging, setIsDragging] = useState(false)
+  const [, setIsZoomed] = useState(false)
   const { element, children } = extractChildren(props.wrapped())
   const [debugMessage, setDebugMessage] = useState('')
+
+  const panConfig: SpringConfig = {
+    decay: true,
+    frequency: 2,
+  }
+
+  const zoomConfig: SpringConfig = {
+    tension: 200,
+    friction: 30,
+    clamp: true,
+  }
 
   const [style, api] = useSpring(
     () => ({
@@ -79,6 +103,7 @@ export function CoordinateContainerWrapper(props: WrapperProps) {
       y: props.position.y,
       scale: 1,
       ref: apiRef,
+      config: panConfig,
     }),
     [props.position.x, props.position.y]
   )
@@ -115,15 +140,43 @@ export function CoordinateContainerWrapper(props: WrapperProps) {
   }
 
   const handleDrag = useCallback((state: FullGestureState<'drag'>) => {
-    if (state.pinching) return
+    if (state.pinching) return state.cancel()
+    if (state.wheeling) return
+
     const {
-      delta: [dx, dy],
+      event,
+      delta: [mx, my],
+      direction: [dx, dy],
+      velocity: [vx, vy],
     } = state
 
+    event.preventDefault()
+    event.stopPropagation()
+
+    const immediate = !style.scale.isAnimating && state.down && !state.last
+
+    const results = {
+      x: state.first ? style.x.get() + mx : getSpringGoal(style.x) + mx,
+      y: state.first ? style.y.get() + my : getSpringGoal(style.y) + my,
+    }
+
+    const config = {
+      x: {
+        ...panConfig,
+        velocity: vx * dx,
+      },
+      y: {
+        ...panConfig,
+        velocity: vy * dy,
+      },
+    }
+
+    setDebugMessage(`Dragging: ${JSON.stringify(results)}`)
+
     api.start({
-      x: style.x.get() + dx,
-      y: style.y.get() + dy,
-      immediate: state.down,
+      to: results,
+      immediate,
+      config: (name) => get(config, name, {}),
     })
   }, [])
 
@@ -132,42 +185,45 @@ export function CoordinateContainerWrapper(props: WrapperProps) {
       if (state.last || !container.current) return
 
       const scalePrevious = style.scale.get()
-      const animate = {
-        x: style.x.get(),
-        y: style.y.get(),
+      const updates = {
+        dx: 0,
+        dy: 0,
         scale: scalePrevious,
       }
 
-      if (state.type === 'pointermove' || state.type === 'pointerdown') {
-        const {
-          origin: [ox, oy],
-          offset: [scale],
-        } = state as FullGestureState<'pinch'>
-
-        if (state.first) {
-          state.memo = [ox, oy]
-        }
-        const [startX, startY] = state.memo
-
-        const scaleNew = scale * pinchSensitivity
-
-        const { dx, dy } = transformViewport(
-          container.current.getBoundingClientRect(),
-          { x: ox, y: oy },
-          { previous: scalePrevious, current: scaleNew }
-        )
-
-        setDebugMessage(`start: [${startX}, ${startY}]`)
-
-        animate.x += dx
-        animate.y += dy
-        animate.scale = scaleNew
-      }
+      // if (state.type === 'pointermove' || state.type === 'pointerdown') {
+      //   const {
+      //     origin: [ox, oy],
+      //     offset: [scale],
+      //   } = state as FullGestureState<'pinch'>
+      //
+      //   if (state.first) {
+      //     state.memo = [ox, oy]
+      //   }
+      //   const [startX, startY] = state.memo
+      //
+      //   const scaleNew = scale * pinchSensitivity
+      //
+      //   const { dx, dy } = transformViewport(
+      //     container.current.getBoundingClientRect(),
+      //     { x: ox, y: oy },
+      //     { previous: scalePrevious, current: scaleNew }
+      //   )
+      //
+      //   setDebugMessage(`start: [${startX}, ${startY}]`)
+      //
+      //   updates.dx = dx
+      //   updates.dy = dy
+      //   updates.scale = scaleNew
+      // }
 
       if (state.type === 'wheel') {
-        const { delta, event } = state as FullGestureState<'wheel'>
+        const {
+          delta: [, dZoom],
+          event,
+        } = state as FullGestureState<'wheel'>
         const zoomMultiplier = Math.exp(
-          (-delta[1] / mouseWheelUnits) * mouseWheelStep
+          (-dZoom / mouseWheelUnits) * mouseWheelStep
         )
 
         const scaleNew = scalePrevious * zoomMultiplier
@@ -178,26 +234,35 @@ export function CoordinateContainerWrapper(props: WrapperProps) {
           { previous: scalePrevious, current: scaleNew }
         )
 
-        animate.x += dx
-        animate.y += dy
-        animate.scale = scaleNew
+        updates.dx = dx
+        updates.dy = dy
+        updates.scale = scaleNew
+
+        console.log('Zoom', updates)
       }
 
+      const results = {
+        x: style.x.get() + updates.dx,
+        y: style.y.get() + updates.dy,
+        scale: updates.scale,
+      }
+
+      setDebugMessage(`Zoom: ${JSON.stringify(results)}`)
+
       api.start({
-        ...animate,
-        immediate: state.type === 'pointermove',
-        config: {
-          tension: 200,
-          friction: 30,
-        },
+        to: results,
+        config: zoomConfig,
       })
-      return state.memo
+
+      setIsZoomed(results.scale > 1)
     },
     []
   )
 
   useGesture(
     {
+      onDragStart: () => setIsDragging(true),
+      onDragEnd: () => setIsDragging(false),
       onDrag: (state) => handleDrag(state),
       onPinch: (state) => handleZoom(state),
       onWheel: (state) => handleZoom(state),
@@ -207,6 +272,12 @@ export function CoordinateContainerWrapper(props: WrapperProps) {
       target: component,
     }
   )
+
+  // choose cursor
+  let cursor
+  if (isDragging) {
+    cursor = 'grabbing'
+  }
 
   return (
     <div {...element.props} ref={component}>
@@ -219,6 +290,7 @@ export function CoordinateContainerWrapper(props: WrapperProps) {
           position: 'absolute',
           height: '100%',
           width: '100%',
+          cursor,
           ...style,
         }}
       >

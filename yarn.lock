@@ -3206,12 +3206,12 @@ chart.js@4.4.8:
   dependencies:
     "@kurkle/color" "^0.3.0"
 
-chartjs-adapter-moment@^1.0.1:
+chartjs-adapter-moment@1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/chartjs-adapter-moment/-/chartjs-adapter-moment-1.0.1.tgz#0f04c30d330b207c14bfb57dfaae9ce332f09102"
   integrity sha512-Uz+nTX/GxocuqXpGylxK19YG4R3OSVf8326D+HwSTsNw1LgzyIGRo+Qujwro1wy6X+soNSnfj5t2vZ+r6EaDmA==
 
-chartjs-chart-funnel@^4.2.0:
+chartjs-chart-funnel@4.2.4:
   version "4.2.4"
   resolved "https://registry.yarnpkg.com/chartjs-chart-funnel/-/chartjs-chart-funnel-4.2.4.tgz#ee03d2cfaba32942f322c7ff0b0a1990d741416c"
   integrity sha512-GMyA8RRZzNhUSblikzZNp3cN0qWGtq+tWm2DQYx4eQd9trNwQO6trSRCqYDGgsvCmDiTm6R1aZGtE90HtTh0Ng==
@@ -3219,7 +3219,7 @@ chartjs-chart-funnel@^4.2.0:
     "@types/chroma-js" "^2.4.4"
     chroma-js "^3.1.2"
 
-chartjs-chart-geo@^4.3.0:
+chartjs-chart-geo@4.3.4:
   version "4.3.4"
   resolved "https://registry.yarnpkg.com/chartjs-chart-geo/-/chartjs-chart-geo-4.3.4.tgz#67e280ebfed04770e2f5eb4da3e814c76c32b861"
   integrity sha512-55aU289XAbbJZXaiOv4bJpSdqP8f/wISpL1bKb0chKEzD9/+Z+dhafHm3Js5/yafVI8GYNP4Vw4keIwPfEf10A==
@@ -3234,7 +3234,7 @@ chartjs-chart-geo@^4.3.0:
     d3-scale-chromatic "^3.1.0"
     topojson-client "^3.1.0"
 
-chartjs-chart-graph@^4.3.0:
+chartjs-chart-graph@4.3.4:
   version "4.3.4"
   resolved "https://registry.yarnpkg.com/chartjs-chart-graph/-/chartjs-chart-graph-4.3.4.tgz#4baf63a0064ab228c0e56ad99df949788e48a159"
   integrity sha512-61QqlyyNdAyHTj5JPWOop+4jeJozLEn7LmGrF52uvUKJDpP8vjfUsn5pON21sHrIfEsXnQXLFEsJwN5VjjUAUw==
@@ -3247,34 +3247,34 @@ chartjs-chart-graph@^4.3.0:
     d3-quadtree "^3.0.1"
     d3-timer "^3.0.1"
 
-chartjs-chart-matrix@^2.0.1:
+chartjs-chart-matrix@2.0.1:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/chartjs-chart-matrix/-/chartjs-chart-matrix-2.0.1.tgz#f6f04413f244f6c08c4bfeee8a7117c64069c5a2"
   integrity sha512-BGfeY+/PHnITyDlc7WfnKJ1RyOfgOzIqWp/gxzzl7pUjyoGzHDcw51qd2xJF9gdT9Def7ZwOnOMm8GJUXDxI0w==
 
-chartjs-chart-pcp@^4.3.0:
+chartjs-chart-pcp@4.3.4:
   version "4.3.4"
   resolved "https://registry.yarnpkg.com/chartjs-chart-pcp/-/chartjs-chart-pcp-4.3.4.tgz#f1785202736df851ef12661f3ba738385c6e5d88"
   integrity sha512-vY/qIuiWXM0uxENjAZ8eiAxvEXgcS+YHlKzT1MEBcuZ2+gy4tW/Jd146BsTrekmQ9iboT2TJwpDMFqOnRHX0TQ==
 
-chartjs-chart-sankey@^0.12.1:
-  version "0.12.1"
-  resolved "https://registry.yarnpkg.com/chartjs-chart-sankey/-/chartjs-chart-sankey-0.12.1.tgz#5f617ff05fa04eeb5628b6785cfad873b6191b87"
-  integrity sha512-OhrNTEpzEoYaoBW4dp136mnhB9Gf52bKVzqCY41RpH4vvRo04haCsDVYDnHFNWJkBDaKYXd+fzBnVlspU0ZuEw==
+chartjs-chart-sankey@0.13.0:
+  version "0.13.0"
+  resolved "https://registry.yarnpkg.com/chartjs-chart-sankey/-/chartjs-chart-sankey-0.13.0.tgz#007ee6f72b43e624476f6a39b3980d229b013bc3"
+  integrity sha512-RnmdWdVHj6vlwBsUfdxdO4LCguhzaUplun3Goudva4AgSCkicKS8Zt/gPQWi2i/FmBTYIOuNoYe6GtY+xleJiA==
 
-chartjs-chart-treemap@^2.3.1:
-  version "2.3.1"
-  resolved "https://registry.yarnpkg.com/chartjs-chart-treemap/-/chartjs-chart-treemap-2.3.1.tgz#b0d27309ee373cb7706cabb262c48c53ffacf710"
-  integrity sha512-GW+iODLICIJhNZtHbTtaOjCwRIxmXcquXRKDFMsrkXyqyDeSN1aiVfzNNj6Xjy55soopqRA+YfHqjT2S2zF7lQ==
+chartjs-chart-treemap@3.1.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/chartjs-chart-treemap/-/chartjs-chart-treemap-3.1.0.tgz#46ccd2148ad54d00e75c6959658ad23bd8a67970"
+  integrity sha512-0LJxj4J9sCTHmrXCFlqtoBKMJDcS7VzFeRgNBRZRwU1QSpCXJKTNk5TysPEs5/YW0XYvZoN8u44RqqLf0pAzQw==
 
-chartjs-chart-venn@^4.3.0:
+chartjs-chart-venn@4.3.5:
   version "4.3.5"
   resolved "https://registry.yarnpkg.com/chartjs-chart-venn/-/chartjs-chart-venn-4.3.5.tgz#6bed5a61a96b7ab41272f292b8f7d8aac22834e9"
   integrity sha512-M6UYTi4Wnaoodq/wZeZvBZ7uuyZWRdkZuMiGuWHITxJRlqBwN2r/byWYyfLBrUHTPZ9GAhQusnrKY93ZC094UQ==
   dependencies:
     "@upsetjs/venn.js" "^2.0.0"
 
-chartjs-chart-wordcloud@^4.4.0:
+chartjs-chart-wordcloud@4.4.4:
   version "4.4.4"
   resolved "https://registry.yarnpkg.com/chartjs-chart-wordcloud/-/chartjs-chart-wordcloud-4.4.4.tgz#516dc40e1013163beb16150fe19daaa2b4f47900"
   integrity sha512-9ruQX5CjfBwpO31mYqniD3BQ9YTCHxWe52eoUl9Z3ecNQWF3OCHeDVv7lHe8ca1NBihfCgoRa3Y0eBGwBmgwcw==
@@ -3282,42 +3282,42 @@ chartjs-chart-wordcloud@^4.4.0:
     "@types/d3-cloud" "^1.2.9"
     d3-cloud "^1.2.7"
 
-chartjs-plugin-annotation@^3.0.1:
+chartjs-plugin-annotation@3.1.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/chartjs-plugin-annotation/-/chartjs-plugin-annotation-3.1.0.tgz#0b3910862bde232344bbb6cf998633f71db7b093"
   integrity sha512-EkAed6/ycXD/7n0ShrlT1T2Hm3acnbFhgkIEJLa0X+M6S16x0zwj1Fv4suv/2bwayCT3jGPdAtI9uLcAMToaQQ==
 
-chartjs-plugin-autocolors@^0.2.2:
-  version "0.2.2"
-  resolved "https://registry.yarnpkg.com/chartjs-plugin-autocolors/-/chartjs-plugin-autocolors-0.2.2.tgz#33cfbe21645125b1572dc7cc7c7d92dc7806acd3"
-  integrity sha512-zKSivIHRL3yB6a47bcxOfIEOEByL+AMXTtcnscb7I3Vu4PGNCyPe4C+4XxLGvR52lMYgFYcMcYmaXksi1bbA+A==
+chartjs-plugin-autocolors@0.3.1:
+  version "0.3.1"
+  resolved "https://registry.yarnpkg.com/chartjs-plugin-autocolors/-/chartjs-plugin-autocolors-0.3.1.tgz#c08fa9d82ef14f0bcc9c2f182138993d92a241c9"
+  integrity sha512-8FHemt0Ef5BM7kQimh4eAkCRFPBav4seUFi7nEaShX+DjZMU9V4LqEDgXNglKbnYTTn3QmoG4v9gyiQDUAk9WQ==
 
-chartjs-plugin-crosshair@^2.0.0:
+chartjs-plugin-crosshair@2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/chartjs-plugin-crosshair/-/chartjs-plugin-crosshair-2.0.0.tgz#17ba6b33b8123fc8a3ccb10c9e5069ec67fd255f"
   integrity sha512-Vs6strRvYpzL92v40r/rAWhh+7au8VnfyC/m2ZHXcXeLEWeFjDgMvXjWdX+eARhbgHQo+uGIKyq9fmkS79GIyQ==
 
-chartjs-plugin-datalabels@^2.2.0:
+chartjs-plugin-datalabels@2.2.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/chartjs-plugin-datalabels/-/chartjs-plugin-datalabels-2.2.0.tgz#369578e131d743c2e34b5fbe2d3f9335f6639b8f"
   integrity sha512-14ZU30lH7n89oq+A4bWaJPnAG8a7ZTk7dKf48YAzMvJjQtjrgg5Dpk9f+LbjCF6bpx3RAGTeL13IXpKQYyRvlw==
 
-chartjs-plugin-gradient@^0.6.1:
+chartjs-plugin-gradient@0.6.1:
   version "0.6.1"
   resolved "https://registry.yarnpkg.com/chartjs-plugin-gradient/-/chartjs-plugin-gradient-0.6.1.tgz#c558357c67e90167051adf409ffd5b69e87f210a"
   integrity sha512-TGHNIh8KqQMLdb+UfY80cBHYRyOC47eeokmgkeajRdKGbFt462lJiyiq4ZJ25fiM7BGsmzoBLhmVyEw4B3gQxw==
 
-chartjs-plugin-hierarchical@^4.4.0:
+chartjs-plugin-hierarchical@4.4.4:
   version "4.4.4"
   resolved "https://registry.yarnpkg.com/chartjs-plugin-hierarchical/-/chartjs-plugin-hierarchical-4.4.4.tgz#2f04a559557a00bf1183934653e088a43eacbd63"
   integrity sha512-d7WviPZBuWQn1qgHMcb51zGCfKf2CSd8wzEjhbq23hcaH00iKUsEVwctqDi3Ovsb+C9GSpFqIDTu2OZaPnpcig==
 
-chartjs-plugin-stacked100@^1.5.3:
+chartjs-plugin-stacked100@1.7.0:
   version "1.7.0"
   resolved "https://registry.yarnpkg.com/chartjs-plugin-stacked100/-/chartjs-plugin-stacked100-1.7.0.tgz#9b96221dde3727c41c0df527eb7c998492e8c70e"
   integrity sha512-5X9kofKrZ4Ve8ya9Zbk1ORsMTm2YX10PwbtCry2ht3nOqbb4wl3rYKd9oC82NpQZHqdXXXKPdUIldTCr0NmQrg==
 
-chartjs-plugin-zoom@^2.0.1:
+chartjs-plugin-zoom@2.2.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/chartjs-plugin-zoom/-/chartjs-plugin-zoom-2.2.0.tgz#79928acf2d22bd60b5442e0ef73139b261c65d19"
   integrity sha512-in6kcdiTlP6npIVLMd4zXZ08PDUXC52gZ4FAy5oyjk1zX3gKarXMAof7B9eFiisf9WOC3bh2saHg+J5WtLXZeA==
