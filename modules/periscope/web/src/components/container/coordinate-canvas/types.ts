@@ -33,6 +33,7 @@ export type WrapperProps = {
   settings: CoordinateCanvasSettingsProps
   wrapped: () => ReactElement
   setApi: (api: SpringRef<WrapperApiProps>) => void
+  setRef: (ref: Element) => void
 }
 
 export type Position = {

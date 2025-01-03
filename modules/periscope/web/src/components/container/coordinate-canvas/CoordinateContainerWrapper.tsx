@@ -13,6 +13,7 @@ import {
   useSpring,
   useSpringRef,
 } from '@react-spring/web'
+import { useResizeDetector } from 'react-resize-detector'
 import { UserGestureConfig } from '@use-gesture/core/types'
 import {
   ChangeEvent,
@@ -35,6 +36,14 @@ function extractChildren(element: ReactElement) {
 
 function getSpringGoal(spring: SpringValue<number>): number {
   return spring.isAnimating ? spring.goal : spring.get()
+}
+
+function usePrevious<T>(value: T) {
+  const ref = useRef<T>()
+  useEffect(() => {
+    ref.current = value
+  }, [value])
+  return ref.current
 }
 
 function transformViewport(
@@ -81,6 +90,7 @@ export function CoordinateContainerWrapper(props: WrapperProps) {
   const apiRef = useSpringRef<WrapperApiProps>()
   const component = useRef<HTMLDivElement>(null)
   const container = useRef<HTMLDivElement>(null)
+  const { width, height } = useResizeDetector({ targetRef: component })
   const [isDragging, setIsDragging] = useState(false)
   const [, setIsZoomed] = useState(false)
   const { element, children } = extractChildren(props.wrapped())
@@ -92,9 +102,7 @@ export function CoordinateContainerWrapper(props: WrapperProps) {
   }
 
   const zoomConfig: SpringConfig = {
-    tension: 200,
-    friction: 30,
-    clamp: true,
+    duration: 100,
   }
 
   const [style, api] = useSpring(
@@ -112,7 +120,47 @@ export function CoordinateContainerWrapper(props: WrapperProps) {
     props.setApi(apiRef)
   }, [apiRef])
 
-  const mouseWheelStep = 0.5
+  useEffect(() => {
+    if (container.current) {
+      props.setRef(container.current)
+    }
+  }, [container.current])
+
+  // When component width changes, recenter horizontally.
+  const prevWidth = usePrevious(width)
+  useEffect(() => {
+    if (width && prevWidth) {
+      const delta = width - prevWidth
+      api.start({
+        to: {
+          x: getSpringGoal(style.x) + (delta * style.scale.get()) / 2,
+        },
+        immediate: true,
+        // config: {
+        //   duration: 1000,
+        // },
+      })
+    }
+  }, [width])
+
+  // When component height changes, recenter vertically.
+  const prevHeight = usePrevious(height)
+  useEffect(() => {
+    if (height && prevHeight) {
+      const delta = height - prevHeight
+      api.start({
+        to: {
+          y: getSpringGoal(style.y) + (delta * style.scale.get()) / 2,
+        },
+        immediate: true,
+        // config: {
+        //   duration: 100,
+        // },
+      })
+    }
+  }, [height])
+
+  const mouseWheelStep = 0.33
   const mouseWheelUnits = 100
   const pinchSensitivity = 1
 
@@ -142,6 +190,7 @@ export function CoordinateContainerWrapper(props: WrapperProps) {
   const handleDrag = useCallback((state: FullGestureState<'drag'>) => {
     if (state.pinching) return state.cancel()
     if (state.wheeling) return
+    if (style.scale.isAnimating) return
 
     const {
       event,
@@ -273,7 +322,7 @@ export function CoordinateContainerWrapper(props: WrapperProps) {
     }
   )
 
-  // choose cursor
+  // Set Cursor
   let cursor
   if (isDragging) {
     cursor = 'grabbing'
@@ -282,7 +331,6 @@ export function CoordinateContainerWrapper(props: WrapperProps) {
   return (
     <div {...element.props} ref={component}>
       <div>{debugMessage}</div>
-      <div>{JSON.stringify(props.position)}</div>
       <animated.div
         ref={container}
         className="coordinate-canvas-inner"
