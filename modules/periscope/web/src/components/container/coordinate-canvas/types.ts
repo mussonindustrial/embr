@@ -2,9 +2,8 @@ import {
   CoordinateUtils,
   PipeUtils,
 } from '@inductiveautomation/perspective-client'
-import { DragConfig, PinchConfig } from '@use-gesture/react'
-import { ReactElement } from 'react'
-import { SpringRef } from '@react-spring/web'
+import { CoordinatesConfig, DragConfig, PinchConfig } from '@use-gesture/react'
+import { SpringConfig } from '@react-spring/web'
 
 export type CoordinateContainerProps = {
   mode: CoordinateUtils.LayoutMode
@@ -13,30 +12,23 @@ export type CoordinateContainerProps = {
 }
 
 export type CoordinateCanvasSettingsProps = {
-  pinch: PinchConfig
-  drag: DragConfig
+  springs: {
+    pan: SpringConfig
+    zoom: SpringConfig
+  }
+  gestures: {
+    drag: DragConfig
+    pinch: PinchConfig
+    wheel: CoordinatesConfig<'wheel'>
+  }
 }
 
 export type CoordinateCanvasProps = CoordinateContainerProps & {
-  position: Position
+  position: Point
   settings: CoordinateCanvasSettingsProps
 }
 
-export type WrapperApiProps = {
-  x: number
-  y: number
-  scale: number
-}
-
-export type WrapperProps = {
-  position: Position
-  settings: CoordinateCanvasSettingsProps
-  wrapped: () => ReactElement
-  setApi: (api: SpringRef<WrapperApiProps>) => void
-  setRef: (ref: Element) => void
-}
-
-export type Position = {
+export type Point = {
   x: number
   y: number
 }
@@ -46,7 +38,7 @@ export type Size = {
   height: number
 }
 
-export type Rectangle = Position & Size
+export type Rectangle = Point & Size
 
 export type ChangeEvent<T> = {
   current: T

@@ -1,2 +1,2 @@
 export * from './CoordinateCanvas'
-export * from './CoordinateContainerWrapper'
+export * from './PanZoomSheet'

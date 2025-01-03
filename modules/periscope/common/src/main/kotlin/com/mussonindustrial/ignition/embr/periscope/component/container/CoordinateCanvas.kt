@@ -15,9 +15,13 @@ class CoordinateCanvas {
             JsonSchema.parse(
                 Components::class
                     .java
-                    .getResourceAsStream(
-                        "/schemas/components/embr.periscope.container.coordinate-canvas/props.json"
-                    )
+                    .getResourceAsStream("/schemas/components/${COMPONENT_ID}/props.json")
+            )
+        var CHILD_POSITION_SCHEMA: JsonSchema =
+            JsonSchema.parse(
+                Components::class
+                    .java
+                    .getResourceAsStream("/schemas/components/${COMPONENT_ID}/children.json")
             )
 
         private var VARIANT_BASE =
@@ -35,6 +39,7 @@ class CoordinateCanvas {
                 .setId(COMPONENT_ID)
                 .setModuleId(MODULE_ID)
                 .setSchema(SCHEMA)
+                .setChildPositionSchema(CHILD_POSITION_SCHEMA)
                 .setName("Coordinate Canvas")
                 .addPaletteEntry(VARIANT_BASE)
                 .setDefaultMetaName("CoordinateCanvas")
