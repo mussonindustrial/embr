@@ -1,0 +1,33 @@
+{
+  "type": "object",
+  "required": [
+    "x",
+    "y"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "x": {
+      "$ref": "urn:ignition-schema:schemas/css-length.schema.json"
+    },
+    "y": {
+      "$ref": "urn:ignition-schema:schemas/css-length.schema.json"
+    },
+    "width": {
+      "$ref": "urn:ignition-schema:schemas/css-length.schema.json"
+    },
+    "height": {
+      "$ref": "urn:ignition-schema:schemas/css-length.schema.json"
+    },
+    "rotate": {
+      "$ref": "urn:ignition-schema:schemas/css-rotation.schema.json"
+    }
+  },
+  "default": {
+    "x": 0,
+    "y": 0,
+    "rotate": {
+      "angle": "0deg",
+      "anchor": "50% 50%"
+    }
+  }
+}

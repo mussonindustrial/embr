@@ -5,6 +5,7 @@ import {
   ComponentStore,
   ComponentStoreDelegate,
   CoordinateUtils,
+  JsObject,
   PComponent,
   PlainObject,
   PropertyTree,
@@ -13,26 +14,36 @@ import {
 import { CoordinateContainer } from '@inductiveautomation/perspective-components'
 import { InteractionRegistry } from '@inductiveautomation/perspective-designer'
 import { cloneDeep } from 'lodash'
-import React, { ReactElement } from 'react'
-import { SpringRef } from '@react-spring/web'
-import { CoordinateCanvasProps, WrapperApiProps } from './types'
-import { CoordinateContainerWrapper } from './CoordinateContainerWrapper'
+import React, { createRef, ReactElement, RefObject } from 'react'
+import { CoordinateCanvasProps } from './types'
+import { PanZoomSheet, PanZoomSheetRef } from './PanZoomSheet'
+import {
+  ComponentDelegateJavaScriptProxy,
+  JavaScriptRunEvent,
+} from '@embr-js/perspective-client'
 
 const COMPONENT_TYPE = 'embr.periscope.container.coordinate-canvas'
 
+function extractChildren(element: ReactElement) {
+  const children = element.props.children
+  delete element.props.children
+
+  return {
+    element,
+    children,
+  }
+}
+
 export class CoordinateCanvasComponent extends CoordinateContainer {
-  private api: SpringRef<WrapperApiProps> | undefined
+  readonly sheet: RefObject<PanZoomSheetRef>
 
   constructor(props: ComponentProps<CoordinateCanvasProps>) {
     super(props)
+    this.sheet = createRef<PanZoomSheetRef>()
     if (props.store.delegate) {
       const delegate = props.store.delegate as CoordinateCanvasComponentDelegate
       delegate.attachComponent(this)
     }
-  }
-
-  setApi(api: SpringRef<WrapperApiProps>) {
-    this.api = api
   }
 
   findChild(name: string): ComponentStore | undefined {
@@ -67,32 +78,43 @@ export class CoordinateCanvasComponent extends CoordinateContainer {
 
   fitToChild(name: string) {
     const size = this.getChildSize(name)
-    if (size && this.api !== undefined) {
+    if (size && this.sheet?.current !== null) {
       console.info(`Fitting to child ${name}: size[${size?.x}, ${size?.y}]`)
-      this.api.start({
-        x: size.x,
-        y: size.y,
-        immediate: true,
-      })
+      this.sheet.current.panTo(
+        {
+          x: size.x,
+          y: size.y,
+        },
+        {
+          duration: 100,
+        }
+      )
     }
   }
 
   override render(): ReactElement {
     const props = this.props.props as CoordinateCanvasProps
 
+    const { children, element } = extractChildren(this.renderContainer())
+
     return (
-      <CoordinateContainerWrapper
-        setRef={(ref) => this.props.store.refCallback(ref)}
-        setApi={this.setApi.bind(this)}
-        settings={props.settings}
-        position={props.position}
-        wrapped={this.renderContainer as () => ReactElement}
-      />
+      <PanZoomSheet
+        ref={this.sheet}
+        initial={props.position}
+        containerProps={element.props}
+        gestures={props.settings.gestures}
+        springs={props.settings.springs}
+      >
+        {children}
+      </PanZoomSheet>
     )
   }
 }
 
 export class CoordinateCanvasComponentDelegate extends ComponentStoreDelegate {
+  private proxyProps: JsObject = {}
+  private jsProxy = new ComponentDelegateJavaScriptProxy(this, this.proxyProps)
+
   private coordinateCanvas: CoordinateCanvasComponent | undefined
 
   constructor(componentStore: AbstractUIElementStore) {
@@ -110,6 +132,11 @@ export class CoordinateCanvasComponentDelegate extends ComponentStoreDelegate {
       return
     }
 
+    if (this.jsProxy.handles(eventName)) {
+      this.proxyProps.sheet = this.coordinateCanvas.sheet.current
+      this.jsProxy.handleEvent(eventObject as JavaScriptRunEvent)
+    }
+
     if (eventName == 'fit-child') {
       const { name } = eventObject
       console.info(`Fitting to child ${name}`)
@@ -120,7 +147,7 @@ export class CoordinateCanvasComponentDelegate extends ComponentStoreDelegate {
 
 export class CoordinateCanvasComponentMeta implements ComponentMeta {
   isContainer = true
-  focusRootOnly = false
+  focusRootOnly = true
   pipingEnabled = true
 
   getComponentType(): string {

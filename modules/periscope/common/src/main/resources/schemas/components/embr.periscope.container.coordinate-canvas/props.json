@@ -1,5 +1,209 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema#",
+    "$defs": {
+        "function": {
+            "type": ["string", "null"]
+        },
+        "gesture_config": {
+            "type": "object",
+            "properties": {
+                "enabled": {
+                    "type": "boolean",
+                    "description": "Whether the gesture is enabled."
+                },
+                "threshold": {
+                    "$ref": "#/$defs/gesture_vector",
+                    "description": "The handler will fire only when the gesture displacement is greater than the threshold."
+                },
+                "preventDefault": {
+                    "type": "boolean",
+                    "description": "Will preventDefault all events triggered by the handler."
+                },
+                "triggerAllEvents": {
+                    "type": "boolean",
+                    "description": "Forces the handler to fire even for non-intentional displacement."
+                },
+                "axis": {
+                    "type": ["string", "null"],
+                    "enum": ["x", "y", "lock"],
+                    "description": "Your handler will only trigger if a movement is detected on the specified axis."
+                },
+                "axisThreshold": {
+                    "type": ["number", "object"],
+                    "properties": {
+                        "mouse": { "type": "number" },
+                        "pen": { "type": "number" },
+                        "touch": { "type": "number" }
+                    },
+                    "description": "Axes are calculated based on a threshold."
+                },
+                "bounds": {
+                    "type": "object",
+                    "properties": {
+                        "top": { "type": "number" },
+                        "bottom": { "type": "number" },
+                        "left": { "type": "number" },
+                        "right": { "type": "number" }
+                    },
+                    "description": "Limits the gesture offset to the specified bounds."
+                },
+                "scaleBounds": {
+                    "type": "object",
+                    "properties": {
+                        "min": { "type": "number" },
+                        "max": { "type": "number" }
+                    },
+                    "description": "Limits the scale offset to the specified bounds."
+                },
+                "angleBounds": {
+                    "type": "object",
+                    "properties": {
+                        "min": { "type": "number" },
+                        "max": { "type": "number" }
+                    },
+                    "description": "Limits the angle offset to the specified bounds."
+                },
+                "modifierKey": {
+                    "type": ["string", "null", "array"],
+                    "enum": ["ctrlKey", "altKey", "metaKey"],
+                    "items": {
+                        "type": "string",
+                        "enum": ["ctrlKey", "altKey", "metaKey"]
+                    },
+                    "description": "The modifier key that triggers a scale when wheeling. Defaults to 'ctrlKey'."
+                },
+                "pinchOnWheel": {
+                    "type": "boolean",
+                    "description": "If false, pinching with the wheel will be disabled."
+                },
+                "rubberband": {
+                    "type": ["boolean", "number", "array"],
+                    "items": { "type":  "number" },
+                    "description": "The elasticity coefficient of the gesture when going out of bounds."
+                },
+                "transform": {
+                    "$ref": "#/$defs/function",
+                    "description": "A function that you can use to transform pointer values."
+                },
+                "filterTaps": {
+                    "type": "boolean",
+                    "description": "If true, the component won't trigger your drag logic if the user just clicked on the component."
+                },
+                "tapsThreshold": {
+                    "type": "number",
+                    "description": "Customize the displacement triggering taps when using the filterTaps option."
+                },
+                "preventScroll": {
+                    "type": ["boolean", "number"],
+                    "description": "Will prevent scrolling. Defaults to 250ms when set to true."
+                },
+                "preventScrollAxis": {
+                    "type": "string",
+                    "enum": ["x", "y", "xy"],
+                    "description": "Allows scrolling in the direction of the axis unless the preventScroll duration has elapsed."
+                },
+                "pointer": {
+                    "type": "object",
+                    "properties": {
+                        "touch": { "type": "boolean" },
+                        "capture": { "type": "boolean" },
+                        "mouse": { "type": "boolean" },
+                        "buttons": { "type": "array", "items": { "type": "number" } },
+                        "lock": { "type": "boolean" },
+                        "keys": { "type": ["boolean", "null"] }
+                    },
+                    "description": "Pointer-related configurations."
+                },
+                "delay": {
+                    "type": ["boolean", "number"],
+                    "description": "The delay duration for the handler."
+                },
+                "swipe": {
+                    "type": "object",
+                    "properties": {
+                        "distance": { "type": "number" },
+                        "velocity": { "type": "number" },
+                        "duration": { "type": "number" }
+                    },
+                    "description": "Swipe-related configurations."
+                },
+                "keyboardDisplacement": {
+                    "type": "number",
+                    "description": "The distance emulated by arrow keys."
+                },
+                "mouseOnly": {
+                    "type": "boolean",
+                    "description": "Set to false to trigger on non-mouse events."
+                }
+            }
+        },
+        "spring_config": {
+            "type": "object",
+            "properties": {
+                "mass": {
+                    "type": "number"
+                },
+                "tension": {
+                    "type": "number"
+                },
+                "friction": {
+                    "type": "number"
+                },
+                "bounce": {
+                    "type": "number",
+                    "description": "When above zero, the spring will bounce instead of overshooting when exceeding its goal value."
+                },
+                "clamp": {
+                    "type": "boolean",
+                    "description": "When true, stops the spring once it overshoots its boundaries."
+                },
+                "precision": {
+                    "type": "number",
+                    "description": "How close to the goal the animated value gets before we consider it to be \"done\"."
+                },
+                "round": {
+                    "type": "boolean",
+                    "description": "While animating, round to the nearest multiple of this number. The from and to values are never rounded, as well as any value passed to the set method of an animated value."
+                },
+                "frequency": {
+                    "type": "number",
+                    "description": "The natural frequency (in seconds), which dictates the number of bounces per second when no damping exists. When defined, tension is derived from this, and friction is derived from tension and damping."
+                },
+                "damping": {
+                    "type": "number",
+                    "description": "The damping ratio, which dictates how the spring slows down. Only works when frequency is defined."
+                },
+                "velocity": {
+                    "type": "number"
+                },
+                "restVelocity": {
+                    "type": "number",
+                    "description": "The smallest velocity before the animation is considered to be \"not moving\". When undefined, precision is used instead."
+                },
+                "decay": {
+                    "type": ["number", "boolean"],
+                    "description": "If true, default value is 0.998."
+                },
+                "duration": {
+                    "type": "number",
+                    "description": "Switches to duration based animation. Value should be indicated in milliseconds."
+                },
+                "easing": {
+                    "$ref": "#/$defs/function"
+                },
+                "progress": {
+                    "type": "number",
+                    "description": "Decides how far into the easing function to start from. The duration itself is unaffected."
+                }
+            }
+        },
+        "gesture_vector": {
+            "type": ["array", "number"],
+            "items": {
+                "type": "number"
+            }
+        }
+    },
     "properties": {
         "mode": {
             "type": "string",
@@ -12,11 +216,62 @@
             "type": "array",
             "default": []
         },
+        "settings": {
+            "type": "object",
+            "properties": {
+                "gestures": {
+                    "type": "object",
+                    "properties": {
+                        "drag": {
+                            "$ref": "#/$defs/gesture_config",
+                            "default": {
+                                "enabled": true,
+                                "preventScroll": 250
+                            }
+                        },
+                        "pinch": {
+                            "$ref": "#/$defs/gesture_config",
+                            "default": {
+                                "enabled": true,
+                                "preventDefault": true,
+                                "pinchOnWheel": true,
+                                "angleBounds": { "min": 0, "max": 0 }
+                            }
+                        },
+                        "wheel": {
+                            "$ref": "#/$defs/gesture_config",
+                            "default": {
+                                "enabled": true,
+                                "preventDefault": true
+                            }
+                        }
+                    }
+                },
+                "springs": {
+                    "type": "object",
+                    "properties": {
+                        "pan": {
+                            "$ref": "#/$defs/spring_config",
+                            "default": {
+                                "decay": true,
+                                "frequency": 2
+                            }
+                        },
+                        "zoom": {
+                            "$ref": "#/$defs/spring_config",
+                            "default": {
+                                "duration": 100
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "style": {
             "$ref": "urn:ignition-schema:schemas/style-properties.schema.json",
             "default": {
                 "classes": "",
-                "overflow": "auto"
+                "overflow": "hidden"
             }
         }
     },
