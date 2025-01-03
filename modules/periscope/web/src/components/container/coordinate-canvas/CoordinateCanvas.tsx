@@ -1,6 +1,7 @@
 import {
   AbstractUIElementStore,
   ComponentMeta,
+  ComponentProps,
   ComponentStore,
   ComponentStoreDelegate,
   CoordinateUtils,
@@ -22,6 +23,14 @@ const COMPONENT_TYPE = 'embr.periscope.container.coordinate-canvas'
 export class CoordinateCanvasComponent extends CoordinateContainer {
   private api: SpringRef<WrapperApiProps> | undefined
 
+  constructor(props: ComponentProps<CoordinateCanvasProps>) {
+    super(props)
+    if (props.store.delegate) {
+      const delegate = props.store.delegate as CoordinateCanvasComponentDelegate
+      delegate.attachComponent(this)
+    }
+  }
+
   setApi(api: SpringRef<WrapperApiProps>) {
     this.api = api
   }
@@ -34,27 +43,46 @@ export class CoordinateCanvasComponent extends CoordinateContainer {
 
   getChildSize(name: string): DOMRect | undefined {
     const child = this.findChild(name)
-    if (child && child.element) {
-      return child.element.getBoundingClientRect()
+    console.log('store', this.props.store)
+    if (child && child.element && this.props.store.element) {
+      const componentBounds = this.props.store.element.getBoundingClientRect()
+      const childBounds = child.element.getBoundingClientRect()
+
+      console.log('component', componentBounds)
+      console.log('child', childBounds)
+      return {
+        x: componentBounds.x - childBounds.x,
+        y: componentBounds.y - childBounds.y,
+        left: componentBounds.left - childBounds.left,
+        right: componentBounds.right - childBounds.right,
+        top: componentBounds.top - childBounds.top,
+        bottom: componentBounds.bottom - childBounds.bottom,
+        height: childBounds.height,
+        width: childBounds.width,
+        toJSON: childBounds.toJSON,
+      }
     }
     return undefined
   }
 
   fitToChild(name: string) {
     const size = this.getChildSize(name)
-    console.info(`Fitting to child ${name}: size[${size?.x}, ${size?.y}]`)
     if (size && this.api !== undefined) {
+      console.info(`Fitting to child ${name}: size[${size?.x}, ${size?.y}]`)
       this.api.start({
         x: size.x,
         y: size.y,
+        immediate: true,
       })
     }
   }
 
   override render(): ReactElement {
     const props = this.props.props as CoordinateCanvasProps
+
     return (
       <CoordinateContainerWrapper
+        setRef={(ref) => this.props.store.refCallback(ref)}
         setApi={this.setApi.bind(this)}
         settings={props.settings}
         position={props.position}

@@ -41,10 +41,7 @@ class CoordinateCanvasModelDelegate(component: Component) : ComponentModelDelega
                     {
                         val name = it["name"] as String
                         log.info("Fitting to child $name")
-                        fireEvent(
-                            "fit-child",
-                            JsonObject().apply { addProperty("addressPath", name) }
-                        )
+                        fireEvent("fit-child", JsonObject().apply { addProperty("name", name) })
                     },
                     "name" to typeOf<String>(),
                 )
