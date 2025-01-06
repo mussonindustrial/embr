@@ -42,11 +42,14 @@
         "moment": "2.30.1",
         "react": "^18",
         "react-chartjs-2": "5.2.0",
-        "react-dom": "^18"
+        "react-dom": "^18",
+        "smoothie": "1.36.1"
     },
     "devDependencies": {
         "@embr-js/eslint-config": "*",
+        "@embr-js/perspective-client": "0.2.0",
         "@embr-js/tsconfig": "*",
+        "@embr-js/utils": "0.6.0",
         "@types/lodash": "^4.14.202",
         "@types/react": "^18.2.56",
         "eslint": "^8.56.0",

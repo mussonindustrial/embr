@@ -9,6 +9,7 @@ import com.inductiveautomation.perspective.designer.api.PerspectiveDesignerInter
 import com.mussonindustrial.embr.perspective.designer.component.asDesignerDescriptor
 import com.mussonindustrial.ignition.embr.charts.Meta.SHORT_MODULE_ID
 import com.mussonindustrial.ignition.embr.charts.component.chart.ChartJs
+import com.mussonindustrial.ignition.embr.charts.component.chart.SmoothieChart
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -31,10 +32,12 @@ class DesignerHook : AbstractDesignerModuleHook() {
         delegateRegistry = pdi.componentDesignDelegateRegistry
 
         componentRegistry.registerComponent(ChartJs.DESCRIPTOR.asDesignerDescriptor())
+        componentRegistry.registerComponent(SmoothieChart.DESCRIPTOR.asDesignerDescriptor())
     }
 
     override fun shutdown() {
         logger.info("Shutting down Embr-Charts module and removing registered components.")
         componentRegistry.removeComponent(ChartJs.COMPONENT_ID)
+        componentRegistry.removeComponent(SmoothieChart.COMPONENT_ID)
     }
 }
