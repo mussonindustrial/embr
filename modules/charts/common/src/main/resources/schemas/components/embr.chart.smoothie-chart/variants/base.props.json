@@ -1,1 +1,15 @@
-{}
+{
+  "series": [],
+  "options": {
+    "delayMillis": 100,
+    "scrollBackwards": false,
+    "tooltip": true,
+    "update": {
+      "interval": 1000
+    }
+  },
+  "redraw": false,
+  "style": {
+    "classes": ""
+  }
+}

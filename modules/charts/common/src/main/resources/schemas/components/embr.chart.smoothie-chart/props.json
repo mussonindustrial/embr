@@ -1,8 +1,301 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema#",
     "$defs": {
+        "color": {
+            "type": ["string", "null"],
+            "format": "color"
+        },
+        "function": {
+            "type": ["string", "null"]
+        },
+        "interpolation": {
+            "type": "string",
+            "enum": [ "bezier", "linear", "step" ],
+            "description": "Controls how lines are drawn between data points."
+        },
+        "series_properties": {
+            "type": "object",
+            "description": "Series properties.",
+            "properties": {
+                "fillStyle": {
+                    "$ref": "#/$defs/color",
+                    "default": "#0000FF38"
+                },
+                "interpolation": {
+                    "$ref": "#/$defs/interpolation",
+                    "default": "bezier"
+                },
+                "lineWidth": {
+                    "type": "number",
+                    "description": "Series line thickness.",
+                    "default": 2
+                },
+                "resetBounds": {
+                    "type": "boolean",
+                    "description": "If true, the chart will reset its bounds automatically."
+                },
+                "resetBoundsInterval": {
+                    "type": "number",
+                    "description": "Interval in milliseconds to automatically reset the chart bounds."
+                },
+                "strokeStyle": {
+                    "$ref": "#/$defs/color",
+                    "default": "#3653CB"
+                },
+                "tooltipLabel": {
+                    "type": "string"
+                }
+            }
+        }
     },
     "properties": {
+        "series": {
+            "type": "array",
+            "description": "Chart series.",
+            "items": {
+                "$ref": "#/$defs/series_properties"
+            }
+        },
+        "options": {
+            "type": "object",
+            "description": "Chart options.",
+            "properties": {
+                "delayMillis": {
+                    "type": "number",
+                    "description": "Delay in milliseconds for preloading data.",
+                    "default": 200
+                },
+                "update": {
+                    "type": "object",
+                    "description": "Update properties.",
+                    "properties": {
+                        "interval": {
+                            "type": "number",
+                            "description": "Interval in milliseconds to call the component event `onChartUpdate`. Values less than 1 disable the component event.",
+                            "default": 0
+                        }
+                    }
+                },
+                "minValue": {
+                    "type": "number",
+                    "description": "Specify to clamp the lower y-axis to a given value."
+                },
+                "maxValue": {
+                    "type": "number",
+                    "description": "Specify to clamp the upper y-axis to a given value."
+                },
+                "minValueScale": {
+                    "type": "number",
+                    "description": "Allows proportional padding to be added above the chart. For 10% padding, specify 1.1.",
+                    "default": 1
+                },
+                "maxValueScale": {
+                    "type": "number",
+                    "description": "Allows proportional padding to be added below the chart. For 10% padding, specify 1.1.",
+                    "default": 1
+                },
+                "yRangeFunction": {
+                    "$ref": "#/$defs/function",
+                    "description": "A function to calculate a new y-axis range."
+                },
+                "scaleSmoothing": {
+                    "type": "number",
+                    "description": "Controls the rate at which y-value zoom animation occurs."
+                },
+                "millisPerPixel": {
+                    "type": "number",
+                    "description": "Sets the speed at which the chart pans by.",
+                    "default": 10
+                },
+                "enableDpiScaling": {
+                    "type": "boolean",
+                    "description": "Whether to render at different DPI depending upon the device. Enabled by default.",
+                    "default": true
+                },
+                "yMinFormatter": {
+                    "$ref": "#/$defs/function",
+                    "description": "Callback function that formats the min y value label."
+                },
+                "yMaxFormatter": {
+                    "$ref": "#/$defs/function",
+                    "description": "Callback function that formats the max y value label."
+                },
+                "yIntermediateFormatter": {
+                    "$ref": "#/$defs/function",
+                    "description": "Callback function that formats the intermediate y value labels."
+                },
+                "maxDataSetLength": {
+                    "type": "number",
+                    "description": "Maximum length of the dataset."
+                },
+                "interpolation": {
+                    "$ref": "#/$defs/interpolation",
+                    "description": "Default value for time series presentation options' interpolation. Defaults to 'bezier'.",
+                    "default": "bezier"
+                },
+                "timestampFormatter": {
+                    "$ref": "#/$defs/function",
+                    "description": "Optional function to format timestamps for the bottom of the chart."
+                },
+                "horizontalLines": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "value": {
+                                "type": "number",
+                                "description": "Horizontal line position."
+                            },
+                            "color": {
+                                "$ref": "#/$defs/color"
+                            },
+                            "lineWidth": {
+                                "type": "number",
+                                "description": "Line width."
+                            }
+                        }
+                    },
+                    "description": "Array of horizontal line objects."
+                },
+                "grid": {
+                    "type": "object",
+                    "description": "Grid options for the chart.",
+                    "properties": {
+                        "fillStyle": {
+                            "$ref": "#/$defs/color",
+                            "description": "The background color of the chart.",
+                            "default": "transparent"
+                        },
+                        "lineWidth": {
+                            "type": "number",
+                            "description": "The pixel width of grid lines."
+                        },
+                        "strokeStyle": {
+                            "$ref": "#/$defs/color",
+                            "description": "Color of grid lines.",
+                            "default": "#00000045"
+                        },
+                        "millisPerLine": {
+                            "type": "number",
+                            "description": "Distance between vertical grid lines.",
+                            "default": 1000
+                        },
+                        "verticalSections": {
+                            "type": "number",
+                            "description": "Number of vertical sections marked out by horizontal grid lines.",
+                            "default": 2
+                        },
+                        "borderVisible": {
+                            "type": "boolean",
+                            "description": "Whether the grid lines trace the border of the chart or not."
+                        }
+                    }
+                },
+                "labels": {
+                    "type": "object",
+                    "description": "Label options for the chart.",
+                    "properties": {
+                        "disabled": {
+                            "type": "boolean",
+                            "description": "Enables/disables labels showing the min/max values.",
+                            "default": false
+                        },
+                        "fillStyle": {
+                            "$ref": "#/$defs/color",
+                            "description": "Color for text of labels.",
+                            "default": "black"
+                        },
+                        "fontSize": {
+                            "type": "number",
+                            "description": "Font size for label text."
+                        },
+                        "fontFamily": {
+                            "type": "string",
+                            "description": "Font family for label text."
+                        },
+                        "precision": {
+                            "type": "number",
+                            "description": "Precision of label values."
+                        },
+                        "showIntermediateLabels": {
+                            "type": "boolean",
+                            "description": "Shows intermediate labels between min and max values along y-axis."
+                        },
+                        "intermediateLabelSameAxis": {
+                            "type": "boolean",
+                            "description": "Whether intermediate labels are displayed on the same axis."
+                        }
+                    }
+                },
+                "title": {
+                    "type": "object",
+                    "description": "Title options for the chart.",
+                    "properties": {
+                        "text": {
+                            "type": "string",
+                            "description": "The text to display on the left side of the chart. Defaults to an empty string.",
+                            "default": ""
+                        },
+                        "fillStyle": {
+                            "$ref": "#/$defs/color",
+                            "description": "Color for text."
+                        },
+                        "fontSize": {
+                            "type": "number",
+                            "description": "Font size for the title text."
+                        },
+                        "fontFamily": {
+                            "type": "string",
+                            "description": "Font family for the title text."
+                        },
+                        "verticalAlign": {
+                            "type": "string",
+                            "enum": ["top", "middle", "bottom"],
+                            "description": "The vertical position of the text. Defaults to 'middle'.",
+                            "default": "middle"
+                        }
+                    }
+                },
+                "tooltip": {
+                    "type": "boolean",
+                    "description": "Whether tooltips are enabled for the chart."
+                },
+                "tooltipLine": {
+                    "type": "object",
+                    "properties": {
+                        "lineWidth": {
+                            "type": "number"
+                        },
+                        "strokeStyle": {
+                            "$ref": "#/$defs/color"
+                        }
+                    },
+                    "description": "Options for the tooltip line."
+                },
+                "tooltipFormatter": {
+                    "$ref": "#/$defs/function",
+                    "description": "Function to format tooltip content."
+                },
+                "nonRealtimeData": {
+                    "type": "boolean",
+                    "description": "Whether to use the time of the latest data as the current time."
+                },
+                "displayDataFromPercentile": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1,
+                    "description": "Displays data from the given percentile. Should be a value between 0 and 1."
+                },
+                "limitFPS": {
+                    "type": "number",
+                    "description": "The maximum frame rate the chart will render at, in FPS. Default is 0, meaning no limit."
+                }
+            }
+        },
+        "redraw": {
+            "description": "Teardown and redraw chart on every update.",
+            "type": ["boolean", "null"]
+        },
         "style": {
             "$ref": "urn:ignition-schema:schemas/style-properties.schema.json",
             "default": {
@@ -11,5 +304,5 @@
         }
     },
     "type": "object",
-    "required": []
+    "required": ["series", "options"]
 }
