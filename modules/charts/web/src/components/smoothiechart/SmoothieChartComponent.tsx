@@ -96,6 +96,7 @@ export function SmoothieChartComponent(
   const renderChart = () => {
     if (!canvasRef.current) return
 
+    transformedProps.options.responsive = true
     chartRef.current = new SmoothieChart(transformedProps.options)
     seriesRef.current = []
 

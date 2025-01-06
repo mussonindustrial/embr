@@ -24,7 +24,7 @@ class SmoothieChart {
         private var VARIANT_BASE =
             schemaLoader.getPaletteEntry(
                 "base",
-                "SmoothieChart",
+                "Smoothie Chart",
                 "Smoothie Charts is a simple library for displaying smooth live time lines. "
             )
 
@@ -35,7 +35,7 @@ class SmoothieChart {
                 .setModuleId(MODULE_ID)
                 .setSchema(SCHEMA)
                 .setEvents(EVENTS)
-                .setName("SmoothieChart")
+                .setName("Smoothie Chart")
                 .addPaletteEntry(VARIANT_BASE)
                 .setDefaultMetaName("SmoothieChart")
                 .setResources(Components.BROWSER_RESOURCES)
