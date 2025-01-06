@@ -181,13 +181,13 @@ export function FlexRepeaterComponent({
 }: ComponentProps<FlexRepeaterProps>) {
   const containerProps = emit({ classes: ['view-parent'] })
   containerProps.style = {
-    ...containerProps.style,
     display: 'flex',
     flexDirection: props.settings?.direction,
     flexWrap: props.settings?.wrap,
     justifyContent: props.settings?.justify,
     alignItems: props.settings?.alignItems,
     alignContent: props.settings?.alignContent,
+    ...containerProps.style,
   }
 
   return (
