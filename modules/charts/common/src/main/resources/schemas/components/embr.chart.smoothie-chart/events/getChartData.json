@@ -1,9 +1,0 @@
-{
-  "type": "object",
-  "properties": {
-    "event": {
-      "type": "string",
-      "description": "Chart Data Event"
-    }
-  }
-}

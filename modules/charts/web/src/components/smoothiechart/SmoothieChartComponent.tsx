@@ -12,14 +12,7 @@ import {
   ComponentDelegateJavaScriptProxy,
   JavaScriptRunEvent,
 } from '@embr-js/perspective-client'
-import React, {
-  MutableRefObject,
-  RefObject,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-} from 'react'
+import React, { useCallback, useEffect, useMemo, useRef } from 'react'
 import {
   IChartOptions,
   ITimeSeriesOptions,
@@ -38,16 +31,19 @@ type SmoothieChartProps = {
   series: SeriesProps[]
   options: IChartOptions & {
     delayMillis: number
+    update: {
+      interval: number
+    }
   }
   redraw: boolean
 }
 
 type SmoothieChartRef = {
   appendData: (values: number[]) => void
-  canvasRef: RefObject<HTMLCanvasElement>
-  chartRef: MutableRefObject<SmoothieChart | null>
+  canvas: HTMLCanvasElement | null
+  chart: SmoothieChart | null
   props: ComponentProps<SmoothieChartProps>
-  seriesRef: MutableRefObject<TimeSeries[]>
+  series: TimeSeries[]
 }
 
 function setOptions(chart: SmoothieChart, nextOptions: IChartOptions) {
@@ -127,13 +123,14 @@ export function SmoothieChartComponent(
   /* Update Delegate Interface */
   useEffect(() => {
     if (props.store.delegate) {
+      console.log('creating delegate interface')
       const delegate = props.store.delegate as SmoothieChartComponentDelegate
       delegate.setInterface({
         appendData,
-        canvasRef,
-        chartRef,
+        canvas: canvasRef.current,
+        chart: chartRef.current,
         props,
-        seriesRef,
+        series: seriesRef.current,
       })
     }
   }, [appendData, canvasRef, chartRef, seriesRef])
@@ -205,57 +202,21 @@ export function SmoothieChartComponent(
 }
 
 class SmoothieChartComponentDelegate extends ComponentStoreDelegate {
-  private chart?: SmoothieChartRef = undefined
-
   private proxyProps: JsObject = {}
   private jsProxy = new ComponentDelegateJavaScriptProxy(this, this.proxyProps)
 
-  private previousValues: number[] = []
-  private timeoutId: NodeJS.Timeout | undefined
-
   constructor(component: AbstractUIElementStore) {
     super(component)
-    this.updateStaleValues()
   }
 
   setInterface(chart: SmoothieChartRef) {
-    this.chart = chart
+    this.proxyProps.chart = chart
   }
 
   handleEvent(eventName: string, eventObject: JsObject): void {
     if (this.jsProxy.handles(eventName)) {
       this.jsProxy.handleEvent(eventObject as JavaScriptRunEvent)
     }
-
-    if (eventName == 'data-update') {
-      const values = eventObject['values'] as number[]
-      this.notifyValues(values)
-    }
-  }
-
-  getStaleDelay(): number {
-    if (this.chart == undefined) {
-      return 100
-    } else {
-      return this.chart.props.props.options.delayMillis
-    }
-  }
-
-  updateStaleValues() {
-    console.log('updating stale values')
-    this.chart?.appendData(this.previousValues)
-    this.timeoutId = setTimeout(() => {
-      this.updateStaleValues()
-    }, this.getStaleDelay())
-  }
-
-  notifyValues(values: number[]) {
-    clearTimeout(this.timeoutId)
-    this.chart?.appendData(values)
-    this.previousValues = values
-    this.timeoutId = setTimeout(() => {
-      this.updateStaleValues()
-    }, this.getStaleDelay())
   }
 }
 
@@ -278,7 +239,7 @@ export const SmoothieChartComponentMeta: ComponentMeta = {
     return {
       series: tree.read('series', []),
       options: tree.read('options', {}),
-      redraw: tree.read('redraw', undefined),
+      redraw: tree.read('redraw', false),
     } as never
   },
   getViewComponent: function (): PComponent {

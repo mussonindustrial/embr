@@ -1,10 +1,8 @@
 package com.mussonindustrial.ignition.embr.charts.component.chart
 
-import com.inductiveautomation.ignition.common.jsonschema.JsonSchema
 import com.inductiveautomation.perspective.common.api.ComponentDescriptor
 import com.inductiveautomation.perspective.common.api.ComponentDescriptorImpl
-import com.inductiveautomation.perspective.common.api.ComponentEventDescriptor
-import com.mussonindustrial.embr.perspective.common.component.PaletteEntry
+import com.mussonindustrial.embr.perspective.common.component.ComponentSchemaLoader
 import com.mussonindustrial.embr.perspective.common.component.addPaletteEntry
 import com.mussonindustrial.ignition.embr.charts.Components
 import com.mussonindustrial.ignition.embr.charts.Meta.MODULE_ID
@@ -12,32 +10,19 @@ import com.mussonindustrial.ignition.embr.charts.Meta.MODULE_ID
 class SmoothieChart {
     companion object {
         var COMPONENT_ID: String = "embr.chart.smoothie-chart"
-        var SCHEMA: JsonSchema =
-            JsonSchema.parse(
-                Components::class
-                    .java
-                    .getResourceAsStream("/schemas/components/${COMPONENT_ID}/props.json")
-            )
 
-        var EVENTS =
+        private val schemaLoader = ComponentSchemaLoader(Components::class.java, COMPONENT_ID)
+        private val SCHEMA = schemaLoader.getSchema()
+        private val EVENTS =
             listOf(
-                ComponentEventDescriptor(
-                    "getChartData",
-                    "Testing",
-                    JsonSchema.parse(
-                        Components::class
-                            .java
-                            .getResourceAsStream(
-                                "/schemas/components/${COMPONENT_ID}/events/getChartData.json"
-                            )
-                    )
+                schemaLoader.getEventDescriptor(
+                    "onChartUpdate",
+                    "Called on an interval configured in the component's properties."
                 )
             )
 
         private var VARIANT_BASE =
-            PaletteEntry(
-                this::class.java,
-                COMPONENT_ID,
+            schemaLoader.getPaletteEntry(
                 "base",
                 "SmoothieChart",
                 "Smoothie Charts is a simple library for displaying smooth live time lines. "
