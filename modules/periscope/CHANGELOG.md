@@ -1,5 +1,13 @@
 # @embr-modules/periscope
 
+## 0.5.1
+
+### Patch Changes
+
+- 7a3d56e: (FlexRepeater+) Apply emitted style properties _after_ flex container specific styles. Fixes Issue #218.
+- Updated dependencies [7a3d56e]
+  - @embr-modules/periscope-web@0.5.1
+
 ## 0.5.0
 
 ### Minor Changes
