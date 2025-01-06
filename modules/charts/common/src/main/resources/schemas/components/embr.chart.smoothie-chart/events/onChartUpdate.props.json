@@ -1,0 +1,19 @@
+{
+  "type": "object",
+  "properties": {
+    "chart": {
+      "type": "object",
+      "description": "Chart JavaScript Proxy Object",
+      "properties": {
+        "runAsync": {
+          "type": "object",
+          "description": "Run JavaScript code asynchronously."
+        },
+        "runBlocking": {
+          "type": "object",
+          "description": "Run blocking JavaScript code."
+        }
+      }
+    }
+  }
+}
