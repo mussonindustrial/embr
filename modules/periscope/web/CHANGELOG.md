@@ -1,5 +1,11 @@
 # @mussonindustrial/embr-js-chart-js
 
+## 0.5.1
+
+### Patch Changes
+
+- 7a3d56e: (FlexRepeater+) Apply emitted style properties _after_ flex container specific styles. Fixes Issue #218.
+
 ## 0.5.0
 
 ### Patch Changes
