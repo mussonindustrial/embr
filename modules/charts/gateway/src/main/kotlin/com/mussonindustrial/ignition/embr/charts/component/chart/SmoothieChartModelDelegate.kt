@@ -9,6 +9,7 @@ import com.inductiveautomation.perspective.common.property.Origin
 import com.inductiveautomation.perspective.gateway.api.Component
 import com.inductiveautomation.perspective.gateway.api.ComponentModelDelegate
 import com.inductiveautomation.perspective.gateway.api.ScriptCallable
+import com.inductiveautomation.perspective.gateway.binding.BindingUtils
 import com.inductiveautomation.perspective.gateway.binding.BindingUtils.toJsonDeep
 import com.inductiveautomation.perspective.gateway.messages.EventFiredMsg
 import com.inductiveautomation.perspective.gateway.property.PropertyTree
@@ -122,9 +123,14 @@ class SmoothieChartModelDelegate(component: Component) : ComponentModelDelegate(
 
         @Suppress("unused")
         fun appendData(values: PySequence) {
+            val json =
+                toJsonDeep(
+                    TypeUtilities.pyToJava(values),
+                    BindingUtils.JsonEncoding.DollarQualified
+                )
             this@SmoothieChartModelDelegate.fireEvent(
                 "data-append",
-                JsonObject().apply { add("values", TypeUtilities.pyToGson(values)) }
+                JsonObject().apply { add("values", json) }
             )
         }
     }
