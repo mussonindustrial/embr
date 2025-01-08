@@ -117,7 +117,7 @@ export function SmoothieChartComponent(
     [seriesRef.current]
   )
 
-  const renderChart = () => {
+  const renderChart = useCallback(() => {
     if (!canvasRef.current) return
 
     transformedProps.options.responsive = true
@@ -136,15 +136,15 @@ export function SmoothieChartComponent(
       transformedProps.options.delayMillis ?? 0
     )
     props.store.delegate?.fireEvent('renderChart', {})
-  }
+  }, [canvasRef.current])
 
-  const destroyChart = () => {
+  const destroyChart = useCallback(() => {
     if (chartRef.current) {
       chartRef.current.stop()
       chartRef.current = null
       seriesRef.current = []
     }
-  }
+  }, [chartRef.current])
 
   /* Update Delegate Interface */
   useEffect(() => {
