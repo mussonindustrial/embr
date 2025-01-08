@@ -1,9 +1,13 @@
 {
   "type": "object",
   "properties": {
+    "first": {
+      "type": "boolean",
+      "description": "True is this is the first time the event has fired."
+    },
     "chart": {
       "type": "object",
-      "description": "Chart JavaScript Proxy Object",
+      "description": "JavaScriptProxy for the `chart` object. Allows running JavaScript code in the client with the chart as the `this` context.",
       "properties": {
         "runAsync": {
           "type": "object",
@@ -14,6 +18,10 @@
           "description": "Run blocking JavaScript code."
         }
       }
+    },
+    "memo": {
+      "type": "object",
+      "description": "Memoization object that allows storing state between event executions. This dictionary is created once at initialization and used for all following events."
     }
   }
 }

@@ -24,7 +24,7 @@ import org.python.core.PyDictionary
 import org.python.core.PyFunction
 import org.python.core.PyObject
 
-class ComponentDelegateJavaScriptProxy(
+open class ComponentDelegateJavaScriptProxy(
     private val component: Component,
     private val delegate: ComponentModelDelegate,
     private val property: String
