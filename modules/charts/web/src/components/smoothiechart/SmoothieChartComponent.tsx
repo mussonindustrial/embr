@@ -38,8 +38,11 @@ type SmoothieChartProps = {
   redraw: boolean
 }
 
+type ChartDataPoint = number | { value: number; timestamp: number }
+type ChartSeriesData = ChartDataPoint | ChartDataPoint[]
+
 type SmoothieChartRef = {
-  appendData: (values: number[]) => void
+  appendData: (values: ChartSeriesData[]) => void
   canvas: HTMLCanvasElement | null
   chart: SmoothieChart | null
   props: ComponentProps<SmoothieChartProps>
@@ -55,10 +58,32 @@ function setOptions(chart: SmoothieChart, nextOptions: IChartOptions) {
 }
 
 function getOrDefault<T>(list: T[], index: number, fallback: T): T {
-  if (index < 0 || index > list.length) {
-    return fallback
+  return index >= 0 && index < list.length ? list[index] : fallback
+}
+
+function appendToSeries(
+  series: TimeSeries,
+  data: ChartSeriesData,
+  now = Date.now()
+) {
+  if (Array.isArray(data)) {
+    data.forEach((point) => appendPoint(series, point, now))
   } else {
-    return list[index]
+    appendPoint(series, data, now)
+  }
+}
+
+function appendPoint(
+  series: TimeSeries,
+  point: ChartDataPoint,
+  now = Date.now()
+) {
+  if (typeof point === 'number') {
+    series.append(now, point)
+  } else if (Array.isArray(point)) {
+    series.append(getOrDefault(point, 0, now), getOrDefault(point, 1, 0))
+  } else {
+    series.append(point.timestamp, point.value)
   }
 }
 
@@ -70,7 +95,6 @@ export function SmoothieChartComponent(
   const seriesRef = useRef<TimeSeries[]>([])
 
   const transformedProps = useMemo(() => {
-    console.log('transforming props')
     return transformProps(props.props, [
       getScriptTransform(props, props.store),
       getCSSTransform(canvasRef.current?.parentElement),
@@ -78,16 +102,16 @@ export function SmoothieChartComponent(
   }, [props.props, canvasRef.current])
 
   const appendData = useCallback(
-    (values: number[]) => {
+    (values: ChartSeriesData[]) => {
       if (!seriesRef.current) {
         return
       }
 
-      const timestamp = Date.now()
+      const now = Date.now()
       for (let i = 0; i < seriesRef.current.length; i++) {
-        const value = getOrDefault(values, i, i * 10)
+        const data = getOrDefault(values, i, [])
         const series = seriesRef.current[i]
-        series.append(timestamp, value)
+        appendToSeries(series, data, now)
       }
     },
     [seriesRef.current]
@@ -111,6 +135,7 @@ export function SmoothieChartComponent(
       canvasRef.current,
       transformedProps.options.delayMillis ?? 0
     )
+    props.store.delegate?.fireEvent('renderChart', {})
   }
 
   const destroyChart = () => {
@@ -124,7 +149,6 @@ export function SmoothieChartComponent(
   /* Update Delegate Interface */
   useEffect(() => {
     if (props.store.delegate) {
-      console.log('creating delegate interface')
       const delegate = props.store.delegate as SmoothieChartComponentDelegate
       delegate.setInterface({
         appendData,
@@ -143,7 +167,6 @@ export function SmoothieChartComponent(
       chartRef.current &&
       transformedProps.options
     ) {
-      console.log('updating options')
       setOptions(chartRef.current, transformedProps.options)
     }
   }, [transformedProps.redraw, transformedProps.options])
@@ -156,7 +179,6 @@ export function SmoothieChartComponent(
       chartRef.current &&
       transformedProps.series
     ) {
-      console.log('updating series')
       for (let i = 0; i < seriesRef.current.length; i++) {
         const series = seriesRef.current[i]
         const existingSeriesOptions =
@@ -204,19 +226,21 @@ export function SmoothieChartComponent(
 
 class SmoothieChartComponentDelegate extends ComponentStoreDelegate {
   private proxyProps: JsObject = {}
+  private chart: SmoothieChartRef | null = null
   private jsProxy = new ComponentDelegateJavaScriptProxy(this, this.proxyProps)
 
-  constructor(component: AbstractUIElementStore) {
-    super(component)
-  }
-
   setInterface(chart: SmoothieChartRef) {
+    this.chart = chart
     this.proxyProps.chart = chart
   }
 
   handleEvent(eventName: string, eventObject: JsObject): void {
     if (this.jsProxy.handles(eventName)) {
       this.jsProxy.handleEvent(eventObject as JavaScriptRunEvent)
+    }
+
+    if (eventName == 'data-append' && this.chart != null) {
+      this.chart.appendData(eventObject['values'] as ChartSeriesData[])
     }
   }
 }
