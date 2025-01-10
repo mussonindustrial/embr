@@ -10,6 +10,8 @@ import com.inductiveautomation.perspective.common.PerspectiveModule
 import com.inductiveautomation.perspective.common.api.ComponentRegistry
 import com.inductiveautomation.perspective.gateway.api.ComponentModelDelegateRegistry
 import com.inductiveautomation.perspective.gateway.api.PerspectiveContext
+import com.mussonindustrial.embr.perspective.common.component.addResourcesTo
+import com.mussonindustrial.embr.perspective.common.component.removeResourcesFrom
 import com.mussonindustrial.ignition.embr.periscope.Meta.SHORT_MODULE_ID
 import com.mussonindustrial.ignition.embr.periscope.component.embedding.*
 import com.mussonindustrial.ignition.embr.periscope.scripting.JavaScriptFunctions
@@ -40,7 +42,7 @@ class PeriscopeGatewayHook : AbstractGatewayModuleHook() {
         modelDelegateRegistry = perspectiveContext.componentModelDelegateRegistry
 
         logger.debug("Injecting required resources...")
-        PeriscopeComponents.addResources(componentRegistry) {
+        componentRegistry.addResourcesTo(PeriscopeComponents.REQUIRED_RESOURCES) {
             it.moduleId() == PerspectiveModule.MODULE_ID
         }
 
@@ -62,7 +64,7 @@ class PeriscopeGatewayHook : AbstractGatewayModuleHook() {
             )
 
         logger.debug("Removing injected resources...")
-        PeriscopeComponents.removeResources(componentRegistry) {
+        componentRegistry.removeResourcesFrom(PeriscopeComponents.REQUIRED_RESOURCES) {
             it.moduleId() == PerspectiveModule.MODULE_ID
         }
 

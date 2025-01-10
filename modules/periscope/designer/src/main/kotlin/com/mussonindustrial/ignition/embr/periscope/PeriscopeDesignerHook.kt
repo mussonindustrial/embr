@@ -7,6 +7,8 @@ import com.inductiveautomation.perspective.common.PerspectiveModule
 import com.inductiveautomation.perspective.designer.DesignerComponentRegistry
 import com.inductiveautomation.perspective.designer.api.ComponentDesignDelegateRegistry
 import com.inductiveautomation.perspective.designer.api.PerspectiveDesignerInterface
+import com.mussonindustrial.embr.perspective.common.component.addResourcesTo
+import com.mussonindustrial.embr.perspective.common.component.removeResourcesFrom
 import com.mussonindustrial.embr.perspective.designer.component.asDesignerDescriptor
 import com.mussonindustrial.ignition.embr.periscope.Meta.SHORT_MODULE_ID
 import com.mussonindustrial.ignition.embr.periscope.component.embedding.EmbeddedView
@@ -35,7 +37,7 @@ class PeriscopeDesignerHook : AbstractDesignerModuleHook() {
         delegateRegistry = pdi.componentDesignDelegateRegistry
 
         logger.debug("Injecting required resources...")
-        PeriscopeComponents.addResources(componentRegistry) {
+        componentRegistry.addResourcesTo(PeriscopeComponents.REQUIRED_RESOURCES) {
             it.moduleId() == PerspectiveModule.MODULE_ID
         }
 
@@ -49,7 +51,7 @@ class PeriscopeDesignerHook : AbstractDesignerModuleHook() {
         Meta.removeI18NBundle()
 
         logger.debug("Removing injected resources...")
-        PeriscopeComponents.removeResources(componentRegistry) {
+        componentRegistry.removeResourcesFrom(PeriscopeComponents.REQUIRED_RESOURCES) {
             it.moduleId() == PerspectiveModule.MODULE_ID
         }
 
