@@ -1,5 +1,11 @@
 # @mussonindustrial/embr-jvm-perspective-core
 
+## 0.7.2
+
+### Patch Changes
+
+- 730396c: Add utilities for adding/removing browser resources of existing ComponentDescriptors.
+
 ## 0.7.1
 
 ### Patch Changes

@@ -1,5 +1,16 @@
 # @embr-modules/periscope
 
+## 0.5.2
+
+### Patch Changes
+
+- 730396c: Fix #221 by injecting Periscope browser resource requirement into Perspective components.
+- Updated dependencies [730396c]
+  - @embr-jvm/perspective-common@0.7.2
+  - @embr-jvm/perspective-designer@0.7.2
+  - @embr-jvm/perspective-gateway@0.7.2
+  - @embr-modules/periscope-web@0.5.2
+
 ## 0.5.1
 
 ### Patch Changes
