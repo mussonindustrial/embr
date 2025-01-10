@@ -5,15 +5,15 @@ import com.inductiveautomation.perspective.common.api.ComponentDescriptor
 import com.inductiveautomation.perspective.common.api.ComponentDescriptorImpl
 import com.mussonindustrial.embr.perspective.common.component.PaletteEntry
 import com.mussonindustrial.embr.perspective.common.component.addPaletteEntry
-import com.mussonindustrial.ignition.embr.periscope.Components
 import com.mussonindustrial.ignition.embr.periscope.Meta.MODULE_ID
+import com.mussonindustrial.ignition.embr.periscope.PeriscopeComponents
 
 class FlexRepeater {
     companion object {
         var COMPONENT_ID: String = "embr.periscope.embedding.flex-repeater"
         var SCHEMA: JsonSchema =
             JsonSchema.parse(
-                Components::class
+                PeriscopeComponents::class
                     .java
                     .getResourceAsStream(
                         "/schemas/components/embr.periscope.embedding.flex-repeater/props.json"
@@ -58,7 +58,7 @@ class FlexRepeater {
                 .addPaletteEntry(VARIANT_ROW)
                 .addPaletteEntry(VARIANT_COLUMN)
                 .setDefaultMetaName("FlexRepeaterPlus")
-                .setResources(Components.BROWSER_RESOURCES)
+                .setResources(PeriscopeComponents.BROWSER_RESOURCES)
                 .build()
     }
 }

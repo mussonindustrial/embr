@@ -5,15 +5,15 @@ import com.inductiveautomation.perspective.common.api.ComponentDescriptor
 import com.inductiveautomation.perspective.common.api.ComponentDescriptorImpl
 import com.mussonindustrial.embr.perspective.common.component.PaletteEntry
 import com.mussonindustrial.embr.perspective.common.component.addPaletteEntry
-import com.mussonindustrial.ignition.embr.periscope.Components
 import com.mussonindustrial.ignition.embr.periscope.Meta.MODULE_ID
+import com.mussonindustrial.ignition.embr.periscope.PeriscopeComponents
 
 class EmbeddedView {
     companion object {
         var COMPONENT_ID: String = "embr.periscope.embedding.view"
         var SCHEMA: JsonSchema =
             JsonSchema.parse(
-                Components::class
+                PeriscopeComponents::class
                     .java
                     .getResourceAsStream(
                         "/schemas/components/embr.periscope.embedding.view/props.json"
@@ -38,7 +38,7 @@ class EmbeddedView {
                 .setName("Embedded View +")
                 .addPaletteEntry(VARIANT_BASE)
                 .setDefaultMetaName("EmbeddedViewPlus")
-                .setResources(Components.BROWSER_RESOURCES)
+                .setResources(PeriscopeComponents.BROWSER_RESOURCES)
                 .build()
     }
 }

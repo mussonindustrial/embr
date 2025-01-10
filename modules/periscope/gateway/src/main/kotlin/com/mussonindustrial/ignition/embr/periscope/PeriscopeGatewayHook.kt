@@ -6,6 +6,7 @@ import com.inductiveautomation.ignition.common.script.ScriptManager
 import com.inductiveautomation.ignition.common.script.hints.PropertiesFileDocProvider
 import com.inductiveautomation.ignition.gateway.model.AbstractGatewayModuleHook
 import com.inductiveautomation.ignition.gateway.model.GatewayContext
+import com.inductiveautomation.perspective.common.PerspectiveModule
 import com.inductiveautomation.perspective.common.api.ComponentRegistry
 import com.inductiveautomation.perspective.gateway.api.ComponentModelDelegateRegistry
 import com.inductiveautomation.perspective.gateway.api.PerspectiveContext
@@ -17,7 +18,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 @Suppress("unused")
-class GatewayHook : AbstractGatewayModuleHook() {
+class PeriscopeGatewayHook : AbstractGatewayModuleHook() {
 
     private val logger: Logger = LoggerFactory.getLogger(SHORT_MODULE_ID)
     private lateinit var context: PeriscopeGatewayContext
@@ -38,7 +39,12 @@ class GatewayHook : AbstractGatewayModuleHook() {
         componentRegistry = perspectiveContext.componentRegistry
         modelDelegateRegistry = perspectiveContext.componentModelDelegateRegistry
 
-        logger.info("Registering components...")
+        logger.debug("Injecting required resources...")
+        PeriscopeComponents.addResources(componentRegistry) {
+            it.moduleId() == PerspectiveModule.MODULE_ID
+        }
+
+        logger.debug("Registering components...")
         componentRegistry.registerComponent(EmbeddedView.DESCRIPTOR)
         modelDelegateRegistry.register(EmbeddedView.COMPONENT_ID) { EmbeddedViewModelDelegate(it) }
 
@@ -54,6 +60,11 @@ class GatewayHook : AbstractGatewayModuleHook() {
             .removeBundle(
                 Meta.BUNDLE_PREFIX,
             )
+
+        logger.debug("Removing injected resources...")
+        PeriscopeComponents.removeResources(componentRegistry) {
+            it.moduleId() == PerspectiveModule.MODULE_ID
+        }
 
         componentRegistry.removeComponent(EmbeddedView.COMPONENT_ID)
         modelDelegateRegistry.remove(EmbeddedView.COMPONENT_ID)
