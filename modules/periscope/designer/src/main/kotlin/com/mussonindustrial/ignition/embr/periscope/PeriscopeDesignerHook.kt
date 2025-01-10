@@ -3,9 +3,12 @@ package com.mussonindustrial.ignition.embr.periscope
 import com.inductiveautomation.ignition.common.licensing.LicenseState
 import com.inductiveautomation.ignition.designer.model.AbstractDesignerModuleHook
 import com.inductiveautomation.ignition.designer.model.DesignerContext
+import com.inductiveautomation.perspective.common.PerspectiveModule
 import com.inductiveautomation.perspective.designer.DesignerComponentRegistry
 import com.inductiveautomation.perspective.designer.api.ComponentDesignDelegateRegistry
 import com.inductiveautomation.perspective.designer.api.PerspectiveDesignerInterface
+import com.mussonindustrial.embr.perspective.common.component.addResourcesTo
+import com.mussonindustrial.embr.perspective.common.component.removeResourcesFrom
 import com.mussonindustrial.embr.perspective.designer.component.asDesignerDescriptor
 import com.mussonindustrial.ignition.embr.periscope.Meta.SHORT_MODULE_ID
 import com.mussonindustrial.ignition.embr.periscope.component.embedding.EmbeddedView
@@ -15,7 +18,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 @Suppress("unused")
-class DesignerHook : AbstractDesignerModuleHook() {
+class PeriscopeDesignerHook : AbstractDesignerModuleHook() {
 
     private val logger: Logger = LoggerFactory.getLogger(SHORT_MODULE_ID)
 
@@ -33,6 +36,11 @@ class DesignerHook : AbstractDesignerModuleHook() {
         componentRegistry = pdi.designerComponentRegistry
         delegateRegistry = pdi.componentDesignDelegateRegistry
 
+        logger.debug("Injecting required resources...")
+        componentRegistry.addResourcesTo(PeriscopeComponents.REQUIRED_RESOURCES) {
+            it.moduleId() == PerspectiveModule.MODULE_ID
+        }
+
         componentRegistry.registerComponent(EmbeddedView.DESCRIPTOR.asDesignerDescriptor())
         componentRegistry.registerComponent(FlexRepeater.DESCRIPTOR.asDesignerDescriptor())
         componentRegistry.registerComponent(Swiper.DESCRIPTOR.asDesignerDescriptor())
@@ -41,6 +49,11 @@ class DesignerHook : AbstractDesignerModuleHook() {
     override fun shutdown() {
         logger.debug("Shutting down Embr-Periscope module and removing registered components.")
         Meta.removeI18NBundle()
+
+        logger.debug("Removing injected resources...")
+        componentRegistry.removeResourcesFrom(PeriscopeComponents.REQUIRED_RESOURCES) {
+            it.moduleId() == PerspectiveModule.MODULE_ID
+        }
 
         componentRegistry.removeComponent(EmbeddedView.COMPONENT_ID)
         componentRegistry.removeComponent(FlexRepeater.COMPONENT_ID)

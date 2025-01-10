@@ -28,8 +28,8 @@ ignitionModule {
 
     hooks.putAll(
         mapOf(
-            "com.mussonindustrial.ignition.embr.periscope.GatewayHook" to "G",
-            "com.mussonindustrial.ignition.embr.periscope.DesignerHook" to "D",
+            "com.mussonindustrial.ignition.embr.periscope.PeriscopeGatewayHook" to "G",
+            "com.mussonindustrial.ignition.embr.periscope.PeriscopeDesignerHook" to "D",
         ),
     )
 }

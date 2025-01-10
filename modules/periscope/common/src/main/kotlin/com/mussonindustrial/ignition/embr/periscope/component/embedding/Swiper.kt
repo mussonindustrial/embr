@@ -5,15 +5,15 @@ import com.inductiveautomation.perspective.common.api.ComponentDescriptor
 import com.inductiveautomation.perspective.common.api.ComponentDescriptorImpl
 import com.mussonindustrial.embr.perspective.common.component.PaletteEntry
 import com.mussonindustrial.embr.perspective.common.component.addPaletteEntry
-import com.mussonindustrial.ignition.embr.periscope.Components
 import com.mussonindustrial.ignition.embr.periscope.Meta.MODULE_ID
+import com.mussonindustrial.ignition.embr.periscope.PeriscopeComponents
 
 class Swiper {
     companion object {
         var COMPONENT_ID: String = "embr.periscope.embedding.swiper"
         var SCHEMA: JsonSchema =
             JsonSchema.parse(
-                Components::class
+                PeriscopeComponents::class
                     .java
                     .getResourceAsStream(
                         "/schemas/components/embr.periscope.embedding.swiper/props.json"
@@ -74,7 +74,7 @@ class Swiper {
                 .addPaletteEntry(VARIANT_FULL_HORIZONTAL)
                 .addPaletteEntry(VARIANT_FULL_VERTICAL)
                 .setDefaultMetaName("Swiper")
-                .setResources(Components.BROWSER_RESOURCES)
+                .setResources(PeriscopeComponents.BROWSER_RESOURCES)
                 .build()
     }
 }
