@@ -154,12 +154,7 @@ export const ChartJsComponentMeta: ComponentMeta = {
     return {
       type: tree.readString('type'),
       options: tree.read('options', {}),
-      data: {
-        labels: tree.read('data.labels', []),
-        datasets: tree.read('data.datasets', []),
-        xLabels: tree.read('data.xLabels', []),
-        yLabels: tree.read('data.yLabels', []),
-      },
+      data: tree.read('data', {}),
       plugins: tree.readArray('plugins', []),
       redraw: tree.read('redraw', undefined),
       updateMode: tree.read('updateMode', undefined),
