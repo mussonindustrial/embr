@@ -95,6 +95,9 @@ export function ChartJsComponent(props: ComponentProps<PerspectiveChartProps>) {
       getCSSTransform(chartRef.current?.canvas.parentElement),
     ]) as PerspectiveChartProps
 
+    transformedProps.data.datasets = transformedProps.data.datasets ?? []
+    transformedProps.data.labels = transformedProps.data.labels ?? []
+
     installPropsData(transformedProps, data)
     return transformedProps
   }, [props.props])
