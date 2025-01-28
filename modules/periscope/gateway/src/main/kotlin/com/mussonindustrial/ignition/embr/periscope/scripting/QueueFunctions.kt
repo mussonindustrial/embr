@@ -29,7 +29,9 @@ class QueueFunctions(private val context: PeriscopeGatewayContext) : AbstractScr
     private val log = LogUtil.getModuleLogger(Meta.SHORT_MODULE_ID, "QueueFunctions")
     private val overloads = ScriptOverloads()
     private val scopes =
-        WeakHashMap<PerspectiveElement, ConcurrentHashMap<String, ExecutionQueueScheduledRunnable>>()
+        WeakHashMap<
+            PerspectiveElement, ConcurrentHashMap<String, ExecutionQueueScheduledRunnable>
+        >()
 
     override fun getContext(): PerspectiveContext {
         return context.perspectiveContext
