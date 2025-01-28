@@ -15,6 +15,7 @@ import com.mussonindustrial.embr.perspective.common.component.removeResourcesFro
 import com.mussonindustrial.ignition.embr.periscope.Meta.SHORT_MODULE_ID
 import com.mussonindustrial.ignition.embr.periscope.component.embedding.*
 import com.mussonindustrial.ignition.embr.periscope.scripting.JavaScriptFunctions
+import com.mussonindustrial.ignition.embr.periscope.scripting.QueueFunctions
 import java.util.*
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -97,6 +98,11 @@ class PeriscopeGatewayHook : AbstractGatewayModuleHook() {
         manager.addScriptModule(
             "system.perspective",
             JavaScriptFunctions(this.context),
+            PropertiesFileDocProvider()
+        )
+        manager.addScriptModule(
+            "system.perspective",
+            QueueFunctions(this.context),
             PropertiesFileDocProvider()
         )
     }
