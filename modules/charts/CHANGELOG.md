@@ -1,5 +1,16 @@
 # @mussonindustrial/embr-charts
 
+## 2.0.2
+
+### Patch Changes
+
+- 39d5957: Add 'timestack' scale by @jkmnt (https://github.com/jkmnt/chartjs-scale-timestack).
+
+  Update License.
+
+- Updated dependencies [39d5957]
+  - @embr-modules/charts-web@2.0.2
+
 ## 2.0.1
 
 ### Patch Changes
