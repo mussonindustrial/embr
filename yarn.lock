@@ -3220,6 +3220,13 @@ chartjs-plugin-zoom@2.2.0:
     "@types/hammerjs" "^2.0.45"
     hammerjs "^2.0.8"
 
+chartjs-scale-timestack@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/chartjs-scale-timestack/-/chartjs-scale-timestack-1.0.1.tgz#b945f4d12f9ec74507bf90f4b4b24032ed7b97b2"
+  integrity sha512-Nzi3BVNqoboo8534ecFIY1XojfdbQ9xfjdFsNxcGbYeAVrRthzmxlixelVtfAPqUExINH1LA1L3tfBYCeobp3w==
+  dependencies:
+    luxon ">=3"
+
 check-error@^1.0.3:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/check-error/-/check-error-1.0.3.tgz#a6502e4312a7ee969f646e83bb3ddd56281bd694"
@@ -6113,6 +6120,11 @@ lru-cache@^5.1.1:
   integrity sha512-KpNARQA3Iwv+jTA0utUVVbrh+Jlrr1Fv0e56GGzAFOXN7dk/FviaDW8LHmK52DlcH4WP2n6gI8vN1aesBFgo9w==
   dependencies:
     yallist "^3.0.2"
+
+luxon@>=3, luxon@^3.5.0:
+  version "3.5.0"
+  resolved "https://registry.yarnpkg.com/luxon/-/luxon-3.5.0.tgz#6b6f65c5cd1d61d1fd19dbf07ee87a50bf4b8e20"
+  integrity sha512-rh+Zjr6DNfUYR3bPwJEnuwDdqMbxZW7LOQfUN4B54+Cl+0o5zaU9RJ6bcidfDtC1cWCZXQ+nvX8bf6bAji37QQ==
 
 magic-string@^0.30.5:
   version "0.30.14"

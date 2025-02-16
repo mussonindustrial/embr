@@ -10,55 +10,55 @@ import ZoomPlugin from 'chartjs-plugin-zoom'
 Chart.register(ZoomPlugin)
 
 import {
-    BoxPlotController,
-    ViolinController,
-    BoxAndWiskers,
-    Violin,
-    ViolinChart,
+  BoxPlotController,
+  ViolinController,
+  BoxAndWiskers,
+  Violin,
+  ViolinChart,
 } from '@sgratzl/chartjs-chart-boxplot'
 Chart.register(
-    BoxPlotController,
-    ViolinController,
-    BoxAndWiskers,
-    Violin,
-    ViolinChart
+  BoxPlotController,
+  ViolinController,
+  BoxAndWiskers,
+  Violin,
+  ViolinChart
 )
 
 import {
-    ForceDirectedGraphController,
-    EdgeLine,
-    DendogramChart,
-    DendogramController,
-    DendrogramChart,
-    DendrogramController,
-    ForceDirectedGraphChart,
-    GraphChart,
-    GraphController,
-    TreeChart,
-    TreeController
+  ForceDirectedGraphController,
+  EdgeLine,
+  DendogramChart,
+  DendogramController,
+  DendrogramChart,
+  DendrogramController,
+  ForceDirectedGraphChart,
+  GraphChart,
+  GraphController,
+  TreeChart,
+  TreeController,
 } from 'chartjs-chart-graph'
 Chart.register(
-    ForceDirectedGraphController,
-    EdgeLine,
-    DendogramChart,
-    DendogramController,
-    DendrogramChart,
-    DendrogramController,
-    ForceDirectedGraphChart,
-    GraphChart,
-    GraphController,
-    TreeChart,
-    TreeController
+  ForceDirectedGraphController,
+  EdgeLine,
+  DendogramChart,
+  DendogramController,
+  DendrogramChart,
+  DendrogramController,
+  ForceDirectedGraphChart,
+  GraphChart,
+  GraphController,
+  TreeChart,
+  TreeController
 )
 
 import { MatrixController, MatrixElement } from 'chartjs-chart-matrix'
 Chart.register(MatrixController, MatrixElement)
 
 import {
-    LinearAxis,
-    LineSegment,
-    ParallelCoordinatesController,
-    PCPScale,
+  LinearAxis,
+  LineSegment,
+  ParallelCoordinatesController,
+  PCPScale,
 } from 'chartjs-chart-pcp'
 Chart.register(LineSegment, ParallelCoordinatesController, PCPScale)
 Chart.registry.addElements(LinearAxis)
@@ -88,11 +88,14 @@ import { FunnelController, TrapezoidElement } from 'chartjs-chart-funnel'
 Chart.register(FunnelController, TrapezoidElement)
 
 import {
-    VennDiagramController,
-    ArcSlice,
-    EulerDiagramController,
+  VennDiagramController,
+  ArcSlice,
+  EulerDiagramController,
 } from 'chartjs-chart-venn'
 Chart.register(VennDiagramController, ArcSlice, EulerDiagramController)
 
 import { WordCloudController, WordElement } from 'chartjs-chart-wordcloud'
 Chart.register(WordCloudController, WordElement)
+
+import { TimestackScale } from 'chartjs-scale-timestack'
+Chart.register(TimestackScale)

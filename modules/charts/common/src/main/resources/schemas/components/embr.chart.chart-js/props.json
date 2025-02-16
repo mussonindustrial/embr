@@ -2336,7 +2336,8 @@
                 "logarithmic",
                 "radialLinear",
                 "time",
-                "timeseries"
+                "timeseries",
+                "timestack"
             ]
         },
         "text_alignment": {
