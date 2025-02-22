@@ -1808,7 +1808,7 @@
   resolved "https://registry.yarnpkg.com/@polka/url/-/url-1.0.0-next.28.tgz#d45e01c4a56f143ee69c54dd6b12eade9e270a73"
   integrity sha512-8LduaNlMZGwdZ6qWrKlfa+2M4gahzFkprZiAt2TF8uS0qQgBizKXpXURqvTJ4WtmupWxaLqjRb2UCTe72mu+Aw==
 
-"@robloche/chartjs-plugin-streaming@^3.1.0":
+"@robloche/chartjs-plugin-streaming@3.1.0":
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/@robloche/chartjs-plugin-streaming/-/chartjs-plugin-streaming-3.1.0.tgz#a765325b48acadb80a7bda0a8a33a19bb9bf3ecf"
   integrity sha512-6tTRo0eyw7klsk2ayjrZmJga+NqawDxwXlMOsQGAqJ8kZj9szNwlfD9EmTP2MDA8Sh8qFezxE6LYU6UUoothkg==
@@ -1913,7 +1913,7 @@
   resolved "https://registry.yarnpkg.com/@sgratzl/boxplots/-/boxplots-2.0.0.tgz#480d3488f1b768d1f48201a87c9f1a25194e0a0d"
   integrity sha512-XHQTNTk0OtDEZyT7v+BKNKt4OEXYhn4GtfI+iQ1eFiFsx8Aq/csz+mOJYbfpkiP8Popd/8Nky8vLh1zzkYn0gw==
 
-"@sgratzl/chartjs-chart-boxplot@^4.3.1":
+"@sgratzl/chartjs-chart-boxplot@4.4.4":
   version "4.4.4"
   resolved "https://registry.yarnpkg.com/@sgratzl/chartjs-chart-boxplot/-/chartjs-chart-boxplot-4.4.4.tgz#b532b11e777011e2ebe348f95dac33e8987c4600"
   integrity sha512-yenMztcbRyiBm20FxYry5HiJZPVGL/+Tc0nj3SIU5JlruthH2Awl3qSyrXUOwTzAhye2Lc/45Tw3j/UTBMLcrQ==
@@ -3094,10 +3094,10 @@ chardet@^0.7.0:
   resolved "https://registry.yarnpkg.com/chardet/-/chardet-0.7.0.tgz#90094849f0937f2eedc2425d0d28a9e5f0cbad9e"
   integrity sha512-mT8iDcrh03qDGRRmoA2hmBJnxpllMR+0/0qlzjqZES6NdiWDcZkCNAk4rPFZ9Q85r27unkiNNg8ZOiwZXBHwcA==
 
-chart.js@^4.4.4:
-  version "4.4.7"
-  resolved "https://registry.yarnpkg.com/chart.js/-/chart.js-4.4.7.tgz#7a01ee0b4dac3c03f2ab0589af888db296d896fa"
-  integrity sha512-pwkcKfdzTMAU/+jNosKhNL2bHtJc/sSmYgVbuGTEDhzkrhmyihmP7vUc/5ZK9WopidMDHNe3Wm7jOd/WhuHWuw==
+chart.js@4.4.8:
+  version "4.4.8"
+  resolved "https://registry.yarnpkg.com/chart.js/-/chart.js-4.4.8.tgz#54645b638e9d585099bc16b892947b5e6cd2a552"
+  integrity sha512-IkGZlVpXP+83QpMm4uxEiGqSI7jFizwVtF3+n5Pc3k7sMO+tkd0qxh2OzLhenM0K80xtmAONWGBn082EiBQSDA==
   dependencies:
     "@kurkle/color" "^0.3.0"
 
@@ -3220,7 +3220,7 @@ chartjs-plugin-zoom@2.2.0:
     "@types/hammerjs" "^2.0.45"
     hammerjs "^2.0.8"
 
-chartjs-scale-timestack@^1.0.1:
+chartjs-scale-timestack@1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/chartjs-scale-timestack/-/chartjs-scale-timestack-1.0.1.tgz#b945f4d12f9ec74507bf90f4b4b24032ed7b97b2"
   integrity sha512-Nzi3BVNqoboo8534ecFIY1XojfdbQ9xfjdFsNxcGbYeAVrRthzmxlixelVtfAPqUExINH1LA1L3tfBYCeobp3w==
@@ -6121,7 +6121,7 @@ lru-cache@^5.1.1:
   dependencies:
     yallist "^3.0.2"
 
-luxon@>=3, luxon@^3.5.0:
+luxon@3.5.0, luxon@>=3:
   version "3.5.0"
   resolved "https://registry.yarnpkg.com/luxon/-/luxon-3.5.0.tgz#6b6f65c5cd1d61d1fd19dbf07ee87a50bf4b8e20"
   integrity sha512-rh+Zjr6DNfUYR3bPwJEnuwDdqMbxZW7LOQfUN4B54+Cl+0o5zaU9RJ6bcidfDtC1cWCZXQ+nvX8bf6bAji37QQ==
@@ -6348,7 +6348,7 @@ moment@2.29.4:
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.29.4.tgz#3dbe052889fe7c1b2ed966fcb3a77328964ef108"
   integrity sha512-5LC9SOxjSc2HF6vO2CyuTDNivEdoz2IvyJJGj6X8DJ0eFyfszE0QiEd+iXmBvUP3WHxSjFH/vIsA0EN00cgr8w==
 
-moment@^2.29.4, moment@^2.30.1:
+moment@2.30.1, moment@^2.29.4:
   version "2.30.1"
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.30.1.tgz#f8c91c07b7a786e30c59926df530b4eac96974ae"
   integrity sha512-uEmtNhbDOrWPFS+hdjFCBfy9f2YoyzRpwcl+DqpC6taX21FzsTLQVbMV/W7PzNSX6x/bhC1zA3c2UQ5NzH6how==
@@ -7421,7 +7421,7 @@ rc@^1.0.1, rc@^1.1.6:
     minimist "^1.2.0"
     strip-json-comments "~2.0.1"
 
-react-chartjs-2@^5.2.0:
+react-chartjs-2@5.2.0:
   version "5.2.0"
   resolved "https://registry.yarnpkg.com/react-chartjs-2/-/react-chartjs-2-5.2.0.tgz#43c1e3549071c00a1a083ecbd26c1ad34d385f5d"
   integrity sha512-98iN5aguJyVSxp5U3CblRLH67J8gkfyGNbiK3c+l1QI/G4irHMPQw44aEPmjVag+YKTyQ260NcF82GTQ3bdscA==
