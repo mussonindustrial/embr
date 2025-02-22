@@ -6,7 +6,7 @@
     [ "@embr-jvm/core-*" ],
     [ "@embr-jvm/perspective-*" ],
     [ "@embr-modules/charts*"],
-    [ "@embr-modules/event-stream*"],
+    [ "@embr-modules/sse*"],
     [ "@embr-modules/periscope*"],
     [ "@embr-modules/thermo*"]
   ],
