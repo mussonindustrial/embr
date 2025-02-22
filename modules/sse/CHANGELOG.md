@@ -1,5 +1,11 @@
 # @mussonindustrial/embr-tag-stream
 
+## 0.5.0
+
+### Minor Changes
+
+- ea72fba: Rename EventStream module to SSE module.
+
 ## 0.4.5
 
 ### Patch Changes
