@@ -33,7 +33,7 @@ class ComponentDelegateJavaScriptProxy(
     private val queue = component.session.queue()
     private val requestsInProgress = ConcurrentHashMap<String, CompletableFuture<PyObject?>>()
     private val overloads = ScriptOverloads()
-    private val timeout = 30000L
+    private val timeout = 30L
 
     companion object {
         const val MESSAGE_RUN = "js-run"
