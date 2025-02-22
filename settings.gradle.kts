@@ -27,8 +27,8 @@ include(
     ":modules:charts:gateway",
     ":modules:charts:web",
 
-    ":modules:event-stream:common",
-    ":modules:event-stream:gateway",
+    ":modules:sse:common",
+    ":modules:sse:gateway",
 
     ":modules:periscope:common",
     ":modules:periscope:designer",
