@@ -161,7 +161,7 @@ class JavaScriptFunctions(private val context: PeriscopeGatewayContext) :
                         val sessionId = it["sessionId"] as? String
                         val pageId = it["pageId"] as? String
                         runJavaScript(function, args, null, sessionId, pageId)
-                            .get(30, TimeUnit.SECONDS)
+                            .get(timeout, TimeUnit.SECONDS)
                     },
                     "function" to typeOf<String>(),
                     "args" to typeOf<PyDictionary?>(),
