@@ -1,5 +1,11 @@
 # @mussonindustrial/embr-js-tag-stream
 
+## 0.4.0
+
+### Minor Changes
+
+- ea72fba: Rename EventStream module to SSE module.
+
 ## 0.3.0
 
 ### Minor Changes

@@ -1,5 +1,11 @@
 # @mussonindustrial/embr-js-chart-js
 
+## 2.0.3
+
+### Patch Changes
+
+- 0500c22: Bump `Chart.js` dependency to `4.4.8`.
+
 ## 2.0.2
 
 ### Patch Changes

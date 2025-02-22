@@ -1,5 +1,16 @@
 # @embr-modules/periscope
 
+## 0.5.3
+
+### Patch Changes
+
+- 4186e27: Make all `runJavaScript` functions share the same timeout values (30 seconds).
+- Updated dependencies [464e49a]
+  - @embr-jvm/perspective-gateway@0.7.3
+  - @embr-jvm/perspective-common@0.7.3
+  - @embr-jvm/perspective-designer@0.7.3
+  - @embr-modules/periscope-web@0.5.3
+
 ## 0.5.2
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @embr-jvm/perspective-gateway
 
+## 0.7.3
+
+### Patch Changes
+
+- 464e49a: Change `ComponentDelegateJavaScriptProxy` timeout from 30,000 seconds to 30 seconds.
+
 ## 0.7.2
 
 ## 0.7.1
