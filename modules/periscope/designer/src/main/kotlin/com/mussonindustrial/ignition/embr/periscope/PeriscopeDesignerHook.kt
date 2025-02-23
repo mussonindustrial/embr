@@ -13,6 +13,7 @@ import com.mussonindustrial.embr.perspective.designer.component.asDesignerDescri
 import com.mussonindustrial.ignition.embr.periscope.Meta.SHORT_MODULE_ID
 import com.mussonindustrial.ignition.embr.periscope.component.embedding.EmbeddedView
 import com.mussonindustrial.ignition.embr.periscope.component.embedding.FlexRepeater
+import com.mussonindustrial.ignition.embr.periscope.component.embedding.JsonView
 import com.mussonindustrial.ignition.embr.periscope.component.embedding.Swiper
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -43,6 +44,7 @@ class PeriscopeDesignerHook : AbstractDesignerModuleHook() {
 
         componentRegistry.registerComponent(EmbeddedView.DESCRIPTOR.asDesignerDescriptor())
         componentRegistry.registerComponent(FlexRepeater.DESCRIPTOR.asDesignerDescriptor())
+        componentRegistry.registerComponent(JsonView.DESCRIPTOR.asDesignerDescriptor())
         componentRegistry.registerComponent(Swiper.DESCRIPTOR.asDesignerDescriptor())
     }
 
@@ -57,6 +59,7 @@ class PeriscopeDesignerHook : AbstractDesignerModuleHook() {
 
         componentRegistry.removeComponent(EmbeddedView.COMPONENT_ID)
         componentRegistry.removeComponent(FlexRepeater.COMPONENT_ID)
+        componentRegistry.removeComponent(JsonView.COMPONENT_ID)
         componentRegistry.removeComponent(Swiper.COMPONENT_ID)
     }
 }
