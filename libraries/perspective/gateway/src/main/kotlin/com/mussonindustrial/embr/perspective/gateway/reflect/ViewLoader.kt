@@ -6,6 +6,7 @@ import com.inductiveautomation.perspective.gateway.api.ViewInstanceId
 import com.inductiveautomation.perspective.gateway.model.PageModel
 import com.inductiveautomation.perspective.gateway.model.ViewModel
 import com.mussonindustrial.embr.common.reflect.getSuperPrivateMethod
+import com.mussonindustrial.embr.common.reflect.getSuperPrivateProperty
 import java.util.*
 import java.util.concurrent.CompletableFuture
 
@@ -21,6 +22,9 @@ class ViewLoader(page: PageModel) {
             JsonObject::class.java
         )
     private val _findView = _handlers.getSuperPrivateMethod("findView", ViewInstanceId::class.java)
+    @Suppress("UNCHECKED_CAST")
+    private val _views =
+        page.getSuperPrivateProperty("views") as MutableMap<ViewInstanceId, ViewModel>
     private val log = LogUtil.getModuleLogger("embr-periscope", "ViewLoader")
     private val queue = page.session.queue()
 
@@ -84,5 +88,9 @@ class ViewLoader(page: PageModel) {
                 }
             }
         return startedView
+    }
+
+    fun addView(viewId: ViewInstanceId, model: ViewModel) {
+        _views[viewId] = model
     }
 }

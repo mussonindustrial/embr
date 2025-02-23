@@ -1,0 +1,37 @@
+{
+  "viewJson": {
+    "custom": {},
+    "params": {},
+    "props": {},
+    "root": {
+      "children": [
+        {
+          "meta": {
+            "name": "Label"
+          },
+          "position": {
+            "shrink": 0
+          },
+          "props": {
+            "text": "Json View"
+          },
+          "type": "ia.display.label"
+        }
+      ],
+      "meta": {
+        "name": "root"
+      },
+      "props": {
+        "direction": "column"
+      },
+      "type": "ia.container.flex"
+    }
+  },
+  "viewParams": {},
+  "viewStyle": {
+    "classes": ""
+  },
+  "style": {
+    "classes": ""
+  }
+}

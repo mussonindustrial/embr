@@ -1,0 +1,45 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "properties": {
+        "viewJson": {
+            "type": "object",
+            "description": "Json representation of the view."
+        },
+        "viewParams": {
+            "type": "object",
+            "description": "Parameters for this instance.",
+            "default": {}
+        },
+        "viewStyle": {
+            "$ref": "urn:ignition-schema:schemas/style-properties.schema.json",
+            "default": {
+                "classes": ""
+            }
+        },
+        "useDefaultHeight": {
+            "type": "boolean",
+            "description": "Use default view height."
+        },
+        "useDefaultMinHeight": {
+            "type": "boolean",
+            "description": "Use default minimum view height."
+        },
+        "useDefaultMinWidth": {
+            "type": "boolean",
+            "description": "Use default minimum view height."
+        },
+        "useDefaultWidth": {
+            "type": "boolean",
+            "description": "Use default view width."
+        },
+        "style": {
+            "$ref": "urn:ignition-schema:schemas/style-properties.schema.json",
+            "default": {
+                "classes": "",
+                "overflow": "auto"
+            }
+        }
+    },
+    "type": "object",
+    "required": ["viewJson"]
+}
