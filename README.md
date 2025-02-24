@@ -27,12 +27,12 @@
  ## Directory
 <div align="center">
   
-| Module                                              | Description                                                                           | Release Notes                                                                                                                                  |
-|-----------------------------------------------------|---------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------|
-| [embr-charts](modules/charts/README.md)             | A collection of enhanced Perspective charting components.                             | [![version](https://img.shields.io/github/v/release/mussonindustrial/embr?filter=*charts*&label=%20)](modules/charts/CHANGELOG.md)             |
-| [embr-event-stream](modules/event-stream/README.md) | Provides an API for high-speed streaming of tag changes via SSE (server-sent events). | [![version](https://img.shields.io/github/v/release/mussonindustrial/embr?filter=*event-stream*&label=%20)](modules/event-stream/CHANGELOG.md) |
-| [embr-periscope](modules/periscope/README.md)       | Design extensions and enhancements for Perspective.                                   | [![version](https://img.shields.io/github/v/release/mussonindustrial/embr?filter=*periscope*&label=%20)](modules/event-stream/CHANGELOG.md)    |
-| [embr-thermodynamics](modules/thermo/README.md)     | Scripting functions for computing thermodynamic properties.                           | [![version](https://img.shields.io/github/v/release/mussonindustrial/embr?filter=*thermo*&label=%20)](modules/thermo/CHANGELOG.md)             |
+| Module                                          | Description                                                                           | Release Notes                                                                                                                                                                       |
+|-------------------------------------------------|---------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| [embr-charts](modules/charts/README.md)         | A collection of enhanced Perspective charting components.                             | [![version](https://img.shields.io/github/package-json/v/mussonindustrial/embr?filename=modules%2Fcharts%2Fpackage.json&style=for-the-badge)](modules/charts/CHANGELOG.md)          |
+| [embr-sse](modules/sse/README.md)               | Provides an API for high-speed streaming of tag changes via SSE (server-sent events). | [![version](https://img.shields.io/github/package-json/v/mussonindustrial/embr?filename=modules%2Fsse%2Fpackage.json&style=for-the-badge)](modules/sse/CHANGELOG.md)                |
+| [embr-periscope](modules/periscope/README.md)   | Design extensions and enhancements for Perspective.                                   | [![version](https://img.shields.io/github/package-json/v/mussonindustrial/embr?filename=modules%2Fperiscope%2Fpackage.json&style=for-the-badge)](modules/event-stream/CHANGELOG.md) |
+| [embr-thermodynamics](modules/thermo/README.md) | Scripting functions for computing thermodynamic properties.                           | [![version](https://img.shields.io/github/package-json/v/mussonindustrial/embr?filename=modules%2Fthermo%2Fpackage.json&style=for-the-badge)](modules/thermo/CHANGELOG.md)          |
 
 </div>
 
@@ -42,13 +42,20 @@
 ```sh
 git clone https://github.com/mussonindustrial/embr
 cd embr
-npm i
+yarn install --frozen-lockfile
 ./gradlew build
 ```
 
 ## Sponsors
 Maintenance of this project is made possible by all the [contributors] and [sponsors]. 
 If you'd like to sponsor this project and have your avatar or company logo appear below [click here](https://github.com/sponsors/mussonindustrial). 💖
+
+<a href="https://mussonindustrial.com/">
+<img src="https://avatars.githubusercontent.com/u/84413538?s=200&v=4" alt="Musson Industrial" width="100"/> 
+</a>
+<a href="https://artekis.io/">
+<img src="https://avatars.githubusercontent.com/u/89804242?s=200&v=4" alt="ARtek" width="100"/> 
+</a>
 
 
 
