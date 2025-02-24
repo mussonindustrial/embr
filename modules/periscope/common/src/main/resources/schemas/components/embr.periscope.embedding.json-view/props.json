@@ -3,7 +3,9 @@
     "properties": {
         "viewJson": {
             "type": "object",
-            "description": "Json representation of the view."
+            "description": "Json representation of the view.",
+            "additionalProperties": true,
+            "default": {}
         },
         "viewParams": {
             "type": "object",
