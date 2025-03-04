@@ -29,7 +29,7 @@ class PeriscopeDesignerHook : AbstractDesignerModuleHook() {
 
     override fun startup(context: DesignerContext, activationState: LicenseState) {
         logger.debug("Embr-Periscope module started.")
-        this.context = context
+        this.context = PeriscopeDesignerContext(context)
         Meta.addI18NBundle()
 
         val pdi: PerspectiveDesignerInterface = PerspectiveDesignerInterface.get(context)

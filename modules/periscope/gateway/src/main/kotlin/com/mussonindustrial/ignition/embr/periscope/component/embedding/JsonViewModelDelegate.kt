@@ -24,13 +24,11 @@ class JsonViewModelDelegate(component: Component) : ComponentModelDelegate(compo
 
     private val log = LogUtil.getModuleLogger("embr-periscope", "JsonViewModelDelegate")
     private val context = PeriscopeGatewayContext.instance
-    private val queue = component.session.queue()
     private val props = PropsHandler(component.getPropertyTreeOf(PropertyType.props)!!)
     private val viewLoader = context.getViewLoader(component.page as PageModel)
     private val gson = context.perspectiveContext.sharedGson
 
     private var viewModel: ViewModel? = null
-    private val viewJsonListener = createViewJsonListener()
     private val viewParamsListener = createViewParamsListener()
     private val viewOutputListeners = WeakHashMap<ViewModel, Map<String, Subscription>>()
 
@@ -107,10 +105,6 @@ class JsonViewModelDelegate(component: Component) : ComponentModelDelegate(compo
         return props.tree.subscribe("viewParams", Origin.allBut(Origin.Delegate)) {
             onViewInputChanged(it)
         }
-    }
-
-    private fun createViewJsonListener(): Subscription {
-        return props.tree.subscribe("viewJson", Origin.allBut(Origin.Delegate)) { initializeView() }
     }
 
     private fun onViewInputChanged(event: PropertyTreeChangeEvent) {
