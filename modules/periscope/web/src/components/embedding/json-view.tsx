@@ -1,6 +1,7 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import {
   AbstractUIElementStore,
+  ClientStore,
   ComponentMeta,
   ComponentProps,
   ComponentStore,
@@ -16,7 +17,6 @@ import {
   ViewStateDisplay,
 } from '@inductiveautomation/perspective-client'
 import { JoinableView } from '../../util'
-import { getClientStore } from '@embr-js/perspective-client'
 import { isEqual } from 'lodash'
 
 const COMPONENT_TYPE = 'embr.periscope.embedding.json-view'
@@ -35,12 +35,18 @@ function getChildMountPath(store: ComponentStore) {
   return `${store.viewMountPath}.${store.addressPathString}`
 }
 
-function MissingComponentDelegate({ emit }: { emit: Emitter }) {
+function FailedToLoadView({
+  emit,
+  message,
+}: {
+  emit: Emitter
+  message: string
+}) {
   return (
     <div {...emit({ classes: ['view-parent'] })}>
       <ViewStateDisplay
         primaryMessage="View Failed to Load"
-        secondaryMessage={`No component delegate was found`}
+        secondaryMessage={message}
         icon={
           <svg className="view-state-icon">
             <use xlinkHref="/res/perspective/icons/material-icons.svg#warning" />
@@ -51,65 +57,74 @@ function MissingComponentDelegate({ emit }: { emit: Emitter }) {
   )
 }
 
+function installView(
+  clientStore: ClientStore,
+  resourcePath: string,
+  viewJson: ViewDefinition
+) {
+  const views = clientStore.resources.project?.views
+
+  views?.set(resourcePath, viewJson)
+
+  if (clientStore.isClient) {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    clientStore.resources.project.subscriptionMap[resourcePath] = []
+  }
+  if (clientStore.isDesigner) {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    clientStore.page.viewDefCache.set(resourcePath, viewJson)
+  }
+}
+
+function uninstallView(clientStore: ClientStore, resourcePath: string) {
+  const views = clientStore.resources.project?.views
+
+  views?.delete(resourcePath)
+
+  if (clientStore.isClient) {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    clientStore.resources.project.subscriptionMap.delete(resourcePath)
+  }
+  if (clientStore.isDesigner) {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    clientStore.page.viewDefCache.delete(resourcePath)
+  }
+}
+
 export function JsonViewComponent({
   props,
   store,
   emit,
 }: ComponentProps<JsonViewProps>) {
+  const viewRef = useRef<JoinableView>(null)
+  const clientStore = store.clientStore
   const mountPath = getChildMountPath(store)
+  const resourcePath = `${store.view.resourcePath}.${store.addressPathString}`
 
   if (store.delegate == null) {
     console.warn(
       `No delegate found for component ${COMPONENT_TYPE} at ${mountPath}`
     )
-    return <MissingComponentDelegate emit={emit} />
+    return (
+      <FailedToLoadView
+        emit={emit}
+        message="No componenet delegate was found"
+      />
+    )
   }
 
-  const clientStore = getClientStore()
   if (clientStore == undefined) {
     console.warn(
       `No client store found for component ${COMPONENT_TYPE} at ${mountPath}`
     )
-    return <MissingComponentDelegate emit={emit} />
+    return <FailedToLoadView emit={emit} message="No client store was found" />
   }
 
-  const resourcePath = `${store.view.resourcePath}.${store.addressPathString}`
-  const views = clientStore.resources.project?.views
-
-  const installView = useCallback(() => {
-    if (clientStore.isClient) {
-      views?.set(resourcePath, props.viewJson)
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      clientStore.resources.project.subscriptionMap[resourcePath] = []
-    } else {
-      views?.set(resourcePath, props.viewJson)
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      clientStore.page.viewDefCache.set(resourcePath, props.viewJson)
-    }
-  }, [props.viewJson])
-
-  const uninstallView = useCallback(() => {
-    views?.delete(resourcePath)
-
-    if (clientStore.isDesigner) {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      clientStore.page.viewDefCache.delete(resourcePath)
-    }
-  }, [views])
-
-  // Create the view of startup, before the first render.
-  const isMounted = useRef(false)
-  if (!isMounted.current) {
-    console.log('Registering view definition.')
-    installView()
-  }
-  useEffect(() => {
-    isMounted.current = true
-  }, [])
-
+  // Reinstall the view whenever the definition changes.
   const [viewJson, setViewJson] = useState(props.viewJson)
   useEffect(() => {
     if (!isEqual(viewJson, props.viewJson)) {
@@ -117,17 +132,29 @@ export function JsonViewComponent({
     }
   }, [props.viewJson])
 
-  // Reinstall the view whenever the definition changes.
   useEffect(() => {
-    console.log('View definition changed, re-registering the view definition.')
-    installView()
-    viewRef.current?.resetInstance()
+    if (isMounted.current) {
+      console.log(
+        'View definition changed, re-registering the view definition.'
+      )
+      installView(clientStore, resourcePath, props.viewJson)
+      viewRef.current?.resetInstance()
+    }
+
     return () => {
-      uninstallView()
+      uninstallView(clientStore, resourcePath)
     }
   }, [viewJson])
 
-  const viewRef = useRef<JoinableView>(null)
+  // Create the view of startup, before the first render.
+  const isMounted = useRef(false)
+  if (!isMounted.current) {
+    console.log('Registering view definition.')
+    installView(clientStore, resourcePath, props.viewJson)
+  }
+  useEffect(() => {
+    isMounted.current = true
+  }, [])
 
   return (
     <div {...emit({ classes: ['view-parent'] })}>

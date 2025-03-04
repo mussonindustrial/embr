@@ -4,20 +4,7 @@
     "params": {},
     "props": {},
     "root": {
-      "children": [
-        {
-          "meta": {
-            "name": "Label"
-          },
-          "position": {
-            "shrink": 0
-          },
-          "props": {
-            "text": "Json View"
-          },
-          "type": "ia.display.label"
-        }
-      ],
+      "children": [],
       "meta": {
         "name": "root"
       },
