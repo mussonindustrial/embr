@@ -5,21 +5,21 @@ import com.inductiveautomation.perspective.common.api.ComponentDescriptor
 import com.inductiveautomation.perspective.common.api.ComponentDescriptorImpl
 import com.mussonindustrial.embr.perspective.common.component.PaletteEntry
 import com.mussonindustrial.embr.perspective.common.component.addPaletteEntry
-import com.mussonindustrial.ignition.embr.periscope.Components
 import com.mussonindustrial.ignition.embr.periscope.Meta.MODULE_ID
+import com.mussonindustrial.ignition.embr.periscope.PeriscopeComponents
 
 class CoordinateCanvas {
     companion object {
         var COMPONENT_ID: String = "embr.periscope.container.coordinate-canvas"
         var SCHEMA: JsonSchema =
             JsonSchema.parse(
-                Components::class
+                PeriscopeComponents::class
                     .java
                     .getResourceAsStream("/schemas/components/${COMPONENT_ID}/props.json")
             )
         var CHILD_POSITION_SCHEMA: JsonSchema =
             JsonSchema.parse(
-                Components::class
+                PeriscopeComponents::class
                     .java
                     .getResourceAsStream("/schemas/components/${COMPONENT_ID}/children.json")
             )
@@ -43,7 +43,7 @@ class CoordinateCanvas {
                 .setName("Coordinate Canvas")
                 .addPaletteEntry(VARIANT_BASE)
                 .setDefaultMetaName("CoordinateCanvas")
-                .setResources(Components.BROWSER_RESOURCES)
+                .setResources(PeriscopeComponents.BROWSER_RESOURCES)
                 .build()
     }
 }

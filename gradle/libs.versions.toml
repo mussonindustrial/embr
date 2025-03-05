@@ -7,6 +7,7 @@ ia-gson = "2.10.1"
 jetty = "10.0.21"
 if97 = "2.0.0"
 spotless = "7.0.2"
+testcontainers-ignition = "0.4.1"
 
 [plugins]
 kotlin = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
