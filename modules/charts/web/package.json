@@ -12,6 +12,8 @@
         "lint:prettier": "prettier -c . --cache --ignore-path=../../.prettierignore"
     },
     "dependencies": {
+        "@embr-js/utils": "0.6.0",
+        "@embr-js/perspective-client": "0.2.0",
         "@inductiveautomation/perspective-client": "2.1.33",
         "@robloche/chartjs-plugin-streaming": "3.1.0",
         "@sgratzl/chartjs-chart-boxplot": "4.4.4",
@@ -44,9 +46,7 @@
     },
     "devDependencies": {
         "@embr-js/eslint-config": "*",
-        "@embr-js/perspective-client": "0.2.0",
         "@embr-js/tsconfig": "*",
-        "@embr-js/utils": "0.6.0",
         "@types/lodash": "^4.14.202",
         "@types/react": "^18.2.56",
         "eslint": "^8.56.0",
