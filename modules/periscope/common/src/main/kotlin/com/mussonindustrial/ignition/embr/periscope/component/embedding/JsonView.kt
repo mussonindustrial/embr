@@ -25,7 +25,7 @@ class JsonView {
                 this::class.java,
                 COMPONENT_ID,
                 "base",
-                "Json View +",
+                "Json View",
                 "Renders a view from its Json representation."
             )
 
@@ -35,7 +35,7 @@ class JsonView {
                 .setId(COMPONENT_ID)
                 .setModuleId(MODULE_ID)
                 .setSchema(SCHEMA)
-                .setName("Json View +")
+                .setName("Json View")
                 .addPaletteEntry(VARIANT_BASE)
                 .setDefaultMetaName("JsonView")
                 .setResources(PeriscopeComponents.BROWSER_RESOURCES)
