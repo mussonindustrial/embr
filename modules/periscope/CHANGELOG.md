@@ -1,5 +1,17 @@
 # @embr-modules/periscope
 
+## 0.5.4
+
+### Patch Changes
+
+- a01a32e: Add `View Json` component. Allows rendering a view from a `view.json` schema, enabling dunamic view creation from inside of Ignition.
+- Updated dependencies [a01a32e]
+- Updated dependencies [a01a32e]
+  - @embr-modules/periscope-web@0.5.4
+  - @embr-jvm/perspective-gateway@0.7.4
+  - @embr-jvm/perspective-common@0.7.4
+  - @embr-jvm/perspective-designer@0.7.4
+
 ## 0.5.3
 
 ### Patch Changes

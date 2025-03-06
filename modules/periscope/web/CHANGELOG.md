@@ -1,5 +1,11 @@
 # @mussonindustrial/embr-js-chart-js
 
+## 0.5.4
+
+### Patch Changes
+
+- a01a32e: Add `View Json` component. Allows rendering a view from a `view.json` schema, enabling dunamic view creation from inside of Ignition.
+
 ## 0.5.3
 
 ## 0.5.2
