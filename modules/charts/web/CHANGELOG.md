@@ -1,5 +1,16 @@
 # @mussonindustrial/embr-js-chart-js
 
+## 2.1.0
+
+### Minor Changes
+
+- 8921225: Include `@embr-js/perspective-client` and `@embr-js/utils` as run time dependencies.
+
+### Patch Changes
+
+- Updated dependencies [8921225]
+  - @embr-js/perspective-client@0.2.1
+
 ## 2.0.4
 
 ## 2.0.3

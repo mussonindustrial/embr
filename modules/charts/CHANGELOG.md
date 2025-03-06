@@ -1,5 +1,12 @@
 # @mussonindustrial/embr-charts
 
+## 2.1.0
+
+### Patch Changes
+
+- Updated dependencies [8921225]
+  - @embr-modules/charts-web@2.1.0
+
 ## 2.0.4
 
 ### Patch Changes
