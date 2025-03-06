@@ -44,8 +44,6 @@ export class CoordinateCanvasComponent extends CoordinateContainer {
       const delegate = props.store.delegate as CoordinateCanvasComponentDelegate
       delegate.attachComponent(this)
     }
-
-    console.log(props.store.element)
   }
 
   findChild(name: string): ComponentStore | undefined {
@@ -57,8 +55,6 @@ export class CoordinateCanvasComponent extends CoordinateContainer {
   getChildSize(name: string): DOMRect | undefined {
     const child = this.findChild(name)
     console.log('store', this.props.store)
-    console.log('child', child)
-    console.log('element', this.props.store.element)
     if (child && child.element && this.props.store.element) {
       const componentBounds = this.props.store.element.getBoundingClientRect()
       const childBounds = child.element.getBoundingClientRect()
