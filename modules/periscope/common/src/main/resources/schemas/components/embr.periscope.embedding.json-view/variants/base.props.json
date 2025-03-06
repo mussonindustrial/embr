@@ -1,0 +1,24 @@
+{
+  "viewJson": {
+    "custom": {},
+    "params": {},
+    "props": {},
+    "root": {
+      "children": [],
+      "meta": {
+        "name": "root"
+      },
+      "props": {
+        "direction": "column"
+      },
+      "type": "ia.container.flex"
+    }
+  },
+  "viewParams": {},
+  "viewStyle": {
+    "classes": ""
+  },
+  "style": {
+    "classes": ""
+  }
+}

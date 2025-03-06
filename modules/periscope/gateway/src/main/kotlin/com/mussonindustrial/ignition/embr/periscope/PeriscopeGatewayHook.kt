@@ -50,6 +50,9 @@ class PeriscopeGatewayHook : AbstractGatewayModuleHook() {
         componentRegistry.registerComponent(EmbeddedView.DESCRIPTOR)
         modelDelegateRegistry.register(EmbeddedView.COMPONENT_ID) { EmbeddedViewModelDelegate(it) }
 
+        componentRegistry.registerComponent(JsonView.DESCRIPTOR)
+        modelDelegateRegistry.register(JsonView.COMPONENT_ID) { JsonViewModelDelegate(it) }
+
         componentRegistry.registerComponent(FlexRepeater.DESCRIPTOR)
         modelDelegateRegistry.register(FlexRepeater.COMPONENT_ID) { FlexRepeaterModelDelegate(it) }
 
@@ -70,6 +73,9 @@ class PeriscopeGatewayHook : AbstractGatewayModuleHook() {
 
         componentRegistry.removeComponent(EmbeddedView.COMPONENT_ID)
         modelDelegateRegistry.remove(EmbeddedView.COMPONENT_ID)
+
+        componentRegistry.removeComponent(JsonView.COMPONENT_ID)
+        modelDelegateRegistry.remove(JsonView.COMPONENT_ID)
 
         componentRegistry.removeComponent(FlexRepeater.COMPONENT_ID)
         modelDelegateRegistry.remove(FlexRepeater.COMPONENT_ID)
