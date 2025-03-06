@@ -1,5 +1,11 @@
 # @embr-jvm/perspective-gateway
 
+## 0.7.4
+
+### Patch Changes
+
+- a01a32e: Add the ability to manually register a ViewModel using `ViewLoader.addView(viewId, model)`.
+
 ## 0.7.3
 
 ### Patch Changes

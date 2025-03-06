@@ -1,6 +1,6 @@
 {
     "name": "@embr-modules/charts",
-    "version": "2.0.3",
+    "version": "2.0.4",
     "private": false,
     "keywords": [
         "ignition",
@@ -15,11 +15,11 @@
         "!**/*.unsigned.modl"
     ],
     "dependencies": {
-        "@embr-modules/charts-web": "2.0.3",
+        "@embr-modules/charts-web": "2.0.4",
         "@embr-jvm/core-common": "0.6.0",
         "@embr-jvm/core-designer": "0.6.0",
-        "@embr-jvm/perspective-common": "0.7.3",
-        "@embr-jvm/perspective-designer": "0.7.3",
-        "@embr-jvm/perspective-gateway": "0.7.3"
+        "@embr-jvm/perspective-common": "0.7.4",
+        "@embr-jvm/perspective-designer": "0.7.4",
+        "@embr-jvm/perspective-gateway": "0.7.4"
     }
 }
