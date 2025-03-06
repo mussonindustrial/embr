@@ -1,7 +1,7 @@
 {
     "name": "@embr-modules/periscope-web",
     "private": true,
-    "version": "0.5.4",
+    "version": "0.5.5",
     "scripts": {
         "dev": "vite",
         "build": "tsc && nx vite:build && nx vite:test --run",
@@ -14,7 +14,7 @@
     "dependencies": {
         "@inductiveautomation/perspective-client": "2.1.33",
         "@embr-js/utils": "0.6.0",
-        "@embr-js/perspective-client": "0.2.0",
+        "@embr-js/perspective-client": "0.2.1",
         "lodash": "^4.17.21",
         "react": "^18",
         "react-dom": "^18",

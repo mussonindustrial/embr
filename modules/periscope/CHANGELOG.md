@@ -1,5 +1,11 @@
 # @embr-modules/periscope
 
+## 0.5.5
+
+### Patch Changes
+
+- @embr-modules/periscope-web@0.5.5
+
 ## 0.5.4
 
 ### Patch Changes
