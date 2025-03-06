@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef } from 'react'
 import {
   AbstractUIElementStore,
   ClientStore,
@@ -8,6 +8,7 @@ import {
   ComponentStoreDelegate,
   Emitter,
   JsObject,
+  ObservableProjectDefinition,
   PageStore,
   PComponent,
   PropertyTree,
@@ -17,7 +18,6 @@ import {
   ViewStateDisplay,
 } from '@inductiveautomation/perspective-client'
 import { JoinableView } from '../../util'
-import { isEqual } from 'lodash'
 
 const COMPONENT_TYPE = 'embr.periscope.embedding.json-view'
 
@@ -33,6 +33,14 @@ type JsonViewProps = {
 
 function getChildMountPath(store: ComponentStore) {
   return `${store.viewMountPath}.${store.addressPathString}`
+}
+
+function getSubscriptionMap(project: ObservableProjectDefinition) {
+  return Reflect.get(project, 'subscriptionMap')
+}
+
+function getViewDefCache(page: PageStore) {
+  return Reflect.get(page, 'viewDefCache') as Map<string, ViewDefinition>
 }
 
 function FailedToLoadView({
@@ -66,15 +74,11 @@ function installView(
 
   views?.set(resourcePath, viewJson)
 
-  if (clientStore.isClient) {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    clientStore.resources.project.subscriptionMap[resourcePath] = []
+  if (clientStore.isClient && clientStore.resources.project) {
+    getSubscriptionMap(clientStore.resources.project)[resourcePath] = []
   }
   if (clientStore.isDesigner) {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    clientStore.page.viewDefCache.set(resourcePath, viewJson)
+    getViewDefCache(clientStore.page).set(resourcePath, viewJson)
   }
 }
 
@@ -83,15 +87,11 @@ function uninstallView(clientStore: ClientStore, resourcePath: string) {
 
   views?.delete(resourcePath)
 
-  if (clientStore.isClient) {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    clientStore.resources.project.subscriptionMap.delete(resourcePath)
+  if (clientStore.isClient && clientStore.resources.project) {
+    delete getSubscriptionMap(clientStore.resources.project)[resourcePath]
   }
   if (clientStore.isDesigner) {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    clientStore.page.viewDefCache.delete(resourcePath)
+    getViewDefCache(clientStore.page).delete(resourcePath)
   }
 }
 
@@ -125,16 +125,16 @@ export function JsonViewComponent({
   }
 
   // Reinstall the view whenever the definition changes.
-  const [viewJson, setViewJson] = useState(props.viewJson)
-  useEffect(() => {
-    if (!isEqual(viewJson, props.viewJson)) {
-      setViewJson(props.viewJson)
-    }
-  }, [props.viewJson])
+  let viewJsonDependency: ViewDefinition | string = props.viewJson
 
+  // If we are in the designer, use a string representation of the view.
+  // Without this fix, the view will re-render when the `viewParams` changes.
+  if (clientStore.isDesigner) {
+    viewJsonDependency = JSON.stringify(props.viewJson)
+  }
   useEffect(() => {
     if (isMounted.current) {
-      console.log(
+      console.debug(
         'View definition changed, re-registering the view definition.'
       )
       installView(clientStore, resourcePath, props.viewJson)
@@ -144,12 +144,12 @@ export function JsonViewComponent({
     return () => {
       uninstallView(clientStore, resourcePath)
     }
-  }, [viewJson])
+  }, [viewJsonDependency])
 
   // Create the view of startup, before the first render.
   const isMounted = useRef(false)
   if (!isMounted.current) {
-    console.log('Registering view definition.')
+    console.debug('Registering view definition.')
     installView(clientStore, resourcePath, props.viewJson)
   }
   useEffect(() => {
