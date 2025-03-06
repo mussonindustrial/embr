@@ -5,6 +5,7 @@ import {
   ViewStore,
 } from '@inductiveautomation/perspective-client'
 import { getClientStore } from '../utils'
+import { makeSendMessage, SendMessage } from './sendMessage'
 
 export type CallingContext = {
   client?: ClientStore
@@ -16,6 +17,7 @@ export type CallingContext = {
 export type ScriptingGlobals = {
   perspective: {
     context: CallingContext
+    sendMessage: SendMessage
   }
 }
 
@@ -29,6 +31,7 @@ export function createScriptingGlobals(
   return {
     perspective: {
       context,
+      sendMessage: makeSendMessage(context),
     },
   }
 }
