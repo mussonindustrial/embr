@@ -9,14 +9,11 @@ import org.python.core.PyObject
 
 class PyArgOverload(
     val name: String,
-    private val functions: Map<FunctionSignature, (args: Map<String, Any?>) -> Any?>
+    private val functions: Map<FunctionSignature, (args: Map<String, Any?>) -> Any?>,
 ) {
 
     @OptIn(ExperimentalStdlibApi::class)
-    fun call(
-        args: Array<PyObject>,
-        keywords: Array<String>,
-    ): Any? {
+    fun call(args: Array<PyObject>, keywords: Array<String>): Any? {
         val signatures = functions.keys.flatMap { signature -> signature.parameters }.toSet()
 
         val argParser =
@@ -46,9 +43,9 @@ class PyArgOverload(
                             val jValue = TypeUtilities.pyToJava(pyValue)
                             return@associateBy TypeUtilities.coerce(
                                 jValue,
-                                it.type.javaType as Class<*>
+                                it.type.javaType as Class<*>,
                             )
-                        }
+                        },
                     )
                 )
             }

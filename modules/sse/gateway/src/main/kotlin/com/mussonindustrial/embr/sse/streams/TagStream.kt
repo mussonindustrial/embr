@@ -93,8 +93,7 @@ class TagStream : EventStream {
 
     enum class TagEvent(val eventType: String) {
         Change("tag_change"),
-        Alarm("tag_alarm"),
-        ;
+        Alarm("tag_alarm");
 
         companion object {
             fun fromValue(value: String): TagEvent =
@@ -227,11 +226,7 @@ class TagStream : EventStream {
             )
         }
 
-        private fun sendMessage(
-            messageId: Long,
-            timestamp: Long,
-            values: List<Any>,
-        ) {
+        private fun sendMessage(messageId: Long, timestamp: Long, values: List<Any>) {
             val v = JsonArray()
             values.forEach { v.add(it as Number) }
 
@@ -244,12 +239,7 @@ class TagStream : EventStream {
             session.emitEvent("tag_history", json.toString())
         }
 
-        private fun sendMessage(
-            messageId: Long,
-            timestamp: Long,
-            tagId: Number,
-            value: Number,
-        ) {
+        private fun sendMessage(messageId: Long, timestamp: Long, tagId: Number, value: Number) {
             val json =
                 JsonObject().apply {
                     addProperty("message_id", messageId)

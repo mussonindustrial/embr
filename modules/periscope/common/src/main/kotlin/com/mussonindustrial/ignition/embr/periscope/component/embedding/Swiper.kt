@@ -26,7 +26,7 @@ class Swiper {
                 COMPONENT_ID,
                 "base",
                 "Swiper",
-                "The Most Modern Mobile Touch Slider."
+                "The Most Modern Mobile Touch Slider.",
             )
         private var VARIANT_AUTO_HORIZONTAL =
             PaletteEntry(
@@ -34,7 +34,7 @@ class Swiper {
                 COMPONENT_ID,
                 "auto-horizontal",
                 "Auto Horizontal",
-                "Auto-sized horizontal slides."
+                "Auto-sized horizontal slides.",
             )
         private var VARIANT_AUTO_VERTICAL =
             PaletteEntry(
@@ -42,7 +42,7 @@ class Swiper {
                 COMPONENT_ID,
                 "auto-vertical",
                 "Auto Vertical",
-                "Auto-sized vertical slides."
+                "Auto-sized vertical slides.",
             )
         private var VARIANT_FULL_HORIZONTAL =
             PaletteEntry(
@@ -50,7 +50,7 @@ class Swiper {
                 COMPONENT_ID,
                 "full-horizontal",
                 "Full Horizontal",
-                "Full-sized horizontal slides."
+                "Full-sized horizontal slides.",
             )
         private var VARIANT_FULL_VERTICAL =
             PaletteEntry(
@@ -58,7 +58,7 @@ class Swiper {
                 COMPONENT_ID,
                 "full-vertical",
                 "Full Vertical",
-                "Full-sized vertical slides."
+                "Full-sized vertical slides.",
             )
 
         var DESCRIPTOR: ComponentDescriptor =

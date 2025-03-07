@@ -27,7 +27,7 @@ fun ComponentDescriptor.removeBrowserResource(browserResource: BrowserResource) 
 
 fun ComponentRegistry.addResourcesTo(
     resources: Set<BrowserResource>,
-    predicate: (ComponentDescriptor) -> Boolean
+    predicate: (ComponentDescriptor) -> Boolean,
 ) {
     this.get().values.forEach { component ->
         if (predicate(component)) {
@@ -38,7 +38,7 @@ fun ComponentRegistry.addResourcesTo(
 
 fun ComponentRegistry.removeResourcesFrom(
     resources: Set<BrowserResource>,
-    predicate: (ComponentDescriptor) -> Boolean
+    predicate: (ComponentDescriptor) -> Boolean,
 ) {
     this.get().values.forEach { component ->
         if (predicate(component)) {

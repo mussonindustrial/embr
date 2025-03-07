@@ -26,7 +26,7 @@ class JsonView {
                 COMPONENT_ID,
                 "base",
                 "Json View",
-                "Renders a view from its Json representation."
+                "Renders a view from its Json representation.",
             )
 
         var DESCRIPTOR: ComponentDescriptor =

@@ -52,7 +52,7 @@ interface IF97ScriptModule {
 
     fun specificInternalEnergySaturatedLiquid(
         args: Array<PyObject>,
-        keywords: Array<String>
+        keywords: Array<String>,
     ): Double
 
     fun specificInternalEnergySaturatedVapor(args: Array<PyObject>, keywords: Array<String>): Double

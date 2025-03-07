@@ -19,10 +19,7 @@ class PyArgOverloadBuilder {
         function: (args: Map<String, Any?>) -> Any?,
         vararg args: Pair<String, KType>,
     ): PyArgOverloadBuilder {
-        val signature =
-            FunctionSignature(
-                args.map { FunctionParameter(it.first, it.second) },
-            )
+        val signature = FunctionSignature(args.map { FunctionParameter(it.first, it.second) })
         if (functions.containsKey(signature)) {
             val signatureString = signature.parameters.joinToString(",", "(", ")") { it.name }
             throw IllegalStateException("overload with signature $signatureString already exists")

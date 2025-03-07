@@ -49,7 +49,7 @@ class JavaScriptFunctions(private val context: PeriscopeGatewayContext) :
             args.mapNotNull { arg -> arg.value?.let { PyString(it) } }.toTypedArray(),
             args.mapNotNull { arg -> arg.value?.let { arg.key } }.toTypedArray(),
             arrayOf("pageId", "sessionId"),
-            arrayOf(String::class.java, String::class.java)
+            arrayOf(String::class.java, String::class.java),
         )
     }
 
@@ -66,12 +66,12 @@ class JavaScriptFunctions(private val context: PeriscopeGatewayContext) :
             register(
                 JavaScriptResolveMsg.PROTOCOL,
                 this@JavaScriptFunctions::onJavaScriptResolve,
-                JavaScriptResolveMsg::class.java
+                JavaScriptResolveMsg::class.java,
             )
             register(
                 JavaScriptErrorMsg.PROTOCOL,
                 this@JavaScriptFunctions::onJavaScriptError,
-                JavaScriptErrorMsg::class.java
+                JavaScriptErrorMsg::class.java,
             )
         }
     }
@@ -94,13 +94,7 @@ class JavaScriptFunctions(private val context: PeriscopeGatewayContext) :
             registerHandlers(page)
 
             val id = UUID.randomUUID().toString()
-            val message =
-                JavaScriptRunMsg(
-                    id,
-                    function,
-                    args,
-                    originalThreadContext,
-                )
+            val message = JavaScriptRunMsg(id, function, args, originalThreadContext)
             requestsInProgress[id] = future
 
             future
@@ -112,7 +106,7 @@ class JavaScriptFunctions(private val context: PeriscopeGatewayContext) :
                             }
                         }
                     },
-                    queue::submit
+                    queue::submit,
                 )
                 .exceptionally { error ->
                     originalThreadContext.view.get()?.mdcSetup()

@@ -118,7 +118,7 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
                 event.resourcePath,
                 event.mountPath,
                 event.birthDate,
-                instance.viewParams
+                instance.viewParams,
             )
             .orTimeout(viewTimeoutMs, TimeUnit.MILLISECONDS)
             .thenAcceptAsync(
@@ -127,7 +127,7 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
                         initializeView(instance, it.get())
                     }
                 },
-                queue::submit
+                queue::submit,
             )
     }
 
@@ -204,7 +204,7 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
     private fun initializeView(
         instance: InstancePropsHandler,
         viewModel: ViewModel,
-        forceWrite: Boolean
+        forceWrite: Boolean,
     ) {
         if (viewOutputListeners[viewModel] == null || forceWrite) {
             viewModel.writeToParams(instance.viewParams, Origin.Delegate, this)
@@ -254,7 +254,7 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
         if (instance == null) {
             log.warnf(
                 "Received view output params event for unknown instance %s",
-                viewModel.id.mountPath
+                viewModel.id.mountPath,
             )
             return
         }
@@ -266,7 +266,7 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
         val currentValue =
             toJsonDeep(
                 instance.viewParams.get(event.listeningPath.toString()),
-                BindingUtils.JsonEncoding.DollarQualified
+                BindingUtils.JsonEncoding.DollarQualified,
             )
 
         if (currentValue == newValue) {
@@ -305,7 +305,7 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
                         tree
                             .read("instanceCommon.viewParams")
                             .orElse(BasicQualifiedValue(JsonObject())),
-                        BindingUtils.JsonEncoding.DollarQualified
+                        BindingUtils.JsonEncoding.DollarQualified,
                     )
                     ?.asJsonObject ?: JsonObject()
             }
@@ -316,7 +316,7 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
                         tree
                             .read(treePath.createChildPath("viewParams"))
                             .orElse(BasicQualifiedValue(JsonObject())),
-                        BindingUtils.JsonEncoding.DollarQualified
+                        BindingUtils.JsonEncoding.DollarQualified,
                     )
                     ?.asJsonObject ?: JsonObject()
             }
@@ -386,7 +386,7 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
             get() {
                 return toJsonDeep(
                         tree.read(treePath).orElse(BasicQualifiedValue(JsonArray())),
-                        BindingUtils.JsonEncoding.DollarQualified
+                        BindingUtils.JsonEncoding.DollarQualified,
                     )
                     ?.asJsonArray ?: JsonArray()
             }
@@ -412,7 +412,7 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
                     treePath,
                     BasicQualifiedValue(value),
                     Origin.Delegate,
-                    this@FlexRepeaterModelDelegate
+                    this@FlexRepeaterModelDelegate,
                 )
 
                 instanceCount = value.size()
@@ -468,28 +468,19 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
     }
 
     @ScriptCallable
-    @KeywordArgs(
-        names = ["index"],
-        types = [Int::class],
-    )
+    @KeywordArgs(names = ["index"], types = [Int::class])
     @Suppress("unused")
     fun popInstance(args: Array<PyObject>, keywords: Array<String>) =
         queue.submit { component.mdc { methods.popInstance.call(args, keywords) } }
 
     @ScriptCallable
-    @KeywordArgs(
-        names = ["instance"],
-        types = [PyObject::class],
-    )
+    @KeywordArgs(names = ["instance"], types = [PyObject::class])
     @Suppress("unused")
     fun pushInstance(args: Array<PyObject>, keywords: Array<String>) =
         queue.submit { component.mdc { methods.pushInstance.call(args, keywords) } }
 
     @ScriptCallable
-    @KeywordArgs(
-        names = ["index", "instance"],
-        types = [Int::class, PyObject::class],
-    )
+    @KeywordArgs(names = ["index", "instance"], types = [Int::class, PyObject::class])
     @Suppress("unused")
     fun insertInstance(args: Array<PyObject>, keywords: Array<String>) =
         queue.submit { component.mdc { methods.insertInstance.call(args, keywords) } }
@@ -571,7 +562,7 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
                         null
                     },
                     "index" to typeOf<Int>(),
-                    "instance" to typeOf<PyObject>()
+                    "instance" to typeOf<PyObject>(),
                 )
                 .build()
     }

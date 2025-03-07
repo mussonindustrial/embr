@@ -27,7 +27,7 @@ import org.python.core.PyObject
 class ComponentDelegateJavaScriptProxy(
     private val component: Component,
     private val delegate: ComponentModelDelegate,
-    private val property: String
+    private val property: String,
 ) : JavaScriptProxy {
 
     private val queue = component.session.queue()
@@ -89,13 +89,13 @@ class ComponentDelegateJavaScriptProxy(
                         }
                     }
                 },
-                queue::submit
+                queue::submit,
             )
             .exceptionally { error ->
                 component.session.sendErrorToDesigner(error.message, error)
                 component.logger.error(
                     "Exception occurred executing client-side JavaScript.",
-                    error
+                    error,
                 )
                 throw error
             }
@@ -163,7 +163,7 @@ class ComponentDelegateJavaScriptProxy(
         private val id: String,
         private val property: String,
         private val function: String,
-        private val args: PyDictionary?
+        private val args: PyDictionary?,
     ) {
         fun getPayload(): JsonObject {
             return JsonObject().apply {

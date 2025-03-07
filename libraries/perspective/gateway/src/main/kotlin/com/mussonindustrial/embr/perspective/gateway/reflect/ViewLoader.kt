@@ -19,7 +19,7 @@ class ViewLoader(page: PageModel) {
             String::class.java,
             String::class.java,
             Long::class.java,
-            JsonObject::class.java
+            JsonObject::class.java,
         )
     private val _findView = _handlers.getSuperPrivateMethod("findView", ViewInstanceId::class.java)
     @Suppress("UNCHECKED_CAST")
@@ -37,7 +37,7 @@ class ViewLoader(page: PageModel) {
         resourcePath: String,
         mountPath: String,
         birthDate: Long,
-        params: JsonObject
+        params: JsonObject,
     ): CompletableFuture<Optional<ViewModel>> {
         _startView.invoke(_handlers, resourcePath, mountPath, birthDate, params)
 
@@ -62,10 +62,10 @@ class ViewLoader(page: PageModel) {
                                         tryLoad(result)
                                     }
                                 }
-                            }
+                            },
                         )
                     },
-                    queue::submit
+                    queue::submit,
                 )
         }
         tryLoad(maybeView)
@@ -76,7 +76,7 @@ class ViewLoader(page: PageModel) {
         resourcePath: String,
         mountPath: String,
         birthDate: Long,
-        params: JsonObject
+        params: JsonObject,
     ): CompletableFuture<Optional<ViewModel>> {
         val viewInstanceId = ViewInstanceId(resourcePath, mountPath)
         val startedView =

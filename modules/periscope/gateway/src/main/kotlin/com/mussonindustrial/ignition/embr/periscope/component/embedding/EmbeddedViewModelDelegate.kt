@@ -99,7 +99,7 @@ class EmbeddedViewModelDelegate(component: Component) : ComponentModelDelegate(c
                         initializeView(it.get(), true)
                     }
                 },
-                queue::submit
+                queue::submit,
             )
     }
 
@@ -183,7 +183,7 @@ class EmbeddedViewModelDelegate(component: Component) : ComponentModelDelegate(c
                         block(maybeViewModel.get())
                     }
                 },
-                queue::submit
+                queue::submit,
             )
     }
 

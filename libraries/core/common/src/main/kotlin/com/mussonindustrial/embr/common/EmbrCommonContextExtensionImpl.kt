@@ -11,10 +11,7 @@ class EmbrCommonContextExtensionImpl(val context: CommonContext) : EmbrCommonCon
         }
     }
 
-    override fun <T> ifModule(
-        moduleId: String,
-        action: () -> T,
-    ): T? {
+    override fun <T> ifModule(moduleId: String, action: () -> T): T? {
         if (getModuleSafe(moduleId) != null) {
             return action()
         }

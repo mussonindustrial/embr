@@ -1,12 +1,7 @@
 package com.mussonindustrial.embr.common
 
 object Embr {
-    val CHARTS =
-        EmbrModuleMeta(
-            "com.mussonindustrial.embr.charts",
-            "embr-charts",
-            "/embr/charts",
-        )
+    val CHARTS = EmbrModuleMeta("com.mussonindustrial.embr.charts", "embr-charts", "/embr/charts")
 
     val EVENT_STREAM =
         EmbrModuleMeta(
@@ -15,10 +10,5 @@ object Embr {
             "/embr/event-stream",
         )
 
-    val THERMO =
-        EmbrModuleMeta(
-            "com.mussonindustrial.embr.thermo",
-            "embr-thermo",
-            "/embr/thermo",
-        )
+    val THERMO = EmbrModuleMeta("com.mussonindustrial.embr.thermo", "embr-thermo", "/embr/thermo")
 }

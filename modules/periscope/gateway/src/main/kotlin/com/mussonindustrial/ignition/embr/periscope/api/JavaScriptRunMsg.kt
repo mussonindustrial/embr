@@ -30,14 +30,14 @@ class JavaScriptRunMsg(
                                 addProperty("id", it.id.id)
                                 addProperty("mountPath", it.id.mountPath)
                                 addProperty("resourcePath", it.id.resourcePath)
-                            }
+                            },
                         )
                     }
 
                     threadContext.page.get()?.let {
                         add("page", JsonObject().apply { addProperty("id", it.id) })
                     }
-                }
+                },
             )
         }
     }

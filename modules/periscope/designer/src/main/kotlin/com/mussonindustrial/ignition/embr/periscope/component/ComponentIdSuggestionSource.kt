@@ -17,7 +17,7 @@ class ComponentIdSuggestionSource(private val context: PeriscopeDesignerContext)
 
     override fun getSuggestions(
         node: DocumentNode?,
-        schema: JsonSchema?
+        schema: JsonSchema?,
     ): CompletableFuture<MutableMap<String, JsonElement>> {
 
         val components = context.perspectiveDesignerInterface.designerComponentRegistry.get()

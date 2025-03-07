@@ -21,19 +21,12 @@ class SystemTagsProvider(private val tagManager: GatewayTagManager) {
         tagManager.systemTags.removeTag(NAMESPACE)
     }
 
-    private fun createAndInitialize(
-        path: String,
-        type: DataType,
-        value: Any,
-    ) {
+    private fun createAndInitialize(path: String, type: DataType, value: Any) {
         tagManager.systemTags.configureTag(path, type)
         tagManager.systemTags.updateValue(path, value, QualityCode.Good)
     }
 
-    private fun setValue(
-        path: String,
-        value: Any,
-    ) {
+    private fun setValue(path: String, value: Any) {
         tagManager.systemTags.updateValue(path, value, QualityCode.Good)
     }
 
