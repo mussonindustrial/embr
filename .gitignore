@@ -41,6 +41,9 @@ public/dist
 # VSCode
 .vscode/*
 
-
+# NX
 .nx/cache
 .nx/workspace-data
+
+# Development Container
+.ignition-container.lock
