@@ -179,7 +179,15 @@
         "chart_events": {
             "description": "JavaScript chart events. The `chart` object is provided.",
             "properties": {
-                "beforeRender": {
+                "onMount": {
+                    "description": "Runs before the chart renders.",
+                    "$ref": "#/$defs/chart_event"
+                },
+                "onRender": {
+                    "description": "Runs before the chart renders.",
+                    "$ref": "#/$defs/chart_event"
+                },
+                "onUnmount": {
                     "description": "Runs before the chart renders.",
                     "$ref": "#/$defs/chart_event"
                 }
