@@ -76,7 +76,7 @@ import ChartDataLabels from 'chartjs-plugin-datalabels'
 Chart.register(ChartDataLabels)
 
 import { HierarchicalScale } from 'chartjs-plugin-hierarchical'
-Chart.registry.addElements(HierarchicalScale)
+Chart.register(HierarchicalScale)
 
 import Autocolors from 'chartjs-plugin-autocolors'
 Chart.register(Autocolors)
