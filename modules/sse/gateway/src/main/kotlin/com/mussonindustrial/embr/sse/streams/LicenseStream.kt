@@ -47,7 +47,7 @@ class LicenseStream : EventStream, LicenseStateUpdateListener {
                         addProperty("is_trial_expired", event.licenseState.isTrialExpired)
                         addProperty(
                             "trial_expiration_date",
-                            event.licenseState.trialExpirationDate.time
+                            event.licenseState.trialExpirationDate.time,
                         )
                     },
                 )

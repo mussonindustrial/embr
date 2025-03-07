@@ -26,7 +26,7 @@ class EmbeddedView {
                 COMPONENT_ID,
                 "base",
                 "Embedded View +",
-                "Enables an entire view to be embedded within another view. View props are handled server-side for decreased latency."
+                "Enables an entire view to be embedded within another view. View props are handled server-side for decreased latency.",
             )
 
         var DESCRIPTOR: ComponentDescriptor =

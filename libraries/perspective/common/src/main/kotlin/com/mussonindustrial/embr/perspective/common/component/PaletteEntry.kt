@@ -14,14 +14,14 @@ data class PaletteEntry(
     val label: String,
     val tooltip: String,
     val thumbnail: BufferedImage?,
-    val props: JsonObject?
+    val props: JsonObject?,
 ) {
     constructor(
         clazz: Class<*>,
         componentId: String,
         variantId: String,
         label: String,
-        tooltip: String
+        tooltip: String,
     ) : this(
         clazz,
         componentId,
@@ -29,7 +29,7 @@ data class PaletteEntry(
         label,
         tooltip,
         getImage(clazz, "/images/components/${componentId}/thumbnails/${variantId}.png"),
-        getJsonProps(clazz, "/schemas/components/${componentId}/variants/${variantId}.props.json")
+        getJsonProps(clazz, "/schemas/components/${componentId}/variants/${variantId}.props.json"),
     )
 }
 

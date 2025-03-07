@@ -24,10 +24,7 @@ class TagHistoryServlet : HttpServlet() {
                 .create()
     }
 
-    override fun doGet(
-        request: HttpServletRequest,
-        response: HttpServletResponse,
-    ) {
+    override fun doGet(request: HttpServletRequest, response: HttpServletResponse) {
         logger.trace("Get request received: {}", request)
         val path =
             request.requestURI.substring(request.contextPath.length + request.servletPath.length)

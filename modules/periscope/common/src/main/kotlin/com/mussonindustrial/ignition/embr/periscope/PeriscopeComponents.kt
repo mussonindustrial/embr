@@ -9,14 +9,14 @@ object PeriscopeComponents {
         BrowserResource(
             "embr-periscope-client-js",
             "/res/${SHORT_MODULE_ID}/embr-periscope-client.js",
-            BrowserResource.ResourceType.JS
+            BrowserResource.ResourceType.JS,
         )
 
     private val CSS_RESOURCE =
         BrowserResource(
             "embr-periscope-css",
             "/res/${SHORT_MODULE_ID}/style.css",
-            BrowserResource.ResourceType.CSS
+            BrowserResource.ResourceType.CSS,
         )
     val BROWSER_RESOURCES = mutableSetOf(JS_RESOURCE, CSS_RESOURCE)
     val REQUIRED_RESOURCES = mutableSetOf(JS_RESOURCE)

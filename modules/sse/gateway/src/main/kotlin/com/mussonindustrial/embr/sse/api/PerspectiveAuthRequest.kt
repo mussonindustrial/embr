@@ -36,9 +36,7 @@ class PerspectiveAuthRequest(val sessionId: String) : AuthRequest {
                     deserializationContext: JsonDeserializationContext,
                 ): PerspectiveAuthRequest {
                     val json = element.asJsonObject
-                    return PerspectiveAuthRequest(
-                        json.get("session_id").asString,
-                    )
+                    return PerspectiveAuthRequest(json.get("session_id").asString)
                 }
             }
     }

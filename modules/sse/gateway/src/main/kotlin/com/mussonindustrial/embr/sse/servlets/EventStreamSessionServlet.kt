@@ -27,25 +27,22 @@ class EventStreamSessionServlet : HttpServlet() {
             GsonBuilder()
                 .registerTypeAdapter(
                     EventStreamSessionRequest::class.java,
-                    EventStreamSessionRequest.gsonAdapter
+                    EventStreamSessionRequest.gsonAdapter,
                 )
                 .registerTypeAdapter(AuthRequest::class.java, AuthRequest.gsonAdapter)
                 .registerTypeAdapter(
                     AnonymousAuthRequest::class.java,
-                    AnonymousAuthRequest.gsonAdapter
+                    AnonymousAuthRequest.gsonAdapter,
                 )
                 .registerTypeAdapter(BasicAuthRequest::class.java, BasicAuthRequest.gsonAdapter)
                 .registerTypeAdapter(
                     PerspectiveAuthRequest::class.java,
-                    PerspectiveAuthRequest.gsonAdapter
+                    PerspectiveAuthRequest.gsonAdapter,
                 )
                 .create()
     }
 
-    override fun doPost(
-        request: HttpServletRequest,
-        response: HttpServletResponse,
-    ) {
+    override fun doPost(request: HttpServletRequest, response: HttpServletResponse) {
         logger.trace("Post request received: {}", request)
         val path =
             request.requestURI.substring(request.contextPath.length + request.servletPath.length)
@@ -70,7 +67,7 @@ class EventStreamSessionServlet : HttpServlet() {
             logger.trace(
                 "Session {} created with security context: {}",
                 session.id,
-                securityContext
+                securityContext,
             )
             response.sendSuccess(session.toGson())
             return

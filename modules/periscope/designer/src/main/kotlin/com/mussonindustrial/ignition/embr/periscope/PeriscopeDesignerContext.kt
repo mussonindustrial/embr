@@ -21,7 +21,7 @@ class PeriscopeDesignerContext(private val context: DesignerContext) :
         componentIdSuggestionSource = ComponentIdSuggestionSource(this)
         perspectiveDesignerInterface.suggestionSourceRegistry.registerSuggestionSource(
             ComponentIdSuggestionSource.ID,
-            componentIdSuggestionSource
+            componentIdSuggestionSource,
         )
     }
 }

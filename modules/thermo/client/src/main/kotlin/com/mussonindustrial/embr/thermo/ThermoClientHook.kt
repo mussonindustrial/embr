@@ -15,10 +15,7 @@ class ThermoClientHook : AbstractClientModuleHook() {
     private val logger = this.getLogger()
     private lateinit var context: ThermoClientContext
 
-    override fun startup(
-        context: ClientContext,
-        activationState: LicenseState,
-    ) {
+    override fun startup(context: ClientContext, activationState: LicenseState) {
         logger.info("Embr Thermodynamics module started.")
         this.context = ThermoClientContext(context)
     }
@@ -31,7 +28,7 @@ class ThermoClientHook : AbstractClientModuleHook() {
         manager.addScriptModule(
             IF97ScriptModuleImpl.PATH,
             IF97ScriptModuleImpl(),
-            PropertiesFileDocProvider()
+            PropertiesFileDocProvider(),
         )
     }
 
@@ -40,7 +37,7 @@ class ThermoClientHook : AbstractClientModuleHook() {
         factory.addFunction(
             IF97ExpressionFunction.NAME,
             IF97ExpressionFunction.CATEGORY,
-            IF97ExpressionFunction()
+            IF97ExpressionFunction(),
         )
         super.configureFunctionFactory(factory)
     }

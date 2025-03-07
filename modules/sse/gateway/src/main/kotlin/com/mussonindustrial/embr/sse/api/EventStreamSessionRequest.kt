@@ -11,7 +11,7 @@ import java.lang.reflect.Type
 
 data class EventStreamSessionRequest(
     val auth: AuthRequest,
-    val subscriptionProps: Map<String, JsonElement>
+    val subscriptionProps: Map<String, JsonElement>,
 ) {
     companion object {
         val logger = this.getLogger()
@@ -45,7 +45,7 @@ data class EventStreamSessionRequest(
                     val auth: AuthRequest =
                         deserializationContext.deserialize(
                             json.get("auth"),
-                            AuthRequest::class.java
+                            AuthRequest::class.java,
                         )
 
                     val streams = json.getAsJsonObject("streams")

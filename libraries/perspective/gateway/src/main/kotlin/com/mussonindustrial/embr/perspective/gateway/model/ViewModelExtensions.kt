@@ -11,11 +11,7 @@ import com.inductiveautomation.perspective.gateway.model.ViewModel
 import com.inductiveautomation.perspective.gateway.property.PropertyTree
 import com.inductiveautomation.perspective.gateway.property.PropertyTreeChangeEvent
 
-fun ViewModel.writeToParams(
-    params: JsonObject,
-    origin: Origin,
-    source: Any,
-) {
+fun ViewModel.writeToParams(params: JsonObject, origin: Origin, source: Any) {
     val tree = this.getPropertyTreeOf(PropertyType.params) ?: return
     val currentParams = toJsonDeep(tree.read(JsonPath.ROOT).get().value) as JsonObject
     val inputKeys =
@@ -39,12 +35,7 @@ fun ViewModel.writeToParams(
     }
 }
 
-fun ViewModel.writeToParams(
-    param: String,
-    value: JsonElement,
-    origin: Origin,
-    source: Any,
-) {
+fun ViewModel.writeToParams(param: String, value: JsonElement, origin: Origin, source: Any) {
 
     val paramType = this.config.paramDefinitions.toList().find { (key, _) -> key == param }?.value
     if (paramType != ParamType.input && paramType != ParamType.inout) {
@@ -57,7 +48,7 @@ fun ViewModel.writeToParams(
 
 fun ViewModel.subscribeToParams(
     acceptableOrigins: Set<Origin>,
-    block: (PropertyTreeChangeEvent) -> Unit
+    block: (PropertyTreeChangeEvent) -> Unit,
 ): Map<String, PropertyTree.Subscription>? {
     val tree = this.getPropertyTreeOf(PropertyType.params) ?: return null
 

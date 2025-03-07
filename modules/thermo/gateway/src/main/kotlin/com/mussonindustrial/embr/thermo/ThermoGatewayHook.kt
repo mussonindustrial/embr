@@ -32,7 +32,7 @@ class ThermoGatewayHook : AbstractGatewayModuleHook() {
         manager.addScriptModule(
             IF97ScriptModuleImpl.PATH,
             IF97ScriptModuleImpl(),
-            PropertiesFileDocProvider()
+            PropertiesFileDocProvider(),
         )
     }
 
@@ -41,7 +41,7 @@ class ThermoGatewayHook : AbstractGatewayModuleHook() {
         factory.addFunction(
             IF97ExpressionFunction.NAME,
             IF97ExpressionFunction.CATEGORY,
-            IF97ExpressionFunction()
+            IF97ExpressionFunction(),
         )
         super.configureFunctionFactory(factory)
     }

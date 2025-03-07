@@ -8,7 +8,7 @@ import org.eclipse.jetty.servlet.ServletHolder
 
 class ModuleServletManager(
     webResourceManager: WebResourceManager,
-    private val contextPath: String
+    private val contextPath: String,
 ) {
     private val servlets = hashMapOf<String, Class<out Servlet>>()
     private val runningServlets = hashMapOf<String, ServletHolder>()
@@ -23,10 +23,7 @@ class ModuleServletManager(
         }
     }
 
-    fun addServlet(
-        path: String,
-        servlet: Class<out Servlet>,
-    ) {
+    fun addServlet(path: String, servlet: Class<out Servlet>) {
         servlets[path] = servlet
         val newHandler = getContextHandler()
         serverHandlerCollection.removeHandler(handler)

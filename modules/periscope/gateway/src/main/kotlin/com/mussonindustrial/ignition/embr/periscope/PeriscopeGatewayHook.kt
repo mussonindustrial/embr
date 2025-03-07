@@ -61,10 +61,7 @@ class PeriscopeGatewayHook : AbstractGatewayModuleHook() {
 
     override fun shutdown() {
         logger.debug("Embr-Periscope module shutdown.")
-        BundleUtil.get()
-            .removeBundle(
-                Meta.BUNDLE_PREFIX,
-            )
+        BundleUtil.get().removeBundle(Meta.BUNDLE_PREFIX)
 
         logger.debug("Removing injected resources...")
         componentRegistry.removeResourcesFrom(PeriscopeComponents.REQUIRED_RESOURCES) {
@@ -103,7 +100,7 @@ class PeriscopeGatewayHook : AbstractGatewayModuleHook() {
         manager.addScriptModule(
             "system.perspective",
             JavaScriptFunctions(this.context),
-            PropertiesFileDocProvider()
+            PropertiesFileDocProvider(),
         )
     }
 }

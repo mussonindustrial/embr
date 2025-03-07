@@ -80,10 +80,7 @@ class EventStreamManager(val context: EventStreamGatewayContext) {
         updateMetrics()
     }
 
-    fun registerStreamType(
-        key: String,
-        supplier: Supplier<EventStream>,
-    ) {
+    fun registerStreamType(key: String, supplier: Supplier<EventStream>) {
         streamTypes[key] = supplier
     }
 
@@ -105,7 +102,7 @@ class EventStreamManager(val context: EventStreamGatewayContext) {
     inner class Session(
         private val eventStreams: List<EventStream>,
         val securityContext: SecurityContext,
-        val sessionType: SessionType
+        val sessionType: SessionType,
     ) : EventSource, SimpleJsonSerializable {
         private val logger = this.getLogger()
         private var emitter: EventSource.Emitter? = null
@@ -136,7 +133,7 @@ class EventStreamManager(val context: EventStreamGatewayContext) {
                     registerTypeAdapter(SecurityContext::class.java, SecurityContext.GsonAdapter())
                     registerTypeAdapter(
                         SecurityLevelConfig::class.java,
-                        SecurityLevelConfig.GsonAdapter(true)
+                        SecurityLevelConfig.GsonAdapter(true),
                     )
                     streamTypes.values.forEach {
                         val emitter = it.get()
@@ -154,7 +151,7 @@ class EventStreamManager(val context: EventStreamGatewayContext) {
                     removeSession(this)
                 },
                 30,
-                TimeUnit.SECONDS
+                TimeUnit.SECONDS,
             )
 
         override fun onOpen(emitter: EventSource.Emitter) {
@@ -194,11 +191,7 @@ class EventStreamManager(val context: EventStreamGatewayContext) {
 
         @Suppress("unused") fun emitComment(comment: String) = emitter?.comment(comment)
 
-        @Suppress("unused")
-        fun emitEvent(
-            event: String,
-            data: String,
-        ) = emitter?.event(event, data)
+        @Suppress("unused") fun emitEvent(event: String, data: String) = emitter?.event(event, data)
 
         fun closeOnException(block: () -> Unit) {
             try {
