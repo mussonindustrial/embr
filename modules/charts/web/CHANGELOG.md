@@ -1,5 +1,11 @@
 # @mussonindustrial/embr-js-chart-js
 
+## 2.1.1
+
+### Patch Changes
+
+- a44e437: (`Chart.js`, Fix) Properly register Hierarchical scale with from plugin `chartjs-plugin-hierarchical`.
+
 ## 2.1.0
 
 ### Minor Changes

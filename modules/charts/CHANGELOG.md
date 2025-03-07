@@ -1,5 +1,14 @@
 # @mussonindustrial/embr-charts
 
+## 2.1.1
+
+### Patch Changes
+
+- a44e437: (`Chart.js`, Fix) Adjust `Chart.js` property schema to allow for objects as labels. This is needed for `chartjs-plugin-hierarchical`.
+- a44e437: (`Chart.js`, Fix) Properly register Hierarchical scale with from plugin `chartjs-plugin-hierarchical`.
+- Updated dependencies [a44e437]
+  - @embr-modules/charts-web@2.1.1
+
 ## 2.1.0
 
 ### Patch Changes
