@@ -42,7 +42,6 @@
         "luxon": "3.5.0",
         "moment": "2.30.1",
         "react": "^18",
-        "react-apexcharts": "1.7.0",
         "react-chartjs-2": "5.2.0",
         "react-dom": "^18"
     },

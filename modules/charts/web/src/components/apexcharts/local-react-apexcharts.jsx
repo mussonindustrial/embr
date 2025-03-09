@@ -1,6 +1,5 @@
 import React, { forwardRef, useEffect, useRef } from 'react'
 import ApexCharts from 'apexcharts'
-import PropTypes from 'prop-types'
 
 function omit(obj, keysToRemove) {
   let newObj = { ...obj }
@@ -44,10 +43,15 @@ function deepEqual(obj1, obj2, visited = new WeakSet()) {
 export const Charts = forwardRef(
   (
     {
+      // eslint-disable-next-line react/prop-types
       type = 'line',
+      // eslint-disable-next-line react/prop-types
       width = '100%',
+      // eslint-disable-next-line react/prop-types
       height = 'auto',
+      // eslint-disable-next-line react/prop-types
       series,
+      // eslint-disable-next-line react/prop-types
       options,
       ...restProps
     },
@@ -126,102 +130,6 @@ export const Charts = forwardRef(
       return output
     }
 
-    const rest = omit(restProps, Object.keys(Charts.propTypes))
-
-    return <div ref={chartRef} {...rest} />
+    return <div ref={chartRef} {...restProps} />
   }
 )
-//
-// export default function Charts({
-//   type = 'line',
-//   width = '100%',
-//   height = 'auto',
-//   series,
-//   options,
-//   ...restProps
-// }) {
-//   const chartRef = useRef(null)
-//   let chart = useRef(null)
-//   const prevOptions = useRef()
-//
-//   useEffect(() => {
-//     prevOptions.current = options
-//
-//     const current = chartRef.current
-//     chart.current = new ApexCharts(current, getConfig())
-//     chart.current.render()
-//
-//     return () => {
-//       if (chart.current && typeof chart.current.destroy === 'function') {
-//         chart.current.destroy()
-//       }
-//     }
-//   }, [])
-//
-//   useEffect(() => {
-//     const prevSeries = chart.current.w.config.series
-//
-//     const seriesChanged = !deepEqual(prevSeries, series)
-//     const optionsChanged =
-//       !deepEqual(prevOptions.current, options) ||
-//       height !== chart.current.opts.chart.height ||
-//       width !== chart.current.opts.chart.width
-//
-//     if (seriesChanged || optionsChanged) {
-//       if (!seriesChanged) {
-//         // series has not changed, but options or size have changed
-//         chart.current.updateOptions(getConfig())
-//       } else if (!optionsChanged) {
-//         // options or size have not changed, just the series has changed
-//         chart.current.updateSeries(series)
-//       } else {
-//         // both might be changed
-//         chart.current.updateOptions(getConfig())
-//       }
-//     }
-//     prevOptions.current = options
-//   }, [options, series, height, width])
-//
-//   const getConfig = () => {
-//     const newOptions = {
-//       chart: { type, height, width },
-//       series,
-//     }
-//
-//     return extend(options, newOptions)
-//   }
-//
-//   const isObject = (item) => {
-//     return item && typeof item === 'object' && !Array.isArray(item)
-//   }
-//
-//   const extend = (target, source) => {
-//     let output = { ...target }
-//     if (isObject(target) && isObject(source)) {
-//       Object.keys(source).forEach((key) => {
-//         if (isObject(source[key])) {
-//           if (!(key in target)) {
-//             Object.assign(output, { [key]: source[key] })
-//           } else {
-//             output[key] = extend(target[key], source[key])
-//           }
-//         } else {
-//           Object.assign(output, { [key]: source[key] })
-//         }
-//       })
-//     }
-//     return output
-//   }
-//
-//   const rest = omit(restProps, Object.keys(Charts.propTypes))
-//
-//   return <div ref={chartRef} {...rest} />
-// }
-
-Charts.propTypes = {
-  type: PropTypes.string.isRequired,
-  series: PropTypes.array.isRequired,
-  options: PropTypes.object.isRequired,
-  width: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  height: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-}

@@ -9,10 +9,10 @@ import {
   PropertyTree,
   SizeObject,
 } from '@inductiveautomation/perspective-client'
+import type { ApexOptions } from 'apexcharts'
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import { Charts } from './local-react-apexcharts'
-import { Props } from 'react-apexcharts'
 import { getCSSTransform, getScriptTransform } from '../../util'
 import { transformProps } from '@embr-js/utils'
 import { unset, cloneDeep } from 'lodash'
@@ -23,13 +23,16 @@ import {
 
 export const COMPONENT_TYPE = 'embr.chart.apex-charts'
 
-type ChartSeries = ApexAxisChartSeries | ApexNonAxisChartSeries | undefined
+type ChartSeries = ApexOptions['series']
 type ChartEvent = (chart: Charts | undefined) => void
 type ChartEvents = {
   beforeRender?: ChartEvent
 }
 
-type ChartProps = Props & {
+type ChartProps = {
+  type: ApexChart['type']
+  series: ApexOptions['series']
+  options: ApexOptions
   events?: ChartEvents
 }
 
