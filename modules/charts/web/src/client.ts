@@ -1,7 +1,13 @@
 import { ComponentRegistry } from '@inductiveautomation/perspective-client'
 
-import { ChartJsComponent, ChartJsComponentMeta } from './components'
+import {
+  ApexChartsComponent,
+  ApexChartsComponentMeta,
+  ChartJsComponent,
+  ChartJsComponentMeta,
+} from './components'
 
-export { ChartJsComponent }
+export { ApexChartsComponent, ChartJsComponent }
 
+ComponentRegistry.register(ApexChartsComponentMeta)
 ComponentRegistry.register(ChartJsComponentMeta)

@@ -1,0 +1,39 @@
+{
+  "type": "line",
+  "data": {},
+  "options": {
+    "responsive": true,
+    "maintainAspectRatio": false,
+    "plugins": {
+      "zoom": {
+        "pan": {
+          "enabled": true,
+          "mode": "x",
+          "modifierKey": null
+        },
+        "zoom": {
+          "wheel": {
+            "enabled": true,
+            "modifierKey": "ctrl"
+          },
+          "drag": {
+            "enabled": true,
+            "modifierKey": "ctrl"
+          },
+          "pinch": {
+            "enabled": true
+          },
+          "mode": "x"
+        }
+      }
+    },
+    "scales": {
+      "x": {
+        "type": "linear"
+      },
+      "y": {
+        "type": "linear"
+      }
+    }
+  }
+}

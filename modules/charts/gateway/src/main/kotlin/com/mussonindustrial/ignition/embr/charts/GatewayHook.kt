@@ -7,6 +7,8 @@ import com.inductiveautomation.perspective.common.api.ComponentRegistry
 import com.inductiveautomation.perspective.gateway.api.ComponentModelDelegateRegistry
 import com.inductiveautomation.perspective.gateway.api.PerspectiveContext
 import com.mussonindustrial.embr.common.Embr
+import com.mussonindustrial.ignition.embr.charts.component.chart.ApexCharts
+import com.mussonindustrial.ignition.embr.charts.component.chart.ApexChartsModelDelegate
 import com.mussonindustrial.ignition.embr.charts.component.chart.ChartJs
 import com.mussonindustrial.ignition.embr.charts.component.chart.ChartJsModelDelegate
 import java.util.*
@@ -34,12 +36,18 @@ class GatewayHook : AbstractGatewayModuleHook() {
         modelDelegateRegistry = perspectiveContext.componentModelDelegateRegistry
 
         logger.info("Registering components...")
+        componentRegistry.registerComponent(ApexCharts.DESCRIPTOR)
+        modelDelegateRegistry.register(ApexCharts.COMPONENT_ID) { ApexChartsModelDelegate(it) }
+
         componentRegistry.registerComponent(ChartJs.DESCRIPTOR)
         modelDelegateRegistry.register(ChartJs.COMPONENT_ID) { ChartJsModelDelegate(it) }
     }
 
     override fun shutdown() {
         logger.info("Shutting down Embr-Charts module and removing registered components.")
+        componentRegistry.removeComponent(ApexCharts.COMPONENT_ID)
+        modelDelegateRegistry.remove(ApexCharts.COMPONENT_ID)
+
         componentRegistry.removeComponent(ChartJs.COMPONENT_ID)
         modelDelegateRegistry.remove(ChartJs.COMPONENT_ID)
     }

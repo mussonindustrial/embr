@@ -1,0 +1,32 @@
+{
+  "type": "polarArea",
+  "data": {
+    "labels": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "F"
+    ],
+    "datasets": [
+      {
+        "data": [
+          5,
+          3,
+          6,
+          4,
+          0,
+          8
+        ],
+        "label": "Dataset 1"
+      }
+    ]
+  },
+  "options": {
+    "responsive": true,
+    "maintainAspectRatio": false,
+    "plugins": {},
+    "scales": {}
+  }
+}
