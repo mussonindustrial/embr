@@ -11,3 +11,9 @@ updates:
       schedule:
           interval: "weekly"
       rebase-strategy: "disabled"
+
+    - package-ecosystem: "npm"
+      directory: "/"
+      schedule:
+        interval: "weekly"
+      rebase-strategy: "disabled"
