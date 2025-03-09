@@ -25,6 +25,10 @@ type PerspectiveChart = Chart
 type PerspectiveChartData = unknown[]
 type ChartEvent = (chart: PerspectiveChart | undefined) => void
 type PerspectiveChartEvents = {
+  onMount?: ChartEvent
+  onRender?: ChartEvent
+  onUnmount?: ChartEvent
+  /** @deprecated */
   beforeRender?: ChartEvent
 }
 type UpdateMode =
@@ -82,11 +86,13 @@ export function ChartJsComponent(props: ComponentProps<PerspectiveChartProps>) {
   const chartRef: MutableRefObject<PerspectiveChart | undefined> =
     useRef(undefined)
 
+  // Register the chart with the component delegate
   useEffect(() => {
     const delegate = props.store.delegate as ChartJsComponentDelegate
     delegate.setChart(chartRef.current)
   }, [props.store.delegate, chartRef.current])
 
+  // Apply transforms to the user supplied properties
   const transformedProps = useMemo(() => {
     const { props: configProps, data } = extractPropsData(props.props)
 
@@ -99,7 +105,16 @@ export function ChartJsComponent(props: ComponentProps<PerspectiveChartProps>) {
     return transformedProps
   }, [props.props])
 
+  // Call component lifecycle events
+  callUserChartEvent(chartRef.current, transformedProps, 'onRender')
   callUserChartEvent(chartRef.current, transformedProps, 'beforeRender')
+  useEffect(() => {
+    callUserChartEvent(chartRef.current, transformedProps, 'onMount')
+
+    return () => {
+      callUserChartEvent(chartRef.current, transformedProps, 'onUnmount')
+    }
+  }, [])
 
   return (
     <div {...props.emit()}>
