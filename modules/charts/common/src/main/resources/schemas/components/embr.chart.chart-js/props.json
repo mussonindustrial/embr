@@ -172,24 +172,20 @@
                 }
             }
         },
-        "chart_event": {
-            "type": "string",
-            "default": ""
-        },
-        "chart_events": {
+        "component_events": {
             "description": "JavaScript chart events. The `chart` object is provided.",
             "properties": {
                 "onMount": {
-                    "description": "Runs before the chart renders.",
-                    "$ref": "#/$defs/chart_event"
+                    "description": "Called when the component mounts.",
+                    "$ref": "#/$defs/function"
                 },
-                "onRender": {
-                    "description": "Runs before the chart renders.",
-                    "$ref": "#/$defs/chart_event"
+                "onUpdate": {
+                    "description": "Called when the component updates.",
+                    "$ref": "#/$defs/function"
                 },
                 "onUnmount": {
-                    "description": "Runs before the chart renders.",
-                    "$ref": "#/$defs/chart_event"
+                    "description": "Called when the component unmounts.",
+                    "$ref": "#/$defs/function"
                 }
             },
             "default": {}
@@ -2465,8 +2461,8 @@
             "$ref": "#/$defs/chart_options"
         },
         "events": {
-            "description": "JavaScript chart events. The `chart` object is provided.",
-            "$ref": "#/$defs/chart_events"
+            "description": "Component events. The `chart` object is provided.",
+            "$ref": "#/$defs/component_events"
         },
         "plugins": {
             "description": "Manually registered plugins.",
