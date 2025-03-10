@@ -1,3 +1,3 @@
 declare module 'chartjs-plugin-crosshair' {
-    export const CrosshairPlugin: Plugin<keyof ChartTypeRegistry, AnyObject>
+  export const CrosshairPlugin: Plugin<keyof ChartTypeRegistry, AnyObject>
 }

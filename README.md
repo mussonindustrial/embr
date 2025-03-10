@@ -20,11 +20,8 @@
 </p>
 </div>
 
+## Directory
 
-
- 
-
- ## Directory
 <div align="center">
   
 | Module                                          | Description                                                                           | Release Notes                                                                                                                                                                       |
@@ -36,7 +33,6 @@
 
 </div>
 
-
 ## Install / Build
 
 ```sh
@@ -47,7 +43,8 @@ yarn install --frozen-lockfile
 ```
 
 ## Sponsors
-Maintenance of this project is made possible by all the [contributors] and [sponsors]. 
+
+Maintenance of this project is made possible by all the [contributors] and [sponsors].
 If you'd like to sponsor this project and have your avatar or company logo appear below [click here](https://github.com/sponsors/mussonindustrial). 💖
 
 <a href="https://mussonindustrial.com/">
@@ -57,13 +54,11 @@ If you'd like to sponsor this project and have your avatar or company logo appea
 <img src="https://avatars.githubusercontent.com/u/89804242?s=200&v=4" alt="ARtek" width="100"/> 
 </a>
 
-
-
 ## Links
 
--   [License (MIT)](LICENSE)
--   [Musson Industrial](https://mussonindustrial.com/)
--   [Inductive Automation](https://inductiveautomation.com/)
+- [License (MIT)](LICENSE)
+- [Musson Industrial](https://mussonindustrial.com/)
+- [Inductive Automation](https://inductiveautomation.com/)
 
 [embr]: https://github.com/mussonindustrial/embr
 [contributors]: https://github.com/mussonindustrial/embr/graphs/contributors
