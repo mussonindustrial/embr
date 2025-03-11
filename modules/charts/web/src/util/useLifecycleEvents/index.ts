@@ -18,13 +18,16 @@ function maybeCall(fn: unknown, context: unknown) {
 }
 
 export function useLifecycleEvents(context: unknown, events: LifecycleEvents) {
-  maybeCall(events.beforeRender, context)
-  maybeCall(events.onUpdate, context)
-
   useEffect(() => {
     maybeCall(events.onMount, context)
     return () => {
       maybeCall(events.onUnmount, context)
     }
   }, [])
+
+  maybeCall(events.beforeRender, context)
+
+  useEffect(() => {
+    maybeCall(events.onUpdate, context)
+  })
 }
