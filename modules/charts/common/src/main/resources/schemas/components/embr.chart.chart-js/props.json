@@ -186,6 +186,158 @@
                 "onUnmount": {
                     "description": "Called when the component unmounts.",
                     "$ref": "#/$defs/function"
+                },
+                "onAnimationStart": {
+                    "description": "Triggered when an animation starts.",
+                    "$ref": "#/$defs/function"
+                },
+                "onAnimationIteration": {
+                    "description": "Triggered at the end of each iteration of an animation.",
+                    "$ref": "#/$defs/function"
+                },
+                "onAnimationEnd": {
+                    "description": "Triggered when an animation ends.",
+                    "$ref": "#/$defs/function"
+                },
+                "onCopy": {
+                    "description": "Triggered when content is copied to the clipboard.",
+                    "$ref": "#/$defs/function"
+                },
+                "onCut": {
+                    "description": "Triggered when content is cut to the clipboard.",
+                    "$ref": "#/$defs/function"
+                },
+                "onPaste": {
+                    "description": "Triggered when content is pasted from the clipboard.",
+                    "$ref": "#/$defs/function"
+                },
+                "onCompositionStart": {
+                    "description": "Triggered when a composition event starts (e.g., entering a complex character in a text input).",
+                    "$ref": "#/$defs/function"
+                },
+                "onCompositionUpdate": {
+                    "description": "Triggered when a composition event is updated (e.g., while typing a complex character in a text input).",
+                    "$ref": "#/$defs/function"
+                },
+                "onCompositionEnd": {
+                    "description": "Triggered when a composition event ends.",
+                    "$ref": "#/$defs/function"
+                },
+                "onDragStart": {
+                    "description": "Triggered when dragging starts.",
+                    "$ref": "#/$defs/function"
+                },
+                "onDragEnd": {
+                    "description": "Triggered when dragging ends.",
+                    "$ref": "#/$defs/function"
+                },
+                "onDragEnter": {
+                    "description": "Triggered when a dragged element enters a drop target.",
+                    "$ref": "#/$defs/function"
+                },
+                "onDragLeave": {
+                    "description": "Triggered when a dragged element leaves a drop target.",
+                    "$ref": "#/$defs/function"
+                },
+                "onDragOver": {
+                    "description": "Triggered when a dragged element is over a drop target.",
+                    "$ref": "#/$defs/function"
+                },
+                "onDrop": {
+                    "description": "Triggered when an element is dropped onto a drop target.",
+                    "$ref": "#/$defs/function"
+                },
+                "onFocus": {
+                    "description": "Triggered when an element gains focus.",
+                    "$ref": "#/$defs/function"
+                },
+                "onBlur": {
+                    "description": "Triggered when an element loses focus.",
+                    "$ref": "#/$defs/function"
+                },
+                "onBeforeInput": {
+                    "description": "Triggered before the input value changes.",
+                    "$ref": "#/$defs/function"
+                },
+                "onKeyDown": {
+                    "description": "Triggered when a key is pressed down.",
+                    "$ref": "#/$defs/function"
+                },
+                "onKeyUp": {
+                    "description": "Triggered when a key is released.",
+                    "$ref": "#/$defs/function"
+                },
+                "onClick": {
+                    "description": "Triggered when an element is clicked.",
+                    "$ref": "#/$defs/function"
+                },
+                "onMouseEnter": {
+                    "description": "Triggered when the mouse pointer enters an element.",
+                    "$ref": "#/$defs/function"
+                },
+                "onMouseOver": {
+                    "description": "Triggered when the mouse pointer moves over an element.",
+                    "$ref": "#/$defs/function"
+                },
+                "onMouseDown": {
+                    "description": "Triggered when the mouse button is pressed.",
+                    "$ref": "#/$defs/function"
+                },
+                "onMouseUp": {
+                    "description": "Triggered when the mouse button is released.",
+                    "$ref": "#/$defs/function"
+                },
+                "onMouseLeave": {
+                    "description": "Triggered when the mouse pointer leaves an element.",
+                    "$ref": "#/$defs/function"
+                },
+                "onPointerEnter": {
+                    "description": "Triggered when a pointer (e.g., mouse, touch) enters an element.",
+                    "$ref": "#/$defs/function"
+                },
+                "onPointerMove": {
+                    "description": "Triggered when a pointer moves over an element.",
+                    "$ref": "#/$defs/function"
+                },
+                "onPointerDown": {
+                    "description": "Triggered when a pointer button is pressed.",
+                    "$ref": "#/$defs/function"
+                },
+                "onPointerUp": {
+                    "description": "Triggered when a pointer button is released.",
+                    "$ref": "#/$defs/function"
+                },
+                "onPointerLeave": {
+                    "description": "Triggered when a pointer leaves an element.",
+                    "$ref": "#/$defs/function"
+                },
+                "onTouchStart": {
+                    "description": "Triggered when a touch starts on an element.",
+                    "$ref": "#/$defs/function"
+                },
+                "onTouchMove": {
+                    "description": "Triggered when a touch moves on an element.",
+                    "$ref": "#/$defs/function"
+                },
+                "onTouchEnd": {
+                    "description": "Triggered when a touch ends on an element.",
+                    "$ref": "#/$defs/function"
+                },
+                "onTouchCancel": {
+                    "description": "Triggered when a touch is canceled.",
+                    "$ref": "#/$defs/function"
+                },
+                "onTransitionEnd": {
+                    "description": "Triggered when a CSS transition ends.",
+                    "$ref": "#/$defs/function"
+                },
+                "onScroll": {
+                    "description": "Triggered when an element is scrolled.",
+                    "$ref": "#/$defs/function"
+                },
+                "onWheel": {
+                    "description": "Triggered when the mouse wheel is used over an element.",
+                    "$ref": "#/$defs/function"
                 }
             },
             "default": {}
