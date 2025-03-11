@@ -23,12 +23,13 @@ import {
   ComponentDelegateJavaScriptProxy,
   JavaScriptRunEvent,
 } from '@embr-js/perspective-client'
+import { DomEvents, useDomEvents } from '../../util/useDomEvents'
 
 export const COMPONENT_TYPE = 'embr.chart.chart-js'
 
 type ChartData = unknown[]
 type ChartComponentProps = ChartProps & {
-  events?: LifecycleEvents
+  events?: LifecycleEvents & DomEvents
   updateMode?: UpdateMode
   redraw?: boolean
 }
@@ -74,6 +75,7 @@ export function ChartJsComponent(props: ComponentProps<ChartComponentProps>) {
 
   // Call component lifecycle events
   useLifecycleEvents(chartRef.current, transformedProps.events ?? {})
+  useDomEvents(props.store, transformedProps.events ?? {})
 
   return (
     <div {...props.emit()}>
