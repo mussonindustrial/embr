@@ -10,7 +10,9 @@ import {
 } from '@inductiveautomation/perspective-client'
 import {
   ComponentDelegateJavaScriptProxy,
+  ComponentEvents,
   JavaScriptRunEvent,
+  useComponentEvents,
 } from '@embr-js/perspective-client'
 import React, { useCallback, useEffect, useMemo, useRef } from 'react'
 import {
@@ -31,10 +33,8 @@ type SmoothieChartProps = {
   series: SeriesProps[]
   options: IChartOptions & {
     delayMillis: number
-    update: {
-      interval: number
-    }
   }
+  events: ComponentEvents
   redraw: boolean
 }
 
@@ -135,7 +135,6 @@ export function SmoothieChartComponent(
       canvasRef.current,
       transformedProps.options.delayMillis ?? 0
     )
-    props.store.delegate?.fireEvent('renderChart', {})
   }, [canvasRef.current])
 
   const destroyChart = useCallback(() => {
@@ -150,7 +149,7 @@ export function SmoothieChartComponent(
   useEffect(() => {
     if (props.store.delegate) {
       const delegate = props.store.delegate as SmoothieChartComponentDelegate
-      delegate.setInterface({
+      delegate.setChart({
         appendData,
         canvas: canvasRef.current,
         chart: chartRef.current,
@@ -204,18 +203,15 @@ export function SmoothieChartComponent(
     transformedProps.series,
   ])
 
-  /* Delay */
-  useEffect(() => {
-    destroyChart()
-    setTimeout(renderChart)
-  }, [props.props.options.delayMillis])
-
   /* Render */
   useEffect(() => {
     renderChart()
 
     return () => destroyChart()
   }, [])
+
+  /* Component Events */
+  useComponentEvents(props.store, transformedProps.events, chartRef.current)
 
   return (
     <div {...props.emit()}>
@@ -225,12 +221,10 @@ export function SmoothieChartComponent(
 }
 
 class SmoothieChartComponentDelegate extends ComponentStoreDelegate {
-  private proxyProps: JsObject = {}
-  private chart: SmoothieChartRef | null = null
+  private proxyProps: { chart?: SmoothieChartRef } = {}
   private jsProxy = new ComponentDelegateJavaScriptProxy(this, this.proxyProps)
 
-  setInterface(chart: SmoothieChartRef) {
-    this.chart = chart
+  setChart(chart: SmoothieChartRef) {
     this.proxyProps.chart = chart
   }
 
@@ -239,8 +233,10 @@ class SmoothieChartComponentDelegate extends ComponentStoreDelegate {
       this.jsProxy.handleEvent(eventObject as JavaScriptRunEvent)
     }
 
-    if (eventName == 'data-append' && this.chart != null) {
-      this.chart.appendData(eventObject['values'] as ChartSeriesData[])
+    if (eventName == 'data-append') {
+      this.proxyProps.chart?.appendData(
+        eventObject['values'] as ChartSeriesData[]
+      )
     }
   }
 }
@@ -264,6 +260,7 @@ export const SmoothieChartComponentMeta: ComponentMeta = {
     return {
       series: tree.read('series', []),
       options: tree.read('options', {}),
+      events: tree.read('events', {}),
       redraw: tree.read('redraw', false),
     } as never
   },

@@ -8132,7 +8132,7 @@ smart-buffer@^1.0.13:
   resolved "https://registry.yarnpkg.com/smart-buffer/-/smart-buffer-1.1.15.tgz#7f114b5b65fab3e2a35aa775bb12f0d1c649bf16"
   integrity sha512-1+8bxygjTsNfvQe0/0pNBesTOlSHtOeG6b6LYbvsZCCHDKYZ40zcQo6YTnZBWrBSLWOCbrHljLdEmGMYebu7aQ==
 
-smoothie@^1.36.1:
+smoothie@1.36.1:
   version "1.36.1"
   resolved "https://registry.yarnpkg.com/smoothie/-/smoothie-1.36.1.tgz#969958f339913b50e62a1dee206c31630530871b"
   integrity sha512-499Vr2od6TicP8s7ykcyTfddh/6n11BB41G9RE7gqQRyfoPIAYotUTzwAxQpAfOdVOb+BvcG2qla+hjyqwe+PA==
