@@ -11,25 +11,21 @@ import {
 } from '@inductiveautomation/perspective-client'
 import { Chart as ChartJs, ChartProps } from 'react-chartjs-2'
 import { Chart, UpdateMode } from 'chart.js'
-import {
-  getCSSTransform,
-  getScriptTransform,
-  LifecycleEvents,
-  useLifecycleEvents,
-} from '../../util'
+import { getCSSTransform, getScriptTransform } from '../../util'
 import { transformProps } from '@embr-js/utils'
 import { unset, cloneDeep } from 'lodash'
 import {
   ComponentDelegateJavaScriptProxy,
+  ComponentEvents,
   JavaScriptRunEvent,
+  useComponentEvents,
 } from '@embr-js/perspective-client'
-import { DomEvents, useDomEvents } from '../../util/useDomEvents'
 
 export const COMPONENT_TYPE = 'embr.chart.chart-js'
 
 type ChartData = unknown[]
 type ChartComponentProps = ChartProps & {
-  events?: LifecycleEvents & DomEvents
+  events?: ComponentEvents
   updateMode?: UpdateMode
   redraw?: boolean
 }
@@ -74,8 +70,12 @@ export function ChartJsComponent(props: ComponentProps<ChartComponentProps>) {
   }, [props.props])
 
   // Call component lifecycle events
-  useLifecycleEvents(chartRef.current, transformedProps.events ?? {})
-  useDomEvents(props.store, transformedProps.events ?? {})
+  useComponentEvents(
+    props.store,
+    transformedProps.events ?? {},
+    chartRef.current
+  )
+  console.log(props.store.domEvents)
 
   return (
     <div {...props.emit()}>
