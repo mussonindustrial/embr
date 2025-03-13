@@ -1,5 +1,13 @@
 # @embr-js/perspective-client
 
+## 0.2.2
+
+### Patch Changes
+
+- 69904f1: Add `useDomEvents`, `useLifecycleEvents`, and `useComponentEvents` hooks.
+
+  These hooks give a standardized interface for registering React DOM and Lifecycle (`onMount`, `onUnmount`, `onUpdate`) events.
+
 ## 0.2.1
 
 ### Patch Changes

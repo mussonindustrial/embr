@@ -1,5 +1,12 @@
 # @mussonindustrial/embr-js-chart-js
 
+## 0.5.6
+
+### Patch Changes
+
+- Updated dependencies [69904f1]
+  - @embr-js/perspective-client@0.2.2
+
 ## 0.5.5
 
 ### Patch Changes
