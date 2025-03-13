@@ -1,5 +1,11 @@
 # @mussonindustrial/eslint-config-embr
 
+## 0.3.0
+
+### Minor Changes
+
+- 69904f1: Add `react-hooks` plugin.
+
 ## 0.2.0
 
 ### Minor Changes
