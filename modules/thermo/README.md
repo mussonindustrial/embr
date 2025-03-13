@@ -7,7 +7,6 @@
 
 A module for Ignition containing scripting and expression functions for computing properties of water and steam via an IF97 implementation.
 
-
 ## Getting Started
 
 1. Download the latest version from [releases].
@@ -37,31 +36,31 @@ There is also a separate equation for metastable steam at pressures up to 10 MPa
 
 ### Supported Properties and Parameters
 
-| Property                                   | Symbol | Units       | (p, T) | (p, h) | (p, s) | (h, s) | (T, s) | (ρ, T) | (p, x) | (T, x) |
-|--------------------------------------------|--------|-------------|--------|--------|--------|--------|--------|--------|--------|--------|
-| Absolute pressure                          | p      | Pa          |        |        |        | ✓      |        |        | ✓      | ✓ sat. |
-| Density                                    | ρ      | kg/m³       | ✓      | ✓      | ✓      | ✓      |        |        | ✓      | ✓      |
-| Dielectric constant                        | ε      | -           | ✓      | ✓      | ✓      | ✓      |        | ✓      |        |        |
-| Dynamic viscosity                          | η      | Pa·s        | ✓      | ✓      | ✓      | ✓      |        | ✓      |        |        |
-| Isobaric cubic expansion coefficient       | αv     | 1/K         | ✓      | ✓      | ✓      | ✓      |        |        |        |        |
-| Isothermal compressibility                 | κT     | 1/Pa        | ✓      | ✓      | ✓      | ✓      |        |        |        |        |
-| Kinematic viscosity                        | ν      | m²/s        | ✓      | ✓      | ✓      | ✓      |        | ✓      |        |        |
-| Prandtl number                             | Pr     | -           | ✓      | ✓      | ✓      | ✓      |        |        |        |        |
-| Refractive index                           | n      | -           | ✓      | ✓      | ✓      | ✓      |        | ✓      |        |        |
-| Specific enthalpy                          | h      | J/kg        | ✓      |        | ✓      |        |        |        | ✓      | ✓      |
-| Specific entropy                           | s      | J/(kg·K)    | ✓      | ✓      |        |        |        |        | ✓      | ✓      |
-| Specific Gibbs free energy                 | g      | J/kg        | ✓      |        |        |        |        |        |        |        |
-| Specific internal energy                   | u      | J/kg        | ✓      | ✓      | ✓      | ✓      |        |        |        |        |
-| Specific isobaric heat capacity            | cp     | J/(kg·K)    | ✓      | ✓      | ✓      | ✓      |        |        |        |        |
-| Specific isochoric heat capacity           | cv     | J/(kg·K)    | ✓      | ✓      | ✓      | ✓      |        |        |        |        |
-| Specific volume                            | v      | m³/kg       | ✓      | ✓      | ✓      | ✓      |        |        | ✓      | ✓      |
-| Speed of sound                             | w      | m/s         | ✓      | ✓      | ✓      | ✓      |        |        |        |        |
-| Surface tension                            | σ      | N/m         |        |        |        |        |        |        | ✓      | ✓      |
-| Temperature                                | T      | K           |        | ✓      | ✓      | ✓      |        |        | ✓ sat. |        |
-| Thermal conductivity                       | λ      | W/(m·K)     | ✓      | ✓      | ✓      | ✓      |        | ✓      |        |        |
-| Thermal diffusivity                        | κ      | m²/s        | ✓      | ✓      | ✓      | ✓      |        |        |        |        |
-| Vapour fraction                            | x      | -           |        | ✓      | ✓      | ✓      | ✓      |        |        |        |
-| Wavelength of light                        | λL     | m           |        |        |        |        |        |        |        |        |
+| Property                             | Symbol | Units    | (p, T) | (p, h) | (p, s) | (h, s) | (T, s) | (ρ, T) | (p, x) | (T, x) |
+| ------------------------------------ | ------ | -------- | ------ | ------ | ------ | ------ | ------ | ------ | ------ | ------ |
+| Absolute pressure                    | p      | Pa       |        |        |        | ✓      |        |        | ✓      | ✓ sat. |
+| Density                              | ρ      | kg/m³    | ✓      | ✓      | ✓      | ✓      |        |        | ✓      | ✓      |
+| Dielectric constant                  | ε      | -        | ✓      | ✓      | ✓      | ✓      |        | ✓      |        |        |
+| Dynamic viscosity                    | η      | Pa·s     | ✓      | ✓      | ✓      | ✓      |        | ✓      |        |        |
+| Isobaric cubic expansion coefficient | αv     | 1/K      | ✓      | ✓      | ✓      | ✓      |        |        |        |        |
+| Isothermal compressibility           | κT     | 1/Pa     | ✓      | ✓      | ✓      | ✓      |        |        |        |        |
+| Kinematic viscosity                  | ν      | m²/s     | ✓      | ✓      | ✓      | ✓      |        | ✓      |        |        |
+| Prandtl number                       | Pr     | -        | ✓      | ✓      | ✓      | ✓      |        |        |        |        |
+| Refractive index                     | n      | -        | ✓      | ✓      | ✓      | ✓      |        | ✓      |        |        |
+| Specific enthalpy                    | h      | J/kg     | ✓      |        | ✓      |        |        |        | ✓      | ✓      |
+| Specific entropy                     | s      | J/(kg·K) | ✓      | ✓      |        |        |        |        | ✓      | ✓      |
+| Specific Gibbs free energy           | g      | J/kg     | ✓      |        |        |        |        |        |        |        |
+| Specific internal energy             | u      | J/kg     | ✓      | ✓      | ✓      | ✓      |        |        |        |        |
+| Specific isobaric heat capacity      | cp     | J/(kg·K) | ✓      | ✓      | ✓      | ✓      |        |        |        |        |
+| Specific isochoric heat capacity     | cv     | J/(kg·K) | ✓      | ✓      | ✓      | ✓      |        |        |        |        |
+| Specific volume                      | v      | m³/kg    | ✓      | ✓      | ✓      | ✓      |        |        | ✓      | ✓      |
+| Speed of sound                       | w      | m/s      | ✓      | ✓      | ✓      | ✓      |        |        |        |        |
+| Surface tension                      | σ      | N/m      |        |        |        |        |        |        | ✓      | ✓      |
+| Temperature                          | T      | K        |        | ✓      | ✓      | ✓      |        |        | ✓ sat. |        |
+| Thermal conductivity                 | λ      | W/(m·K)  | ✓      | ✓      | ✓      | ✓      |        | ✓      |        |        |
+| Thermal diffusivity                  | κ      | m²/s     | ✓      | ✓      | ✓      | ✓      |        |        |        |        |
+| Vapour fraction                      | x      | -        |        | ✓      | ✓      | ✓      | ✓      |        |        |        |
+| Wavelength of light                  | λL     | m        |        |        |        |        |        |        |        |        |
 
 ### Scripting Functions
 
@@ -112,7 +111,7 @@ Because expression functions do not support operator overloading (and adding fun
 ```python
 // Usage
 if97(property, [[parameter], [value]...])
-    
+
 // Examples
 if97("specificEntropy", "p", 200000, "t", 400)
 if97("saturationPressure", "t", 500)

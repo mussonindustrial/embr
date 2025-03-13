@@ -172,17 +172,122 @@
                 }
             }
         },
-        "chart_event": {
-            "type": "string",
-            "default": ""
-        },
-        "chart_events": {
-            "description": "JavaScript chart events. The `chart` object is provided.",
+        "events": {
+            "description": "Component events.",
+            "default": {
+                "dom": {},
+                "lifecycle": {}
+            },
             "properties": {
-                "beforeRender": {
-                    "description": "Runs before the chart renders.",
-                    "$ref": "#/$defs/chart_event"
+                "dom": {
+                    "description": "DOM events.",
+                    "$ref": "#/$defs/events_dom"
+                },
+                "lifecycle": {
+                    "description": "React lifecycle events.",
+                    "$ref": "#/$defs/events_lifecycle"
                 }
+            }
+        },
+        "events_lifecycle": {
+            "description": "React lifecycle events.",
+            "properties": {
+                "onMount": {
+                    "description": "Called when the component mounts.",
+                    "$ref": "#/$defs/function"
+                },
+                "onUpdate": {
+                    "description": "Called when the component updates.",
+                    "$ref": "#/$defs/function"
+                },
+                "onUnmount": {
+                    "description": "Called when the component unmounts.",
+                    "$ref": "#/$defs/function"
+                }
+            }
+        },
+        "events_dom": {
+            "description": "DOM events.",
+            "properties": {
+                "onCopy": {"description": "Handler for copy event.", "$ref": "#/$defs/function"},
+                "onCut": {"description": "Handler for cut event.", "$ref": "#/$defs/function"},
+                "onPaste": {"description": "Handler for paste event.", "$ref": "#/$defs/function"},
+                "onCompositionEnd": {"description": "Handler for composition end event.", "$ref": "#/$defs/function"},
+                "onCompositionStart": {"description": "Handler for composition start event.", "$ref": "#/$defs/function"},
+                "onCompositionUpdate": {"description": "Handler for composition update event.", "$ref": "#/$defs/function"},
+                "onFocus": {"description": "Handler for focus event.", "$ref": "#/$defs/function"},
+                "onBlur": {"description": "Handler for blur event.", "$ref": "#/$defs/function"},
+                "onChange": {"description": "Handler for change event.", "$ref": "#/$defs/function"},
+                "onBeforeInput": {"description": "Handler for before input event.", "$ref": "#/$defs/function"},
+                "onInput": {"description": "Handler for input event.", "$ref": "#/$defs/function"},
+                "onReset": {"description": "Handler for reset event.", "$ref": "#/$defs/function"},
+                "onSubmit": {"description": "Handler for submit event.", "$ref": "#/$defs/function"},
+                "onInvalid": {"description": "Handler for invalid event.", "$ref": "#/$defs/function"},
+                "onLoad": {"description": "Handler for load event.", "$ref": "#/$defs/function"},
+                "onError": {"description": "Handler for error event.", "$ref": "#/$defs/function"},
+                "onKeyDown": {"description": "Handler for key down event.", "$ref": "#/$defs/function"},
+                "onKeyPress": {"description": "Handler for key press event. Deprecated.", "$ref": "#/$defs/function"},
+                "onKeyUp": {"description": "Handler for key up event.", "$ref": "#/$defs/function"},
+                "onAbort": {"description": "Handler for abort event.", "$ref": "#/$defs/function"},
+                "onCanPlay": {"description": "Handler for can play event.", "$ref": "#/$defs/function"},
+                "onCanPlayThrough": {"description": "Handler for can play through event.", "$ref": "#/$defs/function"},
+                "onDurationChange": {"description": "Handler for duration change event.", "$ref": "#/$defs/function"},
+                "onEmptied": {"description": "Handler for emptied event.", "$ref": "#/$defs/function"},
+                "onEncrypted": {"description": "Handler for encrypted event.", "$ref": "#/$defs/function"},
+                "onEnded": {"description": "Handler for ended event.", "$ref": "#/$defs/function"},
+                "onLoadedData": {"description": "Handler for loaded data event.", "$ref": "#/$defs/function"},
+                "onLoadedMetadata": {"description": "Handler for loaded metadata event.", "$ref": "#/$defs/function"},
+                "onPause": {"description": "Handler for pause event.", "$ref": "#/$defs/function"},
+                "onPlay": {"description": "Handler for play event.", "$ref": "#/$defs/function"},
+                "onPlaying": {"description": "Handler for playing event.", "$ref": "#/$defs/function"},
+                "onProgress": {"description": "Handler for progress event.", "$ref": "#/$defs/function"},
+                "onRateChange": {"description": "Handler for rate change event.", "$ref": "#/$defs/function"},
+                "onResize": {"description": "Handler for resize event.", "$ref": "#/$defs/function"},
+                "onSeeked": {"description": "Handler for seeked event.", "$ref": "#/$defs/function"},
+                "onSeeking": {"description": "Handler for seeking event.", "$ref": "#/$defs/function"},
+                "onStalled": {"description": "Handler for stalled event.", "$ref": "#/$defs/function"},
+                "onSuspend": {"description": "Handler for suspend event.", "$ref": "#/$defs/function"},
+                "onTimeUpdate": {"description": "Handler for time update event.", "$ref": "#/$defs/function"},
+                "onVolumeChange": {"description": "Handler for volume change event.", "$ref": "#/$defs/function"},
+                "onWaiting": {"description": "Handler for waiting event.", "$ref": "#/$defs/function"},
+                "onAuxClick": {"description": "Handler for auxiliary click event.", "$ref": "#/$defs/function"},
+                "onClick": {"description": "Handler for click event.", "$ref": "#/$defs/function"},
+                "onContextMenu": {"description": "Handler for context menu event.", "$ref": "#/$defs/function"},
+                "onDoubleClick": {"description": "Handler for double click event.", "$ref": "#/$defs/function"},
+                "onDrag": {"description": "Handler for drag event.", "$ref": "#/$defs/function"},
+                "onDragEnd": {"description": "Handler for drag end event.", "$ref": "#/$defs/function"},
+                "onDragEnter": {"description": "Handler for drag enter event.", "$ref": "#/$defs/function"},
+                "onDragExit": {"description": "Handler for drag exit event.", "$ref": "#/$defs/function"},
+                "onDragLeave": {"description": "Handler for drag leave event.", "$ref": "#/$defs/function"},
+                "onDragOver": {"description": "Handler for drag over event.", "$ref": "#/$defs/function"},
+                "onDragStart": {"description": "Handler for drag start event.", "$ref": "#/$defs/function"},
+                "onDrop": {"description": "Handler for drop event.", "$ref": "#/$defs/function"},
+                "onMouseDown": {"description": "Handler for mouse down event.", "$ref": "#/$defs/function"},
+                "onMouseEnter": {"description": "Handler for mouse enter event.", "$ref": "#/$defs/function"},
+                "onMouseLeave": {"description": "Handler for mouse leave event.", "$ref": "#/$defs/function"},
+                "onMouseMove": {"description": "Handler for mouse move event.", "$ref": "#/$defs/function"},
+                "onMouseOut": {"description": "Handler for mouse out event.", "$ref": "#/$defs/function"},
+                "onMouseOver": {"description": "Handler for mouse over event.", "$ref": "#/$defs/function"},
+                "onMouseUp": {"description": "Handler for mouse up event.", "$ref": "#/$defs/function"},
+                "onSelect": {"description": "Handler for select event.", "$ref": "#/$defs/function"},
+                "onTouchCancel": {"description": "Handler for touch cancel event.", "$ref": "#/$defs/function"},
+                "onTouchEnd": {"description": "Handler for touch end event.", "$ref": "#/$defs/function"},
+                "onTouchMove": {"description": "Handler for touch move event.", "$ref": "#/$defs/function"},
+                "onTouchStart": {"description": "Handler for touch start event.", "$ref": "#/$defs/function"},
+                "onPointerDown": {"description": "Handler for pointer down event.", "$ref": "#/$defs/function"},
+                "onPointerMove": {"description": "Handler for pointer move event.", "$ref": "#/$defs/function"},
+                "onPointerUp": {"description": "Handler for pointer up event.", "$ref": "#/$defs/function"},
+                "onPointerCancel": {"description": "Handler for pointer cancel event.", "$ref": "#/$defs/function"},
+                "onPointerEnter": {"description": "Handler for pointer enter event.", "$ref": "#/$defs/function"},
+                "onPointerLeave": {"description": "Handler for pointer leave event.", "$ref": "#/$defs/function"},
+                "onPointerOver": {"description": "Handler for pointer over event.", "$ref": "#/$defs/function"},
+                "onPointerOut": {"description": "Handler for pointer out event.", "$ref": "#/$defs/function"},
+                "onScroll": {"description": "Handler for scroll event.", "$ref": "#/$defs/function"},
+                "onWheel": {"description": "Handler for wheel event.", "$ref": "#/$defs/function"},
+                "onAnimationStart": {"description": "Handler for animation start event.", "$ref": "#/$defs/function"},
+                "onAnimationEnd": {"description": "Handler for animation end event.", "$ref": "#/$defs/function"},
+                "onAnimationIteration": {"description": "Handler for animation iteration event.", "$ref": "#/$defs/function"},
+                "onTransitionEnd": {"description": "Handler for transition end event.", "$ref": "#/$defs/function"}
             },
             "default": {}
         },
@@ -2457,8 +2562,8 @@
             "$ref": "#/$defs/chart_options"
         },
         "events": {
-            "description": "JavaScript chart events. The `chart` object is provided.",
-            "$ref": "#/$defs/chart_events"
+            "description": "Component events.",
+            "$ref": "#/$defs/events"
         },
         "plugins": {
             "description": "Manually registered plugins.",

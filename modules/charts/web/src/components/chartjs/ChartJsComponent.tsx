@@ -10,57 +10,32 @@ import {
   SizeObject,
 } from '@inductiveautomation/perspective-client'
 import { Chart as ChartJs, ChartProps } from 'react-chartjs-2'
-import { Chart } from 'chart.js'
+import { Chart, UpdateMode } from 'chart.js'
 import { getCSSTransform, getScriptTransform } from '../../util'
 import { transformProps } from '@embr-js/utils'
 import { unset, cloneDeep } from 'lodash'
 import {
   ComponentDelegateJavaScriptProxy,
+  ComponentEvents,
   JavaScriptRunEvent,
+  useComponentEvents,
 } from '@embr-js/perspective-client'
 
 export const COMPONENT_TYPE = 'embr.chart.chart-js'
 
-type PerspectiveChart = Chart
-type PerspectiveChartData = unknown[]
-type ChartEvent = (chart: PerspectiveChart | undefined) => void
-type PerspectiveChartEvents = {
-  beforeRender?: ChartEvent
-}
-type UpdateMode =
-  | 'resize'
-  | 'reset'
-  | 'none'
-  | 'hide'
-  | 'show'
-  | 'default'
-  | 'active'
-  | 'zoom'
-  | undefined
-type PerspectiveChartProps = ChartProps & {
-  events?: PerspectiveChartEvents
+type ChartData = unknown[]
+type ChartComponentProps = ChartProps & {
+  events?: ComponentEvents & {
+    /** @deprecated use `onUpdate` */
+    beforeRender?: (obj: unknown) => void
+  }
   updateMode?: UpdateMode
   redraw?: boolean
 }
 
-function callUserChartEvent(
-  chart: PerspectiveChart | undefined,
-  props: PerspectiveChartProps,
-  event: keyof PerspectiveChartEvents
-) {
-  if (chart === undefined || props.events === undefined) {
-    return
-  }
-
-  const userFunction = props.events[event]
-  if (userFunction !== undefined && typeof userFunction == 'function') {
-    userFunction(chart)
-  }
-}
-
-function extractPropsData(props: PerspectiveChartProps) {
+function extractPropsData(props: ChartComponentProps) {
   const localProps = cloneDeep(props)
-  const data: PerspectiveChartData[] = []
+  const data: ChartData[] = []
 
   localProps.data?.datasets?.forEach((dataset) => {
     data.push(dataset.data ? dataset.data : [])
@@ -69,37 +44,45 @@ function extractPropsData(props: PerspectiveChartProps) {
   return { props, data }
 }
 
-function installPropsData(
-  props: PerspectiveChartProps,
-  data: PerspectiveChartData[]
-) {
+function installPropsData(props: ChartComponentProps, data: ChartData[]) {
   data.forEach((data, index) => {
     props.data.datasets[index].data = data
   })
 }
 
-export function ChartJsComponent(props: ComponentProps<PerspectiveChartProps>) {
-  const chartRef: MutableRefObject<PerspectiveChart | undefined> =
-    useRef(undefined)
+export function ChartJsComponent(props: ComponentProps<ChartComponentProps>) {
+  const chartRef: MutableRefObject<Chart | undefined> = useRef(undefined)
 
+  // Register the chart with the component delegate
   useEffect(() => {
     const delegate = props.store.delegate as ChartJsComponentDelegate
     delegate.setChart(chartRef.current)
   }, [props.store.delegate, chartRef.current])
 
+  // Apply transforms to the user supplied properties
   const transformedProps = useMemo(() => {
     const { props: configProps, data } = extractPropsData(props.props)
 
     const transformedProps = transformProps(configProps, [
       getScriptTransform(props, props.store),
       getCSSTransform(chartRef.current?.canvas.parentElement),
-    ]) as PerspectiveChartProps
+    ]) as ChartComponentProps
 
     installPropsData(transformedProps, data)
     return transformedProps
   }, [props.props])
 
-  callUserChartEvent(chartRef.current, transformedProps, 'beforeRender')
+  // Call component lifecycle events
+  useComponentEvents(
+    props.store,
+    transformedProps.events ?? {},
+    chartRef.current
+  )
+
+  const beforeRender_DEPRECATED = transformedProps.events?.beforeRender
+  if (beforeRender_DEPRECATED && typeof beforeRender_DEPRECATED == 'function') {
+    beforeRender_DEPRECATED(chartRef.current)
+  }
 
   return (
     <div {...props.emit()}>
@@ -121,7 +104,7 @@ class ChartJsComponentDelegate extends ComponentStoreDelegate {
 
   private jsProxy = new ComponentDelegateJavaScriptProxy(this, this.proxyProps)
 
-  setChart(chart?: PerspectiveChart) {
+  setChart(chart?: Chart) {
     this.proxyProps.chart = chart
   }
 
@@ -147,7 +130,7 @@ export const ChartJsComponentMeta: ComponentMeta = {
   ): ComponentStoreDelegate {
     return new ChartJsComponentDelegate(component)
   },
-  getPropsReducer(tree: PropertyTree): PerspectiveChartProps {
+  getPropsReducer(tree: PropertyTree): ChartComponentProps {
     return {
       type: tree.readString('type'),
       options: tree.read('options', {}),

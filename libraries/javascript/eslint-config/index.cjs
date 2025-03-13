@@ -10,7 +10,7 @@ module.exports = {
         es2022: true,
     },
     parser: '@typescript-eslint/parser',
-    plugins: ['@typescript-eslint'],
+    plugins: ['@typescript-eslint', 'react-hooks'],
     root: true,
     parserOptions: {
         ecmaVersion: 'latest',
