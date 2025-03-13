@@ -25,7 +25,10 @@ export const COMPONENT_TYPE = 'embr.chart.chart-js'
 
 type ChartData = unknown[]
 type ChartComponentProps = ChartProps & {
-  events?: ComponentEvents
+  events?: ComponentEvents & {
+    /** @deprecated use `onUpdate` */
+    beforeRender?: (obj: unknown) => void
+  }
   updateMode?: UpdateMode
   redraw?: boolean
 }
@@ -75,7 +78,11 @@ export function ChartJsComponent(props: ComponentProps<ChartComponentProps>) {
     transformedProps.events ?? {},
     chartRef.current
   )
-  console.log(props.store.domEvents)
+
+  const beforeRender_DEPRECATED = transformedProps.events?.beforeRender
+  if (beforeRender_DEPRECATED && typeof beforeRender_DEPRECATED == 'function') {
+    beforeRender_DEPRECATED(chartRef.current)
+  }
 
   return (
     <div {...props.emit()}>
