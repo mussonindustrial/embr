@@ -14,6 +14,14 @@
                 },
                 "lifecycle": {
                     "$ref": "urn:ignition-schema:schemas/components/events-lifecycle.json"
+                },
+                "target": {
+                    "type": "object",
+                    "properties": {
+                        "lifecycle": {
+                            "$ref": "urn:ignition-schema:schemas/components/events-lifecycle.json"
+                        }
+                    }
                 }
             }
         },

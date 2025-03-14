@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef } from 'react'
+import React, { useMemo, useRef } from 'react'
 import {
   AbstractUIElementStore,
   ComponentDefinition,
@@ -10,7 +10,6 @@ import {
   layoutCallbackCreator,
   PComponent,
   PropertyTree,
-  ReactResizeDetector,
   SizeObject,
   StyleObject,
   ViewStateDisplay,
@@ -19,6 +18,7 @@ import { transformProps } from '@embr-js/utils'
 import { createPortal } from 'react-dom'
 import {
   ComponentEvents,
+  ComponentLifecycleEvents,
   getScriptTransform,
   useComponentEvents,
   waitForClientStore,
@@ -30,12 +30,17 @@ import {
   PreferredLocation,
   SelectionStore,
 } from '@inductiveautomation/perspective-designer'
+import { useRefLifecycleEvents } from '../../hooks'
 
 const COMPONENT_TYPE = 'embr.periscope.embedding.portal'
 
 type PortalProps = {
   element: string | ((element: Element | void) => Element)
-  events: ComponentEvents
+  events: ComponentEvents & {
+    target: {
+      lifecycle: ComponentLifecycleEvents
+    }
+  }
   style: StyleObject
 }
 
@@ -56,7 +61,7 @@ function MissingTarget({ emit }: { emit: Emitter }) {
 }
 
 export function PortalComponent(props: ComponentProps<PortalProps>) {
-  const target = useRef<Element | null>(null)
+  const target = useRef<Element | null>()
 
   const transformedProps = useMemo(() => {
     return transformProps(props.props, [
@@ -64,15 +69,21 @@ export function PortalComponent(props: ComponentProps<PortalProps>) {
     ]) as PortalProps
   }, [props.props])
 
-  useEffect(() => {
-    if (typeof transformedProps.element === 'function') {
-      target.current = transformedProps.element(props.store.element)
-    } else {
-      target.current = document.getElementById(transformedProps.element)
-    }
-  }, [props.props.element])
+  if (typeof transformedProps.element === 'function') {
+    target.current = transformedProps.element(props.store.element)
+  } else {
+    target.current = document.getElementById(transformedProps.element)
+  }
 
   useComponentEvents(props.store, transformedProps.events, target.current)
+  useRefLifecycleEvents(
+    target.current,
+    transformedProps.events?.target?.lifecycle ?? {}
+  )
+
+  if (transformedProps.element === '') {
+    return <></>
+  }
 
   if (target.current == null) {
     return <MissingTarget emit={props.emit} />
@@ -85,9 +96,9 @@ export function PortalComponent(props: ComponentProps<PortalProps>) {
         const layout = layoutCallbackCreator.forStyle(() => ({}))
         return <Component key={index} layout={layout} />
       })}
-      <ReactResizeDetector />
     </>,
-    target.current
+    target.current,
+    props.store.addressPathString
   )
 }
 
