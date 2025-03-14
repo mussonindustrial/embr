@@ -1,5 +1,5 @@
 import { it, expect, describe } from 'vitest'
-import { default as getScriptTransform } from '../getScriptTransform'
+import { default as getScriptTransform } from './index'
 import { ComponentStore } from '@inductiveautomation/perspective-client'
 
 describe('getScriptTransform', () => {

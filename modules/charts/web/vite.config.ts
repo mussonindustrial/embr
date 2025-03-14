@@ -32,6 +32,7 @@ export default defineConfig(({ mode }) => ({
     },
   },
   test: {
+    passWithNoTests: true,
     fileParallelism: mode !== 'benchmark',
     globals: true,
     environment: 'node',

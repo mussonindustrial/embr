@@ -1,6 +1,6 @@
 import { ComponentStore } from '@inductiveautomation/perspective-client'
 import { isFunction, PropTransform, toUserScript } from '@embr-js/utils'
-import { createScriptingGlobals } from '@embr-js/perspective-client'
+import { createScriptingGlobals } from '../../scripting'
 
 export default function getScriptTransform(
   thisArg: object = {},

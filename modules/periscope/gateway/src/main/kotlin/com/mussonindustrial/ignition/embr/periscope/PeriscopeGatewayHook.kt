@@ -14,6 +14,7 @@ import com.mussonindustrial.embr.perspective.common.component.addResourcesTo
 import com.mussonindustrial.embr.perspective.common.component.removeResourcesFrom
 import com.mussonindustrial.ignition.embr.periscope.Meta.SHORT_MODULE_ID
 import com.mussonindustrial.ignition.embr.periscope.component.embedding.*
+import com.mussonindustrial.ignition.embr.periscope.component.embedding.Portal
 import com.mussonindustrial.ignition.embr.periscope.scripting.JavaScriptFunctions
 import java.util.*
 import org.slf4j.Logger
@@ -57,6 +58,8 @@ class PeriscopeGatewayHook : AbstractGatewayModuleHook() {
         modelDelegateRegistry.register(FlexRepeater.COMPONENT_ID) { FlexRepeaterModelDelegate(it) }
 
         componentRegistry.registerComponent(Swiper.DESCRIPTOR)
+
+        componentRegistry.registerComponent(Portal.DESCRIPTOR)
     }
 
     override fun shutdown() {
@@ -78,6 +81,8 @@ class PeriscopeGatewayHook : AbstractGatewayModuleHook() {
         modelDelegateRegistry.remove(FlexRepeater.COMPONENT_ID)
 
         componentRegistry.removeComponent(Swiper.COMPONENT_ID)
+
+        componentRegistry.removeComponent(Portal.COMPONENT_ID)
     }
 
     override fun getMountedResourceFolder(): Optional<String> {
