@@ -6,12 +6,14 @@ import {
   ComponentMeta,
   ComponentProps,
   ComponentStoreDelegate,
-  LayoutBuilder,
+  Emitter,
   layoutCallbackCreator,
   PComponent,
   PropertyTree,
+  ReactResizeDetector,
   SizeObject,
   StyleObject,
+  ViewStateDisplay,
 } from '@inductiveautomation/perspective-client'
 import { transformProps } from '@embr-js/utils'
 import { createPortal } from 'react-dom'
@@ -29,12 +31,28 @@ import {
   SelectionStore,
 } from '@inductiveautomation/perspective-designer'
 
-const COMPONENT_TYPE = 'embr.periscope.container.portal'
+const COMPONENT_TYPE = 'embr.periscope.embedding.portal'
 
 type PortalProps = {
-  element: string | (() => Element)
+  element: string | ((element: Element | void) => Element)
   events: ComponentEvents
   style: StyleObject
+}
+
+function MissingTarget({ emit }: { emit: Emitter }) {
+  return (
+    <div {...emit({ classes: ['view-parent'] })}>
+      <ViewStateDisplay
+        primaryMessage="Portal Target Not Found"
+        secondaryMessage={`Configured element does not exist.`}
+        icon={
+          <svg className="view-state-icon">
+            <use xlinkHref="/res/perspective/icons/material-icons.svg#warning" />
+          </svg>
+        }
+      />
+    </div>
+  )
 }
 
 export function PortalComponent(props: ComponentProps<PortalProps>) {
@@ -48,34 +66,27 @@ export function PortalComponent(props: ComponentProps<PortalProps>) {
 
   useEffect(() => {
     if (typeof transformedProps.element === 'function') {
-      target.current = transformedProps.element()
+      target.current = transformedProps.element(props.store.element)
     } else {
       target.current = document.getElementById(transformedProps.element)
     }
   }, [props.props.element])
 
+  useComponentEvents(props.store, transformedProps.events, target.current)
+
   if (target.current == null) {
-    return <div>No Target</div>
+    return <MissingTarget emit={props.emit} />
   }
 
-  useComponentEvents(props.store, transformedProps.events, props)
-
   return createPortal(
-    <div {...props.emit()}>
-      {props.store.children && props.store.children.length === 0 && (
-        <div>
-          <p>Drop components here</p>
-        </div>
-      )}
-      {/* Loop over all children */}
+    <>
       {props.store.children.map((componentStore, index) => {
         const Component = componentStore.getComponent()
-        const buildLayout: LayoutBuilder = () => ({})
-        const layout = layoutCallbackCreator.forStyle(buildLayout)
-
+        const layout = layoutCallbackCreator.forStyle(() => ({}))
         return <Component key={index} layout={layout} />
       })}
-    </div>,
+      <ReactResizeDetector />
+    </>,
     target.current
   )
 }
@@ -105,6 +116,7 @@ export class PortalComponentMeta implements ComponentMeta {
   getPropsReducer(tree: PropertyTree): PortalProps {
     return {
       element: tree.readString('element', ''),
+      events: tree.readObject('events', {}),
       style: tree.readStyle('style'),
     } as never
   }

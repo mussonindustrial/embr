@@ -11,10 +11,10 @@ import com.mussonindustrial.embr.perspective.common.component.addResourcesTo
 import com.mussonindustrial.embr.perspective.common.component.removeResourcesFrom
 import com.mussonindustrial.embr.perspective.designer.component.asDesignerDescriptor
 import com.mussonindustrial.ignition.embr.periscope.Meta.SHORT_MODULE_ID
-import com.mussonindustrial.ignition.embr.periscope.component.container.Portal
 import com.mussonindustrial.ignition.embr.periscope.component.embedding.EmbeddedView
 import com.mussonindustrial.ignition.embr.periscope.component.embedding.FlexRepeater
 import com.mussonindustrial.ignition.embr.periscope.component.embedding.JsonView
+import com.mussonindustrial.ignition.embr.periscope.component.embedding.Portal
 import com.mussonindustrial.ignition.embr.periscope.component.embedding.Swiper
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory

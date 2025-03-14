@@ -1,0 +1,324 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "DOM events.",
+  "default": {},
+  "properties": {
+    "onCopy": {
+      "description": "Handler for copy event.",
+      "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+    },
+    "onCut": {
+      "description": "Handler for cut event.",
+      "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+    },
+    "onPaste": {
+      "description": "Handler for paste event.",
+      "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+    },
+    "onCompositionEnd": {
+      "description": "Handler for composition end event.",
+      "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+    },
+    "onCompositionStart": {
+      "description": "Handler for composition start event.",
+      "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+    },
+    "onCompositionUpdate": {
+      "description": "Handler for composition update event.",
+      "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+    },
+    "onFocus": {
+      "description": "Handler for focus event.",
+      "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+    },
+    "onBlur": {
+      "description": "Handler for blur event.",
+      "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+    },
+    "onChange": {
+      "description": "Handler for change event.",
+      "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+    },
+    "onBeforeInput": {
+      "description": "Handler for before input event.",
+      "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+    },
+    "onInput": {
+      "description": "Handler for input event.",
+      "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+    },
+    "onReset": {
+      "description": "Handler for reset event.",
+      "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+    },
+    "onSubmit": {
+      "description": "Handler for submit event.",
+      "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+    },
+    "onInvalid": {
+      "description": "Handler for invalid event.",
+      "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+    },
+    "onLoad": {
+      "description": "Handler for load event.",
+      "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+    },
+    "onError": {
+      "description": "Handler for error event.",
+      "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+    },
+    "onKeyDown": {
+      "description": "Handler for key down event.",
+      "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+    },
+    "onKeyPress": {
+      "description": "Handler for key press event. Deprecated.",
+      "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+    },
+    "onKeyUp": {
+      "description": "Handler for key up event.",
+      "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+    },
+    "onAbort": {
+      "description": "Handler for abort event.",
+      "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+    },
+    "onCanPlay": {
+      "description": "Handler for can play event.",
+      "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+    },
+    "onCanPlayThrough": {
+      "description": "Handler for can play through event.",
+      "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+    },
+    "onDurationChange": {
+      "description": "Handler for duration change event.",
+      "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+    },
+    "onEmptied": {
+      "description": "Handler for emptied event.",
+      "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+    },
+    "onEncrypted": {
+      "description": "Handler for encrypted event.",
+      "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+    },
+    "onEnded": {
+      "description": "Handler for ended event.",
+      "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+    },
+    "onLoadedData": {
+      "description": "Handler for loaded data event.",
+      "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+    },
+    "onLoadedMetadata": {
+      "description": "Handler for loaded metadata event.",
+      "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+    },
+    "onPause": {
+      "description": "Handler for pause event.",
+      "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+    },
+    "onPlay": {
+      "description": "Handler for play event.",
+      "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+    },
+    "onPlaying": {
+      "description": "Handler for playing event.",
+      "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+    },
+    "onProgress": {
+      "description": "Handler for progress event.",
+      "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+    },
+    "onRateChange": {
+      "description": "Handler for rate change event.",
+      "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+    },
+    "onResize": {
+      "description": "Handler for resize event.",
+      "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+    },
+    "onSeeked": {
+      "description": "Handler for seeked event.",
+      "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+    },
+    "onSeeking": {
+      "description": "Handler for seeking event.",
+      "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+    },
+    "onStalled": {
+      "description": "Handler for stalled event.",
+      "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+    },
+    "onSuspend": {
+      "description": "Handler for suspend event.",
+      "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+    },
+    "onTimeUpdate": {
+      "description": "Handler for time update event.",
+      "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+    },
+    "onVolumeChange": {
+      "description": "Handler for volume change event.",
+      "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+    },
+    "onWaiting": {
+      "description": "Handler for waiting event.",
+      "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+    },
+    "onAuxClick": {
+      "description": "Handler for auxiliary click event.",
+      "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+    },
+    "onClick": {
+      "description": "Handler for click event.",
+      "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+    },
+    "onContextMenu": {
+      "description": "Handler for context menu event.",
+      "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+    },
+    "onDoubleClick": {
+      "description": "Handler for double click event.",
+      "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+    },
+    "onDrag": {
+      "description": "Handler for drag event.",
+      "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+    },
+    "onDragEnd": {
+      "description": "Handler for drag end event.",
+      "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+    },
+    "onDragEnter": {
+      "description": "Handler for drag enter event.",
+      "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+    },
+    "onDragExit": {
+      "description": "Handler for drag exit event.",
+      "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+    },
+    "onDragLeave": {
+      "description": "Handler for drag leave event.",
+      "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+    },
+    "onDragOver": {
+      "description": "Handler for drag over event.",
+      "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+    },
+    "onDragStart": {
+      "description": "Handler for drag start event.",
+      "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+    },
+    "onDrop": {
+      "description": "Handler for drop event.",
+      "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+    },
+    "onMouseDown": {
+      "description": "Handler for mouse down event.",
+      "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+    },
+    "onMouseEnter": {
+      "description": "Handler for mouse enter event.",
+      "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+    },
+    "onMouseLeave": {
+      "description": "Handler for mouse leave event.",
+      "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+    },
+    "onMouseMove": {
+      "description": "Handler for mouse move event.",
+      "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+    },
+    "onMouseOut": {
+      "description": "Handler for mouse out event.",
+      "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+    },
+    "onMouseOver": {
+      "description": "Handler for mouse over event.",
+      "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+    },
+    "onMouseUp": {
+      "description": "Handler for mouse up event.",
+      "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+    },
+    "onSelect": {
+      "description": "Handler for select event.",
+      "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+    },
+    "onTouchCancel": {
+      "description": "Handler for touch cancel event.",
+      "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+    },
+    "onTouchEnd": {
+      "description": "Handler for touch end event.",
+      "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+    },
+    "onTouchMove": {
+      "description": "Handler for touch move event.",
+      "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+    },
+    "onTouchStart": {
+      "description": "Handler for touch start event.",
+      "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+    },
+    "onPointerDown": {
+      "description": "Handler for pointer down event.",
+      "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+    },
+    "onPointerMove": {
+      "description": "Handler for pointer move event.",
+      "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+    },
+    "onPointerUp": {
+      "description": "Handler for pointer up event.",
+      "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+    },
+    "onPointerCancel": {
+      "description": "Handler for pointer cancel event.",
+      "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+    },
+    "onPointerEnter": {
+      "description": "Handler for pointer enter event.",
+      "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+    },
+    "onPointerLeave": {
+      "description": "Handler for pointer leave event.",
+      "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+    },
+    "onPointerOver": {
+      "description": "Handler for pointer over event.",
+      "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+    },
+    "onPointerOut": {
+      "description": "Handler for pointer out event.",
+      "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+    },
+    "onScroll": {
+      "description": "Handler for scroll event.",
+      "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+    },
+    "onWheel": {
+      "description": "Handler for wheel event.",
+      "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+    },
+    "onAnimationStart": {
+      "description": "Handler for animation start event.",
+      "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+    },
+    "onAnimationEnd": {
+      "description": "Handler for animation end event.",
+      "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+    },
+    "onAnimationIteration": {
+      "description": "Handler for animation iteration event.",
+      "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+    },
+    "onTransitionEnd": {
+      "description": "Handler for transition end event.",
+      "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+    }
+  }
+}

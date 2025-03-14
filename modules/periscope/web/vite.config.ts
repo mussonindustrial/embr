@@ -16,17 +16,22 @@ export default defineConfig(({ mode }) => ({
     },
     rollupOptions: {
       external: [
+        '@inductiveautomation/perspective-client',
+        '@inductiveautomation/perspective-components',
+        '@inductiveautomation/perspective-designer',
         'react',
         'react-dom',
-        '@inductiveautomation/perspective-client',
         'moment',
       ],
       output: {
         globals: {
+          '@inductiveautomation/perspective-client': 'PerspectiveClient',
+          '@inductiveautomation/perspective-components':
+            'PerspectiveComponents',
+          '@inductiveautomation/perspective-designer': 'PerspectiveDesigner',
           react: 'React',
           'react-dom': 'ReactDOM',
           moment: 'moment',
-          '@inductiveautomation/perspective-client': 'PerspectiveClient',
         },
       },
     },
