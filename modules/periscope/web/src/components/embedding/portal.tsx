@@ -30,7 +30,7 @@ import {
   PreferredLocation,
   SelectionStore,
 } from '@inductiveautomation/perspective-designer'
-import { useRefLifecycleEvents } from '../../hooks'
+import useRefLifecycleEvents from '@embr-js/perspective-client/src/hooks/useRefLifecycleEvents'
 
 const COMPONENT_TYPE = 'embr.periscope.embedding.portal'
 
@@ -77,8 +77,8 @@ export function PortalComponent(props: ComponentProps<PortalProps>) {
 
   useComponentEvents(props.store, transformedProps.events, target.current)
   useRefLifecycleEvents(
-    target.current,
-    transformedProps.events?.target?.lifecycle ?? {}
+    transformedProps.events?.target?.lifecycle ?? {},
+    target.current
   )
 
   if (transformedProps.element === '') {

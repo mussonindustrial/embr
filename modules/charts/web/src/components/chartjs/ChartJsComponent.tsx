@@ -16,17 +16,23 @@ import { unset, cloneDeep } from 'lodash'
 import {
   ComponentDelegateJavaScriptProxy,
   ComponentEvents,
+  ComponentLifecycleEvents,
   getCSSTransform,
   getScriptTransform,
   JavaScriptRunEvent,
   useComponentEvents,
 } from '@embr-js/perspective-client'
+import useRefLifecycleEvents from '@embr-js/perspective-client/src/hooks/useRefLifecycleEvents'
 
 export const COMPONENT_TYPE = 'embr.chart.chart-js'
 
 type ChartData = unknown[]
 type ChartComponentProps = ChartProps & {
   events?: ComponentEvents & {
+    chart?: {
+      lifecycle?: ComponentLifecycleEvents
+    }
+
     /** @deprecated use `onUpdate` */
     beforeRender?: (obj: unknown) => void
   }
@@ -77,6 +83,10 @@ export function ChartJsComponent(props: ComponentProps<ChartComponentProps>) {
   useComponentEvents(
     props.store,
     transformedProps.events ?? {},
+    chartRef.current
+  )
+  useRefLifecycleEvents(
+    transformedProps.events?.chart?.lifecycle ?? {},
     chartRef.current
   )
 

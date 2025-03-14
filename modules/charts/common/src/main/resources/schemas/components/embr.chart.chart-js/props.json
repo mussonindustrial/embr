@@ -172,125 +172,6 @@
                 }
             }
         },
-        "events": {
-            "description": "Component events.",
-            "default": {
-                "dom": {},
-                "lifecycle": {}
-            },
-            "properties": {
-                "dom": {
-                    "description": "DOM events.",
-                    "$ref": "#/$defs/events_dom"
-                },
-                "lifecycle": {
-                    "description": "React lifecycle events.",
-                    "$ref": "#/$defs/events_lifecycle"
-                }
-            }
-        },
-        "events_lifecycle": {
-            "description": "React lifecycle events.",
-            "properties": {
-                "onMount": {
-                    "description": "Called when the component mounts.",
-                    "$ref": "#/$defs/function"
-                },
-                "onUpdate": {
-                    "description": "Called when the component updates.",
-                    "$ref": "#/$defs/function"
-                },
-                "onUnmount": {
-                    "description": "Called when the component unmounts.",
-                    "$ref": "#/$defs/function"
-                }
-            }
-        },
-        "events_dom": {
-            "description": "DOM events.",
-            "properties": {
-                "onCopy": {"description": "Handler for copy event.", "$ref": "#/$defs/function"},
-                "onCut": {"description": "Handler for cut event.", "$ref": "#/$defs/function"},
-                "onPaste": {"description": "Handler for paste event.", "$ref": "#/$defs/function"},
-                "onCompositionEnd": {"description": "Handler for composition end event.", "$ref": "#/$defs/function"},
-                "onCompositionStart": {"description": "Handler for composition start event.", "$ref": "#/$defs/function"},
-                "onCompositionUpdate": {"description": "Handler for composition update event.", "$ref": "#/$defs/function"},
-                "onFocus": {"description": "Handler for focus event.", "$ref": "#/$defs/function"},
-                "onBlur": {"description": "Handler for blur event.", "$ref": "#/$defs/function"},
-                "onChange": {"description": "Handler for change event.", "$ref": "#/$defs/function"},
-                "onBeforeInput": {"description": "Handler for before input event.", "$ref": "#/$defs/function"},
-                "onInput": {"description": "Handler for input event.", "$ref": "#/$defs/function"},
-                "onReset": {"description": "Handler for reset event.", "$ref": "#/$defs/function"},
-                "onSubmit": {"description": "Handler for submit event.", "$ref": "#/$defs/function"},
-                "onInvalid": {"description": "Handler for invalid event.", "$ref": "#/$defs/function"},
-                "onLoad": {"description": "Handler for load event.", "$ref": "#/$defs/function"},
-                "onError": {"description": "Handler for error event.", "$ref": "#/$defs/function"},
-                "onKeyDown": {"description": "Handler for key down event.", "$ref": "#/$defs/function"},
-                "onKeyPress": {"description": "Handler for key press event. Deprecated.", "$ref": "#/$defs/function"},
-                "onKeyUp": {"description": "Handler for key up event.", "$ref": "#/$defs/function"},
-                "onAbort": {"description": "Handler for abort event.", "$ref": "#/$defs/function"},
-                "onCanPlay": {"description": "Handler for can play event.", "$ref": "#/$defs/function"},
-                "onCanPlayThrough": {"description": "Handler for can play through event.", "$ref": "#/$defs/function"},
-                "onDurationChange": {"description": "Handler for duration change event.", "$ref": "#/$defs/function"},
-                "onEmptied": {"description": "Handler for emptied event.", "$ref": "#/$defs/function"},
-                "onEncrypted": {"description": "Handler for encrypted event.", "$ref": "#/$defs/function"},
-                "onEnded": {"description": "Handler for ended event.", "$ref": "#/$defs/function"},
-                "onLoadedData": {"description": "Handler for loaded data event.", "$ref": "#/$defs/function"},
-                "onLoadedMetadata": {"description": "Handler for loaded metadata event.", "$ref": "#/$defs/function"},
-                "onPause": {"description": "Handler for pause event.", "$ref": "#/$defs/function"},
-                "onPlay": {"description": "Handler for play event.", "$ref": "#/$defs/function"},
-                "onPlaying": {"description": "Handler for playing event.", "$ref": "#/$defs/function"},
-                "onProgress": {"description": "Handler for progress event.", "$ref": "#/$defs/function"},
-                "onRateChange": {"description": "Handler for rate change event.", "$ref": "#/$defs/function"},
-                "onResize": {"description": "Handler for resize event.", "$ref": "#/$defs/function"},
-                "onSeeked": {"description": "Handler for seeked event.", "$ref": "#/$defs/function"},
-                "onSeeking": {"description": "Handler for seeking event.", "$ref": "#/$defs/function"},
-                "onStalled": {"description": "Handler for stalled event.", "$ref": "#/$defs/function"},
-                "onSuspend": {"description": "Handler for suspend event.", "$ref": "#/$defs/function"},
-                "onTimeUpdate": {"description": "Handler for time update event.", "$ref": "#/$defs/function"},
-                "onVolumeChange": {"description": "Handler for volume change event.", "$ref": "#/$defs/function"},
-                "onWaiting": {"description": "Handler for waiting event.", "$ref": "#/$defs/function"},
-                "onAuxClick": {"description": "Handler for auxiliary click event.", "$ref": "#/$defs/function"},
-                "onClick": {"description": "Handler for click event.", "$ref": "#/$defs/function"},
-                "onContextMenu": {"description": "Handler for context menu event.", "$ref": "#/$defs/function"},
-                "onDoubleClick": {"description": "Handler for double click event.", "$ref": "#/$defs/function"},
-                "onDrag": {"description": "Handler for drag event.", "$ref": "#/$defs/function"},
-                "onDragEnd": {"description": "Handler for drag end event.", "$ref": "#/$defs/function"},
-                "onDragEnter": {"description": "Handler for drag enter event.", "$ref": "#/$defs/function"},
-                "onDragExit": {"description": "Handler for drag exit event.", "$ref": "#/$defs/function"},
-                "onDragLeave": {"description": "Handler for drag leave event.", "$ref": "#/$defs/function"},
-                "onDragOver": {"description": "Handler for drag over event.", "$ref": "#/$defs/function"},
-                "onDragStart": {"description": "Handler for drag start event.", "$ref": "#/$defs/function"},
-                "onDrop": {"description": "Handler for drop event.", "$ref": "#/$defs/function"},
-                "onMouseDown": {"description": "Handler for mouse down event.", "$ref": "#/$defs/function"},
-                "onMouseEnter": {"description": "Handler for mouse enter event.", "$ref": "#/$defs/function"},
-                "onMouseLeave": {"description": "Handler for mouse leave event.", "$ref": "#/$defs/function"},
-                "onMouseMove": {"description": "Handler for mouse move event.", "$ref": "#/$defs/function"},
-                "onMouseOut": {"description": "Handler for mouse out event.", "$ref": "#/$defs/function"},
-                "onMouseOver": {"description": "Handler for mouse over event.", "$ref": "#/$defs/function"},
-                "onMouseUp": {"description": "Handler for mouse up event.", "$ref": "#/$defs/function"},
-                "onSelect": {"description": "Handler for select event.", "$ref": "#/$defs/function"},
-                "onTouchCancel": {"description": "Handler for touch cancel event.", "$ref": "#/$defs/function"},
-                "onTouchEnd": {"description": "Handler for touch end event.", "$ref": "#/$defs/function"},
-                "onTouchMove": {"description": "Handler for touch move event.", "$ref": "#/$defs/function"},
-                "onTouchStart": {"description": "Handler for touch start event.", "$ref": "#/$defs/function"},
-                "onPointerDown": {"description": "Handler for pointer down event.", "$ref": "#/$defs/function"},
-                "onPointerMove": {"description": "Handler for pointer move event.", "$ref": "#/$defs/function"},
-                "onPointerUp": {"description": "Handler for pointer up event.", "$ref": "#/$defs/function"},
-                "onPointerCancel": {"description": "Handler for pointer cancel event.", "$ref": "#/$defs/function"},
-                "onPointerEnter": {"description": "Handler for pointer enter event.", "$ref": "#/$defs/function"},
-                "onPointerLeave": {"description": "Handler for pointer leave event.", "$ref": "#/$defs/function"},
-                "onPointerOver": {"description": "Handler for pointer over event.", "$ref": "#/$defs/function"},
-                "onPointerOut": {"description": "Handler for pointer out event.", "$ref": "#/$defs/function"},
-                "onScroll": {"description": "Handler for scroll event.", "$ref": "#/$defs/function"},
-                "onWheel": {"description": "Handler for wheel event.", "$ref": "#/$defs/function"},
-                "onAnimationStart": {"description": "Handler for animation start event.", "$ref": "#/$defs/function"},
-                "onAnimationEnd": {"description": "Handler for animation end event.", "$ref": "#/$defs/function"},
-                "onAnimationIteration": {"description": "Handler for animation iteration event.", "$ref": "#/$defs/function"},
-                "onTransitionEnd": {"description": "Handler for transition end event.", "$ref": "#/$defs/function"}
-            },
-            "default": {}
-        },
         "chart_options": {
             "type": "object",
             "properties": {
@@ -978,9 +859,6 @@
                 }
             }
         },
-        "function": {
-            "type": ["string", "null"]
-        },
         "interaction": {
             "type": "object",
             "properties": {
@@ -1091,139 +969,139 @@
                     "description": "Unique plugin id."
                 },
                 "afterBuildTicks": {
-                    "$ref": "#/$defs/function",
+                    "$ref": "urn:ignition-schema:schemas/components/javascript-function.json",
                     "description": "Called after scale has build its ticks. This hook is called separately for each scale in the chart."
                 },
                 "afterDataLimits": {
-                    "$ref": "#/$defs/function",
+                    "$ref": "urn:ignition-schema:schemas/components/javascript-function.json",
                     "description": "Called after scale data limits are calculated. This hook is called separately for each scale in the chart."
                 },
                 "afterDatasetDraw": {
-                    "$ref": "#/$defs/function",
+                    "$ref": "urn:ignition-schema:schemas/components/javascript-function.json",
                     "description": "Called after the chart datasets at the given args.index have been drawn (datasets are drawn in the reverse order). Note that this hook will not be called if the datasets drawing has been previously cancelled."
                 },
                 "afterDatasetUpdate": {
-                    "$ref": "#/$defs/function",
+                    "$ref": "urn:ignition-schema:schemas/components/javascript-function.json",
                     "description": "Called after the chart datasets at the given args.index has been updated. Note that this hook will not be called if the datasets update has been previously cancelled."
                 },
                 "afterDatasetsDraw": {
-                    "$ref": "#/$defs/function",
+                    "$ref": "urn:ignition-schema:schemas/components/javascript-function.json",
                     "description": "Called after the chart datasets have been drawn. Note that this hook will not be called if the datasets drawing has been previously cancelled."
                 },
                 "afterDatasetsUpdate": {
-                    "$ref": "#/$defs/function",
+                    "$ref": "urn:ignition-schema:schemas/components/javascript-function.json",
                     "description": "Called after the chart datasets have been updated. Note that this hook will not be called if the datasets update has been previously cancelled."
                 },
                 "afterDestroy": {
-                    "$ref": "#/$defs/function",
+                    "$ref": "urn:ignition-schema:schemas/components/javascript-function.json",
                     "description": "Called after the chart has been destroyed."
                 },
                 "afterDraw": {
-                    "$ref": "#/$defs/function",
+                    "$ref": "urn:ignition-schema:schemas/components/javascript-function.json",
                     "description": "Called after the chart has been drawn. Note that this hook will not be called if the drawing has been previously cancelled."
                 },
                 "afterEvent": {
-                    "$ref": "#/$defs/function",
+                    "$ref": "urn:ignition-schema:schemas/components/javascript-function.json",
                     "description": "Called after the event has been consumed. Note that this hook will not be called if the event has been previously discarded."
                 },
                 "afterInit": {
-                    "$ref": "#/$defs/function",
+                    "$ref": "urn:ignition-schema:schemas/components/javascript-function.json",
                     "description": "Called after chart has been initialized and before the first update."
                 },
                 "afterLayout": {
-                    "$ref": "#/$defs/function",
+                    "$ref": "urn:ignition-schema:schemas/components/javascript-function.json",
                     "description": "Called after the chart has been laid out. Note that this hook will not be called if the layout update has been previously cancelled."
                 },
                 "afterRender": {
-                    "$ref": "#/$defs/function",
+                    "$ref": "urn:ignition-schema:schemas/components/javascript-function.json",
                     "description": "Called after the chart has been fully rendered (and animation completed). Note that this hook will not be called if the rendering has been previously cancelled."
                 },
                 "afterTooltipDraw": {
-                    "$ref": "#/$defs/function",
+                    "$ref": "urn:ignition-schema:schemas/components/javascript-function.json",
                     "description": "Called after drawing the tooltip. Note that this hook will not be called if the tooltip drawing has been previously cancelled."
                 },
                 "afterUpdate": {
-                    "$ref": "#/$defs/function",
+                    "$ref": "urn:ignition-schema:schemas/components/javascript-function.json",
                     "description": "Called after chart has been updated and before rendering. Note that this hook will not be called if the chart update has been previously cancelled."
                 },
                 "beforeBuildTicks": {
-                    "$ref": "#/$defs/function",
+                    "$ref": "urn:ignition-schema:schemas/components/javascript-function.json",
                     "description": "Called before scale builds its ticks. This hook is called separately for each scale in the chart."
                 },
                 "beforeDataLimits": {
-                    "$ref": "#/$defs/function",
+                    "$ref": "urn:ignition-schema:schemas/components/javascript-function.json",
                     "description": "Called before scale data limits are calculated. This hook is called separately for each scale in the chart."
                 },
                 "beforeDatasetDraw": {
-                    "$ref": "#/$defs/function",
+                    "$ref": "urn:ignition-schema:schemas/components/javascript-function.json",
                     "description": "Called before drawing the chart dataset at the given args.index (datasets are drawn in the reverse order). If any plugin returns false, the datasets drawing is cancelled until another render is triggered."
                 },
                 "beforeDatasetUpdate": {
-                    "$ref": "#/$defs/function",
+                    "$ref": "urn:ignition-schema:schemas/components/javascript-function.json",
                     "description": "Called before updating the chart dataset at the given args.index. If any plugin returns false, the datasets update is cancelled until another update is triggered."
                 },
                 "beforeDatasetsDraw": {
-                    "$ref": "#/$defs/function",
+                    "$ref": "urn:ignition-schema:schemas/components/javascript-function.json",
                     "description": "Called before drawing the chart datasets. If any plugin returns false, the datasets drawing is cancelled until another render is triggered."
                 },
                 "beforeDestroy": {
-                    "$ref": "#/$defs/function",
+                    "$ref": "urn:ignition-schema:schemas/components/javascript-function.json",
                     "description": "Called before the chart is being destroyed."
                 },
                 "beforeDraw": {
-                    "$ref": "#/$defs/function",
+                    "$ref": "urn:ignition-schema:schemas/components/javascript-function.json",
                     "description": "Called before drawing chart at every animation frame. If any plugin returns false, the frame drawing is cancelled untilanother render is triggered."
                 },
                 "beforeElementsUpdate": {
-                    "$ref": "#/$defs/function",
+                    "$ref": "urn:ignition-schema:schemas/components/javascript-function.json",
                     "description": "Called during the update process, before any chart elements have been created. This can be used for data decimation by changing the data array inside a dataset."
                 },
                 "beforeEvent": {
-                    "$ref": "#/$defs/function",
+                    "$ref": "urn:ignition-schema:schemas/components/javascript-function.json",
                     "description": "Called before processing the specified event. If any plugin returns false, the event will be discarded."
                 },
                 "beforeInit": {
-                    "$ref": "#/$defs/function",
+                    "$ref": "urn:ignition-schema:schemas/components/javascript-function.json",
                     "description": "Called before initializing chart."
                 },
                 "beforeLayout": {
-                    "$ref": "#/$defs/function",
+                    "$ref": "urn:ignition-schema:schemas/components/javascript-function.json",
                     "description": "Called before laying out chart. If any plugin returns false, the layout update is cancelled until another update is triggered."
                 },
                 "beforeRender": {
-                    "$ref": "#/$defs/function",
+                    "$ref": "urn:ignition-schema:schemas/components/javascript-function.json",
                     "description": "Called before rendering chart. If any plugin returns false, the rendering is cancelled until another render is triggered."
                 },
                 "beforeTooltipDraw": {
-                    "$ref": "#/$defs/function",
+                    "$ref": "urn:ignition-schema:schemas/components/javascript-function.json",
                     "description": "Called before drawing the tooltip. If any plugin returns false, the tooltip drawing is cancelled until another render is triggered."
                 },
                 "beforeUpdate": {
-                    "$ref": "#/$defs/function",
+                    "$ref": "urn:ignition-schema:schemas/components/javascript-function.json",
                     "description": "Called before updating chart. If any plugin returns false, the update is cancelled (and thus subsequent render(s)) until another update is triggered."
                 },
                 "install": {
-                    "$ref": "#/$defs/function",
+                    "$ref": "urn:ignition-schema:schemas/components/javascript-function.json",
                     "description": "Called when plugin is installed for this chart instance. This hook is also invoked for disabled plugins (options === false)."
                 },
                 "reset": {
-                    "$ref": "#/$defs/function",
+                    "$ref": "urn:ignition-schema:schemas/components/javascript-function.json",
                     "description": "Called during chart reset"
                 },
                 "resize": {
-                    "$ref": "#/$defs/function",
+                    "$ref": "urn:ignition-schema:schemas/components/javascript-function.json",
                     "description": "Called after the chart as been resized."
                 },
                 "start": {
-                    "$ref": "#/$defs/function",
+                    "$ref": "urn:ignition-schema:schemas/components/javascript-function.json",
                     "description": "Called when a plugin is starting. This happens when chart is created or plugin is enabled."
                 },
                 "stop": {
-                    "$ref": "#/$defs/function",
+                    "$ref": "urn:ignition-schema:schemas/components/javascript-function.json",
                     "description": "Called when a plugin stopping. This happens when chart is destroyed or plugin is disabled."
                 },
                 "uninstall": {
-                    "$ref": "#/$defs/function",
+                    "$ref": "urn:ignition-schema:schemas/components/javascript-function.json",
                     "description": "Called after chart is destroyed on all plugins that were installed for that chart. This hook is also invoked for disabled plugins (options === false)."
                 }
             }
@@ -1641,13 +1519,13 @@
                 },
                 "itemSort": {
                     "description": "Function used to sort tooltip items.",
-                    "$ref": "#/$defs/function",
+                    "$ref": "urn:ignition-schema:schemas/components/javascript-function.json",
                     "default": null,
                     "required": false
                 },
                 "filter": {
                     "description": "Function used to filter tooltip items.",
-                    "$ref": "#/$defs/function",
+                    "$ref": "urn:ignition-schema:schemas/components/javascript-function.json",
                     "default": null,
                     "required": false
                 },
@@ -1848,85 +1726,85 @@
             "beforeTitle": {
                 "required": false,
                 "default": null,
-                "$ref": "#/$defs/function",
+                "$ref": "urn:ignition-schema:schemas/components/javascript-function.json",
                 "description": "Returns the text to render before the title."
             },
             "title": {
                 "required": false,
                 "default": null,
-                "$ref": "#/$defs/function",
+                "$ref": "urn:ignition-schema:schemas/components/javascript-function.json",
                 "description": "Returns text to render as the title of the tooltip."
             },
             "afterTitle": {
                 "required": false,
                 "default": null,
-                "$ref": "#/$defs/function",
+                "$ref": "urn:ignition-schema:schemas/components/javascript-function.json",
                 "description": "Returns text to render after the title."
             },
             "beforeBody": {
                 "required": false,
                 "default": null,
-                "$ref": "#/$defs/function",
+                "$ref": "urn:ignition-schema:schemas/components/javascript-function.json",
                 "description": "Returns text to render before the body section."
             },
             "beforeLabel": {
                 "required": false,
                 "default": null,
-                "$ref": "#/$defs/function",
+                "$ref": "urn:ignition-schema:schemas/components/javascript-function.json",
                 "description": "Returns text to render before an individual label. This will be called for each item in the tooltip."
             },
             "label": {
                 "required": false,
                 "default": null,
-                "$ref": "#/$defs/function",
+                "$ref": "urn:ignition-schema:schemas/components/javascript-function.json",
                 "description": "Returns text to render for an individual item in the tooltip."
             },
             "labelColor": {
                 "required": false,
                 "default": null,
-                "$ref": "#/$defs/function",
+                "$ref": "urn:ignition-schema:schemas/components/javascript-function.json",
                 "description": "Returns the colors to render for the tooltip item."
             },
             "labelTextColor": {
                 "required": false,
                 "default": null,
-                "$ref": "#/$defs/function",
+                "$ref": "urn:ignition-schema:schemas/components/javascript-function.json",
                 "description": "Returns the colors for the text of the label for the tooltip item."
             },
             "labelPointStyle": {
                 "required": false,
                 "default": null,
-                "$ref": "#/$defs/function",
+                "$ref": "urn:ignition-schema:schemas/components/javascript-function.json",
                 "description": "Returns the point style to use instead of color boxes if usePointStyle is true (object with values pointStyle and rotation). Default implementation uses the point style from the dataset points."
             },
             "afterLabel": {
                 "required": false,
                 "default": null,
-                "$ref": "#/$defs/function",
+                "$ref": "urn:ignition-schema:schemas/components/javascript-function.json",
                 "description": "Returns text to render after an individual label."
             },
             "afterBody": {
                 "required": false,
                 "default": null,
-                "$ref": "#/$defs/function",
+                "$ref": "urn:ignition-schema:schemas/components/javascript-function.json",
                 "description": "Returns text to render after the body section."
             },
             "beforeFooter": {
                 "required": false,
                 "default": null,
-                "$ref": "#/$defs/function",
+                "$ref": "urn:ignition-schema:schemas/components/javascript-function.json",
                 "description": "Returns text to render before the footer section."
             },
             "footer": {
                 "required": false,
                 "default": null,
-                "$ref": "#/$defs/function",
+                "$ref": "urn:ignition-schema:schemas/components/javascript-function.json",
                 "description": "Returns text to render as the footer of the tooltip."
             },
             "afterFooter": {
                 "required": false,
                 "default": null,
-                "$ref": "#/$defs/function",
+                "$ref": "urn:ignition-schema:schemas/components/javascript-function.json",
                 "description": "Text to render after the footer section."
             }
         },
@@ -2562,8 +2440,24 @@
             "$ref": "#/$defs/chart_options"
         },
         "events": {
+            "type": "object",
             "description": "Component events.",
-            "$ref": "#/$defs/events"
+            "properties": {
+                "dom": {
+                    "$ref": "urn:ignition-schema:schemas/components/events-dom.json"
+                },
+                "lifecycle": {
+                    "$ref": "urn:ignition-schema:schemas/components/events-lifecycle.json"
+                },
+                "chart": {
+                    "type": "object",
+                    "properties": {
+                        "lifecycle": {
+                            "$ref": "urn:ignition-schema:schemas/components/events-lifecycle.json"
+                        }
+                    }
+                }
+            }
         },
         "plugins": {
             "description": "Manually registered plugins.",
