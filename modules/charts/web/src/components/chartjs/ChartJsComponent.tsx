@@ -11,12 +11,13 @@ import {
 } from '@inductiveautomation/perspective-client'
 import { Chart as ChartJs, ChartProps } from 'react-chartjs-2'
 import { Chart, UpdateMode } from 'chart.js'
-import { getCSSTransform, getScriptTransform } from '../../util'
 import { transformProps } from '@embr-js/utils'
 import { unset, cloneDeep } from 'lodash'
 import {
   ComponentDelegateJavaScriptProxy,
   ComponentEvents,
+  getCSSTransform,
+  getScriptTransform,
   JavaScriptRunEvent,
   useComponentEvents,
 } from '@embr-js/perspective-client'
