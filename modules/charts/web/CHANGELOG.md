@@ -1,5 +1,16 @@
 # @mussonindustrial/embr-js-chart-js
 
+## 2.2.1
+
+### Patch Changes
+
+- 4709891: Add `events.chart.lifecycle` callback functions, tied to the lifecycle of the chart reference.
+- 8bb076d: Move common property transform logic to shared library.
+- 4709891: Move common schema to `common` package
+- Updated dependencies [8bb076d]
+- Updated dependencies [4709891]
+  - @embr-js/perspective-client@0.3.0
+
 ## 2.2.0
 
 ### Minor Changes

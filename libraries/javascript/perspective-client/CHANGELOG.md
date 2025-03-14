@@ -1,5 +1,15 @@
 # @embr-js/perspective-client
 
+## 0.3.0
+
+### Minor Changes
+
+- 8bb076d: Move common property transform logic to shared library.
+
+### Patch Changes
+
+- 4709891: Move common schema to `common` package
+
 ## 0.2.2
 
 ### Patch Changes

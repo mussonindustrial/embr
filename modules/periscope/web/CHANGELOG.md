@@ -1,5 +1,18 @@
 # @mussonindustrial/embr-js-chart-js
 
+## 0.6.0
+
+### Minor Changes
+
+- dde1698: Add `Portal` component.
+
+### Patch Changes
+
+- 4709891: Move common schema to `common` package
+- Updated dependencies [8bb076d]
+- Updated dependencies [4709891]
+  - @embr-js/perspective-client@0.3.0
+
 ## 0.5.6
 
 ### Patch Changes
