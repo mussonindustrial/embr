@@ -1,4 +1,3 @@
-export * from './propTransforms'
 export * from './JoinableView'
 export { default as emitStyles } from './emitStyles'
 export { default as formatStyleNames } from './formatStyleNames'

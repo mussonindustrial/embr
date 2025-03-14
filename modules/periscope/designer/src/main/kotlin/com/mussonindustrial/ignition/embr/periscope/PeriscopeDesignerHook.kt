@@ -11,6 +11,7 @@ import com.mussonindustrial.embr.perspective.common.component.addResourcesTo
 import com.mussonindustrial.embr.perspective.common.component.removeResourcesFrom
 import com.mussonindustrial.embr.perspective.designer.component.asDesignerDescriptor
 import com.mussonindustrial.ignition.embr.periscope.Meta.SHORT_MODULE_ID
+import com.mussonindustrial.ignition.embr.periscope.component.container.Portal
 import com.mussonindustrial.ignition.embr.periscope.component.embedding.EmbeddedView
 import com.mussonindustrial.ignition.embr.periscope.component.embedding.FlexRepeater
 import com.mussonindustrial.ignition.embr.periscope.component.embedding.JsonView
@@ -46,6 +47,7 @@ class PeriscopeDesignerHook : AbstractDesignerModuleHook() {
         componentRegistry.registerComponent(FlexRepeater.DESCRIPTOR.asDesignerDescriptor())
         componentRegistry.registerComponent(JsonView.DESCRIPTOR.asDesignerDescriptor())
         componentRegistry.registerComponent(Swiper.DESCRIPTOR.asDesignerDescriptor())
+        componentRegistry.registerComponent(Portal.DESCRIPTOR.asDesignerDescriptor())
     }
 
     override fun shutdown() {
@@ -61,5 +63,6 @@ class PeriscopeDesignerHook : AbstractDesignerModuleHook() {
         componentRegistry.removeComponent(FlexRepeater.COMPONENT_ID)
         componentRegistry.removeComponent(JsonView.COMPONENT_ID)
         componentRegistry.removeComponent(Swiper.COMPONENT_ID)
+        componentRegistry.removeComponent(Portal.COMPONENT_ID)
     }
 }

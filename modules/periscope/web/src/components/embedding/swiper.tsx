@@ -50,13 +50,8 @@ import {
 
 import { debounce } from 'lodash'
 import { transformProps } from '@embr-js/utils'
-import {
-  emitStyles,
-  formatStyleNames,
-  getScriptTransform,
-  mergeStyles,
-  resolve,
-} from '../../util'
+import { emitStyles, formatStyleNames, mergeStyles, resolve } from '../../util'
+import { getScriptTransform } from '@embr-js/perspective-client'
 
 const COMPONENT_TYPE = 'embr.periscope.embedding.swiper'
 
@@ -157,6 +152,7 @@ function resolveViewProps(
   }
 }
 
+// eslint-disable-next-line react/display-name
 const EmbeddedSlideView = memo(
   ({
     store,
@@ -268,7 +264,7 @@ export function SwiperComponent(props: ComponentProps<SwiperComponentProps>) {
   const transformedSettings = useMemo(() => {
     const settings = props.props.settings || {}
     const transformed = transformProps(settings, [
-      getScriptTransform({ self: props, client: window.__client }),
+      getScriptTransform(props, props.store),
     ]) as SwiperProps
     return applyClassTransforms(transformed)
   }, [props.props.settings])
