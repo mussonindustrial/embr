@@ -1,5 +1,16 @@
 # @mussonindustrial/embr-charts
 
+## 2.2.1
+
+### Patch Changes
+
+- 4709891: Add `events.chart.lifecycle` callback functions, tied to the lifecycle of the chart reference.
+- 4709891: Move common schema to `common` package
+- Updated dependencies [4709891]
+- Updated dependencies [8bb076d]
+- Updated dependencies [4709891]
+  - @embr-modules/charts-web@2.2.1
+
 ## 2.2.0
 
 ### Minor Changes

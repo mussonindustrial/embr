@@ -1,5 +1,17 @@
 # @embr-modules/periscope
 
+## 0.6.0
+
+### Minor Changes
+
+- dde1698: Add `Portal` component.
+
+### Patch Changes
+
+- Updated dependencies [4709891]
+- Updated dependencies [dde1698]
+  - @embr-modules/periscope-web@0.6.0
+
 ## 0.5.6
 
 ### Patch Changes
