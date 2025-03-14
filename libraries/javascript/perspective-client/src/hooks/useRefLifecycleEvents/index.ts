@@ -1,9 +1,9 @@
 import { useEffect, useRef } from 'react'
-import { ComponentLifecycleEvents } from '@embr-js/perspective-client'
+import { ComponentLifecycleEvents } from '../useLifecycleEvents'
 
 export default function useRefLifecycleEvents<T>(
-  ref: T | null | undefined,
-  events: ComponentLifecycleEvents
+  events: ComponentLifecycleEvents,
+  ref: T | null | undefined
 ) {
   const mounted = useRef(false)
 
