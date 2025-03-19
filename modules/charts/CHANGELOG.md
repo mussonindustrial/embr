@@ -1,5 +1,13 @@
 # @mussonindustrial/embr-charts
 
+## 2.2.2
+
+### Patch Changes
+
+- acb6c82: Add `options.scale[id].position` property to the designer schema.
+- feb0383: Add `options.scale[scaleId].bounds` property to the designer schema.
+  - @embr-modules/charts-web@2.2.2
+
 ## 2.2.1
 
 ### Patch Changes
