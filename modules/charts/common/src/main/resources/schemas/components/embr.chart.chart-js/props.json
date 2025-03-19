@@ -2146,6 +2146,17 @@
                     "description": "User defined maximum value for the scale, overrides maximum value from data.",
                     "type": [ "string", "number", "null" ]
                 },
+                "position": {
+                    "description": "Position of the axis.",
+                    "type": [ "string", "object", "null" ],
+                    "suggestions": [
+                        "bottom",
+                        "center",
+                        "left",
+                        "right",
+                        "top"
+                    ]
+                },
                 "reverse": {
                     "default": false,
                     "description": "Reverse the scale.",
