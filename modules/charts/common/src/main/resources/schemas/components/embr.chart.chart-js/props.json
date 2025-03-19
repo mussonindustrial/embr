@@ -2121,6 +2121,14 @@
                     "description": "Border configuration.",
                     "$ref": "#/$defs/scale_options_border"
                 },
+                "bounds": {
+                    "description": "Controls the boundary strategy. Is bypassed by the min/max options.",
+                    "type": "string",
+                    "suggestions": [
+                        "data",
+                        "ticks"
+                    ]
+                },
                 "display": {
                     "default": true,
                     "description": "Controls the axis global visibility (visible when true, hidden when false). When display: 'auto', the axis is visible only if at least one associated dataset is visible.",
