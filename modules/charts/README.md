@@ -20,8 +20,8 @@ A module for Ignition that adds a collection of enhanced Perspective charting co
 
 ### Component Directory
 
-| Name                                                                                              | Category | Description                                                                                                                                                                                                                                                                                       |
-| ------------------------------------------------------------------------------------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --- |
+| Name                                                                                              | Category | Description                                                                                                                                                                                                                                                                                       |     |
+|---------------------------------------------------------------------------------------------------|----------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----|
 | [Chart.js Component](https://docs.mussonindustrial.com/ignition/embr-charts/components/chart-js/) | Charting | Chart.js renders chart elements on an HTML5 canvas unlike other D3.js-based charting libraries that render as SVG. Canvas rendering makes Chart.js very performant, especially for large datasets and complex visualizations that would otherwise require thousands of SVG nodes in the DOM tree. |     |
 
 ---
