@@ -263,15 +263,15 @@
                 },
                 "onClick": {
                     "description": "Called if the event is of type 'mouseup', 'click' or 'contextmenu' over chartArea. Passed the event, an array of active elements, and the chart.",
-                    "$ref": "#/$defs/function"
+                    "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
                 },
                 "onHover": {
                     "description": "Called when any of the events fire over chartArea. Passed the event, an array of active elements (bars, points, etc), and the chart.",
-                    "$ref": "#/$defs/function"
+                    "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
                 },
                 "onResize": {
                     "description": "Called when a resize occurs. Gets passed two arguments: the chart instance and the new size.",
-                    "$ref": "#/$defs/function"
+                    "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
                 },
                 "parsing": {
                     "type": ["boolean", "object"],
@@ -1128,6 +1128,10 @@
                     "default": false,
                     "$ref": "#/$defs/plugin_datalabels"
                 },
+                "dragData": {
+                    "default": false,
+                    "$ref": "#/$defs/plugin_dragdata"
+                },
                 "decimation": {
                     "$ref": "#/$defs/plugin_decimation"
                 },
@@ -1160,7 +1164,7 @@
             "default": false,
             "properties": {
                 "customize": {
-                    "$ref": "#/$defs/function"
+                    "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
                 },
                 "enabled": {
                     "type": "boolean"
@@ -1233,6 +1237,52 @@
             },
             "required": [ "enabled", "algorithm" ]
         },
+        "plugin_dragdata": {
+            "type": ["object", "boolean"],
+            "default": false,
+            "properties": {
+                "round": {
+                    "description": "Rounds the values to this number of decimal places.",
+                    "type": "number"
+                },
+                "dragX": {
+                    "description": "Enables dragging along the x-axis. This solely works for continuous, numerical x-axis scales (no categories or dates).",
+                    "type": "boolean",
+                    "default": false
+                },
+                "dragY": {
+                    "description": "Enables dragging along the y-axis.",
+                    "type": "boolean",
+                    "default": true
+                },
+                "showTooltip": {
+                    "description": "Show the tooltip while dragging.",
+                    "type": "boolean",
+                    "default": true
+                },
+                "onDragStart": {
+                    "description": "Callback that is run when dragging starts.",
+                    "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+                },
+                "onDrag": {
+                    "description": "Callback that is run when dragging.",
+                    "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+                },
+                "onDragEnd": {
+                    "description": "Callback that is run when dragging starts.",
+                    "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+                },
+                "magnet": {
+                    "type": "object",
+                    "properties": {
+                        "to": {
+                            "description": "Callback for applying a magnet to the dragged data point.",
+                            "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+                        }
+                    }
+                }
+            }
+        },
         "plugin_filler": {
             "type": ["object", "boolean"],
             "default": {
@@ -1291,17 +1341,17 @@
                 "onClick": {
                     "default": "",
                     "description": "A callback that is called when a click event is registered on a label item.",
-                    "$ref": "#/$defs/function"
+                    "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
                 },
                 "onHover": {
                     "default": "",
                     "description": "A callback that is called when a 'mousemove' event is registered on top of a label item. ",
-                    "$ref": "#/$defs/function"
+                    "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
                 },
                 "onLeave": {
                     "default": "",
                     "description": "A callback that is called when a 'mousemove' event is registered outside of a previously hovered label item.",
-                    "$ref": "#/$defs/function"
+                    "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
                 },
                 "reverse": {
                     "default": false,
@@ -1340,11 +1390,11 @@
                         },
                         "filter": {
                             "description": "Filters legend items out of the legend.",
-                            "$ref": "#/$defs/function"
+                            "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
                         },
                         "sort": {
                             "description": "Sorts legend items. ",
-                            "$ref": "#/$defs/function"
+                            "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
                         },
                         "pointStyle": {
                             "default": "circle",
