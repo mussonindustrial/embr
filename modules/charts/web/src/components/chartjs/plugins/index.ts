@@ -75,6 +75,9 @@ Chart.register(TreemapController, TreemapElement)
 import ChartDataLabels from 'chartjs-plugin-datalabels'
 Chart.register(ChartDataLabels)
 
+import ChartJSDragDataPlugin from 'chartjs-plugin-dragdata'
+Chart.register(ChartJSDragDataPlugin)
+
 import { HierarchicalScale } from 'chartjs-plugin-hierarchical'
 Chart.register(HierarchicalScale)
 
