@@ -1,5 +1,13 @@
 # @mussonindustrial/embr-js-chart-js
 
+## 2.2.3
+
+### Patch Changes
+
+- a670956: Add `chartjs-plugin-dragdata` plugin by @artus9033.
+  - Add schema definition for `options.plugins.dragData`
+  - Update license to include attribution.
+
 ## 2.2.2
 
 ## 2.2.1
