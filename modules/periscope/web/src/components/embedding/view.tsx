@@ -14,7 +14,7 @@ import {
   StyleObject,
   ViewStateDisplay,
 } from '@inductiveautomation/perspective-client'
-import { JoinableView } from '../../util/JoinableView'
+import { JoinableView } from '../../util'
 
 const COMPONENT_TYPE = 'embr.periscope.embedding.view'
 

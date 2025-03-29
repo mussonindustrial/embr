@@ -19,8 +19,7 @@
         "@inductiveautomation/perspective-designer": "2.1.33",
         "@inductiveautomation/perspective-drawing-common": "2.1.33",
         "lodash": "^4.17.21",
-        "react": "^18",
-        "react-dom": "^18",
+        "react-toastify": "11.0.5",
         "swiper": "^11.1.14"
     },
     "devDependencies": {
@@ -30,6 +29,8 @@
         "@types/react": "^18.2.56",
         "@types/react-dom": "^18.2.56",
         "eslint": "^8.56.0",
+        "react": "^18",
+        "react-dom": "^18",
         "typescript": "^5.3.3",
         "vite": "^5.0.10",
         "vitest": "^1.6.0"

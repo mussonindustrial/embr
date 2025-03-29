@@ -14,6 +14,27 @@ export default defineConfig(({ mode }) => ({
       name: packageName,
       formats: ['umd'],
     },
+    rollupOptions: {
+      external: [
+        '@inductiveautomation/perspective-client',
+        '@inductiveautomation/perspective-components',
+        '@inductiveautomation/perspective-designer',
+        'react',
+        'react-dom',
+        'moment',
+      ],
+      output: {
+        globals: {
+          '@inductiveautomation/perspective-client': 'PerspectiveClient',
+          '@inductiveautomation/perspective-components':
+            'PerspectiveComponents',
+          '@inductiveautomation/perspective-designer': 'PerspectiveDesigner',
+          react: 'React',
+          'react-dom': 'ReactDOM',
+          moment: 'moment',
+        },
+      },
+    },
   },
   test: {
     fileParallelism: mode !== 'benchmark',
