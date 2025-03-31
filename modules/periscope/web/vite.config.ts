@@ -50,4 +50,7 @@ export default defineConfig(({ mode }) => ({
       provider: 'v8',
     },
   },
+  define: {
+    'process.env.NODE_ENV': JSON.stringify(mode),
+  },
 }))

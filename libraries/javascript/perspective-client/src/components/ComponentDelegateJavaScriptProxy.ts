@@ -4,7 +4,7 @@ import {
 } from '@inductiveautomation/perspective-client'
 import { toUserScript } from '@embr-js/utils'
 import _ from 'lodash'
-import { createScriptingGlobals } from '../scripting/ScriptingGlobals'
+import { createScriptingGlobals } from '../scripting'
 
 const MESSAGES = {
   JS_ERROR: 'js-error',

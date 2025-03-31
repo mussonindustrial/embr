@@ -6,7 +6,9 @@ import {
 } from '@inductiveautomation/perspective-client'
 import { getClientStore } from '../utils'
 import { makeSendMessage, SendMessage } from './sendMessage'
-
+import { merge } from 'lodash'
+import { getEmbrGlobals } from '../globals'
+import { CreateView, createViewFunction } from './createView'
 export type CallingContext = {
   client?: ClientStore
   page?: PageStore
@@ -18,6 +20,7 @@ export type ScriptingGlobals = {
   perspective: {
     context: CallingContext
     sendMessage: SendMessage
+    createView: CreateView
   }
 }
 
@@ -28,10 +31,14 @@ export function createScriptingGlobals(
     context.client = getClientStore()
   }
 
-  return {
-    perspective: {
-      context,
-      sendMessage: makeSendMessage(context),
+  return merge(
+    {
+      perspective: {
+        context,
+        sendMessage: makeSendMessage(context),
+        createView: createViewFunction(context),
+      },
     },
-  }
+    getEmbrGlobals().scripting.globals
+  )
 }
