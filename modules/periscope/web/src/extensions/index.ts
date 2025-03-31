@@ -1,6 +1,6 @@
 import { ClientStore } from '@inductiveautomation/perspective-client'
 import { installRunJavaScript } from './runJavaScript'
-import { installToasts } from './toasts'
+import { installToasts } from './toast'
 
 export * from './runJavaScript'
 

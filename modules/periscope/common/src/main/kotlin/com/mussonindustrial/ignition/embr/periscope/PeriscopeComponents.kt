@@ -19,5 +19,5 @@ object PeriscopeComponents {
             BrowserResource.ResourceType.CSS,
         )
     val BROWSER_RESOURCES = mutableSetOf(JS_RESOURCE, CSS_RESOURCE)
-    val REQUIRED_RESOURCES = mutableSetOf(JS_RESOURCE)
+    val REQUIRED_RESOURCES = mutableSetOf(JS_RESOURCE, CSS_RESOURCE)
 }

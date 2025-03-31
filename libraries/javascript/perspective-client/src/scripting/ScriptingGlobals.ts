@@ -1,15 +1,14 @@
 import {
   AbstractUIElementStore,
   ClientStore,
-  JsObject,
   PageStore,
   ViewStore,
 } from '@inductiveautomation/perspective-client'
-import { getClientStore, getGlobals } from '../utils'
+import { getClientStore } from '../utils'
 import { makeSendMessage, SendMessage } from './sendMessage'
-import addGlobals from '../utils/addGlobal'
-import { createRenderView, RenderView } from './renderView'
-
+import { merge } from 'lodash'
+import { getEmbrGlobals } from '../globals'
+import { CreateView, createViewFunction } from './createView'
 export type CallingContext = {
   client?: ClientStore
   page?: PageStore
@@ -21,9 +20,7 @@ export type ScriptingGlobals = {
   perspective: {
     context: CallingContext
     sendMessage: SendMessage
-    view: {
-      render: RenderView
-    }
+    createView: CreateView
   }
 }
 
@@ -34,18 +31,14 @@ export function createScriptingGlobals(
     context.client = getClientStore()
   }
 
-  return {
-    perspective: {
-      context,
-      sendMessage: makeSendMessage(context),
-      view: {
-        render: createRenderView(context),
+  return merge(
+    {
+      perspective: {
+        context,
+        sendMessage: makeSendMessage(context),
+        createView: createViewFunction(context),
       },
-      ...getGlobals().scriptingGlobals,
     },
-  }
-}
-
-export function addScriptingGlobals(globals: JsObject) {
-  addGlobals({ scriptingGlobals: globals })
+    getEmbrGlobals().scripting.globals
+  )
 }

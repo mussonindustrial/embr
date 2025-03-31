@@ -1,5 +1,3 @@
-export { default as addGlobal } from './addGlobal'
 export { default as getClientStore } from './getClientStore'
 export { default as getDesignerStore } from './getDesignerStore'
-export { default as getGlobals } from './getGlobals'
 export { default as waitForClientStore } from './waitForClientStore'

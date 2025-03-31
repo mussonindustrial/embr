@@ -1,13 +1,17 @@
 import { toast, ToastContainer } from 'react-toastify'
 import { createRoot } from 'react-dom/client'
 import { createElement } from 'react'
-import { addScriptingGlobals } from '@embr-js/perspective-client'
+import { getEmbrGlobals } from '@embr-js/perspective-client/src/globals'
+import { merge } from 'lodash'
+
+import './toast.css'
 
 export function installToasts() {
   let toastRoot = document.getElementById('toast-root')
   if (!toastRoot) {
     toastRoot = document.createElement('div')
     toastRoot.id = 'toast-root'
+    toastRoot.className = 'view-parent'
 
     const appContainer = document.getElementById('app-container')
     if (appContainer == null) {
@@ -19,5 +23,10 @@ export function installToasts() {
 
   createRoot(toastRoot).render(createElement(ToastContainer))
 
-  addScriptingGlobals({ toast })
+  const embrGlobals = getEmbrGlobals()
+  merge(embrGlobals.scripting.globals, {
+    periscope: {
+      toast,
+    },
+  })
 }
