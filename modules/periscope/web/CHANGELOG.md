@@ -1,5 +1,54 @@
 # @mussonindustrial/embr-js-chart-js
 
+## 0.7.0
+
+### Minor Changes
+
+- b2f5657: Add Perspective client toast feature powered by https://github.com/fkhadra/react-toastify.
+
+  This feature is accessed through the JavaScript scoped object `periscope.toast` using the Python function `system.perspective.runJavaScriptAsync`.
+
+  Example:
+
+  ```python
+  system.perspective.runJavaScriptAsync('''() => {
+      periscope.toast('This is a toast!')
+  }''')
+  ```
+
+  `periscope.toast()` is directly mapped to `react-toastify`'s `toast()` object, enabling all features of the library.
+
+  For full documentation, see https://fkhadra.github.io/react-toastify
+
+- b2f5657: Add `perspective.createView(props)` JavaScript-scoped function.
+
+  This helper function enabled easier creation of views in user supplied JavaScript.
+  The minimum set of parameters provided by the user is:
+
+  - `resourcePath` - Path to the view.
+  - `mountPath` - The unique mount path of the view. Must be stable.
+
+  Example:
+
+  ```javascript
+  ;(viewPath, options) => {
+    periscope.toast(({ toastProps, isPaused }) => {
+      return perspective.createView({
+        resourcePath: viewPath,
+        mountPath: `toast-${toastProps.toastId}`,
+        params: {
+          text: 'Embedded View!',
+        },
+      })
+    }, options)
+  }
+  ```
+
+### Patch Changes
+
+- Updated dependencies [b2f5657]
+  - @embr-js/perspective-client@0.4.0
+
 ## 0.6.0
 
 ### Minor Changes
