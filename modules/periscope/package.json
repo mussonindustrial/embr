@@ -1,6 +1,6 @@
 {
     "name": "@embr-modules/periscope",
-    "version": "0.6.0",
+    "version": "0.7.0",
     "private": false,
     "keywords": [
         "ignition",
@@ -13,7 +13,7 @@
         "!**/*.unsigned.modl"
     ],
     "dependencies": {
-        "@embr-modules/periscope-web": "0.6.0",
+        "@embr-modules/periscope-web": "0.7.0",
         "@embr-jvm/core-common": "0.6.0",
         "@embr-jvm/core-designer": "0.6.0",
         "@embr-jvm/perspective-common": "0.7.4",

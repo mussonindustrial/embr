@@ -1,5 +1,11 @@
 # @mussonindustrial/embr-charts
 
+## 2.2.4
+
+### Patch Changes
+
+- @embr-modules/charts-web@2.2.4
+
 ## 2.2.3
 
 ### Patch Changes
