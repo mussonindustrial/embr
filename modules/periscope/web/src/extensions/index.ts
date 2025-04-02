@@ -6,5 +6,5 @@ export * from './runJavaScript'
 
 export function installExtensions(clientStore: ClientStore) {
   installRunJavaScript(clientStore)
-  installToasts()
+  installToasts(clientStore)
 }

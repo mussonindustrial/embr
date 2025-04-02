@@ -21,6 +21,7 @@ export default defineConfig(({ mode }) => ({
         '@inductiveautomation/perspective-designer',
         'react',
         'react-dom',
+        'mobx-react-lite',
         'moment',
       ],
       output: {
@@ -31,6 +32,7 @@ export default defineConfig(({ mode }) => ({
           '@inductiveautomation/perspective-designer': 'PerspectiveDesigner',
           react: 'React',
           'react-dom': 'ReactDOM',
+          'mobx-react-lite': 'mobxReactLite',
           moment: 'moment',
         },
       },
