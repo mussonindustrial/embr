@@ -1,5 +1,14 @@
 # @embr-modules/periscope
 
+## 0.7.1
+
+### Patch Changes
+
+- 7d41dd1: Perspective Toasts have been changed to respect mounted docked views.
+
+  - Toasts are now contained within the center viewport.
+  - @embr-modules/periscope-web@0.7.1
+
 ## 0.7.0
 
 ### Minor Changes
