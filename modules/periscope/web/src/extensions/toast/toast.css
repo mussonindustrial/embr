@@ -5,6 +5,5 @@
 .Toastify__toast-container:focus,
 .Toastify__toast-container > *:focus{
     outline: none;
-    position: relative;
 }
 
