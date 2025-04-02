@@ -1,4 +1,9 @@
+.Toastify {
+    z-index: 12000;
+}
+
 .Toastify__toast-container:focus,
 .Toastify__toast-container > *:focus{
     outline: none;
 }
+
