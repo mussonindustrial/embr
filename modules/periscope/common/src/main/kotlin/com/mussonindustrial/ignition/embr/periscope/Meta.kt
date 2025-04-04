@@ -8,7 +8,7 @@ object Meta {
     const val BUNDLE_PREFIX = "periscope"
 
     fun addI18NBundle() {
-        BundleUtil.get().addBundle(BUNDLE_PREFIX, Meta::class.java, "localization")
+        BundleUtil.get().addBundle(BUNDLE_PREFIX, this::class.java.classLoader, "localization")
     }
 
     fun removeI18NBundle() {

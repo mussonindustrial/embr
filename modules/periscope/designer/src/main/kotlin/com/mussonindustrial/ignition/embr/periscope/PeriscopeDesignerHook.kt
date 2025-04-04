@@ -5,17 +5,17 @@ import com.inductiveautomation.ignition.designer.model.AbstractDesignerModuleHoo
 import com.inductiveautomation.ignition.designer.model.DesignerContext
 import com.inductiveautomation.perspective.common.PerspectiveModule
 import com.inductiveautomation.perspective.designer.DesignerComponentRegistry
+import com.inductiveautomation.perspective.designer.DesignerHook
+import com.inductiveautomation.perspective.designer.PerspectiveNavNode
 import com.inductiveautomation.perspective.designer.api.ComponentDesignDelegateRegistry
 import com.inductiveautomation.perspective.designer.api.PerspectiveDesignerInterface
+import com.mussonindustrial.embr.common.reflect.getPrivateProperty
 import com.mussonindustrial.embr.perspective.common.component.addResourcesTo
 import com.mussonindustrial.embr.perspective.common.component.removeResourcesFrom
 import com.mussonindustrial.embr.perspective.designer.component.asDesignerDescriptor
 import com.mussonindustrial.ignition.embr.periscope.Meta.SHORT_MODULE_ID
-import com.mussonindustrial.ignition.embr.periscope.component.embedding.EmbeddedView
-import com.mussonindustrial.ignition.embr.periscope.component.embedding.FlexRepeater
-import com.mussonindustrial.ignition.embr.periscope.component.embedding.JsonView
-import com.mussonindustrial.ignition.embr.periscope.component.embedding.Portal
-import com.mussonindustrial.ignition.embr.periscope.component.embedding.Swiper
+import com.mussonindustrial.ignition.embr.periscope.component.embedding.*
+import com.mussonindustrial.ignition.embr.periscope.resources.javascript.JavaScriptModuleResourceWorkspace
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -48,6 +48,16 @@ class PeriscopeDesignerHook : AbstractDesignerModuleHook() {
         componentRegistry.registerComponent(JsonView.DESCRIPTOR.asDesignerDescriptor())
         componentRegistry.registerComponent(Swiper.DESCRIPTOR.asDesignerDescriptor())
         componentRegistry.registerComponent(Portal.DESCRIPTOR.asDesignerDescriptor())
+
+        logger.debug("Registering resource editors...")
+        val pdh = DesignerHook.get(context)
+        val perspectiveNavNode = pdh.getPrivateProperty("navNode") as PerspectiveNavNode
+        //        val rootNode = WebLibraryRootNode(true)
+        context.registerResourceWorkspace(
+            JavaScriptModuleResourceWorkspace(context, perspectiveNavNode)
+        )
+
+        //        perspectiveNavNode.addChild(rootNode)
     }
 
     override fun shutdown() {
