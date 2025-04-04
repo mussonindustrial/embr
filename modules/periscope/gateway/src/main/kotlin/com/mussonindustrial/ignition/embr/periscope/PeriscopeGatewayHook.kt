@@ -10,6 +10,7 @@ import com.mussonindustrial.ignition.embr.periscope.Meta.SHORT_MODULE_ID
 import com.mussonindustrial.ignition.embr.periscope.component.embedding.*
 import com.mussonindustrial.ignition.embr.periscope.scripting.JavaScriptFunctions
 import com.mussonindustrial.ignition.embr.periscope.scripting.QueueFunctions
+import com.mussonindustrial.ignition.embr.periscope.servlets.WebLibraryServlet
 import java.util.*
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -34,6 +35,9 @@ class PeriscopeGatewayHook : AbstractGatewayModuleHook() {
 
         logger.debug("Registering components...")
         context.registerComponents()
+
+        logger.debug("Registering servlets...")
+        context.servletManager.addServlet("/web-library/*", WebLibraryServlet::class.java)
     }
 
     override fun shutdown() {

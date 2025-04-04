@@ -14,6 +14,7 @@ import com.mussonindustrial.embr.perspective.gateway.component.registerComponent
 import com.mussonindustrial.embr.perspective.gateway.component.removeComponent
 import com.mussonindustrial.embr.perspective.gateway.reflect.ViewLoader
 import com.mussonindustrial.ignition.embr.periscope.component.embedding.*
+import com.mussonindustrial.embr.servlets.ModuleServletManager
 import java.util.WeakHashMap
 
 class PeriscopeGatewayContext(private val context: GatewayContext) :
@@ -31,6 +32,7 @@ class PeriscopeGatewayContext(private val context: GatewayContext) :
             Portal.asGatewayComponent(),
             Swiper.asGatewayComponent { JavaScriptProxyableComponentModelDelegate(it) },
         )
+    val servletManager = ModuleServletManager(context.webResourceManager, "/data/periscope")
 
     init {
         instance = this
