@@ -14,5 +14,5 @@ export default function waitForClientStore(
     } else {
       waitForClientStore(callback)
     }
-  }, 100)
+  }, 0)
 }

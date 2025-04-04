@@ -10,5 +10,8 @@ object Embr {
             "/embr/event-stream",
         )
 
+    val PERISCOPE =
+        EmbrModuleMeta("com.mussonindustrial.embr.periscope", "embr-periscope", "/embr/periscope")
+
     val THERMO = EmbrModuleMeta("com.mussonindustrial.embr.thermo", "embr-thermo", "/embr/thermo")
 }
