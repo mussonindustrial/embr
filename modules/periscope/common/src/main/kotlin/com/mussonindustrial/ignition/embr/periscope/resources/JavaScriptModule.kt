@@ -3,7 +3,7 @@ package com.mussonindustrial.ignition.embr.periscope.resources
 import com.inductiveautomation.ignition.common.project.resource.ResourceType
 import com.mussonindustrial.ignition.embr.periscope.Meta
 
-class JavaScriptModule {
+class JavaScriptModule(val text: String) {
 
     companion object {
         const val TYPE_ID: String = "javascript-module"

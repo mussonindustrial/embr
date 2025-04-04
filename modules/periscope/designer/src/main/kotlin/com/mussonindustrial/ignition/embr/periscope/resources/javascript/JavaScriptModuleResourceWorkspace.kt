@@ -60,7 +60,7 @@ class JavaScriptModuleResourceWorkspace(
     }
 
     override fun newResourceEditor(resourcePath: ResourcePath): ResourceEditor<*> {
-        TODO("Not yet implemented")
+        return JavaScriptResourceEditor(this, resourcePath)
     }
 
     override fun addNewResourceActions(folderNode: ResourceFolderNode, menu: JPopupMenu) {
