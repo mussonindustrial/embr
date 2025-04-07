@@ -6,4 +6,5 @@ dependencies {
     compileOnly(libs.bundles.perspectiveCommon)
     modlImplementation(projects.libraries.core.common)
     modlImplementation(projects.libraries.perspective.common)
+    modlImplementation(libs.rhino)
 }

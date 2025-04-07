@@ -6,7 +6,7 @@ import com.mussonindustrial.embr.designer.EmbrDesignerContext
 import com.mussonindustrial.embr.designer.EmbrDesignerContextImpl
 import com.mussonindustrial.ignition.embr.periscope.component.ComponentIdSuggestionSource
 
-class PeriscopeDesignerContext(private val context: DesignerContext) :
+class PeriscopeDesignerContext(val context: DesignerContext) :
     EmbrDesignerContext by EmbrDesignerContextImpl(context) {
     companion object {
         lateinit var instance: PeriscopeDesignerContext

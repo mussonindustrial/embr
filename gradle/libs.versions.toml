@@ -6,6 +6,7 @@ ignition = "8.1.33"
 ia-gson = "2.10.1"
 jetty = "10.0.21"
 if97 = "2.0.0"
+rhino = "1.7.15"
 spotless = "7.0.2"
 
 [plugins]
@@ -29,6 +30,7 @@ ignition-perspective-common = { group = "com.inductiveautomation.ignitionsdk", n
 ignition-perspective-gateway = { group = "com.inductiveautomation.ignitionsdk", name = "perspective-gateway", version.ref = "ignition" }
 ignition-perspective-designer = { group = "com.inductiveautomation.ignitionsdk", name = "perspective-designer", version.ref = "ignition" }
 if97 = { group = "com.hummeling", name = "if97", version.ref = "if97"}
+rhino = { group = "org.mozilla", name = "rhino", version.ref ="rhino"}
 
 # test framework
 kotest-junit = { group = "io.kotest", name = "kotest-runner-junit5", version.ref = "kotest" }
