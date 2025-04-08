@@ -1,5 +1,18 @@
 # @mussonindustrial/embr-charts
 
+## 2.2.5
+
+### Patch Changes
+
+- 40ad4a7: Fix Perspective component schema validation errors on startup. #265
+
+  - This patch uses `DelegatedClassLoader` to simultaneously resolve schema definitions from both Perspective's and our own resources.
+
+- Updated dependencies [40ad4a7]
+  - @embr-jvm/core-common@0.6.1
+  - @embr-jvm/core-designer@0.6.1
+  - @embr-modules/charts-web@2.2.5
+
 ## 2.2.4
 
 ### Patch Changes

@@ -1,6 +1,6 @@
 {
     "name": "@embr-modules/thermo",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "private": false,
     "keywords": [
         "ignition",
@@ -14,7 +14,7 @@
         "!**/*.unsigned.modl"
     ],
     "dependencies": {
-        "@embr-jvm/core-common": "0.6.0",
-        "@embr-jvm/core-gateway": "0.6.0"
+        "@embr-jvm/core-common": "0.6.1",
+        "@embr-jvm/core-gateway": "0.6.1"
     }
 }

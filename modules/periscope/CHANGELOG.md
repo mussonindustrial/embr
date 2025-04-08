@@ -1,5 +1,18 @@
 # @embr-modules/periscope
 
+## 0.7.2
+
+### Patch Changes
+
+- 40ad4a7: Fix Perspective component schema validation errors on startup. #265
+
+  - This patch uses `DelegatedClassLoader` to simultaneously resolve schema definitions from both Perspective's and our own resources.
+
+- Updated dependencies [40ad4a7]
+  - @embr-jvm/core-common@0.6.1
+  - @embr-jvm/core-designer@0.6.1
+  - @embr-modules/periscope-web@0.7.2
+
 ## 0.7.1
 
 ### Patch Changes
