@@ -1,5 +1,12 @@
 # @embr-jvm/core-client
 
+## 0.6.1
+
+### Patch Changes
+
+- Updated dependencies [40ad4a7]
+  - @embr-jvm/core-common@0.6.1
+
 ## 0.6.0
 
 ### Patch Changes

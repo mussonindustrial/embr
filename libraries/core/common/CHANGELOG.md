@@ -1,5 +1,11 @@
 # @mussonindustrial/embr-jvm-core-common
 
+## 0.6.1
+
+### Patch Changes
+
+- 40ad4a7: Introduce `DelegatedClassLoader`, which will search through a list of `ClassLoaders` in order to find a class or resource.
+
 ## 0.6.0
 
 ### Minor Changes
