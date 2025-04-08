@@ -13,7 +13,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 @Suppress("unused")
-class DesignerHook : AbstractDesignerModuleHook() {
+class ChartsDesignerHook : AbstractDesignerModuleHook() {
 
     private val logger: Logger = LoggerFactory.getLogger(SHORT_MODULE_ID)
 

@@ -28,8 +28,8 @@ ignitionModule {
 
     hooks.putAll(
         mapOf(
-            "com.mussonindustrial.ignition.embr.charts.GatewayHook" to "G",
-            "com.mussonindustrial.ignition.embr.charts.DesignerHook" to "D",
+            "com.mussonindustrial.ignition.embr.charts.ChartsGatewayHook" to "G",
+            "com.mussonindustrial.ignition.embr.charts.ChartsDesignerHook" to "D",
         ),
     )
 }

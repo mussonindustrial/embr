@@ -7,6 +7,7 @@ import com.inductiveautomation.perspective.common.api.ComponentRegistry
 import com.inductiveautomation.perspective.gateway.api.ComponentModelDelegateRegistry
 import com.inductiveautomation.perspective.gateway.api.PerspectiveContext
 import com.mussonindustrial.embr.common.Embr
+import com.mussonindustrial.embr.common.reflect.withContextClassLoaders
 import com.mussonindustrial.ignition.embr.charts.component.chart.ChartJs
 import com.mussonindustrial.ignition.embr.charts.component.chart.ChartJsModelDelegate
 import java.util.*
@@ -14,32 +15,38 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 @Suppress("unused")
-class GatewayHook : AbstractGatewayModuleHook() {
+class ChartsGatewayHook : AbstractGatewayModuleHook() {
 
     private val logger: Logger = LoggerFactory.getLogger(Embr.CHARTS.shortId)
-    private lateinit var context: GatewayContext
+    private lateinit var context: ChartsGatewayContext
     private lateinit var perspectiveContext: PerspectiveContext
     private lateinit var componentRegistry: ComponentRegistry
     private lateinit var modelDelegateRegistry: ComponentModelDelegateRegistry
 
     override fun setup(context: GatewayContext) {
-        this.context = context
+        logger.debug("Embr-Charts module setup.")
+        this.context = ChartsGatewayContext(context)
     }
 
     override fun startup(activationState: LicenseState) {
-        logger.info("Embr-Charts module started.")
+        logger.debug("Embr-Charts module started.")
 
         perspectiveContext = PerspectiveContext.get(this.context)
         componentRegistry = perspectiveContext.componentRegistry
         modelDelegateRegistry = perspectiveContext.componentModelDelegateRegistry
 
-        logger.info("Registering components...")
-        componentRegistry.registerComponent(ChartJs.DESCRIPTOR)
-        modelDelegateRegistry.register(ChartJs.COMPONENT_ID) { ChartJsModelDelegate(it) }
+        logger.debug("Registering components...")
+        withContextClassLoaders(
+            this.javaClass.classLoader,
+            context.perspectiveContext.javaClass.classLoader,
+        ) {
+            componentRegistry.registerComponent(ChartJs.DESCRIPTOR)
+            modelDelegateRegistry.register(ChartJs.COMPONENT_ID) { ChartJsModelDelegate(it) }
+        }
     }
 
     override fun shutdown() {
-        logger.info("Shutting down Embr-Charts module and removing registered components.")
+        logger.debug("Shutting down Embr-Charts module and removing registered components.")
         componentRegistry.removeComponent(ChartJs.COMPONENT_ID)
         modelDelegateRegistry.remove(ChartJs.COMPONENT_ID)
     }
