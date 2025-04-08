@@ -22,7 +22,7 @@ class ChartsDesignerHook : AbstractDesignerModuleHook() {
     private lateinit var delegateRegistry: ComponentDesignDelegateRegistry
 
     override fun startup(context: DesignerContext, activationState: LicenseState) {
-        logger.info("Embr-Charts module started.")
+        logger.debug("Embr-Charts module started.")
         this.context = context
 
         val pdi: PerspectiveDesignerInterface = PerspectiveDesignerInterface.get(context)
@@ -34,7 +34,7 @@ class ChartsDesignerHook : AbstractDesignerModuleHook() {
     }
 
     override fun shutdown() {
-        logger.info("Shutting down Embr-Charts module and removing registered components.")
+        logger.debug("Shutting down Embr-Charts module and removing registered components.")
         componentRegistry.removeComponent(ChartJs.COMPONENT_ID)
     }
 }
