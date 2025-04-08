@@ -10,11 +10,11 @@ import com.inductiveautomation.perspective.common.PerspectiveModule
 import com.inductiveautomation.perspective.common.api.ComponentRegistry
 import com.inductiveautomation.perspective.gateway.api.ComponentModelDelegateRegistry
 import com.inductiveautomation.perspective.gateway.api.PerspectiveContext
+import com.mussonindustrial.embr.common.reflect.withContextClassLoaders
 import com.mussonindustrial.embr.perspective.common.component.addResourcesTo
 import com.mussonindustrial.embr.perspective.common.component.removeResourcesFrom
 import com.mussonindustrial.ignition.embr.periscope.Meta.SHORT_MODULE_ID
 import com.mussonindustrial.ignition.embr.periscope.component.embedding.*
-import com.mussonindustrial.ignition.embr.periscope.component.embedding.Portal
 import com.mussonindustrial.ignition.embr.periscope.scripting.JavaScriptFunctions
 import java.util.*
 import org.slf4j.Logger
@@ -48,18 +48,27 @@ class PeriscopeGatewayHook : AbstractGatewayModuleHook() {
         }
 
         logger.debug("Registering components...")
-        componentRegistry.registerComponent(EmbeddedView.DESCRIPTOR)
-        modelDelegateRegistry.register(EmbeddedView.COMPONENT_ID) { EmbeddedViewModelDelegate(it) }
+        withContextClassLoaders(
+            this.javaClass.classLoader,
+            context.perspectiveContext.javaClass.classLoader,
+        ) {
+            componentRegistry.registerComponent(EmbeddedView.DESCRIPTOR)
+            modelDelegateRegistry.register(EmbeddedView.COMPONENT_ID) {
+                EmbeddedViewModelDelegate(it)
+            }
 
-        componentRegistry.registerComponent(JsonView.DESCRIPTOR)
-        modelDelegateRegistry.register(JsonView.COMPONENT_ID) { JsonViewModelDelegate(it) }
+            componentRegistry.registerComponent(JsonView.DESCRIPTOR)
+            modelDelegateRegistry.register(JsonView.COMPONENT_ID) { JsonViewModelDelegate(it) }
 
-        componentRegistry.registerComponent(FlexRepeater.DESCRIPTOR)
-        modelDelegateRegistry.register(FlexRepeater.COMPONENT_ID) { FlexRepeaterModelDelegate(it) }
+            componentRegistry.registerComponent(FlexRepeater.DESCRIPTOR)
+            modelDelegateRegistry.register(FlexRepeater.COMPONENT_ID) {
+                FlexRepeaterModelDelegate(it)
+            }
 
-        componentRegistry.registerComponent(Swiper.DESCRIPTOR)
+            componentRegistry.registerComponent(Swiper.DESCRIPTOR)
 
-        componentRegistry.registerComponent(Portal.DESCRIPTOR)
+            componentRegistry.registerComponent(Portal.DESCRIPTOR)
+        }
     }
 
     override fun shutdown() {
