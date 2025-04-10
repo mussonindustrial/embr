@@ -23,6 +23,7 @@ import com.mussonindustrial.embr.perspective.gateway.model.subscribeToParams
 import com.mussonindustrial.embr.perspective.gateway.model.writeToParams
 import com.mussonindustrial.ignition.embr.periscope.PeriscopeGatewayContext
 import com.mussonindustrial.ignition.embr.periscope.api.ViewJoinMsg
+import java.lang.ref.WeakReference
 import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.collections.Iterable
@@ -48,9 +49,9 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
     private val commonViewPathListener: Subscription = createCommonViewPathListener()
     private val commonViewParamsListener: Subscription = createCommonViewParamsListener()
     private val viewOutputListeners = WeakHashMap<ViewModel, Map<String, Subscription>>()
+    private val instanceViews = HashMap<String, WeakReference<ViewModel>>()
     private val viewTimeoutMs = 10_000L
 
-    private var instanceCount = props.instances.json.size()
     private val instanceMatch = Regex("instances\\[(\\d+)]\\.(.*+)")
 
     override fun onStartup() {
@@ -87,7 +88,7 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
     override fun handleEvent(message: EventFiredMsg) {
         try {
             component.mdcSetup()
-            log.debugf("Received '%s' component message.", message.eventName)
+            log.tracef("Received message for protocol [%s].", message.eventName)
 
             if (message.eventName == ViewJoinMsg.PROTOCOL) {
                 joinView(ViewJoinMsg(message.event))
@@ -143,7 +144,7 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
 
     private fun createCommonViewParamsListener(): Subscription {
         return props.tree.subscribe("instanceCommon.viewParams", Origin.allBut(Origin.Delegate)) {
-            props.instances.forEach { instance -> onViewCommonChange(instance, it) }
+            props.instances.forEach { instance -> onViewCommonChanged(instance, it) }
         }
     }
 
@@ -168,16 +169,17 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
                     log.trace(
                         "Dispatching change event on ${event.path} to instance ${instance.mountPath}"
                     )
-                    this.onViewInputChange(instance, event)
+                    this.onViewInputChanged(instance, event)
                 }
             }
 
-            val instances = toJsonDeep(event.readValue()).asJsonArray ?: JsonArray()
-            val newInstanceCount = instances.size()
-            if (newInstanceCount != instanceCount) {
-                log.tracef("Number of instances changed, initializing views.")
-                instanceCount = newInstanceCount
-                props.instances.forEach { initializeView(it, forceWrite = true) }
+            props.instances.forEach {
+                if (it.cachedViewModel == null) {
+                    component.mdc {
+                        log.trace("New view instance found, initializing instance ${it.mountPath}")
+                    }
+                    initializeView(it)
+                }
             }
         }
     }
@@ -193,28 +195,17 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
     private fun initializeView(instance: InstancePropsHandler) =
         instance.onView { viewModel -> initializeView(instance, viewModel) }
 
-    @Suppress("SameParameterValue")
-    private fun initializeView(instance: InstancePropsHandler, forceWrite: Boolean) =
-        instance.onView { viewModel -> initializeView(instance, viewModel, forceWrite) }
-
     private fun initializeView(instance: InstancePropsHandler, viewModel: ViewModel) {
-        initializeView(instance, viewModel, forceWrite = false)
-    }
-
-    private fun initializeView(
-        instance: InstancePropsHandler,
-        viewModel: ViewModel,
-        forceWrite: Boolean,
-    ) {
-        if (viewOutputListeners[viewModel] == null || forceWrite) {
-            viewModel.writeToParams(instance.viewParams, Origin.Delegate, this)
-        }
+        viewModel.writeToParams(instance.viewParams, Origin.Delegate, this)
 
         viewOutputListeners[viewModel]?.apply { shutdownViewOutputListeners(viewModel) }
         viewOutputListeners[viewModel] = createViewOutputListeners(viewModel)
     }
 
-    private fun onViewCommonChange(instance: InstancePropsHandler, event: PropertyTreeChangeEvent) {
+    private fun onViewCommonChanged(
+        instance: InstancePropsHandler,
+        event: PropertyTreeChangeEvent,
+    ) {
         if (event.source == this) {
             return
         }
@@ -232,7 +223,7 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
         }
     }
 
-    private fun onViewInputChange(instance: InstancePropsHandler, event: PropertyTreeChangeEvent) {
+    private fun onViewInputChanged(instance: InstancePropsHandler, event: PropertyTreeChangeEvent) {
         if (event.source == this) {
             return
         }
@@ -279,7 +270,13 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
     inner class InstancePropsHandler(private val tree: PropertyTree, private val index: Int) {
 
         val treePath: JsonPath = JsonPath.parse("instances[$index]")
-        private var cachedViewModel: ViewModel? = null
+        var cachedViewModel: ViewModel?
+            get() {
+                return instanceViews[key]?.get()
+            }
+            set(value) {
+                instanceViews[key] = WeakReference(value)
+            }
 
         private val commonViewPath: String
             get() {
@@ -415,11 +412,10 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
                     this@FlexRepeaterModelDelegate,
                 )
 
-                instanceCount = value.size()
                 modifiedInstances.forEach {
                     val instance = this[it]
                     if (instance != null) {
-                        initializeView(instance, forceWrite = true)
+                        initializeView(instance)
                     }
                 }
             }
