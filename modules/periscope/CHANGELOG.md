@@ -1,5 +1,30 @@
 # @embr-modules/periscope
 
+## 0.7.3
+
+### Patch Changes
+
+- 3ea4d36: (FlexRepeaterPlus) Add instance `key` as an implicit parameter to the instance view.
+- 1bd2a1a: (FlexRepeaterPlus) Improve ViewModel caching.
+
+  - Move ViewModel caching from the instance level to the component level, allowing the ViewModel reference to be retained for the lifetime of the component.
+  - Previously, a ViewModel instance was only cached for the lifetime of its associated InstancePropsHandler, and not much care was taken to remember InstancePropsHandlers.
+
+  This resolves a bug that would occur when simultaneously (in a single update to `props.instances`):
+
+  1. Moving existing instances.
+  2. Adding new instances.
+  3. Changing the final size of the instances array.
+
+- 3b53009: (Toasts) Move `pointerEvents` setting from inline styles to CSS.
+
+  - This makes it easier for users to use the `style` property of the toast function.
+  - Users no longer need to add `pointerEvents: 'all'` to every inline style definition.
+
+- Updated dependencies [3ea4d36]
+- Updated dependencies [3b53009]
+  - @embr-modules/periscope-web@0.7.3
+
 ## 0.7.2
 
 ### Patch Changes

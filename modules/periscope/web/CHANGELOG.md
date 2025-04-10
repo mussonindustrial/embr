@@ -1,5 +1,15 @@
 # @mussonindustrial/embr-js-chart-js
 
+## 0.7.3
+
+### Patch Changes
+
+- 3ea4d36: (FlexRepeaterPlus) Add instance `key` as an implicit parameter to the instance view.
+- 3b53009: (Toasts) Move `pointerEvents` setting from inline styles to CSS.
+
+  - This makes it easier for users to use the `style` property of the toast function.
+  - Users no longer need to add `pointerEvents: 'all'` to every inline style definition.
+
 ## 0.7.2
 
 ## 0.7.1
