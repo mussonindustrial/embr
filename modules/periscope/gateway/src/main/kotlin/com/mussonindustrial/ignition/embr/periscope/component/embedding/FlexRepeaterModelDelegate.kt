@@ -330,9 +330,10 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
         val viewParams: JsonObject
             get() {
                 return JsonObject().apply {
+                    addProperty("key", key)
+                    addProperty("index", index)
                     commonViewParams.entrySet()?.forEach { add(it.key, it.value) }
                     instanceViewParams.entrySet()?.forEach { add(it.key, it.value) }
-                    addProperty("index", index)
                 }
             }
 
