@@ -25,9 +25,6 @@ const CenterToastContainer = observer(
           position: 'fixed',
           pointerEvents: 'none',
         }}
-        toastStyle={{
-          pointerEvents: 'all',
-        }}
       />
     )
   }
