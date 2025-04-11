@@ -1,5 +1,17 @@
 # @mussonindustrial/embr-charts
 
+## 2.2.6
+
+### Patch Changes
+
+- Updated dependencies [a8b2973]
+  - @embr-jvm/perspective-designer@0.8.0
+  - @embr-jvm/perspective-gateway@0.8.0
+  - @embr-jvm/perspective-common@0.8.0
+  - @embr-jvm/core-common@0.7.0
+  - @embr-jvm/core-designer@0.7.0
+  - @embr-modules/charts-web@2.2.6
+
 ## 2.2.5
 
 ### Patch Changes

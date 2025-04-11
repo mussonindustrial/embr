@@ -1,5 +1,17 @@
 # @embr-modules/periscope
 
+## 0.7.4
+
+### Patch Changes
+
+- Updated dependencies [a8b2973]
+  - @embr-jvm/perspective-designer@0.8.0
+  - @embr-jvm/perspective-gateway@0.8.0
+  - @embr-jvm/perspective-common@0.8.0
+  - @embr-jvm/core-common@0.7.0
+  - @embr-jvm/core-designer@0.7.0
+  - @embr-modules/periscope-web@0.7.4
+
 ## 0.7.3
 
 ### Patch Changes
