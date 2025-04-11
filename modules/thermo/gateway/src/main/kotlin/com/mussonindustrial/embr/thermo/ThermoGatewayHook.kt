@@ -21,11 +21,11 @@ class ThermoGatewayHook : AbstractGatewayModuleHook() {
     }
 
     override fun startup(activationState: LicenseState) {
-        logger.info("Embr Thermodynamics module started.")
+        logger.debug("Embr-Thermodynamics module startup.")
     }
 
     override fun shutdown() {
-        logger.info("Shutting down Embr Thermodynamics module.")
+        logger.debug("Embr-Thermodynamics module shutdown.")
     }
 
     override fun initializeScriptManager(manager: ScriptManager) {

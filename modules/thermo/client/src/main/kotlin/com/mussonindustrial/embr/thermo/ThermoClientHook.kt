@@ -16,12 +16,12 @@ class ThermoClientHook : AbstractClientModuleHook() {
     private lateinit var context: ThermoClientContext
 
     override fun startup(context: ClientContext, activationState: LicenseState) {
-        logger.info("Embr Thermodynamics module started.")
+        logger.debug("Embr-Thermodynamics module startup.")
         this.context = ThermoClientContext(context)
     }
 
     override fun shutdown() {
-        logger.info("Shutting down Embr Thermodynamics module.")
+        logger.debug("Embr-Thermodynamics module shutdown.")
     }
 
     override fun initializeScriptManager(manager: ScriptManager) {
