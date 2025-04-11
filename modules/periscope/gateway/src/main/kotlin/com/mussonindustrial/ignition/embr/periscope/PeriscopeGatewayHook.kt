@@ -8,7 +8,6 @@ import com.inductiveautomation.ignition.gateway.model.AbstractGatewayModuleHook
 import com.inductiveautomation.ignition.gateway.model.GatewayContext
 import com.inductiveautomation.perspective.common.PerspectiveModule
 import com.inductiveautomation.perspective.common.api.ComponentRegistry
-import com.inductiveautomation.perspective.gateway.api.ComponentModelDelegateRegistry
 import com.inductiveautomation.perspective.gateway.api.PerspectiveContext
 import com.mussonindustrial.embr.common.reflect.withContextClassLoaders
 import com.mussonindustrial.embr.perspective.common.component.addResourcesTo
@@ -27,7 +26,6 @@ class PeriscopeGatewayHook : AbstractGatewayModuleHook() {
     private lateinit var context: PeriscopeGatewayContext
     private lateinit var perspectiveContext: PerspectiveContext
     private lateinit var componentRegistry: ComponentRegistry
-    private lateinit var modelDelegateRegistry: ComponentModelDelegateRegistry
 
     override fun setup(context: GatewayContext) {
         logger.debug("Embr-Periscope module setup.")
@@ -40,7 +38,6 @@ class PeriscopeGatewayHook : AbstractGatewayModuleHook() {
 
         perspectiveContext = context.perspectiveContext
         componentRegistry = perspectiveContext.componentRegistry
-        modelDelegateRegistry = perspectiveContext.componentModelDelegateRegistry
 
         logger.debug("Injecting required resources...")
         componentRegistry.addResourcesTo(PeriscopeComponents.REQUIRED_RESOURCES) {
@@ -52,22 +49,7 @@ class PeriscopeGatewayHook : AbstractGatewayModuleHook() {
             this.javaClass.classLoader,
             context.perspectiveContext.javaClass.classLoader,
         ) {
-            componentRegistry.registerComponent(EmbeddedView.DESCRIPTOR)
-            modelDelegateRegistry.register(EmbeddedView.COMPONENT_ID) {
-                EmbeddedViewModelDelegate(it)
-            }
-
-            componentRegistry.registerComponent(JsonView.DESCRIPTOR)
-            modelDelegateRegistry.register(JsonView.COMPONENT_ID) { JsonViewModelDelegate(it) }
-
-            componentRegistry.registerComponent(FlexRepeater.DESCRIPTOR)
-            modelDelegateRegistry.register(FlexRepeater.COMPONENT_ID) {
-                FlexRepeaterModelDelegate(it)
-            }
-
-            componentRegistry.registerComponent(Swiper.DESCRIPTOR)
-
-            componentRegistry.registerComponent(Portal.DESCRIPTOR)
+            context.registerComponents()
         }
     }
 
@@ -80,18 +62,8 @@ class PeriscopeGatewayHook : AbstractGatewayModuleHook() {
             it.moduleId() == PerspectiveModule.MODULE_ID
         }
 
-        componentRegistry.removeComponent(EmbeddedView.COMPONENT_ID)
-        modelDelegateRegistry.remove(EmbeddedView.COMPONENT_ID)
-
-        componentRegistry.removeComponent(JsonView.COMPONENT_ID)
-        modelDelegateRegistry.remove(JsonView.COMPONENT_ID)
-
-        componentRegistry.removeComponent(FlexRepeater.COMPONENT_ID)
-        modelDelegateRegistry.remove(FlexRepeater.COMPONENT_ID)
-
-        componentRegistry.removeComponent(Swiper.COMPONENT_ID)
-
-        componentRegistry.removeComponent(Portal.COMPONENT_ID)
+        logger.debug("Removing components...")
+        context.removeComponents()
     }
 
     override fun getMountedResourceFolder(): Optional<String> {

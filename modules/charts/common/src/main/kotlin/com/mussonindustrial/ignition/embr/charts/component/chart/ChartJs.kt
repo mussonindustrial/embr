@@ -4,107 +4,108 @@ import com.inductiveautomation.ignition.common.jsonschema.JsonSchema
 import com.inductiveautomation.perspective.common.api.ComponentDescriptor
 import com.inductiveautomation.perspective.common.api.ComponentDescriptorImpl
 import com.mussonindustrial.embr.perspective.common.component.PaletteEntry
+import com.mussonindustrial.embr.perspective.common.component.PerspectiveComponent
 import com.mussonindustrial.embr.perspective.common.component.addPaletteEntry
 import com.mussonindustrial.ignition.embr.charts.Components
 import com.mussonindustrial.ignition.embr.charts.Meta.MODULE_ID
 
 class ChartJs {
-    companion object {
-        var COMPONENT_ID: String = "embr.chart.chart-js"
-        var SCHEMA: JsonSchema =
+    companion object : PerspectiveComponent {
+        override val id: String = "embr.chart.chart-js"
+        override val schema: JsonSchema =
             JsonSchema.parse(
                 Components::class
                     .java
                     .getResourceAsStream("/schemas/components/embr.chart.chart-js/props.json")
             )
 
-        private var VARIANT_BASE =
+        private val VARIANT_BASE =
             PaletteEntry(
                 this::class.java,
-                COMPONENT_ID,
+                id,
                 "base",
                 "Chart.js",
                 "A simple yet flexible JavaScript charting library for the modern web.",
             )
-        private var VARIANT_BAR =
+        private val VARIANT_BAR =
             PaletteEntry(
                 this::class.java,
-                COMPONENT_ID,
+                id,
                 "bar",
                 "Bar",
                 "A bar chart or bar graph is a chart or graph that presents categorical data with rectangular bars with heights or lengths proportional to the values that they represent. The bars can be plotted vertically or horizontally.",
             )
-        private var VARIANT_BUBBLE =
+        private val VARIANT_BUBBLE =
             PaletteEntry(
                 this::class.java,
-                COMPONENT_ID,
+                id,
                 "bubble",
                 "Bubble",
                 "A bubble chart (aka bubble plot) is an extension of the scatter plot used to look at relationships between three numeric variables. Each dot in a bubble chart corresponds with a single data point, and the variables' values for each point are indicated by horizontal position, vertical position, and dot size.",
             )
-        private var VARIANT_BOXPLOT =
+        private val VARIANT_BOXPLOT =
             PaletteEntry(
                 this::class.java,
-                COMPONENT_ID,
+                id,
                 "boxplot",
                 "Box Plot",
                 "Box Plot is a graphical method to visualize data distribution for gaining insights and making informed decisions. Box plot is a type of chart that depicts a group of numerical data through their quartiles.",
             )
-        private var VARIANT_DOUGHNUT =
+        private val VARIANT_DOUGHNUT =
             PaletteEntry(
                 this::class.java,
-                COMPONENT_ID,
+                id,
                 "doughnut",
                 "Doughnut",
                 "A doughnut chart is a circular statistical graphic which is divided into slices to illustrate numerical proportion. In a pie chart, the arc length of each slice is proportional to the quantity it represents.",
             )
-        private var VARIANT_LINE =
+        private val VARIANT_LINE =
             PaletteEntry(
                 this::class.java,
-                COMPONENT_ID,
+                id,
                 "line",
                 "Line",
                 "A line chart or line graph, also known as curve chart, is a type of chart that displays information as a series of data points called 'markers' connected by straight line segments.",
             )
-        private var VARIANT_PIE =
+        private val VARIANT_PIE =
             PaletteEntry(
                 this::class.java,
-                COMPONENT_ID,
+                id,
                 "pie",
                 "Pie",
                 "A pie chart is a circular statistical graphic which is divided into slices to illustrate numerical proportion. In a pie chart, the arc length of each slice is proportional to the quantity it represents.",
             )
-        private var VARIANT_POLARAREA =
+        private val VARIANT_POLARAREA =
             PaletteEntry(
                 this::class.java,
-                COMPONENT_ID,
+                id,
                 "polararea",
                 "Polar Area",
                 "Polar area charts are similar to pie charts, but each segment has the same angle - the radius of the segment differs depending on the value.",
             )
-        private var VARIANT_RADAR =
+        private val VARIANT_RADAR =
             PaletteEntry(
                 this::class.java,
-                COMPONENT_ID,
+                id,
                 "radar",
                 "Radar",
                 "A radar chart is a graphical method of displaying multivariate data in the form of a two-dimensional chart of three or more quantitative variables represented on axes starting from the same point.",
             )
-        private var VARIANT_VIOLIN =
+        private val VARIANT_VIOLIN =
             PaletteEntry(
                 this::class.java,
-                COMPONENT_ID,
+                id,
                 "violin",
                 "Violin",
                 "A violin plot depicts distributions of numeric data for one or more groups using density curves. The width of each curve corresponds with the approximate frequency of data points in each region.",
             )
 
-        var DESCRIPTOR: ComponentDescriptor =
+        override val descriptor: ComponentDescriptor =
             ComponentDescriptorImpl.ComponentBuilder.newBuilder()
                 .setPaletteCategory("chart")
-                .setId(COMPONENT_ID)
+                .setId(id)
                 .setModuleId(MODULE_ID)
-                .setSchema(SCHEMA)
+                .setSchema(schema)
                 .setName("Chart.js Chart")
                 .addPaletteEntry(VARIANT_BASE)
                 .addPaletteEntry(VARIANT_BAR)

@@ -3,13 +3,8 @@ package com.mussonindustrial.ignition.embr.charts
 import com.inductiveautomation.ignition.common.licensing.LicenseState
 import com.inductiveautomation.ignition.gateway.model.AbstractGatewayModuleHook
 import com.inductiveautomation.ignition.gateway.model.GatewayContext
-import com.inductiveautomation.perspective.common.api.ComponentRegistry
-import com.inductiveautomation.perspective.gateway.api.ComponentModelDelegateRegistry
-import com.inductiveautomation.perspective.gateway.api.PerspectiveContext
 import com.mussonindustrial.embr.common.Embr
 import com.mussonindustrial.embr.common.reflect.withContextClassLoaders
-import com.mussonindustrial.ignition.embr.charts.component.chart.ChartJs
-import com.mussonindustrial.ignition.embr.charts.component.chart.ChartJsModelDelegate
 import java.util.*
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -19,9 +14,6 @@ class ChartsGatewayHook : AbstractGatewayModuleHook() {
 
     private val logger: Logger = LoggerFactory.getLogger(Embr.CHARTS.shortId)
     private lateinit var context: ChartsGatewayContext
-    private lateinit var perspectiveContext: PerspectiveContext
-    private lateinit var componentRegistry: ComponentRegistry
-    private lateinit var modelDelegateRegistry: ComponentModelDelegateRegistry
 
     override fun setup(context: GatewayContext) {
         logger.debug("Embr-Charts module setup.")
@@ -31,24 +23,20 @@ class ChartsGatewayHook : AbstractGatewayModuleHook() {
     override fun startup(activationState: LicenseState) {
         logger.debug("Embr-Charts module started.")
 
-        perspectiveContext = PerspectiveContext.get(this.context)
-        componentRegistry = perspectiveContext.componentRegistry
-        modelDelegateRegistry = perspectiveContext.componentModelDelegateRegistry
-
         logger.debug("Registering components...")
         withContextClassLoaders(
             this.javaClass.classLoader,
             context.perspectiveContext.javaClass.classLoader,
         ) {
-            componentRegistry.registerComponent(ChartJs.DESCRIPTOR)
-            modelDelegateRegistry.register(ChartJs.COMPONENT_ID) { ChartJsModelDelegate(it) }
+            context.registerComponents()
         }
     }
 
     override fun shutdown() {
         logger.debug("Shutting down Embr-Charts module and removing registered components.")
-        componentRegistry.removeComponent(ChartJs.COMPONENT_ID)
-        modelDelegateRegistry.remove(ChartJs.COMPONENT_ID)
+
+        logger.debug("Removing components...")
+        context.removeComponents()
     }
 
     override fun getMountedResourceFolder(): Optional<String> {

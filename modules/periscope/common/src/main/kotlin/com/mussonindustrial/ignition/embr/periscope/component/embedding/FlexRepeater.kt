@@ -4,14 +4,15 @@ import com.inductiveautomation.ignition.common.jsonschema.JsonSchema
 import com.inductiveautomation.perspective.common.api.ComponentDescriptor
 import com.inductiveautomation.perspective.common.api.ComponentDescriptorImpl
 import com.mussonindustrial.embr.perspective.common.component.PaletteEntry
+import com.mussonindustrial.embr.perspective.common.component.PerspectiveComponent
 import com.mussonindustrial.embr.perspective.common.component.addPaletteEntry
 import com.mussonindustrial.ignition.embr.periscope.Meta.MODULE_ID
 import com.mussonindustrial.ignition.embr.periscope.PeriscopeComponents
 
 class FlexRepeater {
-    companion object {
-        var COMPONENT_ID: String = "embr.periscope.embedding.flex-repeater"
-        var SCHEMA: JsonSchema =
+    companion object : PerspectiveComponent {
+        override val id: String = "embr.periscope.embedding.flex-repeater"
+        override val schema: JsonSchema =
             JsonSchema.parse(
                 PeriscopeComponents::class
                     .java
@@ -20,39 +21,39 @@ class FlexRepeater {
                     )
             )
 
-        private var VARIANT_BASE =
+        private val VARIANT_BASE =
             PaletteEntry(
                 this::class.java,
-                COMPONENT_ID,
+                id,
                 "base",
                 "Flex Repeater +",
                 "Creates multiple instances of views for display in another view. View props are handled server-side for decreased latency.",
             )
 
-        private var VARIANT_ROW =
+        private val VARIANT_ROW =
             PaletteEntry(
                 this::class.java,
-                COMPONENT_ID,
+                id,
                 "row",
                 "Row",
                 "Creates multiple instances of views for display in another view. View props are handled server-side for decreased latency.",
             )
 
-        private var VARIANT_COLUMN =
+        private val VARIANT_COLUMN =
             PaletteEntry(
                 this::class.java,
-                COMPONENT_ID,
+                id,
                 "column",
                 "Column",
                 "Creates multiple instances of views for display in another view. View props are handled server-side for decreased latency.",
             )
 
-        var DESCRIPTOR: ComponentDescriptor =
+        override val descriptor: ComponentDescriptor =
             ComponentDescriptorImpl.ComponentBuilder.newBuilder()
                 .setPaletteCategory("Embedding +")
-                .setId(COMPONENT_ID)
+                .setId(id)
                 .setModuleId(MODULE_ID)
-                .setSchema(SCHEMA)
+                .setSchema(schema)
                 .setName("Flex Repeater +")
                 .addPaletteEntry(VARIANT_BASE)
                 .addPaletteEntry(VARIANT_ROW)
