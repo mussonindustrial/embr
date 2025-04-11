@@ -4,7 +4,6 @@ import com.inductiveautomation.ignition.common.licensing.LicenseState
 import com.inductiveautomation.ignition.gateway.model.AbstractGatewayModuleHook
 import com.inductiveautomation.ignition.gateway.model.GatewayContext
 import com.mussonindustrial.embr.common.Embr
-import com.mussonindustrial.embr.common.reflect.withContextClassLoaders
 import java.util.*
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -21,19 +20,14 @@ class ChartsGatewayHook : AbstractGatewayModuleHook() {
     }
 
     override fun startup(activationState: LicenseState) {
-        logger.debug("Embr-Charts module started.")
+        logger.debug("Embr-Charts module startup.")
 
         logger.debug("Registering components...")
-        withContextClassLoaders(
-            this.javaClass.classLoader,
-            context.perspectiveContext.javaClass.classLoader,
-        ) {
-            context.registerComponents()
-        }
+        context.registerComponents()
     }
 
     override fun shutdown() {
-        logger.debug("Shutting down Embr-Charts module and removing registered components.")
+        logger.debug("Embr-Charts module shutdown.")
 
         logger.debug("Removing components...")
         context.removeComponents()

@@ -1,10 +1,13 @@
 package com.mussonindustrial.ignition.embr.periscope
 
 import com.inductiveautomation.ignition.gateway.model.GatewayContext
+import com.inductiveautomation.perspective.common.PerspectiveModule
 import com.inductiveautomation.perspective.gateway.api.PerspectiveContext
 import com.inductiveautomation.perspective.gateway.model.PageModel
 import com.mussonindustrial.embr.gateway.EmbrGatewayContext
 import com.mussonindustrial.embr.gateway.EmbrGatewayContextImpl
+import com.mussonindustrial.embr.perspective.common.component.addResourcesTo
+import com.mussonindustrial.embr.perspective.common.component.removeResourcesFrom
 import com.mussonindustrial.embr.perspective.gateway.component.asGatewayComponent
 import com.mussonindustrial.embr.perspective.gateway.component.registerComponent
 import com.mussonindustrial.embr.perspective.gateway.component.removeComponent
@@ -51,5 +54,21 @@ class PeriscopeGatewayContext(private val context: GatewayContext) :
 
     fun removeComponents() {
         components.forEach { perspectiveContext.removeComponent(it) }
+    }
+
+    fun injectResources() {
+        perspectiveContext.componentRegistry.addResourcesTo(
+            PeriscopeComponents.REQUIRED_RESOURCES
+        ) {
+            it.moduleId() == PerspectiveModule.MODULE_ID
+        }
+    }
+
+    fun removeResources() {
+        perspectiveContext.componentRegistry.removeResourcesFrom(
+            PeriscopeComponents.REQUIRED_RESOURCES
+        ) {
+            it.moduleId() == PerspectiveModule.MODULE_ID
+        }
     }
 }

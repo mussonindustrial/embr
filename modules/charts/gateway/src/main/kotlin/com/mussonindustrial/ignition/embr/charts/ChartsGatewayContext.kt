@@ -16,7 +16,7 @@ class ChartsGatewayContext(private val context: GatewayContext) :
         lateinit var instance: ChartsGatewayContext
     }
 
-    val perspectiveContext: PerspectiveContext
+    private val perspectiveContext: PerspectiveContext
     private val components = listOf(ChartJs.asGatewayComponent { ChartJsModelDelegate(it) })
 
     init {

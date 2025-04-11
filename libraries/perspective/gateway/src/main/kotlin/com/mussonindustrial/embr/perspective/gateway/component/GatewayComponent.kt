@@ -11,7 +11,7 @@ interface GatewayComponent : PerspectiveComponent {
 class GatewayComponentWrapper(
     private val component: PerspectiveComponent,
     override val delegateFactory: ComponentModelDelegateFactory? = null,
-) : PerspectiveComponent by component, GatewayComponent {}
+) : PerspectiveComponent by component, GatewayComponent
 
 fun PerspectiveComponent.asGatewayComponent(
     delegateFactory: ComponentModelDelegateFactory? = null

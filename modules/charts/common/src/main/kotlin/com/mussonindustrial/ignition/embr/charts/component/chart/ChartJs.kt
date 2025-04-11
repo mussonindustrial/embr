@@ -1,6 +1,5 @@
 package com.mussonindustrial.ignition.embr.charts.component.chart
 
-import com.inductiveautomation.ignition.common.jsonschema.JsonSchema
 import com.inductiveautomation.perspective.common.api.ComponentDescriptor
 import com.inductiveautomation.perspective.common.api.ComponentDescriptorImpl
 import com.mussonindustrial.embr.perspective.common.component.PaletteEntry
@@ -12,12 +11,6 @@ import com.mussonindustrial.ignition.embr.charts.Meta.MODULE_ID
 class ChartJs {
     companion object : PerspectiveComponent {
         override val id: String = "embr.chart.chart-js"
-        override val schema: JsonSchema =
-            JsonSchema.parse(
-                Components::class
-                    .java
-                    .getResourceAsStream("/schemas/components/embr.chart.chart-js/props.json")
-            )
 
         private val VARIANT_BASE =
             PaletteEntry(

@@ -11,7 +11,7 @@ interface DesignerComponent : PerspectiveComponent {
 class DesignerComponentWrapper(
     private val component: PerspectiveComponent,
     override val delegate: ComponentDesignDelegate? = null,
-) : PerspectiveComponent by component, DesignerComponent {}
+) : PerspectiveComponent by component, DesignerComponent
 
 fun PerspectiveComponent.asDesignerComponent(
     delegate: ComponentDesignDelegate? = null
