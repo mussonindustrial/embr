@@ -6,6 +6,10 @@ import java.util.*
 class DelegatedClassLoader(parent: ClassLoader, private vararg val delegates: ClassLoader) :
     ClassLoader(parent) {
 
+    override fun getName(): String {
+        return parent.name + "_DelegatedClassLoader"
+    }
+
     override fun findClass(name: String): Class<*> {
         for (delegate in delegates) {
             try {
@@ -22,12 +26,14 @@ class DelegatedClassLoader(parent: ClassLoader, private vararg val delegates: Cl
         Collections.enumeration(delegates.flatMap { it.getResources(name).toList() })
 }
 
-fun withContextClassLoaders(vararg delegates: ClassLoader, block: () -> Unit) {
+fun <T> withContextClassLoaders(vararg delegates: ClassLoader, block: () -> T): T {
     val originalContextClassLoader = Thread.currentThread().contextClassLoader
     Thread.currentThread().contextClassLoader =
         DelegatedClassLoader(originalContextClassLoader, *delegates)
 
-    block()
+    val result = block()
 
     Thread.currentThread().contextClassLoader = originalContextClassLoader
+
+    return result
 }

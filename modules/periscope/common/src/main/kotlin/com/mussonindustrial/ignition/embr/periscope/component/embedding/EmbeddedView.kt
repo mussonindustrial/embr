@@ -1,40 +1,32 @@
 package com.mussonindustrial.ignition.embr.periscope.component.embedding
 
-import com.inductiveautomation.ignition.common.jsonschema.JsonSchema
 import com.inductiveautomation.perspective.common.api.ComponentDescriptor
 import com.inductiveautomation.perspective.common.api.ComponentDescriptorImpl
 import com.mussonindustrial.embr.perspective.common.component.PaletteEntry
+import com.mussonindustrial.embr.perspective.common.component.PerspectiveComponent
 import com.mussonindustrial.embr.perspective.common.component.addPaletteEntry
 import com.mussonindustrial.ignition.embr.periscope.Meta.MODULE_ID
 import com.mussonindustrial.ignition.embr.periscope.PeriscopeComponents
 
 class EmbeddedView {
-    companion object {
-        var COMPONENT_ID: String = "embr.periscope.embedding.view"
-        var SCHEMA: JsonSchema =
-            JsonSchema.parse(
-                PeriscopeComponents::class
-                    .java
-                    .getResourceAsStream(
-                        "/schemas/components/embr.periscope.embedding.view/props.json"
-                    )
-            )
+    companion object : PerspectiveComponent {
+        override val id: String = "embr.periscope.embedding.view"
 
-        private var VARIANT_BASE =
+        private val VARIANT_BASE =
             PaletteEntry(
                 this::class.java,
-                COMPONENT_ID,
+                id,
                 "base",
                 "Embedded View +",
                 "Enables an entire view to be embedded within another view. View props are handled server-side for decreased latency.",
             )
 
-        var DESCRIPTOR: ComponentDescriptor =
+        override val descriptor: ComponentDescriptor =
             ComponentDescriptorImpl.ComponentBuilder.newBuilder()
                 .setPaletteCategory("Embedding +")
-                .setId(COMPONENT_ID)
+                .setId(id)
                 .setModuleId(MODULE_ID)
-                .setSchema(SCHEMA)
+                .setSchema(schema)
                 .setName("Embedded View +")
                 .addPaletteEntry(VARIANT_BASE)
                 .setDefaultMetaName("EmbeddedViewPlus")

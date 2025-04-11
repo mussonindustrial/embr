@@ -1,72 +1,64 @@
 package com.mussonindustrial.ignition.embr.periscope.component.embedding
 
-import com.inductiveautomation.ignition.common.jsonschema.JsonSchema
 import com.inductiveautomation.perspective.common.api.ComponentDescriptor
 import com.inductiveautomation.perspective.common.api.ComponentDescriptorImpl
 import com.mussonindustrial.embr.perspective.common.component.PaletteEntry
+import com.mussonindustrial.embr.perspective.common.component.PerspectiveComponent
 import com.mussonindustrial.embr.perspective.common.component.addPaletteEntry
 import com.mussonindustrial.ignition.embr.periscope.Meta.MODULE_ID
 import com.mussonindustrial.ignition.embr.periscope.PeriscopeComponents
 
 class Swiper {
-    companion object {
-        var COMPONENT_ID: String = "embr.periscope.embedding.swiper"
-        var SCHEMA: JsonSchema =
-            JsonSchema.parse(
-                PeriscopeComponents::class
-                    .java
-                    .getResourceAsStream(
-                        "/schemas/components/embr.periscope.embedding.swiper/props.json"
-                    )
-            )
+    companion object : PerspectiveComponent {
+        override val id: String = "embr.periscope.embedding.swiper"
 
-        private var VARIANT_BASE =
+        private val VARIANT_BASE =
             PaletteEntry(
                 this::class.java,
-                COMPONENT_ID,
+                id,
                 "base",
                 "Swiper",
                 "The Most Modern Mobile Touch Slider.",
             )
-        private var VARIANT_AUTO_HORIZONTAL =
+        private val VARIANT_AUTO_HORIZONTAL =
             PaletteEntry(
                 this::class.java,
-                COMPONENT_ID,
+                id,
                 "auto-horizontal",
                 "Auto Horizontal",
                 "Auto-sized horizontal slides.",
             )
-        private var VARIANT_AUTO_VERTICAL =
+        private val VARIANT_AUTO_VERTICAL =
             PaletteEntry(
                 this::class.java,
-                COMPONENT_ID,
+                id,
                 "auto-vertical",
                 "Auto Vertical",
                 "Auto-sized vertical slides.",
             )
-        private var VARIANT_FULL_HORIZONTAL =
+        private val VARIANT_FULL_HORIZONTAL =
             PaletteEntry(
                 this::class.java,
-                COMPONENT_ID,
+                id,
                 "full-horizontal",
                 "Full Horizontal",
                 "Full-sized horizontal slides.",
             )
-        private var VARIANT_FULL_VERTICAL =
+        private val VARIANT_FULL_VERTICAL =
             PaletteEntry(
                 this::class.java,
-                COMPONENT_ID,
+                id,
                 "full-vertical",
                 "Full Vertical",
                 "Full-sized vertical slides.",
             )
 
-        var DESCRIPTOR: ComponentDescriptor =
+        override val descriptor: ComponentDescriptor =
             ComponentDescriptorImpl.ComponentBuilder.newBuilder()
                 .setPaletteCategory("Embedding +")
-                .setId(COMPONENT_ID)
+                .setId(id)
                 .setModuleId(MODULE_ID)
-                .setSchema(SCHEMA)
+                .setSchema(schema)
                 .setName("Swiper")
                 .addPaletteEntry(VARIANT_BASE)
                 .addPaletteEntry(VARIANT_AUTO_HORIZONTAL)
