@@ -1,5 +1,19 @@
 # @mussonindustrial/embr-charts
 
+## 2.2.6
+
+### Patch Changes
+
+- cded1e1: Update `chart.js` dependency to `4.4.9`.
+- Updated dependencies [cded1e1]
+- Updated dependencies [a8b2973]
+  - @embr-modules/charts-web@2.2.6
+  - @embr-jvm/perspective-designer@0.8.0
+  - @embr-jvm/perspective-gateway@0.8.0
+  - @embr-jvm/perspective-common@0.8.0
+  - @embr-jvm/core-common@0.7.0
+  - @embr-jvm/core-designer@0.7.0
+
 ## 2.2.5
 
 ### Patch Changes

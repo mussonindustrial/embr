@@ -1,5 +1,14 @@
 # @embr-modules/thermo
 
+## 1.0.4
+
+### Patch Changes
+
+- c661a93: Reduce startup/shutdown logging levels. Ignition's default logging already logs these events, so we are effectively double logging for no reason.
+- Updated dependencies [a8b2973]
+  - @embr-jvm/core-common@0.7.0
+  - @embr-jvm/core-gateway@0.7.0
+
 ## 1.0.3
 
 ### Patch Changes

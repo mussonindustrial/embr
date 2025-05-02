@@ -1,5 +1,11 @@
 # @mussonindustrial/embr-jvm-core-common
 
+## 0.7.0
+
+### Minor Changes
+
+- a8b2973: Add shared Perspective component loading utilities.
+
 ## 0.6.1
 
 ### Patch Changes
