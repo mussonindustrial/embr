@@ -1,5 +1,11 @@
 # @mussonindustrial/embr-js-chart-js
 
+## 2.2.6
+
+### Patch Changes
+
+- cded1e1: Update `chart.js` dependency to `4.4.9`.
+
 ## 2.2.5
 
 ## 2.2.4

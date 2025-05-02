@@ -1,5 +1,11 @@
 # @embr-jvm/perspective-gateway
 
+## 0.8.0
+
+### Minor Changes
+
+- a8b2973: Add shared Perspective component loading utilities.
+
 ## 0.7.4
 
 ### Patch Changes
