@@ -9,8 +9,10 @@ import com.mussonindustrial.embr.gateway.EmbrGatewayContextImpl
 import com.mussonindustrial.embr.perspective.gateway.component.asGatewayComponent
 import com.mussonindustrial.embr.perspective.gateway.component.registerComponent
 import com.mussonindustrial.embr.perspective.gateway.component.removeComponent
-import com.mussonindustrial.ignition.embr.charts.component.chart.ApexChartLegacyModelDelegate
+import com.mussonindustrial.ignition.embr.charts.component.chart.ApexCharts
 import com.mussonindustrial.ignition.embr.charts.component.chart.ApexChartsLegacy
+import com.mussonindustrial.ignition.embr.charts.component.chart.ApexChartsLegacyModelDelegate
+import com.mussonindustrial.ignition.embr.charts.component.chart.ApexChartsModelDelegate
 import com.mussonindustrial.ignition.embr.charts.component.chart.ChartJs
 import com.mussonindustrial.ignition.embr.charts.component.chart.ChartJsModelDelegate
 
@@ -23,7 +25,8 @@ class ChartsGatewayContext(private val context: GatewayContext) :
     private val perspectiveContext: PerspectiveContext
     private val components =
         listOf(
-            ApexChartsLegacy.asGatewayComponent { ApexChartLegacyModelDelegate(it) },
+            ApexCharts.asGatewayComponent { ApexChartsModelDelegate(it) },
+            ApexChartsLegacy.asGatewayComponent { ApexChartsLegacyModelDelegate(it) },
             ChartJs.asGatewayComponent { ChartJsModelDelegate(it) },
         )
 

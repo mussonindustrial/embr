@@ -13,7 +13,7 @@ import org.python.core.Py
 import org.python.core.PyDictionary
 import org.python.core.PyObject
 
-class ApexChartLegacyModelDelegate(component: Component?) : ComponentModelDelegate(component) {
+class ApexChartsLegacyModelDelegate(component: Component?) : ComponentModelDelegate(component) {
     private val toggleSeriesWaiting = AtomicBoolean(false)
     private val toggleSeriesReturn = AtomicBoolean(false)
 
@@ -38,7 +38,7 @@ class ApexChartLegacyModelDelegate(component: Component?) : ComponentModelDelega
             PyArgumentMap.interpretPyArgs(
                 pyArgs,
                 keywords,
-                ApexChartLegacyModelDelegate::class.java,
+                ApexChartsLegacyModelDelegate::class.java,
                 "toggleSeries",
             )
         val seriesName = argumentMap.getStringArg("seriesName")
@@ -78,7 +78,7 @@ class ApexChartLegacyModelDelegate(component: Component?) : ComponentModelDelega
             PyArgumentMap.interpretPyArgs(
                 pyArgs,
                 keywords,
-                ApexChartLegacyModelDelegate::class.java,
+                ApexChartsLegacyModelDelegate::class.java,
                 "showSeries",
             )
         val seriesName = argumentMap.getStringArg("seriesName")
@@ -103,7 +103,7 @@ class ApexChartLegacyModelDelegate(component: Component?) : ComponentModelDelega
             PyArgumentMap.interpretPyArgs(
                 pyArgs,
                 keywords,
-                ApexChartLegacyModelDelegate::class.java,
+                ApexChartsLegacyModelDelegate::class.java,
                 "hideSeries",
             )
         val seriesName = argumentMap.getStringArg("seriesName")
@@ -131,7 +131,7 @@ class ApexChartLegacyModelDelegate(component: Component?) : ComponentModelDelega
             PyArgumentMap.interpretPyArgs(
                 pyArgs,
                 keywords,
-                ApexChartLegacyModelDelegate::class.java,
+                ApexChartsLegacyModelDelegate::class.java,
                 "resetSeries",
             )
         val shouldUpdateChart = argumentMap.getBooleanArg("shouldUpdateChart", true)
@@ -158,7 +158,7 @@ class ApexChartLegacyModelDelegate(component: Component?) : ComponentModelDelega
             PyArgumentMap.interpretPyArgs(
                 pyArgs,
                 keywords,
-                ApexChartLegacyModelDelegate::class.java,
+                ApexChartsLegacyModelDelegate::class.java,
                 "zoomX",
             )
         val start = argumentMap.getLongArg("start")
@@ -181,7 +181,7 @@ class ApexChartLegacyModelDelegate(component: Component?) : ComponentModelDelega
             PyArgumentMap.interpretPyArgs(
                 pyArgs,
                 keywords,
-                ApexChartLegacyModelDelegate::class.java,
+                ApexChartsLegacyModelDelegate::class.java,
                 "addPointAnnotation",
             )
         val options = argumentMap.get("options") as PyDictionary?
@@ -218,7 +218,7 @@ class ApexChartLegacyModelDelegate(component: Component?) : ComponentModelDelega
             PyArgumentMap.interpretPyArgs(
                 pyArgs,
                 keywords,
-                ApexChartLegacyModelDelegate::class.java,
+                ApexChartsLegacyModelDelegate::class.java,
                 "updateSeries",
             )
         val newSeries = argumentMap.get("newSeries") as MutableList<*>?
@@ -248,7 +248,7 @@ class ApexChartLegacyModelDelegate(component: Component?) : ComponentModelDelega
             PyArgumentMap.interpretPyArgs(
                 pyArgs,
                 keywords,
-                ApexChartLegacyModelDelegate::class.java,
+                ApexChartsLegacyModelDelegate::class.java,
                 "updateOptions",
             )
         val newOptions = argumentMap["newOptions"] as PyDictionary?

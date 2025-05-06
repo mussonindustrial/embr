@@ -7,6 +7,7 @@ import com.mussonindustrial.embr.designer.EmbrDesignerContextImpl
 import com.mussonindustrial.embr.perspective.designer.component.asDesignerComponent
 import com.mussonindustrial.embr.perspective.designer.component.registerComponent
 import com.mussonindustrial.embr.perspective.designer.component.removeComponent
+import com.mussonindustrial.ignition.embr.charts.component.chart.ApexCharts
 import com.mussonindustrial.ignition.embr.charts.component.chart.ApexChartsLegacy
 import com.mussonindustrial.ignition.embr.charts.component.chart.ChartJs
 
@@ -18,7 +19,11 @@ class ChartsDesignerContext(private val context: DesignerContext) :
 
     private val perspectiveDesignerInterface: PerspectiveDesignerInterface
     private val components =
-        listOf(ApexChartsLegacy.asDesignerComponent(), ChartJs.asDesignerComponent())
+        listOf(
+            ApexCharts.asDesignerComponent(),
+            ApexChartsLegacy.asDesignerComponent(),
+            ChartJs.asDesignerComponent(),
+        )
 
     init {
         instance = this

@@ -22,6 +22,17 @@ class ChartsGatewayHook : AbstractGatewayModuleHook() {
     override fun startup(activationState: LicenseState) {
         logger.debug("Embr-Charts module startup.")
 
+        context.ifModule("com.kyvislabs.apexcharts") {
+            logger.info(
+                """
+                    Kyvis-Labs ApexCharts module is installed. 
+                    Embr-Charts replaces Kyvis-Labs ApexCharts.
+                    You can and should uninstall the Kyvis-Labs ApexCharts module."
+                """
+                    .trimIndent()
+            )
+        }
+
         logger.debug("Registering components...")
         context.registerComponents()
     }

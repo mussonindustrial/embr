@@ -21,8 +21,8 @@ import {
   getScriptTransform,
   JavaScriptRunEvent,
   useComponentEvents,
+  useRefLifecycleEvents,
 } from '@embr-js/perspective-client'
-import useRefLifecycleEvents from '@embr-js/perspective-client/src/hooks/useRefLifecycleEvents'
 
 export const COMPONENT_TYPE = 'embr.chart.chart-js'
 

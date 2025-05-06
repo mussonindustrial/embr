@@ -1,0 +1,62 @@
+{
+  "type": "bar",
+  "series": [
+    {
+      "name": "Funnel Series",
+      "data": [
+        { "x": "Sourced", "y": 1380 },
+        { "x": "Screened", "y": 1100 },
+        { "x": "Assessed", "y": 990 },
+        { "x": "HR Interview", "y": 880 },
+        { "x": "Technical", "y": 740 },
+        { "x": "Verify", "y": 548 },
+        { "x": "Offered", "y": 330 },
+        { "x": "Hired", "y": 200 }
+      ]
+    }
+  ],
+  "options": {
+    "chart": {
+      "type": "bar",
+      "height": 350,
+      "dropShadow": {
+        "enabled": true
+      }
+    },
+    "plotOptions": {
+      "bar": {
+        "borderRadius": 0,
+        "horizontal": true,
+        "barHeight": "80%",
+        "isFunnel": true
+      }
+    },
+    "dataLabels": {
+      "enabled": true,
+      "formatter": "(val, opt) => opt.w.globals.labels[opt.dataPointIndex] + ':  ' + val",
+      "dropShadow": {
+        "enabled": true
+      }
+    },
+    "title": {
+      "text": "Recruitment Funnel",
+      "align": "middle"
+    },
+    "xaxis": {
+      "categories": [
+        "Sourced",
+        "Screened",
+        "Assessed",
+        "HR Interview",
+        "Technical",
+        "Verify",
+        "Offered",
+        "Hired"
+      ]
+    },
+    "legend": {
+      "show": false
+    }
+  },
+  "style": {}
+}

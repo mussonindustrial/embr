@@ -7,9 +7,9 @@ import com.inductiveautomation.perspective.gateway.api.ScriptCallable
 import com.inductiveautomation.perspective.gateway.messages.EventFiredMsg
 import com.mussonindustrial.embr.perspective.gateway.component.ComponentDelegateJavaScriptProxy
 
-class ChartJsModelDelegate(component: Component) : ComponentModelDelegate(component) {
+class ApexChartsModelDelegate(component: Component) : ComponentModelDelegate(component) {
 
-    private val logger = LogUtil.getModuleLogger("embr-charts", "ChartJsModelDelegate")
+    private val logger = LogUtil.getModuleLogger("embr-charts", "ApexChartsModelDelegate")
     private val proxies = hashMapOf<String, ComponentDelegateJavaScriptProxy>()
 
     override fun onStartup() {

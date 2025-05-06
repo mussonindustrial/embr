@@ -1,4 +1,9 @@
 export {
   ApexChart as ApexChartLegacyComponent,
   ApexChartMeta as ApexChartLegacyMeta,
-} from './legacy'
+} from './ApexChartLegacyComponent'
+
+export {
+  ApexChartsComponent,
+  ApexChartsComponentMeta,
+} from './ApexChartsComponent'

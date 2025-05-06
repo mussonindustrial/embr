@@ -1,0 +1,480 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$defs": {
+    "annotations": {
+      "enum": [
+        "start",
+        "center",
+        "end"
+      ],
+      "type": "object"
+    },
+    "chart": {
+      "type": "object",
+      "default": {
+        "events": {},
+        "redrawOnParentResize": true,
+        "redrawOnWindowResize": false
+      },
+      "properties": {
+        "foreColor": {
+          "$ref": "#/$defs/color"
+        },
+        "fontFamily": {
+          "type": "string"
+        },
+        "background": {
+          "$ref": "#/$defs/color"
+        },
+        "offsetX": {
+          "type": "number"
+        },
+        "offsetY": {
+          "type": "number"
+        },
+        "dropShadow": {
+          "$ref": "#/$defs/drop_shadow"
+        },
+        "nonce": {
+          "type": "string"
+        },
+        "events": {
+          "$ref": "#/$defs/chart_events"
+        },
+        "brush": {
+          "$ref": "#/$defs/chart_brush"
+        },
+        "id": {
+          "type": "string"
+        },
+        "group": {
+          "type": "string"
+        },
+        "locales": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/locale"
+          }
+        },
+        "defaultLocale": {
+          "type": "string"
+        },
+        "parentHeightOffset": {
+          "type": "number"
+        },
+        "redrawOnParentResize": {
+          "type": "boolean"
+        },
+        "redrawOnWindowResize": {
+          "type": "boolean"
+        },
+        "sparkline": {
+          "$ref": "#/$defs/chart_sparkline"
+        },
+        "stacked": {
+          "type": "boolean"
+        },
+        "stackType": {
+          "$ref": "#/$defs/chart_stack_type"
+        },
+        "stackOnlyBar": {
+          "type": "boolean"
+        }
+      }
+    },
+    "chart_brush": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "autoScaleYaxis": {
+          "type": "boolean"
+        },
+        "target": {
+          "type": "string"
+        },
+        "targets": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "chart_events": {
+      "type": "object",
+      "default": {},
+      "properties": {
+        "animationEnd": {
+          "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+        },
+        "beforeMount": {
+          "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+        },
+        "beforeResetZoom": {
+          "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+        },
+        "beforeZoom": {
+          "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+        },
+        "brushScrolled": {
+          "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+        },
+        "click": {
+          "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+        },
+        "dataPointMouseEnter": {
+          "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+        },
+        "dataPointMouseLeave": {
+          "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+        },
+        "dataPointSelection": {
+          "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+        },
+        "legendClick": {
+          "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+        },
+        "markerClick": {
+          "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+        },
+        "mounted": {
+          "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+        },
+        "mouseLeave": {
+          "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+        },
+        "mouseMove": {
+          "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+        },
+        "selection": {
+          "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+        },
+        "scrolled": {
+          "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+        },
+        "updated": {
+          "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+        },
+        "xAxisLabelClick": {
+          "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+        },
+        "zoomed": {
+          "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+        }
+      }
+    },
+    "chart_options": {
+      "type": "object",
+      "properties": {
+        "annotations": {
+          "$ref": "#/$defs/annotations"
+        },
+        "chart": {
+          "$ref": "#/$defs/chart"
+        },
+        "colors": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/color"
+          },
+          "default": []
+        },
+        "dataLabels": {
+          "$ref": "#/$defs/datalabels"
+        },
+        "fill": {
+          "$ref": "#/$defs/fill"
+        },
+        "forecastDataPoints": {
+          "$ref": "#/$defs/forecast_datapoints"
+        },
+        "grid": {
+          "$ref": "#/$defs/grid"
+        },
+        "labels": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": []
+        },
+        "legend": {
+          "$ref": "#/$defs/legend"
+        },
+        "markers": {
+          "$ref": "#/$defs/markers"
+        },
+        "noData": {
+          "$ref": "#/$defs/no_data"
+        },
+        "plotOptions": {
+          "$ref": "#/$defs/plot_options"
+        },
+        "responsive": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/responsive"
+          }
+        },
+        "series": {
+          "$ref": "#/$defs/series"
+        },
+        "states": {
+          "$ref": "#/$defs/states"
+        },
+        "stroke": {
+          "$ref": "#/$defs/stroke"
+        },
+        "subtitle": {
+          "$ref": "#/$defs/title"
+        },
+        "theme": {
+          "$ref": "#/$defs/theme"
+        },
+        "title": {
+          "$ref": "#/$defs/title"
+        },
+        "tooltip": {
+          "$ref": "#/$defs/tooltip"
+        },
+        "xaxis": {
+          "$ref": "#/$defs/axis_x"
+        },
+        "yaxis": {
+          "$ref": "#/$defs/axis_y"
+        }
+      }
+    },
+    "chart_sparkline": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        }
+      }
+    },
+    "chart_stack_type": {
+      "default": "normal",
+      "suggestions": [
+        "normal",
+        "100%"
+      ],
+      "type": "string"
+    },
+    "chart_toolbar": {
+      "type": "object",
+      "properties": {
+        "show": {
+          "type": "boolean"
+        },
+        "offsetX": {
+          "type": "number"
+        },
+        "offsetY": {
+          "type": "number"
+        },
+        "tools": {
+          "$ref": "#/$defs/chart_toolbar_tools"
+        }
+      }
+    },
+    "chart_toolbar_custom_icon": {
+      "type": "object",
+      "properties": {
+        "icon": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "index": {
+          "type": "number"
+        },
+        "class": {
+          "type": "string"
+        },
+        "click": {
+          "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+        }
+      }
+    },
+    "chart_toolbar_tools": {
+      "type": "object",
+      "properties": {
+        "download": {
+          "type": [
+            "boolean",
+            "string"
+          ]
+        },
+        "selection": {
+          "oneOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "string"
+            }
+          ]
+        },
+        "zoom": {
+          "oneOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "string"
+            }
+          ]
+        },
+        "zoomin": {
+          "oneOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "string"
+            }
+          ]
+        },
+        "zoomout": {
+          "oneOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "string"
+            }
+          ]
+        },
+        "pan": {
+          "oneOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "string"
+            }
+          ]
+        },
+        "reset": {
+          "oneOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "string"
+            }
+          ]
+        },
+        "customIcons": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/toolbar_custom_icon"
+          }
+        }
+      }
+    },
+    "chart_type": {
+      "default": "line",
+      "description": "Chart type.",
+      "suggestions": [
+        "area",
+        "bar",
+        "boxPlot",
+        "bubble",
+        "candlestick",
+        "donut",
+        "heatmap",
+        "line",
+        "pie",
+        "polarArea",
+        "radar",
+        "radialBar",
+        "rangeArea",
+        "rangeBar",
+        "scatter",
+        "treemap"
+      ],
+      "type": "string"
+    },
+    "color": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "color"
+    },
+    "drop_shadow": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "top": {
+          "type": "number"
+        },
+        "left": {
+          "type": "number"
+        },
+        "blur": {
+          "type": "number"
+        },
+        "opacity": {
+          "type": "number"
+        },
+        "color": {
+          "$ref": "#/$defs/color"
+        }
+      }
+    },
+    "locale": {
+      "type": "object"
+    }
+  },
+  "properties": {
+    "type": {
+      "default": "line",
+      "description": "Chart type.",
+      "$ref": "#/$defs/chart_type"
+    },
+    "options": {
+      "description": "Chart options.",
+      "$ref": "#/$defs/chart_options"
+    },
+    "series": {
+      "description": "Chart series.",
+      "type": "array"
+    },
+    "events": {
+      "type": "object",
+      "description": "Component events.",
+      "properties": {
+        "dom": {
+          "$ref": "urn:ignition-schema:schemas/components/events-dom.json"
+        },
+        "lifecycle": {
+          "$ref": "urn:ignition-schema:schemas/components/events-lifecycle.json"
+        },
+        "chart": {
+          "type": "object",
+          "properties": {
+            "lifecycle": {
+              "$ref": "urn:ignition-schema:schemas/components/events-lifecycle.json"
+            }
+          }
+        }
+      }
+    },
+    "style": {
+      "$ref": "urn:ignition-schema:schemas/style-properties.schema.json",
+      "default": {
+        "classes": ""
+      }
+    }
+  },
+  "type": "object",
+  "required": ["type", "options", "series"]
+}
