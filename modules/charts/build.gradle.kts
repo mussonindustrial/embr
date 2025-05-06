@@ -23,6 +23,7 @@ ignitionModule {
     moduleDependencies.set(
         mapOf(
             "com.inductiveautomation.perspective" to "GD",
+            "com.kyvislabs.apexcharts" to "GD",
         ),
     )
 

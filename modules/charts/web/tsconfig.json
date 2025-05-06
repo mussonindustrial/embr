@@ -1,4 +1,7 @@
 {
   "extends": "@embr-js/tsconfig/vite.json",
-  "include": ["src"]
+  "include": ["src"],
+  "compilerOptions": {
+    "experimentalDecorators": true,
+  }
 }

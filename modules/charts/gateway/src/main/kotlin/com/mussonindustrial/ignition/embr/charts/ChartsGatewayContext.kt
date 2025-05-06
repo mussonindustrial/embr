@@ -1,12 +1,16 @@
 package com.mussonindustrial.ignition.embr.charts
 
+import com.inductiveautomation.ignition.gateway.model.DiagnosticsManager
 import com.inductiveautomation.ignition.gateway.model.GatewayContext
+import com.inductiveautomation.ignition.gateway.model.TelemetryManager
 import com.inductiveautomation.perspective.gateway.api.PerspectiveContext
 import com.mussonindustrial.embr.gateway.EmbrGatewayContext
 import com.mussonindustrial.embr.gateway.EmbrGatewayContextImpl
 import com.mussonindustrial.embr.perspective.gateway.component.asGatewayComponent
 import com.mussonindustrial.embr.perspective.gateway.component.registerComponent
 import com.mussonindustrial.embr.perspective.gateway.component.removeComponent
+import com.mussonindustrial.ignition.embr.charts.component.chart.ApexChartLegacyModelDelegate
+import com.mussonindustrial.ignition.embr.charts.component.chart.ApexChartsLegacy
 import com.mussonindustrial.ignition.embr.charts.component.chart.ChartJs
 import com.mussonindustrial.ignition.embr.charts.component.chart.ChartJsModelDelegate
 
@@ -17,7 +21,11 @@ class ChartsGatewayContext(private val context: GatewayContext) :
     }
 
     private val perspectiveContext: PerspectiveContext
-    private val components = listOf(ChartJs.asGatewayComponent { ChartJsModelDelegate(it) })
+    private val components =
+        listOf(
+            ApexChartsLegacy.asGatewayComponent { ApexChartLegacyModelDelegate(it) },
+            ChartJs.asGatewayComponent { ChartJsModelDelegate(it) },
+        )
 
     init {
         instance = this
@@ -30,5 +38,13 @@ class ChartsGatewayContext(private val context: GatewayContext) :
 
     fun removeComponents() {
         components.forEach { perspectiveContext.removeComponent(it) }
+    }
+
+    override fun getTelemetryManager(): TelemetryManager? {
+        return super.getTelemetryManager()
+    }
+
+    override fun getDiagnosticsManager(): DiagnosticsManager? {
+        return super.getDiagnosticsManager()
     }
 }
