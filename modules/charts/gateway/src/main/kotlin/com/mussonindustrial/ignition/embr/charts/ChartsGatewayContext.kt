@@ -15,6 +15,7 @@ import com.mussonindustrial.ignition.embr.charts.component.chart.ApexChartsLegac
 import com.mussonindustrial.ignition.embr.charts.component.chart.ApexChartsModelDelegate
 import com.mussonindustrial.ignition.embr.charts.component.chart.ChartJs
 import com.mussonindustrial.ignition.embr.charts.component.chart.ChartJsModelDelegate
+import com.mussonindustrial.ignition.embr.charts.modules.KyvisLabsApexCharts
 
 class ChartsGatewayContext(private val context: GatewayContext) :
     EmbrGatewayContext by EmbrGatewayContextImpl(context) {
@@ -30,6 +31,8 @@ class ChartsGatewayContext(private val context: GatewayContext) :
             ChartJs.asGatewayComponent { ChartJsModelDelegate(it) },
         )
 
+    private val moduleObservers = listOf(KyvisLabsApexCharts.Observer(this))
+
     init {
         instance = this
         perspectiveContext = PerspectiveContext.get(context)
@@ -41,6 +44,14 @@ class ChartsGatewayContext(private val context: GatewayContext) :
 
     fun removeComponents() {
         components.forEach { perspectiveContext.removeComponent(it) }
+    }
+
+    fun registerModuleObservers() {
+        moduleObservers.forEach { moduleManager.addModuleObserver(it) }
+    }
+
+    fun removeModuleObservers() {
+        moduleObservers.forEach { moduleManager.removeModuleObserver(it) }
     }
 
     override fun getTelemetryManager(): TelemetryManager? {
