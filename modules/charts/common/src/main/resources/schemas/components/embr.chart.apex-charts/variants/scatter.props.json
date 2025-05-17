@@ -29,6 +29,10 @@
         "type": "xy"
       }
     },
+    "title": {
+      "align": "left",
+      "text": "Scatter Chart"
+    },
     "xaxis": {
       "tickAmount": 10,
       "labels": {

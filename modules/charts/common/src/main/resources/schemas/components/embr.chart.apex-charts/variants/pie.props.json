@@ -11,6 +11,10 @@
     "chart": {
       "type": "donut"
     },
+    "title": {
+      "align": "left",
+      "text": "Pie Chart"
+    },
     "responsive": [
       {
         "breakpoint": 480,

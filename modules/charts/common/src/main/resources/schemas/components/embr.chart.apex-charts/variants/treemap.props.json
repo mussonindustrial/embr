@@ -28,7 +28,8 @@
       "type": "treemap"
     },
     "title": {
-      "text": "Treemap with Color scale"
+      "align": "left",
+      "text": "Tree Map Chart"
     },
     "dataLabels": {
       "enabled": true,

@@ -18,6 +18,10 @@
     "stroke": {
       "colors": ["#fff"]
     },
+    "title": {
+      "align": "left",
+      "text": "Polar Area Chart"
+    },
     "fill": {
       "opacity": 0.8
     },

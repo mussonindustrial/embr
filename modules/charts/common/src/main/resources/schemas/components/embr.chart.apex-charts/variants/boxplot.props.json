@@ -122,8 +122,8 @@
     },
     "colors": ["#008FFB", "#FEB019"],
     "title": {
-      "text": "BoxPlot chart with outliers",
-      "align": "left"
+      "align": "left",
+      "text": "Boxplot Chart"
     },
     "xaxis": {
       "type": "category"

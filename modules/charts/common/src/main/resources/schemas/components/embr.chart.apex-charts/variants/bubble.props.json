@@ -114,7 +114,8 @@
       "opacity": 0.8
     },
     "title": {
-      "text": "Simple Bubble Chart"
+      "align": "left",
+      "text": "Bubble Chart"
     },
     "xaxis": {
       "tickAmount": 12,

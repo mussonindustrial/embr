@@ -40,6 +40,10 @@
       "width": 600,
       "type": "line"
     },
+    "title": {
+      "align": "left",
+      "text": "Slope Chart"
+    },
     "plotOptions": {
       "line": {
         "isSlopeChart": true

@@ -90,7 +90,8 @@
       "inverseOrder": true
     },
     "title": {
-      "text": "Range Area with Forecast Line (Combo)"
+      "align": "left",
+      "text": "Range Area Chart"
     },
     "markers": {
       "hover": {

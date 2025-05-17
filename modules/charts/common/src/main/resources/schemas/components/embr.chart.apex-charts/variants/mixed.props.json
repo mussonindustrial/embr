@@ -23,6 +23,10 @@
       "type": "line",
       "stacked": false
     },
+    "title": {
+      "align": "left",
+      "text": "Mixed Chart"
+    },
     "stroke": {
       "width": [0, 2, 5],
       "curve": "smooth"

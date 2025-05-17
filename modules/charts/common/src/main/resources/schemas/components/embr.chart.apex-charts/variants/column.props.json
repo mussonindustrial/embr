@@ -52,13 +52,17 @@
     "plotOptions": {
       "bar": {
         "horizontal": false,
-        "columnWidth": "55%",
-        "borderRadius": 5,
+        "columnWidth": "75%",
+        "borderRadius": 2,
         "borderRadiusApplication": "end"
       }
     },
     "dataLabels": {
       "enabled": false
+    },
+    "title": {
+      "align": "left",
+      "text": "Column Chart"
     },
     "stroke": {
       "show": true,

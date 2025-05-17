@@ -11,6 +11,10 @@
       "height": 350,
       "type": "radialBar"
     },
+    "title": {
+      "align": "left",
+      "text": "Radial Bar Chart"
+    },
     "plotOptions": {
       "radialBar": {
         "dataLabels": {

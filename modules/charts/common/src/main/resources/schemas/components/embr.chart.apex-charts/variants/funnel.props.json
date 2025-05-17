@@ -39,8 +39,8 @@
       }
     },
     "title": {
-      "text": "Recruitment Funnel",
-      "align": "middle"
+      "align": "left",
+      "text": "Funnel Chart"
     },
     "xaxis": {
       "categories": [

@@ -219,7 +219,8 @@
     },
     "colors": ["#008FFB"],
     "title": {
-      "text": "HeatMap Chart (Single color)"
+      "align": "left",
+      "text": "Heat Map Chart"
     }
   },
   "style": {}

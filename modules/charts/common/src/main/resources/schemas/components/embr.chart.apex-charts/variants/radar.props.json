@@ -19,7 +19,8 @@
       "type": "radar"
     },
     "title": {
-      "text": "Basic Radar Chart"
+      "align": "left",
+      "text": "Radar Chart"
     },
     "yaxis": {
       "stepSize": 20

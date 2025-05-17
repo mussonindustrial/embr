@@ -172,6 +172,10 @@
       "height": 350,
       "type": "rangeBar"
     },
+    "title": {
+      "align": "left",
+      "text": "Timeline Chart"
+    },
     "plotOptions": {
       "bar": {
         "horizontal": true,

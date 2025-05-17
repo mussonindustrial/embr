@@ -34,6 +34,10 @@
     "dataLabels": {
       "enabled": false
     },
+    "title": {
+      "align": "left",
+      "text": "Area Chart"
+    },
     "stroke": {
       "curve": "smooth"
     },

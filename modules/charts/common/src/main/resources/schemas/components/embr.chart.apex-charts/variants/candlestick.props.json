@@ -47,8 +47,8 @@
       "height": 350
     },
     "title": {
-      "text": "CandleStick Chart",
-      "align": "left"
+      "align": "left",
+      "text": "Candlestick Chart"
     },
     "xaxis": {
       "type": "datetime"

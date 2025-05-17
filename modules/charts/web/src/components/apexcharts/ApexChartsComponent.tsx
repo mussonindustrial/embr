@@ -1,4 +1,4 @@
-import React, { MutableRefObject, useCallback, useEffect, useRef } from 'react'
+import React, { useCallback, useEffect, useRef } from 'react'
 import {
   AbstractUIElementStore,
   ComponentMeta,
@@ -17,11 +17,11 @@ import {
   getScriptTransform,
   JavaScriptRunEvent,
   useComponentEvents,
+  useDeepCompareMemo,
   useRefLifecycleEvents,
 } from '@embr-js/perspective-client'
 import { transformProps } from '@embr-js/utils'
 import { ApexChartProps, Chart } from './ApexCharts'
-import { useDeepCompareEffect, useFirstMountState } from 'react-use'
 import { ApexOptions } from 'apexcharts'
 
 export const COMPONENT_TYPE = 'embr.chart.apex-charts'
@@ -36,22 +36,6 @@ type ChartProps = ApexChartProps & {
   style?: StyleObject
 }
 
-function usePropertyMemo<T>(factory: () => T, deps: React.DependencyList) {
-  const firstMount = useFirstMountState()
-  const result = useRef<T>() as MutableRefObject<T>
-
-  if (firstMount) {
-    result.current = factory()
-  }
-
-  useDeepCompareEffect(() => {
-    if (!firstMount) {
-      result.current = factory()
-    }
-  }, deps)
-  return result.current
-}
-
 export function ApexChartsComponent(props: ComponentProps<ChartProps>) {
   const chartRef = useRef<ApexCharts>(null)
 
@@ -61,15 +45,18 @@ export function ApexChartsComponent(props: ComponentProps<ChartProps>) {
     [chartRef.current]
   )
 
-  const options = usePropertyMemo(() => {
+  // Memoize Options
+  const options = useDeepCompareMemo(() => {
     return transform(props.props.options) as ApexOptions
   }, [props.props.options])
 
-  const series = usePropertyMemo(() => {
+  // Memoize Series
+  const series = useDeepCompareMemo(() => {
     return props.props.series
   }, [props.props.series])
 
-  const events = usePropertyMemo(() => {
+  // Memoize Events
+  const events = useDeepCompareMemo(() => {
     return transform(props.props.events) as ChartEvents
   }, [props.props.events])
 

@@ -70,8 +70,8 @@
       "dashArray": [0, 8, 5]
     },
     "title": {
-      "text": "Page Statistics",
-      "align": "left"
+      "align": "left",
+      "text": "Line Chart"
     },
     "legend": {
       "tooltipHoverFormatter": "(val, opts) => val + ' - <strong>' + opts.w.globals.series[opts.seriesIndex][opts.dataPointIndex] + '</strong>'"
