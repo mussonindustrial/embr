@@ -21,7 +21,7 @@ import {
   useRefLifecycleEvents,
 } from '@embr-js/perspective-client'
 import { transformProps } from '@embr-js/utils'
-import { ApexChartProps, Chart } from './ApexCharts'
+import { ApexChartProps, Chart } from './react/ApexCharts'
 import { ApexOptions } from 'apexcharts'
 
 export const COMPONENT_TYPE = 'embr.chart.apex-charts'

@@ -688,7 +688,10 @@
     },
     "series": {
       "description": "Chart series.",
-      "type": "array"
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/series"
+      }
     },
     "events": {
       "type": "object",
