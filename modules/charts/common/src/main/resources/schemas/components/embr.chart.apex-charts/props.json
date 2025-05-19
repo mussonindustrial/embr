@@ -1,6 +1,22 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$defs": {
+    "align_horizontal": {
+      "type": "string",
+      "suggestions": [
+        "left",
+        "center",
+        "right"
+      ]
+    },
+    "align_vertical": {
+      "type": "string",
+      "suggestions": [
+        "top",
+        "middle",
+        "bottom"
+      ]
+    },
     "annotations": {
       "enum": [
         "start",
@@ -79,8 +95,51 @@
         },
         "stackOnlyBar": {
           "type": "boolean"
+        },
+        "toolbar": {
+          "$ref": "#/$defs/chart_toolbar"
+        },
+        "zoom": {
+          "$ref": "#/$defs/chart_zoom"
+        },
+        "selections": {
+          "$ref": "#/$defs/chart_selections"
+        },
+        "animations": {
+          "$ref": "#/$defs/chart_animations"
         }
       }
+    },
+    "chart_animations": {
+      "type": "object",
+      "properties": {
+        "enabled": { "type": "boolean" },
+        "easing": { "$ref": "#/$defs/chart_animation_easing" },
+        "speed": { "type": "number" },
+        "animateGradually": {
+          "type": "object",
+          "properties": {
+            "enabled": { "type": "boolean" },
+            "delay": { "type": "number" }
+          }
+        },
+        "dynamicAnimation": {
+          "type": "object",
+          "properties": {
+            "enabled": { "type": "boolean" },
+            "speed": { "type": "number" }
+          }
+        }
+      }
+    },
+    "chart_animation_easing": {
+      "type": "string",
+      "suggestions": [
+        "linear",
+        "easein",
+        "easeout",
+        "easeinout"
+      ]
     },
     "chart_brush": {
       "type": "object",
@@ -168,12 +227,8 @@
     "chart_options": {
       "type": "object",
       "properties": {
-        "annotations": {
-          "$ref": "#/$defs/annotations"
-        },
-        "chart": {
-          "$ref": "#/$defs/chart"
-        },
+        "annotations": { "$ref": "#/$defs/annotations" },
+        "chart": { "$ref": "#/$defs/chart" },
         "colors": {
           "type": "array",
           "items": {
@@ -181,70 +236,36 @@
           },
           "default": []
         },
-        "dataLabels": {
-          "$ref": "#/$defs/datalabels"
-        },
-        "fill": {
-          "$ref": "#/$defs/fill"
-        },
-        "forecastDataPoints": {
-          "$ref": "#/$defs/forecast_datapoints"
-        },
-        "grid": {
-          "$ref": "#/$defs/grid"
-        },
-        "labels": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "default": []
-        },
-        "legend": {
-          "$ref": "#/$defs/legend"
-        },
-        "markers": {
-          "$ref": "#/$defs/markers"
-        },
-        "noData": {
-          "$ref": "#/$defs/no_data"
-        },
-        "plotOptions": {
-          "$ref": "#/$defs/plot_options"
-        },
-        "responsive": {
-          "type": "array",
-          "items": {
-            "$ref": "#/$defs/responsive"
-          }
-        },
-        "series": {
-          "$ref": "#/$defs/series"
-        },
-        "states": {
-          "$ref": "#/$defs/states"
-        },
-        "stroke": {
-          "$ref": "#/$defs/stroke"
-        },
-        "subtitle": {
-          "$ref": "#/$defs/title"
-        },
-        "theme": {
-          "$ref": "#/$defs/theme"
-        },
-        "title": {
-          "$ref": "#/$defs/title"
-        },
-        "tooltip": {
-          "$ref": "#/$defs/tooltip"
-        },
-        "xaxis": {
-          "$ref": "#/$defs/axis_x"
-        },
-        "yaxis": {
-          "$ref": "#/$defs/axis_y"
-        }
+        "dataLabels": { "$ref": "#/$defs/datalabels" },
+        "fill": { "$ref": "#/$defs/fill" },
+        "forecastDataPoints": { "$ref": "#/$defs/forecast_datapoints" },
+        "grid": { "$ref": "#/$defs/grid" },
+        "labels": { "type": "array", "items": { "type": "string" }, "default": [] },
+        "legend": { "$ref": "#/$defs/legend" },
+        "markers": { "$ref": "#/$defs/markers" },
+        "noData": { "$ref": "#/$defs/no_data" },
+        "plotOptions": { "$ref": "#/$defs/plot_options" },
+        "responsive": { "type": "array", "items": { "$ref": "#/$defs/responsive" } },
+        "series": { "$ref": "#/$defs/series" },
+        "states": { "$ref": "#/$defs/states" },
+        "stroke": { "$ref": "#/$defs/stroke" },
+        "subtitle": { "$ref": "#/$defs/title" },
+        "theme": { "$ref": "#/$defs/theme" },
+        "title": { "$ref": "#/$defs/title" },
+        "tooltip": { "$ref": "#/$defs/tooltip" },
+        "xaxis": { "$ref": "#/$defs/axis_x" },
+        "yaxis": { "$ref": "#/$defs/axis_y" }
+      }
+    },
+    "chart_selections": {
+      "type": "object",
+      "properties": {
+        "enabled": { "type":  "boolean" },
+        "type": { "type":  "string" },
+        "fill": { "$ref": "#/$defs/fill" },
+        "stroke": { "$ref": "#/$defs/stroke" },
+        "xaxis": { "$ref": "#/$defs/min_max" },
+        "yaxis": { "$ref": "#/$defs/min_max" }
       }
     },
     "chart_sparkline": {
@@ -283,18 +304,10 @@
     "chart_toolbar_custom_icon": {
       "type": "object",
       "properties": {
-        "icon": {
-          "type": "string"
-        },
-        "title": {
-          "type": "string"
-        },
-        "index": {
-          "type": "number"
-        },
-        "class": {
-          "type": "string"
-        },
+        "icon": { "type": "string" },
+        "title": { "type": "string" },
+        "index": { "type": "number" },
+        "class": { "type": "string" },
         "click": {
           "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
         }
@@ -303,76 +316,17 @@
     "chart_toolbar_tools": {
       "type": "object",
       "properties": {
-        "download": {
-          "type": [
-            "boolean",
-            "string"
-          ]
-        },
-        "selection": {
-          "oneOf": [
-            {
-              "type": "boolean"
-            },
-            {
-              "type": "string"
-            }
-          ]
-        },
-        "zoom": {
-          "oneOf": [
-            {
-              "type": "boolean"
-            },
-            {
-              "type": "string"
-            }
-          ]
-        },
-        "zoomin": {
-          "oneOf": [
-            {
-              "type": "boolean"
-            },
-            {
-              "type": "string"
-            }
-          ]
-        },
-        "zoomout": {
-          "oneOf": [
-            {
-              "type": "boolean"
-            },
-            {
-              "type": "string"
-            }
-          ]
-        },
-        "pan": {
-          "oneOf": [
-            {
-              "type": "boolean"
-            },
-            {
-              "type": "string"
-            }
-          ]
-        },
-        "reset": {
-          "oneOf": [
-            {
-              "type": "boolean"
-            },
-            {
-              "type": "string"
-            }
-          ]
-        },
+        "download": { "type": ["boolean", "string"]},
+        "selection": { "type": ["boolean", "string"]},
+        "zoom": { "type": ["boolean", "string"]},
+        "zoomin": { "type": ["boolean", "string"]},
+        "zoomout": { "type": ["boolean", "string"]},
+        "pan": { "type": ["boolean", "string"]},
+        "reset": { "type": ["boolean", "string"]},
         "customIcons": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/toolbar_custom_icon"
+            "$ref": "#/$defs/chart_toolbar_custom_icon"
           }
         }
       }
@@ -400,6 +354,31 @@
       ],
       "type": "string"
     },
+    "chart_zoom": {
+      "type": "object",
+      "properties": {
+        "enabled": { "type":  "boolean" },
+        "type": { "$ref":  "#/$defs/chart_zoom_type" },
+        "autoScaleYaxis": { "type":  "boolean" },
+        "allowMouseWheelZoom": { "type":  "boolean" },
+        "zoomedArea": { "$ref":  "#/$defs/chart_zoom_zoomed_area" }
+      }
+    },
+    "chart_zoom_type": {
+      "type": "string",
+      "suggestions": [
+        "x",
+        "y",
+        "xy"
+      ]
+    },
+    "chart_zoom_zoomed_area": {
+      "type": "object",
+      "properties": {
+        "fill": { "$ref": "#/$defs/fill" },
+        "stroke": { "$ref": "#/$defs/stroke" }
+      }
+    },
     "color": {
       "type": [
         "string",
@@ -407,31 +386,294 @@
       ],
       "format": "color"
     },
+    "datalabels": {
+      "type": "object",
+      "properties": {
+        "enabled": { "type": "boolean" },
+        "enabledOnSeries": { "type": "array", "items": { "type":  "number" } },
+        "textAnchor": { "$ref": "#/$defs/text_anchor" },
+        "distributed": { "type": "boolean" },
+        "offsetX": { "type": "number" },
+        "offsetY": { "type": "number" },
+        "style": { "$ref": "#/$defs/text_style" },
+        "background": { "$ref": "#/$defs/text_background" },
+        "dropShadow": { "$ref":  "#/$defs/drop_shadow" },
+        "formatter": { "$ref": "urn:ignition-schema:schemas/components/javascript-function.json" }
+      }
+    },
+    "discrete_point": {
+      "type": "object",
+      "properties": {
+        "seriesIndex": { "type": "number" },
+        "dataPointIndex": { "type": "number" },
+        "fillColor": { "$ref": "#/$defs/color" },
+        "strokeColor": { "$ref": "#/$defs/color" },
+        "size": { "type": "number" },
+        "shape": { "$ref": "#/$defs/marker_shape" }
+      }
+    },
     "drop_shadow": {
       "type": "object",
       "properties": {
-        "enabled": {
-          "type": "boolean"
-        },
-        "top": {
-          "type": "number"
-        },
-        "left": {
-          "type": "number"
-        },
-        "blur": {
-          "type": "number"
-        },
-        "opacity": {
-          "type": "number"
-        },
-        "color": {
-          "$ref": "#/$defs/color"
-        }
+        "enabled": { "type": "boolean" },
+        "top": { "type": "number" },
+        "left": { "type": "number" },
+        "blur": { "type": "number" },
+        "opacity": { "type": "number" },
+        "color": { "$ref": "#/$defs/color" }
       }
+    },
+    "fill": {
+      "type": "object",
+      "properties": {
+        "color": { "$ref":  "#/$defs/color" },
+        "opacity": { "type":  "number" }
+      }
+    },
+    "forecast_datapoints": {
+      "type": "object",
+      "properties": {
+        "count": { "type":  "number" },
+        "fillOpacity": { "type":  "number" },
+        "strokeWidth": { "type":  "number" },
+        "dashArray": { "type":  "number" }
+      }
+    },
+    "grid": {
+      "type": "object",
+      "properties": {
+        "show": { "type":  "boolean" },
+        "borderColor": { "type":  "string" },
+        "strokeDashArray": { "type":  "number" },
+        "position": { "$ref":  "#/$defs/grid_position" },
+        "xaxis": { "$ref":  "#/$defs/grid_axis" },
+        "yaxis": { "$ref":  "#/$defs/grid_axis" },
+        "row": { "$ref":  "#/$defs/grid_row" },
+        "column": { "$ref":  "#/$defs/grid_row" },
+        "padding": { "$ref":  "#/$defs/padding" }
+      }
+    },
+    "grid_axis": {
+      "type": "object",
+      "properties": {
+        "lines": { "$ref": "#/$defs/grid_lines" }
+      }
+    },
+    "grid_lines": {
+      "type": "object",
+      "properties": {
+        "show": { "type":  "boolean" },
+        "offsetX": { "type":  "number" },
+        "offsetY": { "type":  "number" }
+      }
+    },
+    "grid_position": {
+      "type":  "string",
+      "suggestions": [
+        "front",
+        "back"
+      ]
+    },
+    "grid_row": {
+      "type": "object",
+      "properties": {
+        "colors": { "type":  "array", "items": { "$ref":  "#/$defs/color" } },
+        "opacity": { "type":  "number" }
+      }
+    },
+    "legend": {
+      "type": "object",
+      "properties": {
+        "show": { "type": "boolean" },
+        "showForSingleSeries": { "type": "boolean" },
+        "showForNullSeries": { "type": "boolean" },
+        "showForZeroSeries": { "type": "boolean" },
+        "floating": { "type": "boolean" },
+        "inverseOrder": { "type": "boolean" },
+        "position": { "$ref": "#/$defs/legend_position" },
+        "horizontalAlign": { "$ref": "#/$defs/align_horizontal" },
+        "fontSize": { "type": "string" },
+        "fontFamily": { "type": "string" },
+        "fontWeight": { "type": ["string", "number"] },
+        "width": { "type": "number" },
+        "height": { "type": "number" },
+        "offsetX": { "type": "number" },
+        "offsetY": { "type": "number" },
+        "formatter": { "$ref": "urn:ignition-schema:schemas/components/javascript-function.json" },
+        "tooltipHoverFormatter": { "$ref": "urn:ignition-schema:schemas/components/javascript-function.json" },
+        "customLegendItems": { "type": "array", "items": { "type":  "string" } },
+        "labels": { "$ref": "#/$defs/legend_labels" },
+        "markers": { "$ref": "#/$defs/legend_markers" },
+        "itemMargin": { "$ref": "#/$defs/legend_item_margin" },
+        "onItemClick": { "$ref": "#/$defs/legend_on_item_click" },
+        "onItemHover": { "$ref": "#/$defs/legend_on_item_hover" }
+      }
+    },
+    "legend_item_margin": {
+      "type": "object",
+      "properties": {
+        "horizontal": { "type": "number" },
+        "vertical": { "type": "number" }
+      }
+    },
+    "legend_labels": {
+      "type": "object",
+      "properties": {
+        "colors": { "type": "array", "items": { "$ref":  "#/$defs/color" } },
+        "useSeriesColors": { "type": "boolean" }
+      }
+    },
+    "legend_markers": {
+      "type": "object",
+      "properties": {
+        "size": { "type": "number" },
+        "strokeWidth": { "type": "number" },
+        "fillColors": { "type": "array", "items": { "$ref": "#/$defs/color" } },
+        "shape": { "$ref": "#/$defs/marker_shape" },
+        "offsetX": { "type": "number" },
+        "offsetY": { "type": "number" },
+        "customHTML": { "$ref": "urn:ignition-schema:schemas/components/javascript-function.json" },
+        "onClick": { "$ref": "urn:ignition-schema:schemas/components/javascript-function.json" }
+      }
+    },
+    "legend_on_item_click": {
+      "type": "object",
+      "properties": {
+        "toggleDataSeries": { "type": "boolean" }
+      }
+    },
+    "legend_on_item_hover": {
+      "type": "object",
+      "properties": {
+        "highlightDataSeries": { "type": "boolean" }
+      }
+    },
+    "legend_position": {
+      "type": "string",
+      "suggestions": [
+        "top",
+        "right",
+        "bottom",
+        "left"
+      ]
     },
     "locale": {
       "type": "object"
+    },
+    "marker_shape": { "$ref": "#/$defs/marker_shape_options" },
+    "marker_shape_options": {
+      "type": "string",
+      "suggestions": [
+        "circle",
+        "square",
+        "rect",
+        "line",
+        "cross",
+        "plus",
+        "start",
+        "sparkle",
+        "diamond",
+        "triangle"
+      ]
+    },
+    "markers": {
+      "type": "object",
+      "properties": {
+        "size": { "type": "number" },
+        "colors": { "type": "string" },
+        "strokeColors": { "type": "string" },
+        "strokeWidth": { "type": "number" },
+        "strokeOpacity": { "type": "number" },
+        "strokeDashArray": { "type": "number" },
+        "fillOpacity": { "type": "number" },
+        "discrete": { "$ref": "#/$defs/discrete_point" },
+        "shape": { "$ref": "#/$defs/marker_shape" },
+        "offsetX": { "type": "number" },
+        "offsetY": { "type": "number" },
+        "showNullDataPoints": { "type": "boolean" },
+        "onClick": { "$ref": "urn:ignition-schema:schemas/components/javascript-function.json" },
+        "onDblClick": { "$ref": "urn:ignition-schema:schemas/components/javascript-function.json" },
+        "hover": { "$ref": "#/$defs/markers_hover" }
+      }
+    },
+    "markers_hover": {
+      "type": "object",
+      "properties": {
+        "size": { "type": "number" },
+        "sizeOffset": { "type": "number" }
+      }
+    },
+    "min_max": {
+      "type": "object",
+      "properties": {
+        "min": { "type":  "number" },
+        "max": { "type":  "number" }
+      }
+    },
+    "no_data": {
+      "type": "object",
+      "properties": {
+        "text": { "type": "string" },
+        "align": { "$ref": "#/$defs/align_horizontal" },
+        "verticalAlign": { "$ref": "#/$defs/align_vertical" },
+        "offsetX": { "type": "number" },
+        "offsetY": { "type": "number" },
+        "style": {
+          "type": "object",
+          "properties": {
+            "color": { "$ref": "#/$defs/color" },
+            "fontSize": { "type": "string" },
+            "fontFamily": { "type": "string" }
+          }
+        }
+      }
+    },
+    "padding": {
+      "type": "object",
+      "properties": {
+        "top": { "type":  "number" },
+        "right": { "type":  "number" },
+        "bottom": { "type":  "number" },
+        "left": { "type":  "number" }
+      }
+    },
+    "stroke": {
+      "type": "object",
+      "properties": {
+        "color": { "$ref":  "#/$defs/color" },
+        "opacity": { "type":  "number" },
+        "width": { "type":  "number" }
+      }
+    },
+    "text_anchor": {
+      "type": "string",
+      "suggestions": [
+        "start",
+        "middle",
+        "end"
+      ]
+    },
+    "text_background": {
+      "type": "object",
+      "properties": {
+        "enabled": { "type": "boolean" },
+        "foreColor": { "type": "string" },
+        "borderRadius": { "type": "number" },
+        "padding": { "type": "number" },
+        "opacity": { "type": "number" },
+        "borderWidth": { "type": "number" },
+        "borderColor": { "type": "string" },
+        "dropShadow": { "$ref":  "#/$defs/drop_shadow" }
+      }
+    },
+    "text_style": {
+      "type": "object",
+      "properties": {
+        "fontSize": { "type": "string" },
+        "fontFamily": { "type": "string" },
+        "fontWeight": { "type": ["string", "number"] },
+        "colors": { "type": "array", "items": { "$ref":  "#/$defs/color" } }
+      }
     }
   },
   "properties": {
