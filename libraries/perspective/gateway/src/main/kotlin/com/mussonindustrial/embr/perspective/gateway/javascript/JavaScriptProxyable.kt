@@ -4,8 +4,7 @@ import com.inductiveautomation.perspective.gateway.api.ScriptCallable
 
 interface JavaScriptProxyable {
 
-    @ScriptCallable
-    fun getJavaScriptProxy(): JavaScriptProxy
+    @ScriptCallable fun getJavaScriptProxy(): JavaScriptProxy
 
     @ScriptCallable
     @Deprecated("legacy overload", ReplaceWith("getJavaScriptProxy()"))
