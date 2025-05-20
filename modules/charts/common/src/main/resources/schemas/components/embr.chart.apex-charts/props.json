@@ -442,15 +442,15 @@
     "grid": {
       "type": "object",
       "properties": {
-        "show": { "type":  "boolean" },
-        "borderColor": { "type":  "string" },
-        "strokeDashArray": { "type":  "number" },
-        "position": { "$ref":  "#/$defs/grid_position" },
-        "xaxis": { "$ref":  "#/$defs/grid_axis" },
-        "yaxis": { "$ref":  "#/$defs/grid_axis" },
-        "row": { "$ref":  "#/$defs/grid_row" },
-        "column": { "$ref":  "#/$defs/grid_row" },
-        "padding": { "$ref":  "#/$defs/padding" }
+        "show": { "type": "boolean" },
+        "borderColor": { "$ref": "#/$defs/color" },
+        "strokeDashArray": { "type": "number" },
+        "position": { "$ref": "#/$defs/grid_position" },
+        "xaxis": { "$ref": "#/$defs/grid_axis" },
+        "yaxis": { "$ref": "#/$defs/grid_axis" },
+        "row": { "$ref": "#/$defs/grid_row" },
+        "column": { "$ref": "#/$defs/grid_row" },
+        "padding": { "$ref": "#/$defs/padding" }
       }
     },
     "grid_axis": {
@@ -606,8 +606,8 @@
     "min_max": {
       "type": "object",
       "properties": {
-        "min": { "type":  "number" },
-        "max": { "type":  "number" }
+        "min": { "type": "number" },
+        "max": { "type": "number" }
       }
     },
     "no_data": {
@@ -631,10 +631,10 @@
     "padding": {
       "type": "object",
       "properties": {
-        "top": { "type":  "number" },
-        "right": { "type":  "number" },
-        "bottom": { "type":  "number" },
-        "left": { "type":  "number" }
+        "top": { "type": "number" },
+        "right": { "type": "number" },
+        "bottom": { "type": "number" },
+        "left": { "type": "number" }
       }
     },
     "stroke": {
