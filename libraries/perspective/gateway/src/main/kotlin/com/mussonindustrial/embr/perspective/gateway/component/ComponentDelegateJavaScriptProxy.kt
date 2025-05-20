@@ -27,7 +27,6 @@ import org.python.core.PyObject
 class ComponentDelegateJavaScriptProxy(
     private val component: Component,
     private val delegate: ComponentModelDelegate,
-    private val property: String,
 ) : JavaScriptProxy {
 
     private val queue = component.session.queue()
@@ -101,7 +100,7 @@ class ComponentDelegateJavaScriptProxy(
             }
             .whenCompleteAsync({ _, _ -> requestsInProgress.remove(id) }, queue::submit)
 
-        delegate.fireEvent(MESSAGE_RUN, JavaScriptRunMsg(id, property, function, args).getPayload())
+        delegate.fireEvent(MESSAGE_RUN, JavaScriptRunMsg(id, function, args).getPayload())
         return future
     }
 
@@ -161,14 +160,12 @@ class ComponentDelegateJavaScriptProxy(
 
     class JavaScriptRunMsg(
         private val id: String,
-        private val property: String,
         private val function: String,
         private val args: PyDictionary?,
     ) {
         fun getPayload(): JsonObject {
             return JsonObject().apply {
                 addProperty("id", id)
-                addProperty("property", property)
                 addProperty("function", function)
                 add("args", TypeUtilities.pyToGson(args))
             }

@@ -6,11 +6,14 @@ import com.inductiveautomation.perspective.gateway.api.ComponentModelDelegate
 import com.inductiveautomation.perspective.gateway.api.ScriptCallable
 import com.inductiveautomation.perspective.gateway.messages.EventFiredMsg
 import com.mussonindustrial.embr.perspective.gateway.component.ComponentDelegateJavaScriptProxy
+import com.mussonindustrial.embr.perspective.gateway.javascript.JavaScriptProxy
+import com.mussonindustrial.embr.perspective.gateway.javascript.JavaScriptProxyable
 
-class ChartJsModelDelegate(component: Component) : ComponentModelDelegate(component) {
+class ChartJsModelDelegate(component: Component) :
+    ComponentModelDelegate(component), JavaScriptProxyable {
 
     private val logger = LogUtil.getModuleLogger("embr-charts", "ChartJsModelDelegate")
-    private val proxies = hashMapOf<String, ComponentDelegateJavaScriptProxy>()
+    private val jsProxy = ComponentDelegateJavaScriptProxy(component, this)
 
     override fun onStartup() {
         component.mdc { logger.debugf("Startup") }
@@ -21,18 +24,12 @@ class ChartJsModelDelegate(component: Component) : ComponentModelDelegate(compon
     }
 
     override fun handleEvent(message: EventFiredMsg) {
-        proxies.values.forEach {
-            if (it.handles(message)) {
-                it.handleEvent(message)
-            }
-        }
+        jsProxy.handleEvent(message)
     }
 
     @ScriptCallable
     @Suppress("unused")
-    fun getJavaScriptProxy(property: String): ComponentDelegateJavaScriptProxy {
-        return proxies.getOrPut(property) {
-            ComponentDelegateJavaScriptProxy(component, this, property)
-        }
+    override fun getJavaScriptProxy(): JavaScriptProxy {
+        return jsProxy
     }
 }

@@ -32,7 +32,7 @@ export function reforwardRef<T>(ref: ForwardedRef<T>, value: T) {
 
 function ApexChartsComponent(
   props: ApexChartProps,
-  ref: ForwardedRef<ApexCharts>
+  ref: ForwardedRef<ApexCharts | undefined>
 ) {
   const {
     type = 'line',
@@ -45,7 +45,7 @@ function ApexChartsComponent(
     ...divProps
   } = props
 
-  const chartRef = useRef<ApexCharts>()
+  const chartRef = useRef<ApexCharts | null>(null)
   const containerRef = useRef<HTMLDivElement>(null)
 
   const chartOptions = useMemo(() => {
@@ -74,7 +74,7 @@ function ApexChartsComponent(
     reforwardRef(ref, null)
     if (chartRef.current) {
       chartRef.current.destroy()
-      chartRef.current = undefined
+      chartRef.current = null
     }
   }, [chartRef.current])
 
