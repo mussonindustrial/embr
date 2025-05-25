@@ -6,15 +6,14 @@ import com.inductiveautomation.ignition.gateway.model.TelemetryManager
 import com.inductiveautomation.perspective.gateway.api.PerspectiveContext
 import com.mussonindustrial.embr.gateway.EmbrGatewayContext
 import com.mussonindustrial.embr.gateway.EmbrGatewayContextImpl
+import com.mussonindustrial.embr.perspective.gateway.component.JavaScriptProxyableComponentModelDelegate
 import com.mussonindustrial.embr.perspective.gateway.component.asGatewayComponent
 import com.mussonindustrial.embr.perspective.gateway.component.registerComponent
 import com.mussonindustrial.embr.perspective.gateway.component.removeComponent
 import com.mussonindustrial.ignition.embr.charts.component.chart.ApexCharts
 import com.mussonindustrial.ignition.embr.charts.component.chart.ApexChartsLegacy
 import com.mussonindustrial.ignition.embr.charts.component.chart.ApexChartsLegacyModelDelegate
-import com.mussonindustrial.ignition.embr.charts.component.chart.ApexChartsModelDelegate
 import com.mussonindustrial.ignition.embr.charts.component.chart.ChartJs
-import com.mussonindustrial.ignition.embr.charts.component.chart.ChartJsModelDelegate
 import com.mussonindustrial.ignition.embr.charts.modules.KyvisLabsApexCharts
 
 class ChartsGatewayContext(private val context: GatewayContext) :
@@ -26,9 +25,9 @@ class ChartsGatewayContext(private val context: GatewayContext) :
     private val perspectiveContext: PerspectiveContext
     private val components =
         listOf(
-            ApexCharts.asGatewayComponent { ApexChartsModelDelegate(it) },
+            ApexCharts.asGatewayComponent { JavaScriptProxyableComponentModelDelegate(it) },
             ApexChartsLegacy.asGatewayComponent { ApexChartsLegacyModelDelegate(it) },
-            ChartJs.asGatewayComponent { ChartJsModelDelegate(it) },
+            ChartJs.asGatewayComponent { JavaScriptProxyableComponentModelDelegate(it) },
         )
 
     private val moduleObservers = listOf(KyvisLabsApexCharts.Observer(this))
