@@ -37,7 +37,7 @@ type ChartProps = ApexChartProps & {
 }
 
 export function ApexChartsComponent(props: ComponentProps<ChartProps>) {
-  const chartRef = useRef<ApexCharts>(null)
+  const chartRef = useRef<ApexCharts>()
 
   const transform = useCallback(
     (obj: unknown) =>
@@ -63,7 +63,7 @@ export function ApexChartsComponent(props: ComponentProps<ChartProps>) {
   // Store Chart Reference with Delegate
   useEffect(() => {
     const delegate = props.store.delegate as ApexChartsComponentDelegate
-    delegate.setChart(chartRef.current)
+    delegate.setChart(chartRef.current ?? undefined)
   }, [props.store.delegate, chartRef.current])
 
   // Lifecycle Events
@@ -86,12 +86,10 @@ export function ApexChartsComponent(props: ComponentProps<ChartProps>) {
 }
 
 class ApexChartsComponentDelegate extends ComponentStoreDelegate {
-  private proxyProps: JsObject = {}
+  private jsProxy = new ComponentDelegateJavaScriptProxy(this)
 
-  private jsProxy = new ComponentDelegateJavaScriptProxy(this, this.proxyProps)
-
-  setChart(chart: ApexCharts | null) {
-    this.proxyProps.chart = chart
+  setChart(chart?: ApexCharts) {
+    this.jsProxy.setRef(chart)
   }
 
   handleEvent(eventName: string, eventObject: JsObject): void {
