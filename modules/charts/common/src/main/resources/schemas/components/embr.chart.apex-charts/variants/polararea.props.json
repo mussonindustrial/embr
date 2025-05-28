@@ -7,14 +7,10 @@
     17,
     15,
     10,
-    12,
-    17,
-    21
+    12
   ],
   "options": {
-    "chart": {
-      "type": "polarArea"
-    },
+    "chart": {},
     "stroke": {
       "colors": ["#fff"]
     },

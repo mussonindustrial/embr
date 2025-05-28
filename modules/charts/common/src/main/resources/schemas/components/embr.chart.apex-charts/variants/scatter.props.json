@@ -22,8 +22,6 @@
   ],
   "options": {
     "chart": {
-      "height": 350,
-      "type": "scatter",
       "zoom": {
         "enabled": true,
         "type": "xy"

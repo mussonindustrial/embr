@@ -103,10 +103,7 @@
     }
   ],
   "options": {
-    "chart": {
-      "height": 350,
-      "type": "bubble"
-    },
+    "chart": {},
     "dataLabels": {
       "enabled": false
     },

@@ -168,10 +168,7 @@
     }
   ],
   "options": {
-    "chart": {
-      "height": 350,
-      "type": "rangeBar"
-    },
+    "chart": {},
     "title": {
       "align": "left",
       "text": "Timeline Chart"

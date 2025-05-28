@@ -10,7 +10,7 @@ import ApexCharts from 'apexcharts'
 
 import type { ApexOptions } from 'apexcharts'
 import type { ForwardedRef } from 'react'
-import { extend } from 'lodash'
+import { extend, merge } from 'lodash'
 
 export type ApexChartProps = {
   type: ApexChart['type']
@@ -49,14 +49,13 @@ function ApexChartsComponent(
   const containerRef = useRef<HTMLDivElement>(null)
 
   const chartOptions = useMemo(() => {
-    return {
-      ...options,
+    return merge(options, {
       chart: {
         type,
         height,
         width,
       },
-    }
+    }) as ApexOptions
   }, [type, height, width, options])
 
   const renderChart = useCallback(() => {
@@ -80,7 +79,7 @@ function ApexChartsComponent(
 
   useEffect(() => {
     if (!redraw && chartRef.current && chartOptions) {
-      void chartRef.current.updateOptions(chartOptions)
+      void chartRef.current.updateOptions(chartOptions, false, false, true)
     }
   }, [redraw, chartOptions])
 
@@ -95,7 +94,7 @@ function ApexChartsComponent(
 
     if (redraw) {
       destroyChart()
-      setTimeout(renderChart)
+      renderChart()
     }
   }, [redraw, chartOptions, series])
 

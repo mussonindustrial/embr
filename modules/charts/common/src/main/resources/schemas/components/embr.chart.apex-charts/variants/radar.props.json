@@ -14,10 +14,7 @@
     }
   ],
   "options": {
-    "chart": {
-      "height": 350,
-      "type": "radar"
-    },
+    "chart": {},
     "title": {
       "align": "left",
       "text": "Radar Chart"

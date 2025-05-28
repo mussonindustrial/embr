@@ -210,10 +210,7 @@
     }
   ],
   "options": {
-    "chart": {
-      "height": 350,
-      "type": "heatmap"
-    },
+    "chart": {},
     "dataLabels": {
       "enabled": false
     },

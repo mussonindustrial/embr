@@ -17,8 +17,6 @@
   ],
   "options": {
     "chart": {
-      "type": "bar",
-      "height": 350,
       "dropShadow": {
         "enabled": true
       }
@@ -28,7 +26,10 @@
         "borderRadius": 0,
         "horizontal": true,
         "barHeight": "80%",
-        "isFunnel": true
+        "isFunnel": true,
+        "dataLabels": {
+          "position": "center"
+        }
       }
     },
     "dataLabels": {

@@ -116,10 +116,7 @@
     }
   ],
   "options": {
-    "chart": {
-      "type": "boxPlot",
-      "height": 350
-    },
+    "chart": {},
     "colors": ["#008FFB", "#FEB019"],
     "title": {
       "align": "left",

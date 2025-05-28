@@ -43,11 +43,7 @@
     }
   ],
   "options": {
-    "chart": {
-      "type": "bar",
-      "height": 350,
-      "stacked": true
-    },
+    "chart": {},
     "plotOptions": {
       "bar": {
         "horizontal": true,

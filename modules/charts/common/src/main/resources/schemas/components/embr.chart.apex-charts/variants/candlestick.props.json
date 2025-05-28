@@ -42,10 +42,7 @@
     }
   ],
   "options": {
-    "chart": {
-      "type": "candlestick",
-      "height": 350
-    },
+    "chart": {},
     "title": {
       "align": "left",
       "text": "Candlestick Chart"

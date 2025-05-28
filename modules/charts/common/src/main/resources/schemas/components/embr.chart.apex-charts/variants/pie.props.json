@@ -8,9 +8,7 @@
     15
   ],
   "options": {
-    "chart": {
-      "type": "donut"
-    },
+    "chart": {},
     "title": {
       "align": "left",
       "text": "Pie Chart"

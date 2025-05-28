@@ -7,10 +7,7 @@
     83
   ],
   "options": {
-    "chart": {
-      "height": 350,
-      "type": "radialBar"
-    },
+    "chart": {},
     "title": {
       "align": "left",
       "text": "Radial Bar Chart"

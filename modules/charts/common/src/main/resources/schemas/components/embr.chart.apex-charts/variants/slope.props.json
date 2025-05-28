@@ -35,11 +35,7 @@
     }
   ],
   "options": {
-    "chart": {
-      "height": 350,
-      "width": 600,
-      "type": "line"
-    },
+    "chart": {},
     "title": {
       "align": "left",
       "text": "Slope Chart"

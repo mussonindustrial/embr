@@ -27,10 +27,7 @@
     }
   ],
   "options": {
-    "chart": {
-      "height": 350,
-      "type": "area"
-    },
+    "chart": {},
     "dataLabels": {
       "enabled": false
     },

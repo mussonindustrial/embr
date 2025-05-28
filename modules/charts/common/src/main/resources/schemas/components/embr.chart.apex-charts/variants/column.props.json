@@ -45,10 +45,7 @@
     }
   ],
   "options": {
-    "chart": {
-      "type": "bar",
-      "height": 350
-    },
+    "chart": {},
     "plotOptions": {
       "bar": {
         "horizontal": false,

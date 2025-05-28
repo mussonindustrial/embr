@@ -45,22 +45,18 @@ export function ApexChartsComponent(props: ComponentProps<ChartProps>) {
     [chartRef.current]
   )
 
-  // Memoize Options
   const options = useDeepCompareMemo(() => {
     return transform(props.props.options) as ApexOptions
   }, [props.props.options])
 
-  // Memoize Series
   const series = useDeepCompareMemo(() => {
     return props.props.series
   }, [props.props.series])
 
-  // Memoize Events
   const events = useDeepCompareMemo(() => {
     return transform(props.props.events) as ChartEvents
   }, [props.props.events])
 
-  // Store Chart Reference with Delegate
   useEffect(() => {
     const delegate = props.store.delegate as ApexChartsComponentDelegate
     delegate.setChart(chartRef.current ?? undefined)

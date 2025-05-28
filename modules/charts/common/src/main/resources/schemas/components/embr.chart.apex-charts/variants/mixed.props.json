@@ -19,8 +19,6 @@
   ],
   "options": {
     "chart": {
-      "height": 350,
-      "type": "line",
       "stacked": false
     },
     "title": {

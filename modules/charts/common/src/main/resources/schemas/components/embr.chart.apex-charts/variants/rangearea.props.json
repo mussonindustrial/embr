@@ -64,8 +64,6 @@
   ],
   "options": {
     "chart": {
-      "height": 350,
-      "type": "rangeArea",
       "animations": {
         "speed": 500
       }
