@@ -6,6 +6,7 @@ ignition = "8.1.33"
 ia-gson = "2.10.1"
 jetty = "10.0.21"
 if97 = "2.0.0"
+snmp4j = "3.9.3"
 spotless = "7.0.3"
 
 [plugins]
@@ -25,10 +26,12 @@ ignition-gateway-api = { group = "com.inductiveautomation.ignitionsdk", name = "
 ignition-designer-api = { group = "com.inductiveautomation.ignitionsdk", name = "designer-api", version.ref = "ignition" }
 ignition-client-api = { group = "com.inductiveautomation.ignitionsdk", name = "client-api", version.ref = "ignition" }
 ignition-vision-client-api = { group = "com.inductiveautomation.ignitionsdk", name = "vision-client-api", version.ref = "ignition" }
+ignition-driver-api = { group = "com.inductiveautomation.ignitionsdk", name = "driver-api", version.ref = "ignition" }
 ignition-perspective-common = { group = "com.inductiveautomation.ignitionsdk", name = "perspective-common", version.ref = "ignition" }
 ignition-perspective-gateway = { group = "com.inductiveautomation.ignitionsdk", name = "perspective-gateway", version.ref = "ignition" }
 ignition-perspective-designer = { group = "com.inductiveautomation.ignitionsdk", name = "perspective-designer", version.ref = "ignition" }
 if97 = { group = "com.hummeling", name = "if97", version.ref = "if97"}
+snmp4j = { group = "org.snmp4j", name = "snmp4j", version.ref = "snmp4j"}
 
 # test framework
 kotest-junit = { group = "io.kotest", name = "kotest-runner-junit5", version.ref = "kotest" }
@@ -45,6 +48,7 @@ common = [
 gateway = [
     "ignition-gson",
     "ignition-common",
+    "ignition-driver-api",
     "ignition-gateway-api",
 ]
 designer = [
@@ -72,6 +76,7 @@ perspectiveDesigner = [
 perspectiveGateway = [
     "ignition-gson",
     "ignition-common",
+    "ignition-driver-api",
     "ignition-gateway-api",
     "ignition-perspective-common",
     "ignition-perspective-gateway",
