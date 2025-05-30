@@ -10,5 +10,6 @@ object Embr {
             "/embr/event-stream",
         )
 
+    val SNMP = EmbrModuleMeta("com.mussonindustrial.embr.snmp", "embr-snmp", "/embr/snmp")
     val THERMO = EmbrModuleMeta("com.mussonindustrial.embr.thermo", "embr-thermo", "/embr/thermo")
 }
