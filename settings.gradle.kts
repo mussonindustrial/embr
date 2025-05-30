@@ -30,6 +30,11 @@ include(
     ":modules:sse:common",
     ":modules:sse:gateway",
 
+    ":modules:snmp:common",
+    ":modules:snmp:client",
+    ":modules:snmp:designer",
+    ":modules:snmp:gateway",
+
     ":modules:periscope:common",
     ":modules:periscope:designer",
     ":modules:periscope:gateway",

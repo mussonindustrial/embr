@@ -1,0 +1,19 @@
+{
+    "name": "@embr-modules/snmp",
+    "version": "0.1.0",
+    "private": false,
+    "keywords": [
+        "ignition",
+        "module",
+        "snmp",
+        "driver"
+    ],
+    "files": [
+        "**/*.modl",
+        "!**/*.unsigned.modl"
+    ],
+    "dependencies": {
+        "@embr-jvm/core-common": "0.7.0",
+        "@embr-jvm/core-gateway": "0.7.0"
+    }
+}
