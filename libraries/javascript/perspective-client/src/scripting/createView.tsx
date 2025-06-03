@@ -1,9 +1,11 @@
 import { View } from '@inductiveautomation/perspective-client'
-import { CallingContext } from './ScriptingGlobals'
 import { ViewProps } from '@inductiveautomation/perspective-client/build/dist/typedefs/app/View'
 import React from 'react'
 
+import { CallingContext } from '../stores'
+
 export type CreateView = (props: ViewProps) => void
+import { CallingContext } from '../stores'
 
 export function createViewFunction(context: CallingContext) {
   const createView = (props: ViewProps) => {

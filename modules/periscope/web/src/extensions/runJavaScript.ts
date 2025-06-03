@@ -1,9 +1,7 @@
-import {
-  createScriptingGlobals,
-  getChildStore,
-} from '@embr-js/perspective-client'
+import { getChildStore } from '@embr-js/perspective-client'
 import { toUserScript, UserScriptParams } from '@embr-js/utils'
 import { ClientStore } from '@inductiveautomation/perspective-client'
+import { getChildStore } from '@embr-js/perspective-client'
 
 export const PROTOCOL = {
   RUN: 'periscope-js-run',
@@ -82,7 +80,7 @@ export function installRunJavaScript(clientStore: ClientStore) {
       )
       const component = getChildStore(view, componentPath)
 
-      const globals = createScriptingGlobals({
+      const globals = Embr.scripting.createGlobals({
         client: clientStore,
         page: clientStore.page,
         view,

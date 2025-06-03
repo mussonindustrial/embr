@@ -4,6 +4,11 @@ import { resolve } from 'path'
 const packageName = 'embr-periscope'
 
 export default defineConfig(({ mode }) => ({
+  resolve: {
+    alias: {
+      '@': resolve(__dirname, './src'),
+    },
+  },
   build: {
     outDir: './dist',
     lib: {

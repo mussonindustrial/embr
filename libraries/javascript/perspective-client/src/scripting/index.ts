@@ -1,1 +1,2 @@
-export * from './ScriptingGlobals'
+export * from './createView'
+export * from './sendMessage'
