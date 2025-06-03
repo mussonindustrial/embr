@@ -1,4 +1,3 @@
-import { createScriptingGlobals } from '@embr-js/perspective-client'
 import { toUserScript } from '@embr-js/utils'
 import { ClientStore } from '@inductiveautomation/perspective-client'
 
@@ -42,7 +41,7 @@ export function installRunJavaScript(clientStore: ClientStore) {
     }
 
     new Promise((resolve) => {
-      const globals = createScriptingGlobals({})
+      const globals = Embr.scripting.createGlobals({})
 
       const f = toUserScript(functionLiteral, thisArg, globals)
       resolve(f.runNamed(args))

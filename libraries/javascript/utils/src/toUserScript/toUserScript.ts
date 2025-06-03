@@ -13,7 +13,7 @@ const isFunctionRegex = /^\s*(?:async\s*)?\(([^)]*?)\)\s*=>\s*([\s\S]*)$/
 export default function toUserScript(
   string: string,
   thisArg = {},
-  globals = {}
+  globals: Record<string, unknown> | (() => Record<string, unknown>) = {}
 ): UserScript {
   const match = string.match(isFunctionRegex)
   if (!match) {
@@ -28,29 +28,34 @@ export default function toUserScript(
   }
   const body = `"use strict"; return ${async} () => ${match[2].trim()}`
 
-  if (signature.length == 0) {
-    const f = Function(...Object.keys(globals), body).bind(
-      thisArg,
-      ...Object.values(globals)
-    )
+  const compiled = Function(
+    '__globals',
+    ...signature,
+    `
+      with (__globals) {
+        ${body}
+      }
+    `
+  )
 
-    const script = f()
-    script.signature = signature
-    script.run = f()
-    script.runNamed = f()
-    return script
-  } else {
-    const f = Function(...Object.keys(globals), ...signature, body).bind(
-      thisArg,
-      ...Object.values(globals)
-    )
-
-    const script = (...args: unknown[]) => f(...args)() as UserScript
-    script.signature = signature
-    script.run = (...args: unknown[]) => f(...args)()
-    script.runNamed = (params: UserScriptParams = {}) =>
-      f.call(thisArg, ...signature.map((key) => params[key]))()
-
-    return script
+  function resolveGlobals(): Record<string, unknown> {
+    return typeof globals === 'function' ? globals() : globals
   }
+
+  const run = (...args: unknown[]) => {
+    const resolvedGlobals = resolveGlobals()
+    return compiled.call(thisArg, resolvedGlobals, ...args)()
+  }
+
+  const runNamed = (params: UserScriptParams = {}) => {
+    const args = signature.map((key) => params[key])
+    return run(...args)
+  }
+
+  const script = ((...args: unknown[]) => run(...args)) as UserScript
+  script.signature = signature
+  script.run = run
+  script.runNamed = runNamed
+
+  return script
 }

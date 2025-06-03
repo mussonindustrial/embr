@@ -15,12 +15,8 @@ import {
   ViewStateDisplay,
 } from '@inductiveautomation/perspective-client'
 
-import {
-  formatStyleNames,
-  JoinableView,
-  mergeStyles,
-  resolve,
-} from '../../util'
+import { JoinableView } from '@/extensions'
+import { formatStyleNames, mergeStyles, resolve } from '@/util'
 
 const COMPONENT_TYPE = 'embr.periscope.embedding.flex-repeater'
 
@@ -71,7 +67,6 @@ type EmbeddedViewProps = {
 }
 
 function emitFlexPosition(props: FlexPositionProps): React.CSSProperties {
-  ComponentStore
   return {
     alignSelf: props.align,
     flexBasis: props.basis,

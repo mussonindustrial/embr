@@ -1,7 +1,5 @@
 import { toast, ToastContainer } from 'react-toastify'
 import { createRoot } from 'react-dom/client'
-import { getEmbrGlobals } from '@embr-js/perspective-client/src/globals'
-import { merge } from 'lodash'
 
 import './toast.css'
 import React from 'react'
@@ -49,10 +47,5 @@ export function installToasts(clientStore: ClientStore) {
     <CenterToastContainer dockOffset={clientStore.mounts.dockOffset} />
   )
 
-  const embrGlobals = getEmbrGlobals()
-  merge(embrGlobals.scripting.globals, {
-    periscope: {
-      toast,
-    },
-  })
+  Embr.scripting.add('periscope', 'toast', toast)
 }

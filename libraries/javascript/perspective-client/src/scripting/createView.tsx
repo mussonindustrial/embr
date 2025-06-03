@@ -1,12 +1,8 @@
 import { View } from '@inductiveautomation/perspective-client'
-import { CallingContext } from './ScriptingGlobals'
 import { ViewProps } from '@inductiveautomation/perspective-client/build/dist/typedefs/app/View'
 import React from 'react'
 
-export type CreateView = (props: ViewProps) => void
-
-// let mountPath = 0
-// const getMountPath = () => `embr:${mountPath++}`
+import { CallingContext } from '../stores'
 
 export function createViewFunction(context: CallingContext) {
   const createView = (props: ViewProps) => {
@@ -16,9 +12,6 @@ export function createViewFunction(context: CallingContext) {
       )
       return
     }
-
-    // const mountPath = useRef(getMountPath())
-    // console.log(mountPath.current)
 
     return (
       <View

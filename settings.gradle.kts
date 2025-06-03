@@ -42,6 +42,7 @@ include(
 
     ":modules:periscope:common",
     ":modules:periscope:designer",
+    ":modules:periscope:designer-web",
     ":modules:periscope:gateway",
     ":modules:periscope:web",
 
