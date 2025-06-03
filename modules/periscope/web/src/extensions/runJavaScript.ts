@@ -1,7 +1,3 @@
-import {
-  createScriptingGlobals,
-  getChildStore,
-} from '@embr-js/perspective-client'
 import { toUserScript, UserScriptParams } from '@embr-js/utils'
 import { ClientStore } from '@inductiveautomation/perspective-client'
 
@@ -72,22 +68,7 @@ export function installRunJavaScript(clientStore: ClientStore) {
     }
 
     new Promise((resolve) => {
-      const view = clientStore.page.findView(
-        context.view?.resourcePath ?? '',
-        context.view?.mountPath ?? ''
-      )
-
-      const componentPath = getChildPath(
-        context.component?.componentAddressPath
-      )
-      const component = getChildStore(view, componentPath)
-
-      const globals = createScriptingGlobals({
-        client: clientStore,
-        page: clientStore.page,
-        view,
-        component,
-      })
+      const globals = Embr.scripting.createGlobals({})
 
       const f = toUserScript(functionLiteral, thisArg, globals)
       resolve(f.runNamed(args))

@@ -157,7 +157,7 @@ class PortalComponentDesignDelegate implements ContainerDesignDelegate {
   }
 }
 
-waitForClientStore((clientStore) => {
+waitForClientStore().then((clientStore) => {
   if (clientStore.isDesigner) {
     InteractionRegistry.registerInteractionDelegates(
       new PortalComponentDesignDelegate()

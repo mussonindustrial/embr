@@ -4,10 +4,14 @@ import com.inductiveautomation.ignition.common.BundleUtil
 import com.inductiveautomation.ignition.common.licensing.LicenseState
 import com.inductiveautomation.ignition.common.script.ScriptManager
 import com.inductiveautomation.ignition.common.script.hints.PropertiesFileDocProvider
+import com.inductiveautomation.ignition.gateway.dataroutes.RouteGroup
 import com.inductiveautomation.ignition.gateway.model.AbstractGatewayModuleHook
 import com.inductiveautomation.ignition.gateway.model.GatewayContext
 import com.mussonindustrial.embr.common.Embr
 import com.mussonindustrial.ignition.embr.periscope.Meta.SHORT_MODULE_ID
+import com.mussonindustrial.ignition.embr.periscope.handlers.ClientResourceHandler
+import com.mussonindustrial.ignition.embr.periscope.handlers.ClientResourceManifestHandler
+import com.mussonindustrial.ignition.embr.periscope.handlers.SystemModuleHandler
 import com.mussonindustrial.ignition.embr.periscope.scripting.JavaScriptFunctions
 import com.mussonindustrial.ignition.embr.periscope.scripting.QueueFunctions
 import java.util.*
@@ -34,6 +38,12 @@ class PeriscopeGatewayHook : AbstractGatewayModuleHook() {
 
         logger.debug("Registering components...")
         context.registerComponents()
+
+        logger.debug("Registering ClientResource definitions...")
+        context.registerClientResourceDefinitions()
+
+        logger.debug("Starting project lifecycles...")
+        context.startupProjectLifecycles()
     }
 
     override fun shutdown() {
@@ -45,6 +55,12 @@ class PeriscopeGatewayHook : AbstractGatewayModuleHook() {
 
         logger.debug("Removing components...")
         context.removeComponents()
+
+        logger.debug("Removing servlets...")
+        context.removeServlets()
+
+        logger.debug("Stopping project lifecycles...")
+        context.shutdownProjectLifecycles()
     }
 
     override fun getMountedResourceFolder(): Optional<String> {
@@ -79,5 +95,13 @@ class PeriscopeGatewayHook : AbstractGatewayModuleHook() {
             QueueFunctions(this.context),
             PropertiesFileDocProvider(),
         )
+    }
+
+    override fun mountRouteHandlers(routes: RouteGroup) {
+        ClientResourceManifestHandler(context)
+            .mount(routes.newRoute("/client-resource/:project_name/manifest.json"))
+        SystemModuleHandler(context).mount(routes.newRoute("/system-module/:hash/:module_name"))
+        ClientResourceHandler(context)
+            .mount(routes.newRoute("/client-resource/:project_name/:hash/*"))
     }
 }

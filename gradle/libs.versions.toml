@@ -8,6 +8,7 @@ jetty = "10.0.21"
 kotlin = "1.9.20"
 kotest = "6.0.0"
 node-gradle = "7.1.0"
+rhino = "1.7.15"
 snmp4j = "3.9.7"
 spotless = "8.4.0"
 
@@ -33,6 +34,7 @@ ignition-perspective-gateway = { group = "com.inductiveautomation.ignitionsdk", 
 jetty-server = { group = "org.eclipse.jetty", name = "jetty-server", version.ref = "jetty" }
 jetty-servlet = { group = "org.eclipse.jetty", name = "jetty-servlet", version.ref = "jetty" }
 jetty-servlets = { group = "org.eclipse.jetty", name = "jetty-servlets", version.ref = "jetty" }
+rhino = { group = "org.mozilla", name = "rhino", version.ref ="rhino"}
 snmp4j = { group = "org.snmp4j", name = "snmp4j", version.ref = "snmp4j"}
 
 # test framework

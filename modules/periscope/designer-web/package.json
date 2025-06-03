@@ -1,0 +1,19 @@
+{
+    "name": "@embr-modules/periscope-designer-web",
+    "private": true,
+    "version": "0.9.0",
+    "scripts": {
+        "dev": "vite",
+        "build": "tsc && nx vite:build && nx vite:test --run",
+        "clean": "s",
+        "test": "nx vite:test --run",
+        "preview": "nx vite:test --preview",
+        "lint": "eslint src/**/*.ts",
+        "lint:prettier": "prettier -c . --cache --ignore-path=../../.prettierignore"
+    },
+    "dependencies": {
+        "@embr-js/utils": "0.6.1",
+        "postcss": "8.5.14",
+        "postcss-modules": "6.0.1"
+    }
+}
