@@ -25,6 +25,7 @@ class PeriscopeDesignerContext(private val context: DesignerContext) :
             JsonView.asDesignerComponent(),
             Portal.asDesignerComponent(),
             Swiper.asDesignerComponent(),
+            React.asDesignerComponent(),
         )
 
     init {

@@ -12,6 +12,9 @@
         "lint:prettier": "prettier -c . --cache --ignore-path=../../.prettierignore"
     },
     "dependencies": {
+        "@babel/core": "7.27.4",
+        "@babel/preset-react": "7.27.1",
+        "@babel/standalone": "7.27.4",
         "@embr-js/utils": "0.6.0",
         "@embr-js/perspective-client": "0.4.0",
         "@inductiveautomation/perspective-client": "2.1.33",
@@ -25,9 +28,11 @@
     "devDependencies": {
         "@embr-js/eslint-config": "*",
         "@embr-js/tsconfig": "*",
+        "@types/babel__standalone": "7.1.9",
         "@types/lodash": "^4.14.202",
         "@types/react": "^18.2.56",
         "@types/react-dom": "^18.2.56",
+        "@types/three": "0.177.0",
         "eslint": "^8.56.0",
         "react": "^18",
         "react-dom": "^18",

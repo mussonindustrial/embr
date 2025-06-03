@@ -10,6 +10,8 @@ import {
   JsonViewComponentMeta,
   PortalComponent,
   PortalComponentMeta,
+  ReactComponent,
+  ReactComponentMeta,
 } from './components'
 import { installExtensions } from './extensions'
 import { waitForClientStore } from '@embr-js/perspective-client'
@@ -20,6 +22,7 @@ export {
   EmbeddedViewComponent,
   JsonViewComponent,
   PortalComponent,
+  ReactComponent,
 }
 
 const components = [
@@ -28,6 +31,7 @@ const components = [
   new EmbeddedViewComponentMeta(),
   new JsonViewComponentMeta(),
   new PortalComponentMeta(),
+  new ReactComponentMeta(),
 ]
 
 components.forEach((c) => ComponentRegistry.register(c))

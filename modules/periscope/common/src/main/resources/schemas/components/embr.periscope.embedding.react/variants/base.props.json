@@ -1,0 +1,14 @@
+{
+  "component": "(props) => <div>{props.text}</div>",
+  "props": {
+    "text": "Hello World!"
+  },
+  "options": {
+    "babel": {
+      "presets": ["react"]
+    }
+  },
+  "style": {
+    "classes": ""
+  }
+}
