@@ -28,7 +28,7 @@ class PeriscopeGatewayContext(private val context: GatewayContext) :
             FlexRepeater.asGatewayComponent { FlexRepeaterModelDelegate(it) },
             JsonView.asGatewayComponent { JsonViewModelDelegate(it) },
             Portal.asGatewayComponent(),
-            Swiper.asGatewayComponent(),
+            Swiper.asGatewayComponent { SwiperModelDelegate(it) },
         )
 
     init {

@@ -1,8 +1,10 @@
-import React, { memo, useMemo, useRef } from 'react'
+import React, { memo, useEffect, useMemo, useRef } from 'react'
 import {
+  AbstractUIElementStore,
   ClientStore,
   ComponentMeta,
   ComponentProps,
+  ComponentStoreDelegate,
   JsObject,
   OutputListener,
   PageStore,
@@ -51,7 +53,11 @@ import {
 import { debounce } from 'lodash'
 import { transformProps } from '@embr-js/utils'
 import { emitStyles, formatStyleNames, mergeStyles, resolve } from '../../util'
-import { getScriptTransform } from '@embr-js/perspective-client'
+import {
+  ComponentDelegateJavaScriptProxy,
+  getScriptTransform,
+  JavaScriptRunEvent,
+} from '@embr-js/perspective-client'
 
 const COMPONENT_TYPE = 'embr.periscope.embedding.swiper'
 
@@ -261,6 +267,12 @@ function applyClassTransforms(settings: SwiperProps): SwiperProps {
 export function SwiperComponent(props: ComponentProps<SwiperComponentProps>) {
   const swiperRef = useRef<SwiperRef>(null)
 
+  // Register the chart with the component delegate
+  useEffect(() => {
+    const delegate = props.store.delegate as SwiperComponentDelegate
+    delegate.setSwiper(swiperRef.current?.swiper)
+  }, [props.store.delegate, swiperRef.current])
+
   const transformedSettings = useMemo(() => {
     const settings = props.props.settings || {}
     const transformed = transformProps(settings, [
@@ -326,6 +338,22 @@ export function SwiperComponent(props: ComponentProps<SwiperComponentProps>) {
   )
 }
 
+class SwiperComponentDelegate extends ComponentStoreDelegate {
+  private proxyProps: JsObject = {}
+
+  private jsProxy = new ComponentDelegateJavaScriptProxy(this, this.proxyProps)
+
+  setSwiper(swiper?: SwiperRef['swiper']) {
+    this.proxyProps.swiper = swiper
+  }
+
+  handleEvent(eventName: string, eventObject: JsObject): void {
+    if (this.jsProxy.handles(eventName)) {
+      this.jsProxy.handleEvent(eventObject as JavaScriptRunEvent)
+    }
+  }
+}
+
 export class SwiperComponentMeta implements ComponentMeta {
   getComponentType(): string {
     return COMPONENT_TYPE
@@ -336,6 +364,10 @@ export class SwiperComponentMeta implements ComponentMeta {
       width: 300,
       height: 300,
     }
+  }
+
+  createDelegate(component: AbstractUIElementStore): ComponentStoreDelegate {
+    return new SwiperComponentDelegate(component)
   }
 
   getPropsReducer(tree: PropertyTree): SwiperProps {
