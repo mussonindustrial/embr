@@ -1,0 +1,31 @@
+{
+  "type": "donut",
+  "series": [
+    44,
+    55,
+    41,
+    17,
+    15
+  ],
+  "options": {
+    "chart": {},
+    "title": {
+      "align": "left",
+      "text": "Pie Chart"
+    },
+    "responsive": [
+      {
+        "breakpoint": 480,
+        "options": {
+          "chart": {
+            "width": 200
+          },
+          "legend": {
+            "position": "bottom"
+          }
+        }
+      }
+    ]
+  },
+  "style": {}
+}

@@ -31,6 +31,9 @@ export default defineConfig(({ mode }) => ({
       },
     },
   },
+  define: {
+    'process.env': {},
+  },
   test: {
     passWithNoTests: true,
     fileParallelism: mode !== 'benchmark',

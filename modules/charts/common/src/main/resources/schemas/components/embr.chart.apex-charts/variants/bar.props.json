@@ -1,0 +1,94 @@
+{
+  "type": "bar",
+  "series": [
+    {
+      "name": "Marine Sprite",
+      "data": [
+        { "x": "2012", "y": 22 },
+        { "x": "2013", "y": 43 },
+        { "x": "2014", "y": 21 }
+      ]
+    },
+    {
+      "name": "Striking Calf",
+      "data": [
+        { "x": "2012", "y": 13 },
+        { "x": "2013", "y": 43 },
+        { "x": "2014", "y": 32 }
+      ]
+    },
+    {
+      "name": "Tank Picture",
+      "data": [
+        { "x": "2012", "y": 15 },
+        { "x": "2013", "y": 11 },
+        { "x": "2014", "y": 20 }
+      ]
+    },
+    {
+      "name": "Bucket Slope",
+      "data": [
+        { "x": "2012", "y": 6 },
+        { "x": "2013", "y": 9 },
+        { "x": "2014", "y": 4 }
+      ]
+    },
+    {
+      "name": "Reborn Kid",
+      "data": [
+        { "x": "2012", "y": 25 },
+        { "x": "2013", "y": 24 },
+        { "x": "2014", "y": 10 }
+      ]
+    }
+  ],
+  "options": {
+    "chart": {},
+    "plotOptions": {
+      "bar": {
+        "horizontal": true,
+        "dataLabels": {
+          "total": {
+            "enabled": true,
+            "offsetX": 0,
+            "style": {
+              "fontSize": "13px",
+              "fontWeight": 900
+            }
+          }
+        }
+      }
+    },
+    "dataLabels": {
+      "enabled": false
+    },
+    "stroke": {
+      "width": 1,
+      "colors": ["#fff"]
+    },
+    "title": {
+      "align": "left",
+      "text": "Bar Chart"
+    },
+    "xaxis": {
+      "position": "bottom",
+      "labels": {
+        "formatter": "(val) => val + 'K'"
+      }
+    },
+    "tooltip": {
+      "y": {
+        "formatter": "(val) => val + 'K'"
+      }
+    },
+    "fill": {
+      "opacity": 1
+    },
+    "legend": {
+      "position": "top",
+      "horizontalAlign": "left",
+      "offsetX": 40
+    }
+  },
+  "style": {}
+}

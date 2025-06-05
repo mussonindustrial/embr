@@ -1,0 +1,19 @@
+{
+  "type": "object",
+  "properties": {
+    "xaxis": {
+      "type": "object",
+      "description": "Chart xaxis",
+      "properties": {
+        "min": {
+          "type": "number",
+          "description": "Chart xaxis min"
+        },
+        "max": {
+          "type": "number",
+          "description": "Chart xaxis max"
+        }
+      }
+    }
+  }
+}

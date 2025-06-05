@@ -1,0 +1,141 @@
+{
+  "type": "line",
+  "options": {
+    "chart": {
+      "height": 350,
+      "stacked": false,
+      "toolbar": {
+        "show": true
+      },
+      "type": "line",
+      "events": {
+        "animationEnd": false,
+        "beforeMount": false,
+        "mounted": false,
+        "updated": false,
+        "mouseMove": false,
+        "mouseLeave": false,
+        "click": false,
+        "legendClick": false,
+        "markerClick": false,
+        "xAxisLabelClick": false,
+        "selection": false,
+        "dataPointSelection": false,
+        "dataPointMouseEnter": false,
+        "dataPointMouseLeave": false,
+        "beforeZoom": false,
+        "beforeResetZoom": false,
+        "beforeZoom": false,
+        "zoomed": false,
+        "scrolled": false,
+        "brushScrolled": false
+      }
+    },
+    "dataLabels": {
+      "enabled": false
+    },
+    "fill": {
+      "opacity": 1
+    },
+    "markers": {
+      "size": 0
+    },
+    "stroke": {
+      "width": 3
+    },
+    "xaxis": {
+      "type": "datetime"
+    },
+    "yaxis": {
+      "labels": {
+        "formatter": "function (val) {                     return val.toFixed(2);                   }"
+      }
+    }
+  },
+  "series": [
+    {
+      "data": [
+        [
+          1698098270040,
+          92.3197320886076
+        ],
+        [
+          1698098285040,
+          98.8357416786906
+        ],
+        [
+          1698098300040,
+          99.4074424536611
+        ],
+        [
+          1698098315040,
+          99.6698195001376
+        ],
+        [
+          1698098330040,
+          100.098920176185
+        ],
+        [
+          1698098345040,
+          120.147736801713
+        ],
+        [
+          1698098360040,
+          93.349219953394
+        ],
+        [
+          1698098375040,
+          92.7936729937542
+        ],
+        [
+          1698098390040,
+          96.6358322466636
+        ],
+        [
+          1698098405040,
+          98.1983313815347
+        ],
+        [
+          1698098420040,
+          99.3663180104998
+        ],
+        [
+          1698098435040,
+          99.582413164017
+        ],
+        [
+          1698098450040,
+          99.9615378800733
+        ],
+        [
+          1698098465040,
+          99.8290075001451
+        ],
+        [
+          1698098480040,
+          99.8311252090699
+        ],
+        [
+          1698098495040,
+          99.858724430026
+        ],
+        [
+          1698098510040,
+          100.150820534537
+        ],
+        [
+          1698098525040,
+          99.966327143606
+        ],
+        [
+          1698098540040,
+          100.126344138819
+        ],
+        [
+          1698098555040,
+          99.8460475205365
+        ]
+      ]
+    }
+  ]
+}
