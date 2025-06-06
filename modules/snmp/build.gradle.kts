@@ -14,22 +14,19 @@ ignitionModule {
     projectScopes.putAll(
         mapOf(
             ":modules:snmp:common" to "CGD",
-            ":modules:snmp:client" to "C",
-            ":modules:snmp:designer" to "D",
             ":modules:snmp:gateway" to "G",
         ),
     )
 
-    moduleDependencies.set(
-        mapOf(
-            "com.inductiveautomation.opcua" to "G",
-        ),
-    )
+    moduleDependencySpecs {
+        register("com.inductiveautomation.opcua") {
+            required = true
+            scope = "G"
+        }
+    }
 
     hooks.putAll(
         mapOf(
-            "com.mussonindustrial.embr.snmp.SnmpClientHook" to "C",
-            "com.mussonindustrial.embr.snmp.SnmpDesignerHook" to "D",
             "com.mussonindustrial.embr.snmp.SnmpGatewayHook" to "G",
         ),
     )

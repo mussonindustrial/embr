@@ -6,7 +6,6 @@ import com.inductiveautomation.ignition.gateway.model.GatewayContext
 import com.inductiveautomation.ignition.gateway.opcua.server.api.AbstractDeviceModuleHook
 import com.inductiveautomation.ignition.gateway.opcua.server.api.DeviceType
 import com.mussonindustrial.embr.common.Embr
-import com.mussonindustrial.embr.snmp.configuration.SnmpDeviceType
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -23,10 +22,12 @@ class SnmpGatewayHook : AbstractDeviceModuleHook() {
         BundleUtil.get().addBundle("Snmp", this::class.java.classLoader, "localization")
 
         super.setup(SnmpGatewayContext(context))
+
+        snmpContext.updatePersistentRecords()
     }
 
     override fun startup(activationState: LicenseState) {
-        logger.debug("Embr-Charts module startup.")
+        logger.debug("Embr-SNMP module startup.")
         super.startup(activationState)
     }
 
@@ -38,7 +39,7 @@ class SnmpGatewayHook : AbstractDeviceModuleHook() {
     }
 
     override fun getDeviceTypes(): List<DeviceType> {
-        return listOf(SnmpDeviceType)
+        return snmpContext.deviceTypes
     }
 
     override fun isFreeModule(): Boolean {
