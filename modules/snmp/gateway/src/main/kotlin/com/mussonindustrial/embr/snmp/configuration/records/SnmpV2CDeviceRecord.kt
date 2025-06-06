@@ -1,13 +1,14 @@
-package com.mussonindustrial.embr.snmp.configuration
+package com.mussonindustrial.embr.snmp.configuration.records
 
 import com.inductiveautomation.ignition.gateway.localdb.persistence.*
 import com.inductiveautomation.ignition.gateway.opcua.server.api.DeviceSettingsRecord
+import com.mussonindustrial.embr.snmp.configuration.settings.SnmpV2CDeviceSettings
 import simpleorm.dataset.SFieldFlags
 
-class SnmpV3DeviceRecord : SnmpV3DeviceSettings, PersistentRecord() {
+class SnmpV2CDeviceRecord : SnmpV2CDeviceSettings, PersistentRecord() {
 
     companion object {
-        val META = RecordMeta(SnmpV3DeviceRecord::class.java, "EmbrSnmpV3DeviceSettings")
+        val META = RecordMeta(SnmpV2CDeviceRecord::class.java, "EmbrSnmpV2CDeviceSettings")
 
         val DEVICE_SETTINGS_ID = LongField(META, "DeviceSettingsId", SFieldFlags.SPRIMARY_KEY)
         val DEVICE_SETTINGS =
@@ -16,12 +17,15 @@ class SnmpV3DeviceRecord : SnmpV3DeviceSettings, PersistentRecord() {
 
         val HOSTNAME = StringField(META, "Hostname", SFieldFlags.SMANDATORY)
         val PORT = IntField(META, "Port", SFieldFlags.SMANDATORY).apply { default = 161 }
+        val COMMUNITY =
+            StringField(META, "Community", SFieldFlags.SMANDATORY).apply { default = "public" }
         val CONNECTION_TIMEOUT =
             LongField(META, "ConnectionTimeout", SFieldFlags.SMANDATORY).apply { default = 10000 }
         val CATEGORY_NETWORK =
-            Category("SnmpV3DeviceSettings.Network", 1001).apply {
+            Category("SnmpV2CDeviceRecord.Network", 1001).apply {
                 include(HOSTNAME)
                 include(PORT)
+                include(COMMUNITY)
                 include(CONNECTION_TIMEOUT)
             }
 
@@ -30,7 +34,7 @@ class SnmpV3DeviceRecord : SnmpV3DeviceSettings, PersistentRecord() {
                 default = "1.3.6.1.2.1.1.2.0"
             }
         val CATEGORY_HEALTHCHECK =
-            Category("SnmpV3DeviceSettings.Healthcheck", 1002, true).apply {
+            Category("SnmpV2CDeviceRecord.Healthcheck", 1002, true).apply {
                 include(HEALTHCHECK_OID)
             }
     }
@@ -44,6 +48,9 @@ class SnmpV3DeviceRecord : SnmpV3DeviceSettings, PersistentRecord() {
 
     override val port: Int
         get() = getInt(PORT)
+
+    override val community: String
+        get() = getString(COMMUNITY)
 
     override val connectionTimeout: Long
         get() = getLong(CONNECTION_TIMEOUT)

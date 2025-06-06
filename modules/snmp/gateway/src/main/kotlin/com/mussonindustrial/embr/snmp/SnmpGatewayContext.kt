@@ -5,12 +5,12 @@ import com.inductiveautomation.ignition.gateway.model.GatewayContext
 import com.inductiveautomation.ignition.gateway.model.TelemetryManager
 import com.mussonindustrial.embr.gateway.EmbrGatewayContext
 import com.mussonindustrial.embr.gateway.EmbrGatewayContextImpl
-import com.mussonindustrial.embr.snmp.configuration.SnmpV1DeviceRecord
-import com.mussonindustrial.embr.snmp.configuration.SnmpV1DeviceType
-import com.mussonindustrial.embr.snmp.configuration.SnmpV2CDeviceRecord
-import com.mussonindustrial.embr.snmp.configuration.SnmpV2CDeviceType
-import com.mussonindustrial.embr.snmp.configuration.SnmpV3DeviceRecord
-import com.mussonindustrial.embr.snmp.configuration.SnmpV3DeviceType
+import com.mussonindustrial.embr.snmp.configuration.records.SnmpV1DeviceRecord
+import com.mussonindustrial.embr.snmp.configuration.records.SnmpV2CDeviceRecord
+import com.mussonindustrial.embr.snmp.configuration.records.SnmpV3DeviceRecord
+import com.mussonindustrial.embr.snmp.configuration.types.SnmpV1DeviceType
+import com.mussonindustrial.embr.snmp.configuration.types.SnmpV2CDeviceType
+import com.mussonindustrial.embr.snmp.configuration.types.SnmpV3DeviceType
 
 class SnmpGatewayContext(private val context: GatewayContext) :
     EmbrGatewayContext by EmbrGatewayContextImpl(context) {

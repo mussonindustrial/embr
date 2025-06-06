@@ -1,13 +1,14 @@
-package com.mussonindustrial.embr.snmp.configuration
+package com.mussonindustrial.embr.snmp.configuration.records
 
 import com.inductiveautomation.ignition.gateway.localdb.persistence.*
 import com.inductiveautomation.ignition.gateway.opcua.server.api.DeviceSettingsRecord
+import com.mussonindustrial.embr.snmp.configuration.settings.SnmpV1DeviceSettings
 import simpleorm.dataset.SFieldFlags
 
-class SnmpV2CDeviceRecord : SnmpV2CDeviceSettings, PersistentRecord() {
+class SnmpV1DeviceRecord : SnmpV1DeviceSettings, PersistentRecord() {
 
     companion object {
-        val META = RecordMeta(SnmpV2CDeviceRecord::class.java, "EmbrSnmpV2CDeviceSettings")
+        val META = RecordMeta(SnmpV1DeviceRecord::class.java, "EmbrSnmpV1DeviceSettings")
 
         val DEVICE_SETTINGS_ID = LongField(META, "DeviceSettingsId", SFieldFlags.SPRIMARY_KEY)
         val DEVICE_SETTINGS =
@@ -21,7 +22,7 @@ class SnmpV2CDeviceRecord : SnmpV2CDeviceSettings, PersistentRecord() {
         val CONNECTION_TIMEOUT =
             LongField(META, "ConnectionTimeout", SFieldFlags.SMANDATORY).apply { default = 10000 }
         val CATEGORY_NETWORK =
-            Category("SnmpV2CDeviceSettings.Network", 1001).apply {
+            Category("SnmpV1DeviceRecord.Network", 1001).apply {
                 include(HOSTNAME)
                 include(PORT)
                 include(COMMUNITY)
@@ -33,7 +34,7 @@ class SnmpV2CDeviceRecord : SnmpV2CDeviceSettings, PersistentRecord() {
                 default = "1.3.6.1.2.1.1.2.0"
             }
         val CATEGORY_HEALTHCHECK =
-            Category("SnmpV2CDeviceSettings.Healthcheck", 1002, true).apply {
+            Category("SnmpV1DeviceRecord.Healthcheck", 1002, true).apply {
                 include(HEALTHCHECK_OID)
             }
     }

@@ -2,7 +2,7 @@ package com.mussonindustrial.embr.snmp.devices
 
 import com.inductiveautomation.ignition.gateway.opcua.server.api.DeviceSettingsRecord
 import com.mussonindustrial.embr.common.logging.getLogger
-import com.mussonindustrial.embr.snmp.configuration.SnmpDeviceSettings
+import com.mussonindustrial.embr.snmp.configuration.settings.SnmpDeviceSettings
 import com.mussonindustrial.embr.snmp.opc.DeviceAddressSpace
 import com.mussonindustrial.embr.snmp.opc.DiagnosticAddressSpace
 import com.mussonindustrial.embr.snmp.opc.OidAddressSpace
@@ -19,9 +19,7 @@ import org.eclipse.milo.opcua.stack.core.StatusCodes
 import org.eclipse.milo.opcua.stack.core.types.builtin.DataValue
 import org.eclipse.milo.opcua.stack.core.types.builtin.StatusCode
 import org.eclipse.milo.opcua.stack.core.types.builtin.Variant
-import org.snmp4j.AbstractTarget
 import org.snmp4j.PDU
-import org.snmp4j.Snmp
 import org.snmp4j.smi.OID
 import org.snmp4j.smi.VariableBinding
 
@@ -42,9 +40,6 @@ abstract class AbstractSnmpDevice<T : SnmpDeviceSettings>(
     val deviceAddressSpace = DeviceAddressSpace(this)
     val diagnosticAddressSpace = DiagnosticAddressSpace(this)
     val oidAddressSpace = OidAddressSpace(this)
-
-    abstract val target: AbstractTarget<*>
-    abstract val snmp: Snmp
 
     init {
         lifecycleManager.addLifecycle(healthcheck)

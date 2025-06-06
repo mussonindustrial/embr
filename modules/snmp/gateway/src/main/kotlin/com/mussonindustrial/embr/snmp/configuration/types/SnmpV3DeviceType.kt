@@ -1,4 +1,4 @@
-package com.mussonindustrial.embr.snmp.configuration
+package com.mussonindustrial.embr.snmp.configuration.types
 
 import com.inductiveautomation.ignition.gateway.localdb.persistence.PersistentRecord
 import com.inductiveautomation.ignition.gateway.localdb.persistence.RecordMeta
@@ -7,29 +7,30 @@ import com.inductiveautomation.ignition.gateway.opcua.server.api.Device
 import com.inductiveautomation.ignition.gateway.opcua.server.api.DeviceContext
 import com.inductiveautomation.ignition.gateway.opcua.server.api.DeviceSettingsRecord
 import com.inductiveautomation.ignition.gateway.opcua.server.api.DeviceType
-import com.mussonindustrial.embr.snmp.devices.SnmpV2CDevice
+import com.mussonindustrial.embr.snmp.configuration.records.SnmpV3DeviceRecord
+import com.mussonindustrial.embr.snmp.devices.SnmpV3Device
 import com.mussonindustrial.embr.snmp.devices.asSnmpDeviceContext
 
-object SnmpV2CDeviceType :
+object SnmpV3DeviceType :
     DeviceType(
-        "embr-snmp-v2c",
-        "Snmp.device.SnmpV2CDevice.DisplayName",
-        "Snmp.device.SnmpV2CDevice.Description",
+        "embr-snmp-v3",
+        "Snmp.device.SnmpV3Device.DisplayName",
+        "Snmp.device.SnmpV3Device.Description",
     ) {
-    @Suppress("unused") private fun readResolve(): Any = SnmpV2CDeviceType
+    @Suppress("unused") private fun readResolve(): Any = SnmpV3DeviceType
 
     override fun createDevice(context: DeviceContext, settings: DeviceSettingsRecord): Device {
         val snmpSettings =
-            findProfileSettingsRecord<SnmpV2CDeviceRecord>(context.getGatewayContext(), settings)
+            findProfileSettingsRecord<SnmpV3DeviceRecord>(context.getGatewayContext(), settings)
 
-        return SnmpV2CDevice(context.asSnmpDeviceContext(), settings, snmpSettings)
+        return SnmpV3Device(context.asSnmpDeviceContext(), settings, snmpSettings)
     }
 
     override fun getSettingsRecordType(): RecordMeta<out PersistentRecord> {
-        return SnmpV2CDeviceRecord.META
+        return SnmpV3DeviceRecord.META
     }
 
     override fun getSettingsRecordForeignKey(): ReferenceField<*> {
-        return SnmpV2CDeviceRecord.DEVICE_SETTINGS
+        return SnmpV3DeviceRecord.DEVICE_SETTINGS
     }
 }

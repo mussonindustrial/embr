@@ -1,7 +1,7 @@
 package com.mussonindustrial.embr.snmp.devices
 
 import com.inductiveautomation.ignition.gateway.opcua.server.api.DeviceSettingsRecord
-import com.mussonindustrial.embr.snmp.configuration.SnmpV1DeviceSettings
+import com.mussonindustrial.embr.snmp.configuration.settings.SnmpV1DeviceSettings
 import com.mussonindustrial.embr.snmp.utils.addLifecycle
 import org.snmp4j.CommunityTarget
 import org.snmp4j.Snmp

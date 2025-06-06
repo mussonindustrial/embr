@@ -1,4 +1,4 @@
-package com.mussonindustrial.embr.snmp.configuration
+package com.mussonindustrial.embr.snmp.configuration.types
 
 import com.inductiveautomation.ignition.gateway.localdb.persistence.PersistentRecord
 import com.inductiveautomation.ignition.gateway.localdb.persistence.RecordMeta
@@ -7,6 +7,7 @@ import com.inductiveautomation.ignition.gateway.opcua.server.api.Device
 import com.inductiveautomation.ignition.gateway.opcua.server.api.DeviceContext
 import com.inductiveautomation.ignition.gateway.opcua.server.api.DeviceSettingsRecord
 import com.inductiveautomation.ignition.gateway.opcua.server.api.DeviceType
+import com.mussonindustrial.embr.snmp.configuration.records.SnmpV1DeviceRecord
 import com.mussonindustrial.embr.snmp.devices.SnmpV1Device
 import com.mussonindustrial.embr.snmp.devices.asSnmpDeviceContext
 
