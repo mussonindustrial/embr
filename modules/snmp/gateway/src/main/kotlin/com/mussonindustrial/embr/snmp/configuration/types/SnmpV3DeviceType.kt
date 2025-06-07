@@ -8,8 +8,8 @@ import com.inductiveautomation.ignition.gateway.opcua.server.api.DeviceContext
 import com.inductiveautomation.ignition.gateway.opcua.server.api.DeviceSettingsRecord
 import com.inductiveautomation.ignition.gateway.opcua.server.api.DeviceType
 import com.mussonindustrial.embr.snmp.configuration.records.SnmpV3DeviceRecord
-import com.mussonindustrial.embr.snmp.devices.SnmpV3Device
-import com.mussonindustrial.embr.snmp.devices.asSnmpDeviceContext
+import com.mussonindustrial.embr.snmp.devices.SnmpDeviceImpl
+import com.mussonindustrial.embr.snmp.devices.SnmpV3Context
 
 object SnmpV3DeviceType :
     DeviceType(
@@ -23,7 +23,8 @@ object SnmpV3DeviceType :
         val snmpSettings =
             findProfileSettingsRecord<SnmpV3DeviceRecord>(context.getGatewayContext(), settings)
 
-        return SnmpV3Device(context.asSnmpDeviceContext(), settings, snmpSettings)
+        val snmpContext = SnmpV3Context(context, settings, snmpSettings)
+        return SnmpDeviceImpl(snmpContext)
     }
 
     override fun getSettingsRecordType(): RecordMeta<out PersistentRecord> {

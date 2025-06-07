@@ -1,7 +1,7 @@
 package com.mussonindustrial.embr.snmp.opc
 
 import com.mussonindustrial.embr.common.logging.getLogger
-import com.mussonindustrial.embr.snmp.devices.AbstractSnmpDevice
+import com.mussonindustrial.embr.snmp.devices.SnmpDeviceImpl
 import com.mussonindustrial.embr.snmp.requests.OidReadRequest
 import com.mussonindustrial.embr.snmp.requests.OidReadResult
 import com.mussonindustrial.embr.snmp.requests.OidWriteRequest
@@ -39,11 +39,12 @@ import org.eclipse.milo.opcua.stack.core.types.structured.WriteValue
 import org.snmp4j.smi.OID
 import org.snmp4j.smi.VariableBinding
 
-class OidAddressSpace(val device: AbstractSnmpDevice<*>) : AddressSpaceFragment, Lifecycle {
+class OidAddressSpace(val device: SnmpDeviceImpl<*>) : AddressSpaceFragment, Lifecycle {
 
     private val logger = this.getLogger()
     private val filter = SimpleAddressSpaceFilter.create { it.getPath().isOid() }
-    private val subscriptionModel = SubscriptionModel(device.deviceContext.getServer(), this)
+    private val subscriptionModel =
+        SubscriptionModel(device.context.deviceContext.getServer(), this)
 
     override fun startup() {
         subscriptionModel.startup()
@@ -94,7 +95,7 @@ class OidAddressSpace(val device: AbstractSnmpDevice<*>) : AddressSpaceFragment,
                         AttributeId.NodeClass -> NodeClass.Variable
 
                         AttributeId.BrowseName ->
-                            device.deviceContext.qualifiedName(nodeId.getPath())
+                            device.context.deviceContext.qualifiedName(nodeId.getPath())
 
                         AttributeId.DisplayName,
                         AttributeId.Description -> LocalizedText.english(nodeId.getPath())

@@ -1,7 +1,7 @@
 package com.mussonindustrial.embr.snmp.opc
 
-import com.mussonindustrial.embr.snmp.devices.AbstractSnmpDevice
 import com.mussonindustrial.embr.snmp.devices.SnmpDevice
+import com.mussonindustrial.embr.snmp.devices.SnmpDeviceImpl
 import com.mussonindustrial.embr.snmp.utils.removeAllNodes
 import org.eclipse.milo.opcua.sdk.core.Reference
 import org.eclipse.milo.opcua.sdk.server.Lifecycle
@@ -15,8 +15,8 @@ import org.eclipse.milo.opcua.stack.core.types.builtin.LocalizedText
 import org.eclipse.milo.opcua.stack.core.types.builtin.NodeId
 import org.eclipse.milo.opcua.stack.core.types.builtin.Variant
 
-class DiagnosticAddressSpace(device: AbstractSnmpDevice<*>) :
-    AbstractDeviceManagedAddressSpaceFragment(device) {
+class DiagnosticAddressSpace(device: SnmpDeviceImpl<*>) :
+    SnmpDeviceManagedAddressSpaceFragment(device) {
 
     private val root = "[Diagnostics]"
 
@@ -38,8 +38,8 @@ class DiagnosticAddressSpace(device: AbstractSnmpDevice<*>) :
         val diagnosticsFolder =
             UaFolderNode(
                 nodeContext,
-                device.deviceContext.nodeId(root),
-                device.deviceContext.qualifiedName(root),
+                nodeId(root),
+                qualifiedName(root),
                 LocalizedText.english(root),
             )
         nodeManager.addNode(diagnosticsFolder)
@@ -48,7 +48,7 @@ class DiagnosticAddressSpace(device: AbstractSnmpDevice<*>) :
             Reference(
                 diagnosticsFolder.nodeId,
                 Identifiers.Organizes,
-                device.deviceContext.getDeviceNodeId().expanded(),
+                getDeviceNodeId().expanded(),
                 Reference.Direction.INVERSE,
             )
         )
@@ -57,7 +57,7 @@ class DiagnosticAddressSpace(device: AbstractSnmpDevice<*>) :
             diagnosticsFolder,
             "Hostname",
             Identifiers.String,
-            AttributeFilters.getValue { DataValue(Variant(device.snmpSettings.hostname)) },
+            AttributeFilters.getValue { DataValue(Variant(device.context.snmpSettings.hostname)) },
         )
         addDiagnosticNode(
             diagnosticsFolder,
@@ -82,8 +82,8 @@ class DiagnosticAddressSpace(device: AbstractSnmpDevice<*>) :
         attributeFilter: AttributeFilter,
     ) {
         UaVariableNode.UaVariableNodeBuilder(nodeContext).run {
-            setNodeId(device.deviceContext.nodeId("${root}/${name}"))
-            setBrowseName(device.deviceContext.qualifiedName(name))
+            setNodeId(nodeId("${root}/${name}"))
+            setBrowseName(qualifiedName(name))
             setDisplayName(LocalizedText.english(name))
             setDataType(dataType)
             addReference(

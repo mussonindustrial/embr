@@ -1,6 +1,5 @@
 package com.mussonindustrial.embr.snmp.devices
 
-import com.inductiveautomation.ignition.gateway.opcua.server.api.DeviceSettingsRecord
 import com.mussonindustrial.embr.common.logging.getLogger
 import com.mussonindustrial.embr.snmp.configuration.settings.SnmpDeviceSettings
 import com.mussonindustrial.embr.snmp.opc.DeviceAddressSpace
@@ -10,6 +9,7 @@ import com.mussonindustrial.embr.snmp.requests.OidReadResult
 import com.mussonindustrial.embr.snmp.requests.OidWriteResult
 import com.mussonindustrial.embr.snmp.requests.toOidReadResult
 import com.mussonindustrial.embr.snmp.requests.toOidWriteResult
+import com.mussonindustrial.embr.snmp.utils.addLifecycle
 import java.util.concurrent.ScheduledFuture
 import java.util.concurrent.TimeUnit
 import org.eclipse.milo.opcua.sdk.server.Lifecycle
@@ -23,11 +23,8 @@ import org.snmp4j.PDU
 import org.snmp4j.smi.OID
 import org.snmp4j.smi.VariableBinding
 
-abstract class AbstractSnmpDevice<T : SnmpDeviceSettings>(
-    override val deviceContext: SnmpDeviceContext,
-    val deviceSettings: DeviceSettingsRecord,
-    val snmpSettings: T,
-) : AddressSpaceComposite(deviceContext.getServer()), SnmpDevice {
+class SnmpDeviceImpl<T : SnmpDeviceSettings>(override val context: SnmpContext<T>) :
+    AddressSpaceComposite(context.deviceContext.getServer()), SnmpDevice {
 
     val logger = this.getLogger()
     val lifecycleManager = LifecycleManager()
@@ -42,17 +39,18 @@ abstract class AbstractSnmpDevice<T : SnmpDeviceSettings>(
     val oidAddressSpace = OidAddressSpace(this)
 
     init {
+        lifecycleManager.addLifecycle(context.snmp)
         lifecycleManager.addLifecycle(healthcheck)
         lifecycleManager.addLifecycle(deviceAddressSpace)
         lifecycleManager.addLifecycle(diagnosticAddressSpace)
         lifecycleManager.addLifecycle(oidAddressSpace)
         lifecycleManager.addStartupTask {
-            onDataItemsCreated(deviceContext.getSubscriptionModel().getDataItems(getName()))
+            onDataItemsCreated(context.deviceContext.getSubscriptionModel().getDataItems(getName()))
         }
     }
 
     override fun getName(): String {
-        return deviceSettings.name
+        return context.deviceSettings.name
     }
 
     override fun getStatus(): String {
@@ -60,7 +58,7 @@ abstract class AbstractSnmpDevice<T : SnmpDeviceSettings>(
     }
 
     override fun getTypeId(): String {
-        return deviceSettings.type
+        return context.deviceSettings.type
     }
 
     override fun startup() {
@@ -87,7 +85,7 @@ abstract class AbstractSnmpDevice<T : SnmpDeviceSettings>(
                 }
 
             try {
-                val response = snmp.send(pdu, target).response
+                val response = context.snmp.send(pdu, context.target).response
                 if (response == null) {
                     logger.warn("GET failed: no response.")
                     return reads.map {
@@ -142,7 +140,7 @@ abstract class AbstractSnmpDevice<T : SnmpDeviceSettings>(
                 }
 
             try {
-                val response = snmp.send(pdu, target).response
+                val response = context.snmp.send(pdu, context.target).response
                 if (response == null) {
                     logger.warn("SET failed: no response.")
                     StatusCode(StatusCodes.Bad_CommunicationError).toOidWriteResult()
@@ -168,13 +166,13 @@ abstract class AbstractSnmpDevice<T : SnmpDeviceSettings>(
             future?.cancel(true)
 
             future =
-                deviceContext
+                context.deviceContext
                     .getGatewayContext()
                     .scheduledExecutorService
                     .scheduleWithFixedDelay(
                         this::doHealthcheck,
                         1000,
-                        snmpSettings.connectionTimeout,
+                        context.snmpSettings.connectionTimeout,
                         TimeUnit.MILLISECONDS,
                     )
         }
@@ -184,12 +182,12 @@ abstract class AbstractSnmpDevice<T : SnmpDeviceSettings>(
         }
 
         private fun doHealthcheck() {
-            if (snmpSettings.healthcheckOid.isBlank()) {
+            if (context.snmpSettings.healthcheckOid.isBlank()) {
                 status = SnmpDevice.Status.CONNECTED
                 return
             }
 
-            val response = read(listOf(VariableBinding(OID(snmpSettings.healthcheckOid))))
+            val response = read(listOf(VariableBinding(OID(context.snmpSettings.healthcheckOid))))
             val isGood = response.first().value.statusCode?.isGood
 
             status =

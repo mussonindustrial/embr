@@ -5,15 +5,11 @@ import com.mussonindustrial.embr.snmp.requests.OidReadResult
 import com.mussonindustrial.embr.snmp.requests.OidWriteResult
 import org.eclipse.milo.opcua.sdk.server.api.AddressSpaceFragment
 import org.eclipse.milo.opcua.stack.core.types.builtin.NodeId
-import org.snmp4j.AbstractTarget
-import org.snmp4j.Snmp
 import org.snmp4j.smi.VariableBinding
 
 interface SnmpDevice : AddressSpaceFragment, Device {
 
-    val deviceContext: SnmpDeviceContext
-    val target: AbstractTarget<*>
-    val snmp: Snmp
+    val context: SnmpContext<*>
 
     fun read(reads: List<VariableBinding>): List<OidReadResult>
 
