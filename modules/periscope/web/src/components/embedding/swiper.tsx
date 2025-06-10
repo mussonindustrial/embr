@@ -339,15 +339,13 @@ export function SwiperComponent(props: ComponentProps<SwiperComponentProps>) {
 }
 
 class SwiperComponentDelegate extends ComponentStoreDelegate {
-  private proxyProps: JsObject = {}
-
-  private jsProxy = new ComponentDelegateJavaScriptProxy(this, this.proxyProps)
+  private jsProxy = new ComponentDelegateJavaScriptProxy(this)
 
   setSwiper(swiper?: SwiperRef['swiper']) {
-    this.proxyProps.swiper = swiper
+    this.jsProxy.setRef(swiper)
   }
 
-  handleEvent(eventName: string, eventObject: JsObject): void {
+  handleEvent(eventName: string, eventObject: JsObject) {
     if (this.jsProxy.handles(eventName)) {
       this.jsProxy.handleEvent(eventObject as JavaScriptRunEvent)
     }

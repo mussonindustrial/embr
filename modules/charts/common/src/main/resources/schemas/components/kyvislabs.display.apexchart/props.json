@@ -1,0 +1,66 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+  ],
+  "properties": {
+    "type": {
+      "type": "string",
+      "enum": [
+        "line",
+        "area",
+        "bar",
+        "radar",
+        "histogram",
+        "pie",
+        "donut",
+        "radialBar",
+        "scatter",
+        "bubble",
+        "heatmap",
+        "candlestick",
+        "polarArea",
+        "rangeBar",
+        "treemap",
+        "rangeArea",
+        "boxPlot"
+      ],
+      "description": "The ApexChart type",
+      "default": "line"
+    },
+    "options": {
+      "type": "object",
+      "description": "The Apex Chart options",
+      "default": {
+      }
+    },
+    "series": {
+      "type": "array",
+      "description": "The ApexChart series",
+      "default": [
+      ]
+    },
+    "zoom": {
+      "type": "object",
+      "description": "The Apex Chart last zoom",
+      "properties": {
+        "start": {
+          "type": "string",
+          "description": "Zoom start (x-axis)",
+          "default": ""
+        },
+        "end": {
+          "type": "string",
+          "description": "Zoom end (x-axis)",
+          "default": ""
+        }
+      }
+    },
+    "style": {
+      "$ref": "urn:ignition-schema:schemas/style-properties.schema.json",
+      "default": {
+        "classes": ""
+      }
+    }
+  }
+}
