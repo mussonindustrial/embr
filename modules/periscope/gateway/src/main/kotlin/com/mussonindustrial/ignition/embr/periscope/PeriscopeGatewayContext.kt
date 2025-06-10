@@ -8,6 +8,7 @@ import com.mussonindustrial.embr.gateway.EmbrGatewayContext
 import com.mussonindustrial.embr.gateway.EmbrGatewayContextImpl
 import com.mussonindustrial.embr.perspective.common.component.addResourcesTo
 import com.mussonindustrial.embr.perspective.common.component.removeResourcesFrom
+import com.mussonindustrial.embr.perspective.gateway.component.JavaScriptProxyableComponentModelDelegate
 import com.mussonindustrial.embr.perspective.gateway.component.asGatewayComponent
 import com.mussonindustrial.embr.perspective.gateway.component.registerComponent
 import com.mussonindustrial.embr.perspective.gateway.component.removeComponent
@@ -28,7 +29,7 @@ class PeriscopeGatewayContext(private val context: GatewayContext) :
             FlexRepeater.asGatewayComponent { FlexRepeaterModelDelegate(it) },
             JsonView.asGatewayComponent { JsonViewModelDelegate(it) },
             Portal.asGatewayComponent(),
-            Swiper.asGatewayComponent { SwiperModelDelegate(it) },
+            Swiper.asGatewayComponent { JavaScriptProxyableComponentModelDelegate(it) },
         )
 
     init {
