@@ -40,6 +40,16 @@ enum MessageEvents {
   MESSAGE_REQUEST_EVENT = 'apexchart-request-event',
 }
 
+export const DELEGATE_FETCH_PARAMS: RequestInit = {
+  method: 'get',
+  credentials: 'same-origin',
+  headers: {
+    Accept: 'application/json',
+    pragma: 'no-cache',
+    'cache-control': 'no-cache',
+  },
+}
+
 export class ApexChartGatewayDelegate extends ComponentStoreDelegate {
   private chart: ApexChart | null = null
 
@@ -87,14 +97,13 @@ export class ApexChartGatewayDelegate extends ComponentStoreDelegate {
           } else if (functionToCall == 'clearAnnotations') {
             this.chart.chart.clearAnnotations()
           } else if (functionToCall == 'updateSeries') {
-            this.chart.clearZoom()
-            this.chart.props.store.props.write('series', eventObject.newSeries)
+            if (eventObject.fetchResults) {
+              this.chart.fetchSeriesData(eventObject, eventObject.url)
+            } else {
+              this.chart.setSeriesData(eventObject, eventObject.newSeries)
+            }
           } else if (functionToCall == 'updateOptions') {
-            this.chart.clearZoom()
-            const optionsStr = JSON.stringify(this.chart.props.props.options)
-            const options = JSON.parse(optionsStr)
-            const combinedOptions = { ...options, ...eventObject.newOptions }
-            this.chart.props.store.props.write('options', combinedOptions)
+            this.chart.setOptions(eventObject)
           }
           break
         default:
@@ -111,6 +120,74 @@ export class ApexChart extends Component<ComponentProps<ApexChartProps>, any> {
   public chartRef: RefObject<HTMLDivElement> = React.createRef()
   public chart: ApexCharts = null
   public lastZoom: Array<any> = []
+  public currentSeries: any = null
+  public seriesOverride = false
+  public currentOptions: any = null
+  public optionsOverride = false
+  private throttling = false
+  private requestedSeriesDataUrl: string
+
+  componentDidMount() {
+    logger.debug('Component mounted')
+    this.currentOptions = this.props.props.options
+    this.currentSeries = this.props.props.series
+    logger.debug('Initial series=' + JSON.stringify(this.currentSeries))
+    this.createChart()
+  }
+
+  componentDidUpdate(prevProps) {
+    if (!this.chart) {
+      return null
+    }
+
+    const prevOptions = JSON.stringify(prevProps.props.options)
+    const newOptions = JSON.stringify(this.props.props.options)
+    const currentOptions = JSON.stringify(this.currentOptions)
+
+    const prevSeries = JSON.stringify(prevProps.props.series)
+    const newSeries = JSON.stringify(this.props.props.series)
+    const currentSeries = JSON.stringify(this.currentSeries)
+
+    const prevType = prevProps.props.type
+    const currentType = this.props.props.type
+
+    if (
+      prevOptions === newOptions &&
+      prevSeries !== newSeries &&
+      newSeries !== currentSeries
+    ) {
+      // options are not changed, just the series is changed
+      logger.debug('Series changed, updating')
+      this.currentSeries = this.props.props.series
+      logger.debug('Series=' + JSON.stringify(this.currentSeries))
+      this.updateSeriesData()
+    } else if (
+      prevOptions !== newOptions &&
+      newOptions !== currentOptions &&
+      prevType === currentType
+    ) {
+      // options have changed
+      logger.debug('Options changed, updating')
+      this.currentOptions = this.props.props.options
+      logger.debug('Options=' + JSON.stringify(this.currentOptions))
+      this.updateOptions()
+    } else if (prevType !== currentType) {
+      logger.debug(
+        'Type changed ' +
+          prevType +
+          ' -> ' +
+          currentType +
+          ', creating new chart'
+      )
+      this.createChart()
+    }
+  }
+
+  componentWillUnmount() {
+    if (this.chart && typeof this.chart.destroy === 'function') {
+      this.chart.destroy()
+    }
+  }
 
   createChart() {
     if (this.chart) {
@@ -124,63 +201,116 @@ export class ApexChart extends Component<ComponentProps<ApexChartProps>, any> {
     this.chart.render()
   }
 
-  updateData() {
-    if (this.props.props.type == 'boxPlot') {
-      this.createChart()
-    } else {
-      logger.debug('Updating series data')
-      this.chart.updateSeries(
-        this.prepareSeries(this.props.props.type, this.props.props.series)
-      )
-    }
-  }
-
-  componentDidMount() {
-    logger.debug('Component mounted')
-  }
-
   initDelegate() {
     if (this.props.store.delegate) {
       ;(this.props.store.delegate as ApexChartGatewayDelegate).init(this)
     }
   }
 
-  componentDidUpdate(prevProps) {
-    if (!this.chart) {
-      return null
-    }
-
-    const prevOptions = JSON.stringify(prevProps.props.options)
-    const prevSeries = JSON.stringify(prevProps.props.series)
-    const currentOptions = JSON.stringify(this.props.props.options)
-    const currentSeries = JSON.stringify(this.props.props.series)
-    const prevType = prevProps.props.type
-    const currentType = this.props.props.type
-
-    if (prevOptions === currentOptions && prevSeries !== currentSeries) {
-      // options are not changed, just the series is changed
-      logger.debug('Series changed, updating')
-      this.updateData()
-    } else if (prevOptions !== currentOptions || prevType !== currentType) {
-      // both might be changed
-      logger.debug('Options or type changed, creating new chart')
-      this.createChart()
-    }
-  }
-
-  componentWillUnmount() {
-    if (this.chart && typeof this.chart.destroy === 'function') {
-      this.chart.destroy()
-    }
-  }
-
   getConfig() {
-    const newOptions = this.prepareOptions(this.props.props.options)
+    const newOptions = this.prepareOptions(this.currentOptions)
     newOptions.series = this.prepareSeries(
       this.props.props.type,
-      this.props.props.series
+      this.currentSeries
     )
     return newOptions
+  }
+
+  updateOptions(
+    redrawPaths = false,
+    animate = true,
+    updateSyncedCharts = true,
+    maintainZoom = true
+  ) {
+    logger.debug('Updating options')
+    this.chart.updateOptions(
+      this.prepareOptions(this.currentOptions),
+      redrawPaths,
+      animate,
+      updateSyncedCharts
+    )
+
+    if (!maintainZoom) {
+      this.chart.resetSeries(true, true)
+      this.clearZoom()
+    }
+  }
+
+  setOptions(eventObject) {
+    const optionsStr = JSON.stringify(this.props.props.options)
+    const options = JSON.parse(optionsStr)
+    const combinedOptions = { ...options, ...eventObject.newOptions }
+    logger.debug('Updated Options=' + JSON.stringify(combinedOptions))
+
+    if (eventObject.syncProps) {
+      this.props.store.props.write('options', combinedOptions)
+    } else {
+      this.currentOptions = combinedOptions
+      this.updateOptions(
+        eventObject.redrawPaths,
+        eventObject.animate,
+        eventObject.updateSyncedCharts,
+        eventObject.maintainZoom
+      )
+    }
+  }
+
+  updateSeriesData(animate = true, maintainZoom = true) {
+    if (this.props.props.type == 'boxPlot') {
+      this.createChart()
+    } else {
+      logger.debug('Updating series data')
+      this.chart.updateSeries(
+        this.prepareSeries(this.props.props.type, this.currentSeries),
+        animate
+      )
+
+      if (maintainZoom && this.lastZoom.length > 0) {
+        logger.debug(
+          'Setting zoom (' + this.lastZoom[0] + ':' + this.lastZoom[1] + ')'
+        )
+        this.chart.zoomX(this.lastZoom[0], this.lastZoom[1])
+      } else {
+        this.clearZoom()
+      }
+    }
+  }
+
+  setSeriesData(eventObject, newSeries) {
+    logger.debug('Updated Series=' + JSON.stringify(newSeries))
+
+    if (eventObject.syncProps) {
+      this.props.store.props.write('series', newSeries)
+    } else {
+      this.currentSeries = newSeries
+      this.updateSeriesData(eventObject.animate, eventObject.maintainZoom)
+    }
+  }
+
+  fetchSeriesData(eventObject, url) {
+    this.requestedSeriesDataUrl = url
+    if (!this.throttling) {
+      this.throttling = true
+      fetch(url, DELEGATE_FETCH_PARAMS)
+        .then((resp) => {
+          // Kill throttling and trigger another fetch request if the response URL is different than
+          // the requestedUrl
+          this.throttling = false
+          const { url: retrievedUrl, status } = resp
+          if (status === 200) {
+            if (retrievedUrl.indexOf(this.requestedSeriesDataUrl) === -1) {
+              this.fetchSeriesData(eventObject, this.requestedSeriesDataUrl)
+            }
+            return resp.json()
+          } else {
+            return null
+          }
+        })
+        .then((newSeries) => this.setSeriesData(eventObject, newSeries))
+        .catch((error) => {
+          logger.warn(JSON.stringify(error))
+        })
+    }
   }
 
   @bind
@@ -189,7 +319,7 @@ export class ApexChart extends Component<ComponentProps<ApexChartProps>, any> {
     if (this.chart == null) {
       this.createChart()
     } else {
-      this.updateData()
+      this.updateOptions()
     }
   }
 

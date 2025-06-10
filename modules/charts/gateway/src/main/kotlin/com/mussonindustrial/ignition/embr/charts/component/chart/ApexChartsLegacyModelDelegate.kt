@@ -1,26 +1,36 @@
 package com.mussonindustrial.ignition.embr.charts.component.chart
 
 import com.inductiveautomation.ignition.common.gson.Gson
+import com.inductiveautomation.ignition.common.gson.JsonElement
 import com.inductiveautomation.ignition.common.gson.JsonObject
+import com.inductiveautomation.ignition.common.gson.internal.Streams
+import com.inductiveautomation.ignition.common.gson.stream.JsonWriter
 import com.inductiveautomation.ignition.common.script.builtin.KeywordArgs
 import com.inductiveautomation.ignition.common.script.builtin.PyArgumentMap
-import com.inductiveautomation.perspective.gateway.api.Component
-import com.inductiveautomation.perspective.gateway.api.ComponentModelDelegate
-import com.inductiveautomation.perspective.gateway.api.ScriptCallable
+import com.inductiveautomation.ignition.gateway.dataroutes.RouteGroup
+import com.inductiveautomation.perspective.gateway.api.*
+import com.inductiveautomation.perspective.gateway.api.FetchableCache.Fetchable
 import com.inductiveautomation.perspective.gateway.messages.EventFiredMsg
+import java.io.IOException
+import java.io.OutputStreamWriter
+import java.nio.charset.StandardCharsets.UTF_8
 import java.util.concurrent.atomic.AtomicBoolean
+import javax.servlet.http.HttpServletResponse
 import org.python.core.Py
 import org.python.core.PyDictionary
 import org.python.core.PyObject
 
-class ApexChartsLegacyModelDelegate(component: Component?) : ComponentModelDelegate(component) {
+class ApexChartsLegacyModelDelegate(component: Component) : ComponentModelDelegate(component) {
     private val toggleSeriesWaiting = AtomicBoolean(false)
     private val toggleSeriesReturn = AtomicBoolean(false)
+
+    private val context: PerspectiveContext = component.session.perspectiveContext
 
     override fun onStartup() {
         // Called when the Gateway's ComponentModel starts.  The start itself happens when the
         // client project is
-        // loading and includes an instance of the component type in the page/view being started.
+        // loading and includes an instance of the the component type in the page/view being
+        // started.
         log.debugf("Starting up delegate for '%s'!", component.componentAddressPath)
     }
 
@@ -32,8 +42,7 @@ class ApexChartsLegacyModelDelegate(component: Component?) : ComponentModelDeleg
     @ScriptCallable
     @KeywordArgs(names = ["seriesName"], types = [String::class])
     @Throws(Exception::class)
-    @Suppress("unused")
-    fun toggleSeries(pyArgs: Array<PyObject?>, keywords: Array<String?>): Boolean {
+    fun toggleSeries(pyArgs: Array<PyObject?>?, keywords: Array<String?>?): Boolean {
         val argumentMap =
             PyArgumentMap.interpretPyArgs(
                 pyArgs,
@@ -41,11 +50,9 @@ class ApexChartsLegacyModelDelegate(component: Component?) : ComponentModelDeleg
                 ApexChartsLegacyModelDelegate::class.java,
                 "toggleSeries",
             )
-        val seriesName = argumentMap.getStringArg("seriesName")
-
-        if (seriesName == null) {
-            throw Py.ValueError("toggleSeries argument 'seriesName' cannot be None")
-        }
+        val seriesName =
+            argumentMap.getStringArg("seriesName")
+                ?: throw Py.ValueError("toggleSeries argument 'seriesName' cannot be None")
 
         toggleSeriesWaiting.set(true)
         log.debugf("Calling toggleSeries with '%s'", seriesName)
@@ -72,8 +79,7 @@ class ApexChartsLegacyModelDelegate(component: Component?) : ComponentModelDeleg
     @ScriptCallable
     @KeywordArgs(names = ["seriesName"], types = [String::class])
     @Throws(Exception::class)
-    @Suppress("unused")
-    fun showSeries(pyArgs: Array<PyObject?>, keywords: Array<String?>) {
+    fun showSeries(pyArgs: Array<PyObject?>?, keywords: Array<String?>?) {
         val argumentMap =
             PyArgumentMap.interpretPyArgs(
                 pyArgs,
@@ -81,11 +87,9 @@ class ApexChartsLegacyModelDelegate(component: Component?) : ComponentModelDeleg
                 ApexChartsLegacyModelDelegate::class.java,
                 "showSeries",
             )
-        val seriesName = argumentMap.getStringArg("seriesName")
-
-        if (seriesName == null) {
-            throw Py.ValueError("showSeries argument 'seriesName' cannot be None")
-        }
+        val seriesName =
+            argumentMap.getStringArg("seriesName")
+                ?: throw Py.ValueError("showSeries argument 'seriesName' cannot be None")
 
         log.debugf("Calling showSeries with '%s'", seriesName)
         val payload = JsonObject()
@@ -97,8 +101,7 @@ class ApexChartsLegacyModelDelegate(component: Component?) : ComponentModelDeleg
     @ScriptCallable
     @KeywordArgs(names = ["seriesName"], types = [String::class])
     @Throws(Exception::class)
-    @Suppress("unused")
-    fun hideSeries(pyArgs: Array<PyObject?>, keywords: Array<String?>) {
+    fun hideSeries(pyArgs: Array<PyObject?>?, keywords: Array<String?>?) {
         val argumentMap =
             PyArgumentMap.interpretPyArgs(
                 pyArgs,
@@ -106,11 +109,9 @@ class ApexChartsLegacyModelDelegate(component: Component?) : ComponentModelDeleg
                 ApexChartsLegacyModelDelegate::class.java,
                 "hideSeries",
             )
-        val seriesName = argumentMap.getStringArg("seriesName")
-
-        if (seriesName == null) {
-            throw Py.ValueError("hideSeries argument 'seriesName' cannot be None")
-        }
+        val seriesName =
+            argumentMap.getStringArg("seriesName")
+                ?: throw Py.ValueError("hideSeries argument 'seriesName' cannot be None")
 
         log.debugf("Calling hideSeries with '%s'", seriesName)
         val payload = JsonObject()
@@ -125,8 +126,7 @@ class ApexChartsLegacyModelDelegate(component: Component?) : ComponentModelDeleg
         types = [Boolean::class, Boolean::class],
     )
     @Throws(Exception::class)
-    @Suppress("unused")
-    fun resetSeries(pyArgs: Array<PyObject?>, keywords: Array<String?>) {
+    fun resetSeries(pyArgs: Array<PyObject?>?, keywords: Array<String?>?) {
         val argumentMap =
             PyArgumentMap.interpretPyArgs(
                 pyArgs,
@@ -152,8 +152,7 @@ class ApexChartsLegacyModelDelegate(component: Component?) : ComponentModelDeleg
     @ScriptCallable
     @KeywordArgs(names = ["start", "end"], types = [Long::class, Long::class])
     @Throws(Exception::class)
-    @Suppress("unused")
-    fun zoomX(pyArgs: Array<PyObject?>, keywords: Array<String?>) {
+    fun zoomX(pyArgs: Array<PyObject?>?, keywords: Array<String?>?) {
         val argumentMap =
             PyArgumentMap.interpretPyArgs(
                 pyArgs,
@@ -175,8 +174,7 @@ class ApexChartsLegacyModelDelegate(component: Component?) : ComponentModelDeleg
     @ScriptCallable
     @KeywordArgs(names = ["options", "pushToMemory"], types = [PyDictionary::class, Boolean::class])
     @Throws(Exception::class)
-    @Suppress("unused")
-    fun addPointAnnotation(pyArgs: Array<PyObject?>, keywords: Array<String?>) {
+    fun addPointAnnotation(pyArgs: Array<PyObject?>?, keywords: Array<String?>?) {
         val argumentMap =
             PyArgumentMap.interpretPyArgs(
                 pyArgs,
@@ -184,7 +182,7 @@ class ApexChartsLegacyModelDelegate(component: Component?) : ComponentModelDeleg
                 ApexChartsLegacyModelDelegate::class.java,
                 "addPointAnnotation",
             )
-        val options = argumentMap.get("options") as PyDictionary?
+        val options = argumentMap["options"] as PyDictionary?
         val pushToMemory = argumentMap.getBooleanArg("pushToMemory", true)
 
         val gson = Gson()
@@ -198,7 +196,6 @@ class ApexChartsLegacyModelDelegate(component: Component?) : ComponentModelDeleg
 
     @ScriptCallable
     @Throws(Exception::class)
-    @Suppress("unused")
     fun clearAnnotations() {
         log.debug("Calling clearAnnotations")
         val payload = JsonObject()
@@ -208,12 +205,11 @@ class ApexChartsLegacyModelDelegate(component: Component?) : ComponentModelDeleg
 
     @ScriptCallable
     @KeywordArgs(
-        names = ["newSeries", "animate", "maintainZoom"],
-        types = [MutableList::class, Boolean::class, Boolean::class],
+        names = ["newSeries", "animate", "maintainZoom", "syncProps", "fetchResults"],
+        types = [MutableList::class, Boolean::class, Boolean::class, Boolean::class, Boolean::class],
     )
     @Throws(Exception::class)
-    @Suppress("unused")
-    fun updateSeries(pyArgs: Array<PyObject?>, keywords: Array<String?>) {
+    fun updateSeries(pyArgs: Array<PyObject?>?, keywords: Array<String?>?) {
         val argumentMap =
             PyArgumentMap.interpretPyArgs(
                 pyArgs,
@@ -221,29 +217,61 @@ class ApexChartsLegacyModelDelegate(component: Component?) : ComponentModelDeleg
                 ApexChartsLegacyModelDelegate::class.java,
                 "updateSeries",
             )
-        val newSeries = argumentMap.get("newSeries") as MutableList<*>?
+        val newSeries = argumentMap["newSeries"] as List<*>?
         val animate = argumentMap.getBooleanArg("animate", true)
         val maintainZoom = argumentMap.getBooleanArg("maintainZoom", false)
+        var syncProps = argumentMap.getBooleanArg("syncProps", false)
+        val fetchResults = argumentMap.getBooleanArg("fetchResults", false)
 
+        var url: String? = null
         val gson = Gson()
-        log.debug("Calling updateSeries")
         val payload = JsonObject()
+        val json = gson.toJsonTree(newSeries)
+
+        if (fetchResults!!) {
+            syncProps = false
+
+            val session: Session = component.session
+            val fetchableCache = context.fetchableCache
+            url = fetchableCache.addFetchable(session, ApexDataFetch(session, json))
+        }
+
+        log.debug("Calling updateSeries")
         payload.addProperty("functionToCall", "updateSeries")
-        payload.add("newSeries", gson.toJsonTree(newSeries))
+        payload.add("newSeries", json)
         payload.addProperty("animate", animate)
         payload.addProperty("maintainZoom", maintainZoom)
+        payload.addProperty("syncProps", syncProps)
+        payload.addProperty("fetchResults", fetchResults)
+        if (fetchResults) {
+            payload.addProperty("url", url)
+        }
         fireEvent(OUTBOUND_EVENT_NAME, payload)
     }
 
     @ScriptCallable
     @KeywordArgs(
-        names = ["newOptions", "redrawPaths", "animate", "updateSyncedCharts", "maintainZoom"],
+        names =
+            [
+                "newOptions",
+                "redrawPaths",
+                "animate",
+                "updateSyncedCharts",
+                "maintainZoom",
+                "syncProps",
+            ],
         types =
-            [PyDictionary::class, Boolean::class, Boolean::class, Boolean::class, Boolean::class],
+            [
+                PyDictionary::class,
+                Boolean::class,
+                Boolean::class,
+                Boolean::class,
+                Boolean::class,
+                Boolean::class,
+            ],
     )
     @Throws(Exception::class)
-    @Suppress("unused")
-    fun updateOptions(pyArgs: Array<PyObject?>, keywords: Array<String?>) {
+    fun updateOptions(pyArgs: Array<PyObject?>?, keywords: Array<String?>?) {
         val argumentMap =
             PyArgumentMap.interpretPyArgs(
                 pyArgs,
@@ -256,6 +284,7 @@ class ApexChartsLegacyModelDelegate(component: Component?) : ComponentModelDeleg
         val animate = argumentMap.getBooleanArg("animate", true)
         val updateSyncedCharts = argumentMap.getBooleanArg("updateSyncedCharts", true)
         val maintainZoom = argumentMap.getBooleanArg("maintainZoom", false)
+        val syncProps = argumentMap.getBooleanArg("syncProps", false)
 
         val gson = Gson()
         log.debug("Calling updateOptions")
@@ -266,6 +295,7 @@ class ApexChartsLegacyModelDelegate(component: Component?) : ComponentModelDeleg
         payload.addProperty("animate", animate)
         payload.addProperty("updateSyncedCharts", updateSyncedCharts)
         payload.addProperty("maintainZoom", maintainZoom)
+        payload.addProperty("syncProps", syncProps)
         fireEvent(OUTBOUND_EVENT_NAME, payload)
     }
 
@@ -276,8 +306,20 @@ class ApexChartsLegacyModelDelegate(component: Component?) : ComponentModelDeleg
 
         if (message.eventName == INBOUND_EVENT_NAME) {
             val payload = message.event
-            toggleSeriesReturn.set(payload.get("result").asBoolean)
+            toggleSeriesReturn.set(payload["result"].asBoolean)
             toggleSeriesWaiting.set(false)
+        }
+    }
+
+    private inner class ApexDataFetch(session: Session, val json: JsonElement) : Fetchable {
+
+        @Throws(IOException::class)
+        override fun fetch(response: HttpServletResponse) {
+            response.contentType = RouteGroup.TYPE_JSON
+            response.characterEncoding = UTF_8.name()
+            OutputStreamWriter(response.outputStream, UTF_8).use { streamWriter ->
+                JsonWriter(streamWriter).use { jsonWriter -> Streams.write(json, jsonWriter) }
+            }
         }
     }
 
