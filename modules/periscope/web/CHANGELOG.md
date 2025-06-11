@@ -1,5 +1,11 @@
 # @mussonindustrial/embr-js-chart-js
 
+## 0.7.5
+
+### Patch Changes
+
+- 8ae60a4: (Swiper Component) Add JavaScript proxy support via `component.getJavaScriptProxy('swiper')`.
+
 ## 0.7.4
 
 ## 0.7.3
