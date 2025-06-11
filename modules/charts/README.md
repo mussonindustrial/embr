@@ -8,6 +8,7 @@
 A module for Ignition that adds a collection of enhanced Perspective charting components.
 
 ![chart-js.png](docs/examples/chart-js.png)
+![apex-charts.png](docs/examples/apex-charts.png)
 
 ## Getting Started
 
@@ -20,9 +21,11 @@ A module for Ignition that adds a collection of enhanced Perspective charting co
 
 ### Component Directory
 
-| Name                                                                                              | Category | Description                                                                                                                                                                                                                                                                                       |     |
-|---------------------------------------------------------------------------------------------------|----------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----|
-| [Chart.js Component](https://docs.mussonindustrial.com/ignition/embr-charts/components/chart-js/) | Charting | Chart.js renders chart elements on an HTML5 canvas unlike other D3.js-based charting libraries that render as SVG. Canvas rendering makes Chart.js very performant, especially for large datasets and complex visualizations that would otherwise require thousands of SVG nodes in the DOM tree. |     |
+| Name                                                                                                                   | Category | Description                                                                                                                                                                                                                                                                                       |     |
+|------------------------------------------------------------------------------------------------------------------------|----------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----|
+| [Chart.js Component](https://docs.mussonindustrial.com/ignition/embr-charts/components/chart-js/)                      | Charting | Chart.js renders chart elements on an HTML5 canvas unlike other D3.js-based charting libraries that render as SVG. Canvas rendering makes Chart.js very performant, especially for large datasets and complex visualizations that would otherwise require thousands of SVG nodes in the DOM tree. |     |
+| [ApexCharts Component](https://docs.mussonindustrial.com/ignition/embr-charts/components/apex-charts/)                 | Charting | ApexCharts renders charts using SVG instead of canvas, offering crisp, scalable visuals and seamless CSS styling. While not as fast as canvas for massive datasets, SVG enables rich interactivity, easier DOM manipulation, and high-quality graphics across a wide range of chart types.        |     |
+| [ApexCharts (Legacy) Component](https://docs.mussonindustrial.com/ignition/embr-charts/components/apex-charts-legacy/) | Charting | A drop-in replacement for [Kyvis-Labs/ignition-apexcharts-module](https://github.com/Kyvis-Labs/ignition-apexcharts-module).                                                                                                                                                                      |     |
 
 ---
 
