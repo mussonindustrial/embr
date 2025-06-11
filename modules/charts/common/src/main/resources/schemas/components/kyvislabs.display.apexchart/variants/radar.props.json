@@ -1,0 +1,57 @@
+{
+  "type": "radar",
+  "options": {
+    "chart": {
+      "height": 350,
+      "type": "radar",
+      "events": {
+        "animationEnd": false,
+        "beforeMount": false,
+        "mounted": false,
+        "updated": false,
+        "mouseMove": false,
+        "mouseLeave": false,
+        "click": false,
+        "legendClick": false,
+        "markerClick": false,
+        "xAxisLabelClick": false,
+        "selection": false,
+        "dataPointSelection": false,
+        "dataPointMouseEnter": false,
+        "dataPointMouseLeave": false,
+        "beforeZoom": false,
+        "beforeResetZoom": false,
+        "beforeZoom": false,
+        "zoomed": false,
+        "scrolled": false,
+        "brushScrolled": false
+      }
+    },
+    "title": {
+      "text": "Basic Radar Chart"
+    },
+    "xaxis": {
+      "categories": [
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June"
+      ]
+    }
+  },
+  "series": [
+    {
+      "data": [
+        80,
+        50,
+        30,
+        40,
+        100,
+        20
+      ],
+      "name": "Series 1"
+    }
+  ]
+}

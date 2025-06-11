@@ -1,0 +1,2393 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$defs": {
+    "align_horizontal": {
+      "type": "string",
+      "suggestions": [
+        "left",
+        "center",
+        "right"
+      ]
+    },
+    "align_text_anchor": {
+      "type": "string",
+      "suggestions": [
+        "start",
+        "middle",
+        "end"
+      ]
+    },
+    "align_vertical": {
+      "type": "string",
+      "suggestions": [
+        "top",
+        "middle",
+        "bottom"
+      ]
+    },
+    "annotation_label": {
+      "type":  "object",
+      "properties": {
+        "borderColor": { "$ref":  "#/$defs/color" },
+        "borderWidth": { "type": "number" },
+        "borderRadius": { "type": "number" },
+        "text": { "type": "string" },
+        "textAnchor": { "$ref":  "#/$defs/align_text_anchor" },
+        "offsetX": { "type": "number" },
+        "offsetY": { "type": "number" },
+        "style": { "$ref":  "#/$defs/annotation_style" },
+        "position": { "type": "string" },
+        "orientation": { "$ref":  "#/$defs/orientation" },
+        "mouseEnter": { "$ref": "urn:ignition-schema:schemas/components/javascript-function.json" },
+        "mouseLeave": { "$ref": "urn:ignition-schema:schemas/components/javascript-function.json" },
+        "click": { "$ref": "urn:ignition-schema:schemas/components/javascript-function.json" }
+      }
+    },
+    "annotation_style": {
+      "type":  "object",
+      "properties": {
+        "background": { "$ref":  "#/$defs/color" },
+        "color": { "$ref":  "#/$defs/color" },
+        "fontFamily": { "type": "string" },
+        "fontWeight": { "type": ["string", "number"] },
+        "fontSize": { "type": "string" },
+        "cssClass": { "type": "string" },
+        "padding": { "$ref":  "#/$defs/padding" }
+      }
+    },
+    "annotations_image": {
+      "type":  "object",
+      "properties": {
+        "path": { "type": "string" },
+        "x": { "type": "number" },
+        "y": { "type": "number" },
+        "width": { "type": "number" },
+        "height": { "type": "number" }
+      }
+    },
+    "annotations_point": {
+      "type":  "object",
+      "properties": {
+        "id": { "type": ["string", "number"] },
+        "x": { "type": ["string", "number"] },
+        "y": { "type": ["string", "number", "null"] },
+        "yAxisIndex": { "type": "number" },
+        "seriesIndex": { "type": "number" },
+        "mouseEnter": { "$ref": "urn:ignition-schema:schemas/components/javascript-function.json" },
+        "mouseLeave": { "$ref": "urn:ignition-schema:schemas/components/javascript-function.json" },
+        "click": { "$ref": "urn:ignition-schema:schemas/components/javascript-function.json" },
+        "marker": {
+          "type": "object",
+          "properties": {
+            "size": { "type": "number" },
+            "fillColor": { "$ref":  "#/$defs/color" },
+            "strokeColor": { "$ref":  "#/$defs/color" },
+            "strokeWidth": { "type": "number" },
+            "shape": { "$ref":  "#/$defs/point_shape" },
+            "offsetX": { "type": "number" },
+            "offsetY": { "type": "number" },
+            "cssClass": { "type": "string" }
+          }
+        },
+        "label": { "$ref":  "#/$defs/annotation_label" },
+        "image": {
+          "type": "object",
+          "properties": {
+            "path": { "type": "string" },
+            "width": { "type": "number" },
+            "height": { "type": "number" },
+            "offsetX": { "type": "number" },
+            "offsetY": { "type": "number" }
+          }
+        }
+      }
+    },
+    "annotations_text": {
+      "type":  "object",
+      "properties": {
+        "x": { "type": "number" },
+        "y": { "type": "number" },
+        "text": { "type": "string" },
+        "textAnchor": { "$ref":  "#/$defs/align_text_anchor" },
+        "foreColor": { "$ref":  "#/$defs/color" },
+        "fontSize": { "type": ["string", "number"] },
+        "fontFamily": { "type": "string" },
+        "fontWeight": { "type": ["string", "number"] },
+        "backgroundColor": { "$ref":  "#/$defs/color" },
+        "borderColor": { "$ref":  "#/$defs/color" },
+        "borderRadius": { "type": "number" },
+        "borderWidth": { "type": "number" },
+        "paddingLeft": { "type": "number" },
+        "paddingRight": { "type": "number" },
+        "paddingTop": { "type": "number" },
+        "paddingBottom": { "type": "number" }
+      }
+
+    },
+    "annotations_xaxis": {
+      "type":  "object",
+      "properties": {
+        "id": { "type": ["string", "number"] },
+        "x": { "type": ["string", "number", "null"] },
+        "x2": { "type": ["string", "number", "null"] },
+        "strokeDashArray": { "type": "number" },
+        "fillColor": { "$ref":  "#/$defs/color" },
+        "borderColor": { "$ref":  "#/$defs/color" },
+        "borderWidth": { "type": "number" },
+        "opacity": { "type": "number" },
+        "offsetX": { "type": "number" },
+        "offsetY": { "type": "number" },
+        "label": { "$ref":  "#/$defs/annotation_label" }
+      }
+    },
+    "annotations_yaxis": {
+      "type":  "object",
+      "properties": {
+        "id": { "type": ["string", "number"] },
+        "y": { "type": ["string", "number", "null"] },
+        "y2": { "type": ["string", "number", "null"] },
+        "strokeDashArray": { "type": "number" },
+        "fillColor": { "$ref":  "#/$defs/color" },
+        "borderColor": { "$ref":  "#/$defs/color" },
+        "borderWidth": { "type": "number" },
+        "opacity": { "type": "number" },
+        "offsetX": { "type": "number" },
+        "offsetY": { "type": "number" },
+        "width": { "type": ["string", "number"] },
+        "yAxisIndex": { "type": "number" },
+        "label": { "$ref":  "#/$defs/annotation_label" }
+      }
+    },
+    "annotations": {
+      "type": "object",
+      "properties": {
+        "images": { "type":  "array", "items":  { "$ref":  "#/$defs/annotations_image" } },
+        "points": { "type":  "array", "items":  { "$ref":  "#/$defs/annotations_point" } },
+        "texts": { "type":  "array", "items":  { "$ref":  "#/$defs/annotations_text" } },
+        "xaxis": { "type":  "array", "items":  { "$ref":  "#/$defs/annotations_xaxis" } },
+        "yaxis": { "type":  "array", "items":  { "$ref":  "#/$defs/annotations_yaxis" } }
+      }
+    },
+    "axis_x": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "suggestions": ["category", "datetime", "numeric"]
+        },
+        "categories": { "type":  ["object", "array"] },
+        "overwriteCategories": { "type": "array", "items": { "type":  ["number", "string"] } },
+        "offsetX": { "type": "number" },
+        "offsetY": { "type": "number" },
+        "sorted": { "type": "boolean" },
+        "labels": {
+          "type": "object",
+          "properties": {
+            "show": { "type": "boolean" },
+            "rotate": { "type": "number" },
+            "rotateAlways": { "type": "boolean" },
+            "hideOverlappingLabels": { "type": "boolean" },
+            "showDuplicates": { "type": "boolean" },
+            "trim": { "type": "boolean" },
+            "minHeight": { "type": "number" },
+            "maxHeight": { "type": "number" },
+            "style": {
+              "type": "object",
+              "properties": {
+                "colors": {
+                  "type": ["string", "array"],
+                  "$ref": "#/$defs/color",
+                  "items": { "$ref": "#/$defs/color" }
+                },
+                "fontSize": { "type": "string" },
+                "fontFamily": { "type": "string" },
+                "fontWeight": { "type": ["string", "number"] },
+                "cssClass": { "type": "string" }
+              }
+            },
+            "offsetX": { "type": "number" },
+            "offsetY": { "type": "number" },
+            "format": { "type": "string" },
+            "formatter": { "$ref": "urn:ignition-schema:schemas/components/javascript-function.json" },
+            "datetimeUTC": { "type": "boolean" },
+            "datetimeFormatter": {
+              "type": "object",
+              "properties": {
+                "year": { "type": "string" },
+                "month": { "type": "string" },
+                "day": { "type": "string" },
+                "hour": { "type": "string" },
+                "minute": { "type": "string" },
+                "second": { "type": "string" }
+              }
+            }
+          }
+        },
+        "group": {
+          "type": "object",
+          "properties": {
+            "groups": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "title": { "type": "string" },
+                  "cols": { "type": "number" }
+                }
+              }
+            },
+            "style": {
+              "type": "object",
+              "properties": {
+                "colors": {
+                  "type": ["string", "array"],
+                  "$ref": "#/$defs/color",
+                  "items": { "$ref": "#/$defs/color" }
+                },
+                "fontSize": { "type": "string" },
+                "fontFamily": { "type": "string" },
+                "fontWeight": { "type": ["string", "number"] },
+                "cssClass": { "type": "string" }
+              }
+            }
+          }
+        },
+        "axisBorder": {
+          "type": "object",
+          "properties": {
+            "show": { "type": "boolean" },
+            "color": { "$ref": "#/$defs/color" },
+            "offsetX": { "type": "number" },
+            "offsetY": { "type": "number" },
+            "strokeWidth": { "type": "number" }
+          }
+        },
+        "axisTicks": {
+          "type": "object",
+          "properties": {
+            "show": { "type": "boolean" },
+            "borderType": { "type": "string" },
+            "color": { "$ref": "#/$defs/color" },
+            "height": { "type": "number" },
+            "offsetX": { "type": "number" },
+            "offsetY": { "type": "number" }
+          }
+        },
+        "tickPlacement": { "type": "string" },
+        "tickAmount": { "type": ["string", "number"] },
+        "stepSize": { "type": "number" },
+        "min": { "type": "number" },
+        "max": { "type": "number" },
+        "range": { "type": "number" },
+        "floating": { "type": "boolean" },
+        "decimalsInFloat": { "type": "number" },
+        "position": { "type": "string" },
+        "title": {
+          "type": "object",
+          "properties": {
+            "text": { "type": "string" },
+            "offsetX": { "type": "number" },
+            "offsetY": { "type": "number" },
+            "style": {
+              "type": "object",
+              "properties": {
+                "color": { "$ref": "#/$defs/color" },
+                "fontFamily": { "type": "string" },
+                "fontWeight": { "type": ["string", "number"] },
+                "fontSize": { "type": "string" },
+                "cssClass": { "type": "string" }
+              }
+            }
+          }
+        },
+        "crosshairs": {
+          "type": "object",
+          "properties": {
+            "show": { "type": "boolean" },
+            "width": { "type": ["string", "number"] },
+            "position": { "type": "string" },
+            "opacity": { "type": "number" },
+            "stroke": {
+              "type": "object",
+              "properties": {
+                "color": { "$ref": "#/$defs/color" },
+                "width": { "type": "number" },
+                "dashArray": { "type": "number" }
+              }
+            },
+            "fill": {
+              "type": "object",
+              "properties": {
+                "type": { "type": "string" },
+                "color": { "$ref": "#/$defs/color" },
+                "gradient": {
+                  "type": "object",
+                  "properties": {
+                    "colorFrom": { "$ref": "#/$defs/color" },
+                    "colorTo": { "$ref": "#/$defs/color" },
+                    "stops": {
+                      "type": "array",
+                      "items": { "type": "number" }
+                    },
+                    "opacityFrom": { "type": "number" },
+                    "opacityTo": { "type": "number" }
+                  }
+                }
+              }
+            },
+            "dropShadow": { "$ref": "#/$defs/drop_shadow" }
+          }
+        },
+        "tooltip": {
+          "type": "object",
+          "properties": {
+            "enabled": { "type": "boolean" },
+            "offsetY": { "type": "number" },
+            "formatter": {
+              "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+            },
+            "style": {
+              "type": "object",
+              "properties": {
+                "fontSize": { "type": "string" },
+                "fontFamily": { "type": "string" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "axis_y": {
+      "type": "object",
+      "properties": {
+        "show": { "type": "boolean" },
+        "showAlways": { "type": "boolean" },
+        "showForNullSeries": { "type": "boolean" },
+        "seriesName": { "type": ["string", "array"], "items": { "type":  "string" } },
+        "opposite": { "type": "boolean" },
+        "reversed": { "type": "boolean" },
+        "logarithmic": { "type": "boolean" },
+        "logBase": { "type": "number" },
+        "tickAmount": { "type": "number" },
+        "stepSize": { "type": "number" },
+        "forceNiceScale": { "type": "boolean" },
+        "min": { "type": ["string", "number"] },
+        "max": { "type": ["string", "number"] },
+        "floating": { "type": "boolean" },
+        "decimalsInFloat": { "type": "number" },
+        "labels": {
+          "type": "object",
+          "properties": {
+            "show": { "type": "boolean" },
+            "showDuplicates": { "type": "boolean" },
+            "minWidth": { "type": "number" },
+            "maxWidth": { "type": "number" },
+            "offsetX": { "type": "number" },
+            "offsetY": { "type": "number" },
+            "rotate": { "type": "number" },
+            "align": {
+              "type": "string",
+              "enum": ["left", "center", "right"]
+            },
+            "padding": { "type": "number" },
+            "style": {
+              "type": "object",
+              "properties": {
+                "colors": {
+                  "type": ["string", "array"],
+                  "$ref": "#/$defs/color",
+                  "items": { "$ref": "#/$defs/color" }
+                },
+                "fontSize": { "type": "string" },
+                "fontWeight": { "type": ["string", "number"] },
+                "fontFamily": { "type": "string" },
+                "cssClass": { "type": "string" }
+              }
+            },
+            "formatter": {
+              "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+            }
+          }
+        },
+        "axisBorder": {
+          "type": "object",
+          "properties": {
+            "show": { "type": "boolean" },
+            "color": { "$ref": "#/$defs/color" },
+            "width": { "type": "number" },
+            "offsetX": { "type": "number" },
+            "offsetY": { "type": "number" }
+          }
+        },
+        "axisTicks": {
+          "type": "object",
+          "properties": {
+            "show": { "type": "boolean" },
+            "color": { "$ref": "#/$defs/color" },
+            "width": { "type": "number" },
+            "offsetX": { "type": "number" },
+            "offsetY": { "type": "number" }
+          }
+        },
+        "title": {
+          "type": "object",
+          "properties": {
+            "text": { "type": "string" },
+            "rotate": { "type": "number" },
+            "offsetX": { "type": "number" },
+            "offsetY": { "type": "number" },
+            "style": {
+              "type": "object",
+              "properties": {
+                "color": { "$ref": "#/$defs/color" },
+                "fontSize": { "type": "string" },
+                "fontWeight": { "type": ["string", "number"] },
+                "fontFamily": { "type": "string" },
+                "cssClass": { "type": "string" }
+              }
+            }
+          }
+        },
+        "crosshairs": {
+          "type": "object",
+          "properties": {
+            "show": { "type": "boolean" },
+            "position": { "type": "string" },
+            "stroke": {
+              "type": "object",
+              "properties": {
+                "color": { "$ref": "#/$defs/color" },
+                "width": { "type": "number" },
+                "dashArray": { "type": "number" }
+              }
+            }
+          }
+        },
+        "tooltip": {
+          "type": "object",
+          "properties": {
+            "enabled": { "type": "boolean" },
+            "offsetX": { "type": "number" }
+          }
+        }
+      }
+    },
+    "chart": {
+      "type": "object",
+      "properties": {
+        "animations": {
+          "$ref": "#/$defs/chart_animations"
+        },
+        "background": {
+          "$ref": "#/$defs/color"
+        },
+        "brush": {
+          "$ref": "#/$defs/chart_brush"
+        },
+        "defaultLocale": {
+          "type": "string"
+        },
+        "dropShadow": {
+          "$ref": "#/$defs/drop_shadow"
+        },
+        "events": {
+          "$ref": "#/$defs/chart_events"
+        },
+        "foreColor": {
+          "$ref": "#/$defs/color"
+        },
+        "fontFamily": {
+          "type": "string"
+        },
+        "group": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "locales": {
+          "type": ["array", "null"],
+          "items": {
+            "$ref": "#/$defs/locale"
+          },
+          "default": [{
+            "name": "en",
+            "options": {
+              "months": ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+              "shortMonths": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+              "days": ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+              "shortDays": ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+              "toolbar": {
+                "download": "Download SVG",
+                "selection": "Selection",
+                "selectionZoom": "Selection Zoom",
+                "zoomIn": "Zoom In",
+                "zoomOut": "Zoom Out",
+                "pan": "Panning",
+                "reset": "Reset Zoom"
+              }
+            }
+          }]
+        },
+        "nonce": {
+          "type": "string"
+        },
+        "offsetX": {
+          "type": "number"
+        },
+        "offsetY": {
+          "type": "number"
+        },
+        "parentHeightOffset": {
+          "type": "number"
+        },
+        "redrawOnParentResize": {
+          "type": "boolean"
+        },
+        "redrawOnWindowResize": {
+          "type": "boolean"
+        },
+        "selection": {
+          "$ref": "#/$defs/chart_selection"
+        },
+        "sparkline": {
+          "$ref": "#/$defs/chart_sparkline"
+        },
+        "stacked": {
+          "type": "boolean",
+          "default": false
+        },
+        "stackType": {
+          "$ref": "#/$defs/chart_stack_type"
+        },
+        "stackOnlyBar": {
+          "type": "boolean"
+        },
+        "toolbar": {
+          "$ref": "#/$defs/chart_toolbar"
+        },
+        "zoom": {
+          "$ref": "#/$defs/chart_zoom"
+        }
+      }
+    },
+    "chart_animations": {
+      "type": "object",
+      "properties": {
+        "enabled": { "type": "boolean" },
+        "easing": { "$ref": "#/$defs/chart_animation_easing" },
+        "speed": { "type": "number" },
+        "animateGradually": {
+          "type": "object",
+          "properties": {
+            "enabled": { "type": "boolean" },
+            "delay": { "type": "number" }
+          }
+        },
+        "dynamicAnimation": {
+          "type": "object",
+          "properties": {
+            "enabled": { "type": "boolean" },
+            "speed": { "type": "number" }
+          }
+        }
+      }
+    },
+    "chart_animation_easing": {
+      "type": "string",
+      "suggestions": [
+        "linear",
+        "easein",
+        "easeout",
+        "easeinout"
+      ]
+    },
+    "chart_brush": {
+      "type": "object",
+      "properties": {
+        "enabled": { "type": "boolean" },
+        "autoScaleYaxis": { "type": "boolean" },
+        "target": { "type": ["string", "null"] },
+        "targets": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "chart_events": {
+      "type": "object",
+      "default": {},
+      "properties": {
+        "animationEnd": {
+          "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+        },
+        "beforeMount": {
+          "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+        },
+        "beforeResetZoom": {
+          "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+        },
+        "beforeZoom": {
+          "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+        },
+        "brushScrolled": {
+          "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+        },
+        "click": {
+          "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+        },
+        "dataPointMouseEnter": {
+          "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+        },
+        "dataPointMouseLeave": {
+          "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+        },
+        "dataPointSelection": {
+          "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+        },
+        "legendClick": {
+          "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+        },
+        "markerClick": {
+          "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+        },
+        "mounted": {
+          "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+        },
+        "mouseLeave": {
+          "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+        },
+        "mouseMove": {
+          "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+        },
+        "selection": {
+          "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+        },
+        "scrolled": {
+          "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+        },
+        "updated": {
+          "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+        },
+        "xAxisLabelClick": {
+          "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+        },
+        "zoomed": {
+          "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+        }
+      }
+    },
+    "chart_selection": {
+      "type": "object",
+      "properties": {
+        "enabled": { "type":  "boolean" },
+        "type": { "type":  "string" },
+        "fill": { "$ref": "#/$defs/fill" },
+        "stroke": { "$ref": "#/$defs/stroke" },
+        "xaxis": { "$ref": "#/$defs/min_max" },
+        "yaxis": { "$ref": "#/$defs/min_max" }
+      }
+    },
+    "chart_sparkline": {
+      "type": "object",
+      "properties": {
+        "enabled": { "type": "boolean" }
+      }
+    },
+    "chart_stack_type": {
+      "default": "normal",
+      "suggestions": [
+        "normal",
+        "100%"
+      ],
+      "type": "string"
+    },
+    "chart_toolbar": {
+      "type": "object",
+      "properties": {
+        "show": { "type": "boolean" },
+        "offsetX": { "type": "number" },
+        "offsetY": { "type": "number" },
+        "tools": {
+          "type": "object",
+          "properties": {
+            "download": { "type": ["boolean", "string"] },
+            "selection": { "type": ["boolean", "string"] },
+            "zoom": { "type": ["boolean", "string"] },
+            "zoomin": { "type": ["boolean", "string"] },
+            "zoomout": { "type": ["boolean", "string"] },
+            "pan": { "type": ["boolean", "string"] },
+            "reset": { "type": ["boolean", "string"] },
+            "customIcons": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "icon": { "type": "string" },
+                  "title": { "type": "string" },
+                  "index": { "type": "number" },
+                  "class": { "type": "string" },
+                  "click": {
+                    "$ref": "urn:ignition-schema:schemas/components/javascript-function.json"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "export": {
+          "type": "object",
+          "properties": {
+            "csv": {
+              "type": "object",
+              "properties": {
+                "filename": { "type":  "string" },
+                "columnDelimiter": { "type":  "string" },
+                "headerCategory": { "type":  "string" },
+                "headerValue": { "type":  "string" },
+                "categoryFormatter": { "$ref": "urn:ignition-schema:schemas/components/javascript-function.json" },
+                "valueFormatter": { "$ref": "urn:ignition-schema:schemas/components/javascript-function.json" }
+              }
+            },
+            "svg": {
+              "type": "object",
+              "properties": {
+                "filename": { "type":  "string" }
+              }
+            },
+            "png": {
+              "type": "object",
+              "properties": {
+                "filename": { "type":  "string" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "chart_type": {
+      "description": "Chart type.",
+      "suggestions": [
+        "area",
+        "bar",
+        "boxPlot",
+        "bubble",
+        "candlestick",
+        "donut",
+        "heatmap",
+        "line",
+        "pie",
+        "polarArea",
+        "radar",
+        "radialBar",
+        "rangeArea",
+        "rangeBar",
+        "scatter",
+        "treemap"
+      ],
+      "type": "string"
+    },
+    "chart_zoom": {
+      "type": "object",
+      "properties": {
+        "enabled": { "type":  "boolean" },
+        "type": { "$ref":  "#/$defs/chart_zoom_type" },
+        "autoScaleYaxis": { "type":  "boolean" },
+        "allowMouseWheelZoom": { "type":  "boolean" },
+        "zoomedArea": {
+          "type": "object",
+          "properties": {
+            "fill": { "$ref": "#/$defs/fill" },
+            "stroke": { "$ref": "#/$defs/stroke" }
+          }
+        }
+      }
+    },
+    "chart_zoom_type": {
+      "type": "string",
+      "suggestions": [
+        "x",
+        "y",
+        "xy"
+      ]
+    },
+    "color": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "color"
+    },
+    "color_stop": {
+      "type": "object",
+      "properties": {
+        "offset": { "type": "number" },
+        "color": { "type": "string" },
+        "opacity": { "type": "number" }
+      }
+    },
+    "datalabels": {
+      "type": "object",
+      "properties": {
+        "enabled": { "type": "boolean" },
+        "enabledOnSeries": { "type": "array", "items": { "type":  "number" } },
+        "textAnchor": { "$ref": "#/$defs/text_anchor" },
+        "distributed": { "type": "boolean" },
+        "offsetX": { "type": "number" },
+        "offsetY": { "type": "number" },
+        "style": { "$ref": "#/$defs/text_style" },
+        "background": { "$ref": "#/$defs/text_background" },
+        "dropShadow": { "$ref":  "#/$defs/drop_shadow" },
+        "formatter": { "$ref": "urn:ignition-schema:schemas/components/javascript-function.json" }
+      }
+    },
+    "discrete_point": {
+      "type": "object",
+      "properties": {
+        "seriesIndex": { "type": "number" },
+        "dataPointIndex": { "type": "number" },
+        "fillColor": { "$ref": "#/$defs/color" },
+        "strokeColor": { "$ref": "#/$defs/color" },
+        "size": { "type": "number" },
+        "shape": { "$ref": "#/$defs/marker_shape" }
+      }
+    },
+    "drop_shadow": {
+      "type": "object",
+      "properties": {
+        "enabled": { "type": "boolean" },
+        "top": { "type": "number" },
+        "left": { "type": "number" },
+        "blur": { "type": "number" },
+        "opacity": { "type": "number" },
+        "color": { "$ref": "#/$defs/color" }
+      }
+    },
+    "fill": {
+      "type": "object",
+      "properties": {
+        "colors": {
+          "type": "array",
+          "items": { "$ref":  "#/$defs/color" }
+        },
+        "opacity": {
+          "type": ["number", "array"],
+          "items": { "type": "number" }
+        },
+        "type": {
+          "type": ["string", "array"],
+          "items": { "type": "string" }
+        },
+        "gradient": {
+          "type": "object",
+          "properties": {
+            "shade": { "type": "string" },
+            "type": { "type": "string" },
+            "shadeIntensity": { "type": "number" },
+            "gradientToColors": {
+              "type": "array",
+              "items": { "$ref":  "#/$defs/color" }
+            },
+            "inverseColors": { "type": "boolean" },
+            "opacityFrom": {
+              "type": ["number", "array"],
+              "items": { "type": "number" }
+            },
+            "opacityTo": {
+              "type": ["number", "array"],
+              "items": { "type": "number" }
+            },
+            "stops": {
+              "type": "array",
+              "items": { "type": "number" }
+            },
+            "colorStops": {
+              "type": "array",
+              "items": {
+                "anyOf": [
+                  {
+                    "type": "array",
+                    "items": { "$ref": "#/$defs/color_stop" }
+                  },
+                  { "$ref": "#/$defs/color_stop" }
+                ]
+              }
+            }
+          }
+        },
+        "image": {
+          "type": "object",
+          "properties": {
+            "src": {
+              "type": ["string", "array"],
+              "items": { "type": "string" }
+            },
+            "width": { "type": "number" },
+            "height": { "type": "number" }
+          }
+        },
+        "pattern": {
+          "type": "object",
+          "properties": {
+            "style": {
+              "type": ["string", "array"],
+              "items": { "type": "string" }
+            },
+            "width": { "type": "number" },
+            "height": { "type": "number" },
+            "strokeWidth": { "type": "number" }
+          }
+        }
+      }
+    },
+    "forecast_datapoints": {
+      "type": "object",
+      "properties": {
+        "count": { "type":  "number" },
+        "fillOpacity": { "type":  "number" },
+        "strokeWidth": { "type":  "number" },
+        "dashArray": { "type":  "number" }
+      }
+    },
+    "grid": {
+      "type": "object",
+      "properties": {
+        "show": { "type": "boolean" },
+        "borderColor": { "$ref": "#/$defs/color" },
+        "strokeDashArray": { "type": "number" },
+        "position": { "$ref": "#/$defs/grid_position" },
+        "xaxis": { "$ref": "#/$defs/grid_axis" },
+        "yaxis": { "$ref": "#/$defs/grid_axis" },
+        "row": { "$ref": "#/$defs/grid_row" },
+        "column": { "$ref": "#/$defs/grid_row" },
+        "padding": { "$ref": "#/$defs/padding" }
+      }
+    },
+    "grid_axis": {
+      "type": "object",
+      "properties": {
+        "lines": { "$ref": "#/$defs/grid_lines" }
+      }
+    },
+    "grid_lines": {
+      "type": "object",
+      "properties": {
+        "show": { "type":  "boolean" },
+        "offsetX": { "type":  "number" },
+        "offsetY": { "type":  "number" }
+      }
+    },
+    "grid_position": {
+      "type":  "string",
+      "suggestions": [
+        "front",
+        "back"
+      ]
+    },
+    "grid_row": {
+      "type": "object",
+      "properties": {
+        "colors": { "type":  "array", "items": { "$ref":  "#/$defs/color" } },
+        "opacity": { "type":  "number" }
+      }
+    },
+    "legend": {
+      "type": "object",
+      "properties": {
+        "show": { "type": "boolean" },
+        "showForSingleSeries": { "type": "boolean" },
+        "showForNullSeries": { "type": "boolean" },
+        "showForZeroSeries": { "type": "boolean" },
+        "floating": { "type": "boolean" },
+        "inverseOrder": { "type": "boolean" },
+        "position": { "$ref": "#/$defs/legend_position" },
+        "horizontalAlign": { "$ref": "#/$defs/align_horizontal" },
+        "fontSize": { "type": "string" },
+        "fontFamily": { "type": "string" },
+        "fontWeight": { "type": ["string", "number"] },
+        "width": { "type": "number" },
+        "height": { "type": "number" },
+        "offsetX": { "type": "number" },
+        "offsetY": { "type": "number" },
+        "formatter": { "$ref": "urn:ignition-schema:schemas/components/javascript-function.json" },
+        "tooltipHoverFormatter": { "$ref": "urn:ignition-schema:schemas/components/javascript-function.json" },
+        "customLegendItems": { "type": "array", "items": { "type":  "string" } },
+        "labels": { "$ref": "#/$defs/legend_labels" },
+        "markers": { "$ref": "#/$defs/legend_markers" },
+        "itemMargin": { "$ref": "#/$defs/legend_item_margin" },
+        "onItemClick": { "$ref": "#/$defs/legend_on_item_click" },
+        "onItemHover": { "$ref": "#/$defs/legend_on_item_hover" }
+      }
+    },
+    "legend_item_margin": {
+      "type": "object",
+      "properties": {
+        "horizontal": { "type": "number" },
+        "vertical": { "type": "number" }
+      }
+    },
+    "legend_labels": {
+      "type": "object",
+      "properties": {
+        "colors": { "type": "array", "items": { "$ref":  "#/$defs/color" } },
+        "useSeriesColors": { "type": "boolean" }
+      }
+    },
+    "legend_markers": {
+      "type": "object",
+      "properties": {
+        "size": { "type": "number" },
+        "strokeWidth": { "type": "number" },
+        "fillColors": { "type": "array", "items": { "$ref": "#/$defs/color" } },
+        "shape": { "$ref": "#/$defs/marker_shape" },
+        "offsetX": { "type": "number" },
+        "offsetY": { "type": "number" },
+        "customHTML": { "$ref": "urn:ignition-schema:schemas/components/javascript-function.json" },
+        "onClick": { "$ref": "urn:ignition-schema:schemas/components/javascript-function.json" }
+      }
+    },
+    "legend_on_item_click": {
+      "type": "object",
+      "properties": {
+        "toggleDataSeries": { "type": "boolean" }
+      }
+    },
+    "legend_on_item_hover": {
+      "type": "object",
+      "properties": {
+        "highlightDataSeries": { "type": "boolean" }
+      }
+    },
+    "legend_position": {
+      "type": "string",
+      "suggestions": [
+        "top",
+        "right",
+        "bottom",
+        "left"
+      ]
+    },
+    "locale": {
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "options": {
+          "type": "object",
+          "properties": {
+            "months": { "type": "array", "items": { "type":  "string" } },
+            "shortMonths": { "type": "array", "items": { "type":  "string" } },
+            "days": { "type": "array", "items": { "type":  "string" } },
+            "shortDays": { "type": "array", "items": { "type":  "string" } },
+            "toolbar": {
+              "type": "object",
+              "properties": {
+                "download": { "type": "string" },
+                "selection": { "type": "string" },
+                "selectionZoom": { "type": "string" },
+                "zoomIn": { "type": "string" },
+                "zoomOut": { "type": "string" },
+                "pan": { "type": "string" },
+                "reset": { "type": "string" },
+                "exportToSVG": { "type": "string" },
+                "exportToPNG": { "type": "string" },
+                "exportToCSV": { "type": "string" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "marker_shape": { "$ref": "#/$defs/marker_shape_options" },
+    "marker_shape_options": {
+      "type": "string",
+      "suggestions": [
+        "circle",
+        "square",
+        "rect",
+        "line",
+        "cross",
+        "plus",
+        "start",
+        "sparkle",
+        "diamond",
+        "triangle"
+      ]
+    },
+    "markers": {
+      "type": "object",
+      "properties": {
+        "size": { "type": ["number", "array"], "items": { "type":  "number" } },
+        "colors": { "type": ["string", "array"], "$ref": "#/$defs/color", "items": { "$ref": "#/$defs/color" } },
+        "strokeColors": { "type": ["string", "array"], "$ref": "#/$defs/color", "items": { "$ref": "#/$defs/color" } },
+        "strokeWidth": { "type": ["number", "array"], "items": { "type":  "number" } },
+        "strokeOpacity": { "type": ["number", "array"], "items": { "type":  "number" } },
+        "strokeDashArray": { "type": ["number", "array"], "items": { "type":  "number" } },
+        "fillOpacity": { "type": ["number", "array"], "items": { "type":  "number" } },
+        "discrete": { "$ref": "#/$defs/discrete_point" },
+        "shape": { "$ref": "#/$defs/marker_shape" },
+        "offsetX": { "type": "number" },
+        "offsetY": { "type": "number" },
+        "showNullDataPoints": { "type": "boolean" },
+        "onClick": { "$ref": "urn:ignition-schema:schemas/components/javascript-function.json" },
+        "onDblClick": { "$ref": "urn:ignition-schema:schemas/components/javascript-function.json" },
+        "hover": {
+          "type": "object",
+          "properties": {
+            "size": { "type": "number" },
+            "sizeOffset": { "type": "number" }
+          }
+        }
+      }
+    },
+    "min_max": {
+      "type": "object",
+      "properties": {
+        "min": { "type": "number" },
+        "max": { "type": "number" }
+      }
+    },
+    "no_data": {
+      "type": "object",
+      "properties": {
+        "text": { "type": "string" },
+        "align": { "$ref": "#/$defs/align_horizontal" },
+        "verticalAlign": { "$ref": "#/$defs/align_vertical" },
+        "offsetX": { "type": "number" },
+        "offsetY": { "type": "number" },
+        "style": {
+          "type": "object",
+          "properties": {
+            "color": { "$ref": "#/$defs/color" },
+            "fontSize": { "type": "string" },
+            "fontFamily": { "type": "string" }
+          }
+        }
+      }
+    },
+    "options": {
+      "type": "object",
+      "properties": {
+        "annotations": { "$ref": "#/$defs/annotations" },
+        "chart": { "$ref": "#/$defs/chart" },
+        "colors": {
+          "type": ["array", "null"],
+          "items": { "$ref": "#/$defs/color" }
+        },
+        "dataLabels": { "$ref": "#/$defs/datalabels" },
+        "fill": { "$ref": "#/$defs/fill" },
+        "forecastDataPoints": { "$ref": "#/$defs/forecast_datapoints" },
+        "grid": { "$ref": "#/$defs/grid" },
+        "labels": { "type": "array", "items": { "type": "string" }, "default": [] },
+        "legend": { "$ref": "#/$defs/legend" },
+        "markers": { "$ref": "#/$defs/markers" },
+        "noData": { "$ref": "#/$defs/no_data" },
+        "plotOptions": { "$ref": "#/$defs/plot_options" },
+        "responsive": { "type": "array", "items": { "$ref": "#/$defs/responsive" } },
+        "states": { "$ref": "#/$defs/states" },
+        "stroke": { "$ref": "#/$defs/stroke" },
+        "subtitle": { "$ref": "#/$defs/title" },
+        "theme": { "$ref": "#/$defs/theme" },
+        "title": { "$ref": "#/$defs/title" },
+        "tooltip": { "$ref": "#/$defs/tooltip" },
+        "xaxis": { "$ref": "#/$defs/axis_x" },
+        "yaxis": {
+          "type": ["object", "array"],
+          "$ref": "#/$defs/axis_y",
+          "items":  { "$ref": "#/$defs/axis_y" }
+        }
+      },
+      "default": {
+        "chart": {
+          "animations": {
+            "enabled": true,
+            "easing": "easeinout",
+            "speed": 800,
+            "animateGradually": {
+              "delay": 150,
+              "enabled": true
+            },
+            "dynamicAnimation": {
+              "enabled": true,
+              "speed": 350
+            }
+          },
+          "background": "",
+          "locales": [
+            {
+              "name": "en",
+              "options": {
+                "months": [
+                  "January",
+                  "February",
+                  "March",
+                  "April",
+                  "May",
+                  "June",
+                  "July",
+                  "August",
+                  "September",
+                  "October",
+                  "November",
+                  "December"
+                ],
+                "shortMonths": [
+                  "Jan",
+                  "Feb",
+                  "Mar",
+                  "Apr",
+                  "May",
+                  "Jun",
+                  "Jul",
+                  "Aug",
+                  "Sep",
+                  "Oct",
+                  "Nov",
+                  "Dec"
+                ],
+                "days": [
+                  "Sunday",
+                  "Monday",
+                  "Tuesday",
+                  "Wednesday",
+                  "Thursday",
+                  "Friday",
+                  "Saturday"
+                ],
+                "shortDays": [
+                  "Sun",
+                  "Mon",
+                  "Tue",
+                  "Wed",
+                  "Thu",
+                  "Fri",
+                  "Sat"
+                ],
+                "toolbar": {
+                  "exportToSVG": "Download SVG",
+                  "exportToPNG": "Download PNG",
+                  "exportToCSV": "Download CSV",
+                  "menu": "Menu",
+                  "selection": "Selection",
+                  "selectionZoom": "Selection Zoom",
+                  "zoomIn": "Zoom In",
+                  "zoomOut": "Zoom Out",
+                  "pan": "Panning",
+                  "reset": "Reset Zoom"
+                }
+              }
+            }
+          ],
+          "defaultLocale": "en",
+          "dropShadow": {
+            "enabled": false
+          },
+          "events": {},
+          "foreColor": "#373d3f",
+          "fontFamily": "Helvetica, Arial, sans-serif",
+          "selection": {
+            "enabled": false,
+            "type": "x",
+            "fill": {
+              "color": "#24292e",
+              "opacity": 0.1
+            },
+            "stroke": {
+              "width": 1,
+              "color": "#24292e",
+              "opacity": 0.4,
+              "dashArray": 3
+            },
+            "xaxis": {},
+            "yaxis": {}
+          },
+          "sparkline": {
+            "enabled": false
+          },
+          "brush": {
+            "enabled": false,
+            "autoScaleYaxis": true
+          },
+          "stacked": false,
+          "stackOnlyBar": true,
+          "stackType": "normal",
+          "toolbar": {
+            "show": true,
+            "tools": {
+              "download": true,
+              "selection": true,
+              "zoom": true,
+              "zoomin": true,
+              "zoomout": true,
+              "pan": true,
+              "reset": true,
+              "customIcons": []
+            },
+            "export": {
+              "csv": {
+                "columnDelimiter": ",",
+                "headerCategory": "category",
+                "headerValue": "value"
+              },
+              "png": {},
+              "svg": {}
+            },
+            "autoSelected": "zoom"
+          },
+          "zoom": {
+            "enabled": true,
+            "type": "x",
+            "autoScaleYaxis": false,
+            "allowMouseWheelZoom": true,
+            "zoomedArea": {
+              "fill": {
+                "color": "#90CAF9",
+                "opacity": 0.4
+              },
+              "stroke": {
+                "color": "#0D47A1",
+                "opacity": 0.4,
+                "width": 1
+              }
+            }
+          }
+        },
+        "plotOptions": {
+          "line": {
+            "isSlopeChart": false
+          },
+          "area": {
+            "fillTo": "origin"
+          },
+          "bar": {
+            "horizontal": false,
+            "columnWidth": "70%",
+            "barHeight": "70%",
+            "distributed": false,
+            "borderRadius": 0,
+            "borderRadiusApplication": "around",
+            "borderRadiusWhenStacked": "last",
+            "rangeBarOverlap": true,
+            "rangeBarGroupRows": false,
+            "hideZeroBarsWhenGrouped": false,
+            "isDumbbell": false,
+            "isFunnel": false,
+            "isFunnel3d": true,
+            "colors": {
+              "ranges": [],
+              "backgroundBarColors": [],
+              "backgroundBarOpacity": 1,
+              "backgroundBarRadius": 0
+            },
+            "dataLabels": {
+              "position": "top",
+              "maxItems": 100,
+              "hideOverflowingLabels": true,
+              "orientation": "horizontal",
+              "total": {
+                "enabled": false,
+                "offsetX": 0,
+                "offsetY": 0,
+                "style": {
+                  "color": "#373d3f",
+                  "fontSize": "12px",
+                  "fontWeight": 600
+                }
+              }
+            }
+          },
+          "bubble": {
+            "zScaling": true
+          },
+          "candlestick": {
+            "colors": {
+              "upward": "#00B746",
+              "downward": "#EF403C"
+            },
+            "wick": {
+              "useFillColor": true
+            }
+          },
+          "boxPlot": {
+            "colors": {
+              "upper": "#00E396",
+              "lower": "#008FFB"
+            }
+          },
+          "heatmap": {
+            "radius": 2,
+            "enableShades": true,
+            "shadeIntensity": 0.5,
+            "reverseNegativeShade": false,
+            "distributed": false,
+            "useFillColorAsStroke": false,
+            "colorScale": {
+              "inverse": false,
+              "ranges": []
+            }
+          },
+          "treemap": {
+            "enableShades": true,
+            "shadeIntensity": 0.5,
+            "distributed": false,
+            "reverseNegativeShade": false,
+            "useFillColorAsStroke": false,
+            "borderRadius": 4,
+            "dataLabels": {
+              "format": "scale"
+            },
+            "colorScale": {
+              "inverse": false,
+              "ranges": []
+            }
+          },
+          "radialBar": {
+            "inverseOrder": false,
+            "startAngle": 0,
+            "endAngle": 360,
+            "offsetX": 0,
+            "offsetY": 0,
+            "hollow": {
+              "margin": 5,
+              "size": "50%",
+              "background": "transparent",
+              "imageWidth": 150,
+              "imageHeight": 150,
+              "imageOffsetX": 0,
+              "imageOffsetY": 0,
+              "imageClipped": true,
+              "position": "front",
+              "dropShadow": {
+                "enabled": false,
+                "top": 0,
+                "left": 0,
+                "blur": 3,
+                "color": "#000",
+                "opacity": 0.5
+              }
+            },
+            "track": {
+              "show": true,
+              "background": "#f2f2f2",
+              "strokeWidth": "97%",
+              "opacity": 1,
+              "margin": 5,
+              "dropShadow": {
+                "enabled": false,
+                "top": 0,
+                "left": 0,
+                "blur": 3,
+                "color": "#000",
+                "opacity": 0.5
+              }
+            },
+            "dataLabels": {
+              "show": true,
+              "name": {
+                "show": true,
+                "fontSize": "16px",
+                "fontWeight": 600,
+                "offsetY": 0
+              },
+              "value": {
+                "show": true,
+                "fontSize": "14px",
+                "fontWeight": 400,
+                "offsetY": 16
+              },
+              "total": {
+                "show": false,
+                "label": "Total",
+                "fontSize": "16px",
+                "fontWeight": 600
+              }
+            },
+            "barLabels": {
+              "enabled": false,
+              "offsetX": 0,
+              "offsetY": 0,
+              "useSeriesColors": true,
+              "fontWeight": 600,
+              "fontSize": "16px"
+            }
+          },
+          "pie": {
+            "customScale": 1,
+            "offsetX": 0,
+            "offsetY": 0,
+            "startAngle": 0,
+            "endAngle": 360,
+            "expandOnClick": true,
+            "dataLabels": {
+              "offset": 0,
+              "minAngleToShowLabel": 10
+            },
+            "donut": {
+              "size": "65%",
+              "background": "transparent",
+              "labels": {
+                "show": false,
+                "name": {
+                  "show": true,
+                  "fontSize": "16px",
+                  "fontWeight": 600,
+                  "offsetY": -10
+                },
+                "value": {
+                  "show": true,
+                  "fontSize": "20px",
+                  "fontWeight": 400,
+                  "offsetY": 10
+                },
+                "total": {
+                  "show": false,
+                  "showAlways": false,
+                  "label": "Total",
+                  "fontSize": "16px",
+                  "fontWeight": 400
+                }
+              }
+            }
+          },
+          "polarArea": {
+            "rings": {
+              "strokeWidth": 1,
+              "strokeColor": "#e8e8e8"
+            },
+            "spokes": {
+              "strokeWidth": 1,
+              "connectorColors": "#e8e8e8"
+            }
+          },
+          "radar": {
+            "offsetX": 0,
+            "offsetY": 0,
+            "polygons": {
+              "strokeWidth": 1,
+              "strokeColors": "#e8e8e8",
+              "connectorColors": "#e8e8e8",
+              "fill": {}
+            }
+          }
+        }
+      }
+    },
+    "orientation": {
+      "type": "string",
+      "suggestions": [
+        "vertical",
+        "horizontal"
+      ]
+    },
+    "padding": {
+      "type": "object",
+      "properties": {
+        "top": { "type": "number" },
+        "right": { "type": "number" },
+        "bottom": { "type": "number" },
+        "left": { "type": "number" }
+      }
+    },
+    "plot_options": {
+      "type": "object",
+      "properties": {
+        "area": { "$ref":  "#/$defs/plot_options_area" },
+        "bar": { "$ref":  "#/$defs/plot_options_bar" },
+        "boxPlot": { "$ref":  "#/$defs/plot_options_boxplot" },
+        "bubble": { "$ref":  "#/$defs/plot_options_bubble" },
+        "candlestick": { "$ref":  "#/$defs/plot_options_candlestick" },
+        "line": { "$ref":  "#/$defs/plot_options_line" },
+        "heatmap": { "$ref":  "#/$defs/plot_options_heatmap" },
+        "pie": { "$ref":  "#/$defs/plot_options_pie" },
+        "polarArea": { "$ref":  "#/$defs/plot_options_polararea" },
+        "radar": { "$ref":  "#/$defs/plot_options_radar" },
+        "radialBar": { "$ref":  "#/$defs/plot_options_radialbar" },
+        "treemap": { "$ref":  "#/$defs/plot_options_treemap" }
+      }
+    },
+    "plot_options_area": {
+      "type": "object",
+      "properties": {
+        "fillTo": {
+          "type": "string",
+          "suggestions": ["origin", "end"]
+        }
+      }
+    },
+    "plot_options_bar": {
+      "type": "object",
+      "properties": {
+        "horizontal": { "type": "boolean" },
+        "columnWidth": { "type": ["string", "number"] },
+        "barHeight": { "type": ["string", "number"] },
+        "distributed": { "type": "boolean" },
+        "borderRadius": { "type": "number" },
+        "borderRadiusApplication": {
+          "type": "string",
+          "suggestions": ["around", "end"]
+        },
+        "borderRadiusWhenStacked": {
+          "type": "string",
+          "suggestions": ["all", "last"]
+        },
+        "hideZeroBarsWhenGrouped": { "type": "boolean" },
+        "rangeBarOverlap": { "type": "boolean" },
+        "rangeBarGroupRows": { "type": "boolean" },
+        "isDumbbell": { "type": "boolean" },
+        "dumbellColors": { "type": "array", "items": { "type":  "array", "items":  { "$ref":  "#/$defs/color" } } },
+        "isFunnel": { "type": "boolean" },
+        "isFunnel3d": { "type": "boolean" },
+        "colors": {
+          "type": "object",
+          "properties": {
+            "ranges": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "from": {
+                    "type": "number"
+                  },
+                  "to": {
+                    "type": "number"
+                  },
+                  "color": {
+                    "$ref": "#/$defs/color"
+                  }
+                }
+              }
+            },
+            "backgroundBarColors": { "type":  "array", "items":  { "$ref":  "#/$defs/color" } },
+            "backgroundBarOpacity": { "type": "number" },
+            "backgroundBarRadius": { "type": "number" }
+        }
+      },
+        "dataLabels": {
+          "type":  "object",
+          "properties": {
+            "maxItems": { "type": "number" },
+            "hideOverflowingLabels": { "type": "boolean" },
+            "position": { "type": "string" },
+            "orientation": {
+              "type": "string",
+              "suggestions": [ "horizontal", "vertical" ]
+            },
+            "total": {
+              "type": "object",
+              "properties": {
+                "enabled": { "type": "boolean" },
+                "formatter": { "$ref": "urn:ignition-schema:schemas/components/javascript-function.json" },
+                "offsetX": { "type": "number" },
+                "offsetY": { "type": "number" },
+                "style": {
+                  "type": "object",
+                  "properties": {
+                    "color":  { "$ref":  "#/$defs/color" },
+                    "fontSize": { "type": "string" },
+                    "fontFamily": { "type": "string" },
+                    "fontWeight": { "type": [ "string", "number" ] }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "plot_options_bubble": {
+      "type": "object",
+      "properties": {
+        "zScaling": { "type": "boolean" },
+        "minBubbleRadius": { "type": "number" },
+        "maxBubbleRadius": { "type": "number" }
+      }
+    },
+    "plot_options_boxplot": {
+      "type": "object",
+      "properties": {
+        "colors": {
+          "type": "object",
+          "properties": {
+            "upper": { "type": "string" },
+            "lower": { "type": "string" }
+          }
+        }
+      }
+    },
+    "plot_options_candlestick": {
+      "type": "object",
+      "properties": {
+        "colors": {
+          "type": "object",
+          "properties": {
+            "upward": { "type": "string" },
+            "downward": { "type": "string" }
+          }
+        },
+        "wick": {
+          "type": "object",
+          "properties": {
+            "useFillColor": { "type": "boolean" }
+          }
+        }
+      }
+    },
+    "plot_options_heatmap": {
+      "type": "object",
+      "properties": {
+        "radius": { "type": "number" },
+        "enableShades": { "type": "boolean" },
+        "shadeIntensity": { "type": "number" },
+        "reverseNegativeShade": { "type": "boolean" },
+        "distributed": { "type": "boolean" },
+        "useFillColorAsStroke": { "type": "boolean" },
+        "colorScale": {
+          "type": "object",
+          "properties": {
+            "ranges": {
+              "type": "array",
+              "items": {
+                "properties": {
+                  "from": { "type":  "number" },
+                  "to": { "type":  "number" },
+                  "color": { "$ref":  "#/$defs/color" },
+                  "foreColor": { "$ref":  "#/$defs/color" },
+                  "name": { "type":  "string" }
+                }
+              }
+            },
+            "inverse": { "type": "boolean" },
+            "min": { "type": "number" },
+            "max": { "type": "number" }
+          }
+        }
+      }
+    },
+    "plot_options_line": {
+      "type": "object",
+      "properties": {
+        "isSlopeChart": { "type": "boolean" }
+      }
+    },
+    "plot_options_pie": {
+      "type": "object",
+      "properties": {
+        "startAngle": { "type": "number" },
+        "endAngle": { "type": "number" },
+        "customScale": { "type": "number" },
+        "offsetX": { "type": "number" },
+        "offsetY": { "type": "number" },
+        "expandOnClick": { "type": "boolean" },
+        "dataLabels": {
+          "type": "object",
+          "properties": {
+            "offset": { "type": "number" },
+            "minAngleToShowLabel": { "type": "number" }
+          }
+        },
+        "donut": {
+          "type": "object",
+          "properties": {
+            "size": { "type": "string" },
+            "background": { "type": "string" },
+            "labels": {
+              "type": "object",
+              "properties": {
+                "show": { "type": "boolean" },
+                "name": {
+                  "type": "object",
+                  "properties": {
+                    "show": { "type": "boolean" },
+                    "fontSize": { "type": "string" },
+                    "fontFamily": { "type": "string" },
+                    "fontWeight": { "type": ["string", "number"] },
+                    "color": { "type": "string" },
+                    "offsetY": { "type": "number" },
+                    "formatter": { "$ref": "urn:ignition-schema:schemas/components/javascript-function.json" }
+                  }
+                },
+                "value": {
+                  "type": "object",
+                  "properties": {
+                    "show": { "type": "boolean" },
+                    "fontSize": { "type": "string" },
+                    "fontFamily": { "type": "string" },
+                    "fontWeight": { "type": ["string", "number"] },
+                    "color": { "type": "string" },
+                    "offsetY": { "type": "number" },
+                    "formatter": { "$ref": "urn:ignition-schema:schemas/components/javascript-function.json" }
+                  }
+                },
+                "total": {
+                  "type": "object",
+                  "properties": {
+                    "show": { "type": "boolean" },
+                    "showAlways": { "type": "boolean" },
+                    "fontFamily": { "type": "string" },
+                    "fontWeight": { "type": ["string", "number"] },
+                    "fontSize": { "type": "string" },
+                    "label": { "type": "string" },
+                    "color": { "type": "string" },
+                    "formatter": { "$ref": "urn:ignition-schema:schemas/components/javascript-function.json" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "plot_options_polararea": {
+      "type": "object",
+      "properties": {
+        "rings": {
+          "type": "object",
+          "properties": {
+            "strokeWidth": { "type": "number" },
+            "strokeColor": { "type": "string" }
+          }
+        },
+        "spokes": {
+          "type": "object",
+          "properties": {
+            "strokeWidth": { "type": "number" },
+            "connectorColors": {
+              "type": ["string", "array" ],
+              "$ref": "#/$defs/color",
+              "items": { "$ref": "#/$defs/color" }
+            }
+          }
+        }
+      }
+    },
+    "plot_options_radar": {
+      "type": "object",
+      "properties": {
+        "size": { "type": "number" },
+        "offsetX": { "type": "number" },
+        "offsetY": { "type": "number" },
+        "polygons": {
+          "type": "object",
+          "properties": {
+            "strokeColors": {
+              "type": ["string", "array"],
+              "$ref": "#/$defs/color",
+              "items": { "$ref": "#/$defs/color" }
+            },
+            "strokeWidth": {
+              "type": ["string", "array", "number"],
+              "items": { "type": ["string", "number"] }
+            },
+            "connectorColors": {
+              "type": ["string", "array"],
+              "$ref": "#/$defs/color",
+              "items": { "$ref": "#/$defs/color" }
+            },
+            "fill": {
+              "type": "object",
+              "properties": {
+                "colors": {
+                  "type": "array",
+                  "items": { "$ref": "#/$defs/color" }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "plot_options_radialbar": {
+      "type": "object",
+      "properties": {
+        "inverseOrder": { "type": "boolean" },
+        "startAngle": { "type": "number" },
+        "endAngle": { "type": "number" },
+        "offsetX": { "type": "number" },
+        "offsetY": { "type": "number" },
+        "hollow": {
+          "type": "object",
+          "properties": {
+            "margin": { "type": "number" },
+            "size": { "type": "string" },
+            "background": { "$ref": "#/$defs/color" },
+            "image": { "type": "string" },
+            "imageWidth": { "type": "number" },
+            "imageHeight": { "type": "number" },
+            "imageOffsetX": { "type": "number" },
+            "imageOffsetY": { "type": "number" },
+            "imageClipped": { "type": "boolean" },
+            "position": {
+              "type": "string",
+              "suggestions": ["front", "back"]
+            },
+            "dropShadow": { "$ref": "#/$defs/drop_shadow" }
+          }
+        },
+        "track": {
+          "type": "object",
+          "properties": {
+            "show": { "type": "boolean" },
+            "startAngle": { "type": "number" },
+            "endAngle": { "type": "number" },
+            "background": {
+              "type": ["string", "array"],
+              "$ref": "#/$defs/color",
+              "items": { "$ref": "#/$defs/color" }
+            },
+            "strokeWidth": { "type": "string" },
+            "opacity": { "type": "number" },
+            "margin": { "type": "number" },
+            "dropShadow": { "$ref": "#/$defs/drop_shadow" }
+          }
+        },
+        "dataLabels": {
+          "type": "object",
+          "properties": {
+            "show": { "type": "boolean" },
+            "name": {
+              "type": "object",
+              "properties": {
+                "show": { "type": "boolean" },
+                "fontFamily": { "type": "string" },
+                "fontWeight": { "type":  ["string", "number"] },
+                "fontSize": { "type": "string" },
+                "color": { "type": "string" },
+                "offsetY": { "type": "number" }
+              }
+            },
+            "value": {
+              "type": "object",
+              "properties": {
+                "show": { "type": "boolean" },
+                "fontFamily": { "type": "string" },
+                "fontSize": { "type": "string" },
+                "fontWeight": { "type":  ["string", "number"] },
+                "color": { "type": "string" },
+                "offsetY": { "type": "number" },
+                "formatter": { "$ref": "urn:ignition-schema:schemas/components/javascript-function.json" }
+              }
+            },
+            "total": {
+              "type": "object",
+              "properties": {
+                "show": { "type": "boolean" },
+                "label": { "type": "string" },
+                "color": { "type": "string" },
+                "fontFamily": { "type": "string" },
+                "fontWeight": { "type":  ["string", "number"] },
+                "fontSize": { "type": "string" },
+                "formatter": { "$ref": "urn:ignition-schema:schemas/components/javascript-function.json" }
+              }
+            }
+          }
+        },
+        "barLabels": {
+          "type": "object",
+          "properties": {
+            "enabled": { "type": "boolean" },
+            "offsetX": { "type": "number" },
+            "offsetY": { "type": "number" },
+            "useSeriesColors": { "type": "boolean" },
+            "fontFamily": { "type": "string" },
+            "fontWeight": { "type":  ["string", "number"] },
+            "fontSize": { "type": "string" },
+            "formatter": { "$ref": "urn:ignition-schema:schemas/components/javascript-function.json" },
+            "onClick": { "$ref": "urn:ignition-schema:schemas/components/javascript-function.json" }
+          }
+        }
+      }
+    },
+    "plot_options_treemap": {
+      "type": "object",
+      "properties": {
+        "enableShades": { "type": "boolean" },
+        "shadeIntensity": { "type": "number" },
+        "distributed": { "type": "boolean" },
+        "reverseNegativeShade": { "type": "boolean" },
+        "useFillColorAsStroke": { "type": "boolean" },
+        "dataLabels": {
+          "type": "object",
+          "properties": {
+            "format": {
+              "type": "string",
+              "suggestions": [ "scale", "truncate" ]
+            }
+          }
+        },
+        "borderRadius": { "type": "number" },
+        "colorScale": {
+          "type": "object",
+          "properties": {
+            "inverse": { "type": "boolean" },
+            "ranges": {
+              "type": "array",
+              "items": {
+                "properties": {
+                  "from": { "type":  "number" },
+                  "to": { "type":  "number" },
+                  "color": { "$ref":  "#/$defs/color" },
+                  "foreColor": { "$ref":  "#/$defs/color" },
+                  "name": { "type":  "string" }
+                }
+              }
+            },
+            "min": { "type": "number" },
+            "max": { "type": "number" }
+          }
+        }
+      }
+    },
+    "point_shape": {
+      "type": "string",
+      "suggestions": [
+        "circle",
+        "square"
+      ]
+    },
+    "responsive": {
+      "type": "object",
+      "properties": {
+        "breakpoint": { "type":  "number" },
+        "options": { "type":  "object" }
+      }
+    },
+    "series": {
+      "type": ["object", "array"],
+      "items": { "type": ["number", "object", "string", "array"] },
+      "properties": {
+        "name": { "type": "string" },
+        "type": { "$ref": "#/$defs/chart_type" },
+        "color": { "$ref": "#/$defs/color" },
+        "group": { "type": "string" },
+        "hidden": { "type": "boolean" },
+        "zIndex": { "type": "number" },
+        "data": {
+          "type": "array",
+          "items": {
+            "type": ["number", "object", "array"],
+            "properties": {
+              "x": { "type": ["number", "object", "string", "array"], "default": 0 },
+              "y": { "type": ["number", "object", "string", "array"], "default": 0 },
+              "fill": { "$ref": "#/$defs/fill" },
+              "fillColor": { "$ref": "#/$defs/color" },
+              "strokeColor": { "$ref": "#/$defs/color" },
+              "meta": { "type": ["number", "object", "string", "array"] },
+              "goals": { "type": ["number", "object", "string", "array"] },
+              "barHeightOffset": { "type": "number" },
+              "columnWidthOffset": { "type": "number" }
+            },
+            "items": {
+              "type": ["number", "array"],
+              "items": { "type": "number" }
+            }
+          }
+        }
+      }
+    },
+    "states": {
+      "type": "object",
+      "properties": {
+        "normal": {
+          "type": "object",
+          "properties": {
+            "filter": {
+              "type": "object",
+              "properties": {
+                "type": { "type": "string" },
+                "value": { "type": "number" }
+              }
+            }
+          }
+        },
+        "hover": {
+          "type": "object",
+          "properties": {
+            "filter": {
+              "type": "object",
+              "properties": {
+                "type": { "type": "string" },
+                "value": { "type": "number" }
+              }
+            }
+          }
+        },
+        "active": {
+          "type": "object",
+          "properties": {
+            "allowMultipleDataPointsSelection": { "type": "boolean" },
+            "filter": {
+              "type": "object",
+              "properties": {
+                "type": { "type": "string" },
+                "value": { "type": "number" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "stroke": {
+      "type": "object",
+      "properties": {
+        "show": { "type": "boolean" },
+        "curve": {
+          "type": ["string", "array"],
+          "$ref": "#/$defs/stroke_curve",
+          "items": {
+            "$ref": "#/$defs/stroke_curve"
+          }
+        },
+        "lineCap": {
+          "type": "string",
+          "suggestions": ["butt", "square", "round"]
+        },
+        "colors": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/color" }
+        },
+        "width": {
+          "type": ["number", "array"],
+          "items": { "type": "number" }
+        },
+        "dashArray": {
+          "type": ["number", "array"],
+          "items": { "type": "number" }
+        },
+        "fill": {
+          "$ref": "#/$defs/fill"
+        }
+      }
+    },
+    "stroke_curve": {
+      "type": "string",
+      "suggestions": ["smooth", "straight", "stepline", "linestep", "monotoneCubic"]
+    },
+    "text_anchor": {
+      "type": "string",
+      "suggestions": [
+        "start",
+        "middle",
+        "end"
+      ]
+    },
+    "text_background": {
+      "type": "object",
+      "properties": {
+        "enabled": { "type": "boolean" },
+        "foreColor": { "type": "string" },
+        "borderRadius": { "type": "number" },
+        "padding": { "type": "number" },
+        "opacity": { "type": "number" },
+        "borderWidth": { "type": "number" },
+        "borderColor": { "type": "string" },
+        "dropShadow": { "$ref":  "#/$defs/drop_shadow" }
+      }
+    },
+    "text_style": {
+      "type": "object",
+      "properties": {
+        "fontSize": { "type": "string" },
+        "fontFamily": { "type": "string" },
+        "fontWeight": { "type": ["string", "number"] },
+        "colors": { "type": "array", "items": { "$ref":  "#/$defs/color" } }
+      }
+    },
+    "theme": {
+      "type": "object",
+      "properties": {
+        "mode": {
+          "type": "string",
+          "suggestions": ["light", "dark"]
+        },
+        "palette": {
+          "type": "string"
+        },
+        "monochrome": {
+          "type": "object",
+          "properties": {
+            "enabled": { "type": "boolean" },
+            "color": { "$ref": "#/$defs/color" },
+            "shadeTo": {
+              "type": "string",
+              "suggestions": ["light", "dark"]
+            },
+            "shadeIntensity": { "type": "number" }
+          }
+        }
+      }
+    },
+    "title": {
+      "type": "object",
+      "properties": {
+        "text": { "type": "string" },
+        "align": {
+          "type": "string",
+          "suggestions": ["left", "center", "right"]
+        },
+        "margin": { "type": "number" },
+        "offsetX": { "type": "number" },
+        "offsetY": { "type": "number" },
+        "floating": { "type": "boolean" },
+        "style": {
+          "type": "object",
+          "properties": {
+            "fontSize": { "type": "string" },
+            "fontFamily": { "type": "string" },
+            "fontWeight": { "type": ["string", "number"] },
+            "color": { "$ref": "#/$defs/color" }
+          }
+        }
+      }
+    },
+    "tooltip": {
+      "type": "object",
+      "properties": {
+        "enabled": { "type": "boolean" },
+        "enabledOnSeries": {
+          "type": ["array"],
+          "items": { "type": "number" }
+        },
+        "shared": { "type": "boolean" },
+        "followCursor": { "type": "boolean" },
+        "intersect": { "type": "boolean" },
+        "inverseOrder": { "type": "boolean" },
+        "custom": {
+          "type": ["string", "array"],
+          "$ref": "urn:ignition-schema:schemas/components/javascript-function.json",
+          "items": { "$ref": "urn:ignition-schema:schemas/components/javascript-function.json" }
+        },
+        "fillSeriesColor": { "type": "boolean" },
+        "theme": { "type": "string" },
+        "cssClass": { "type": "string" },
+        "hideEmptySeries": { "type": "boolean" },
+        "style": {
+          "type": "object",
+          "properties": {
+            "fontSize": { "type": "string" },
+            "fontFamily": { "type": "string" }
+          }
+        },
+        "onDatasetHover": {
+          "type": "object",
+          "properties": {
+            "highlightDataSeries": { "type": "boolean" }
+          }
+        },
+        "x": {
+          "type": "object",
+          "properties": {
+            "show": { "type": "boolean" },
+            "format": { "type": "string" },
+            "formatter": { "$ref": "urn:ignition-schema:schemas/components/javascript-function.json" }
+          }
+        },
+        "y": {
+          "anyOf": [
+            { "$ref": "#/$defs/tooltip_y" },
+            {
+              "type": "array",
+              "items": { "$ref": "#/$defs/tooltip_y" }
+            }
+          ]
+        },
+        "z": {
+          "type": "object",
+          "properties": {
+            "title": { "type": "string" },
+            "formatter": { "$ref": "urn:ignition-schema:schemas/components/javascript-function.json" }
+          }
+        },
+        "marker": {
+          "type": "object",
+          "properties": {
+            "show": { "type": "boolean" },
+            "fillColors": {
+              "type": "array",
+              "items": { "$ref": "#/$defs/color" }
+            }
+          }
+        },
+        "items": {
+          "type": "object",
+          "properties": {
+            "display": { "type": "string" }
+          }
+        },
+        "fixed": {
+          "type": "object",
+          "properties": {
+            "enabled": { "type": "boolean" },
+            "position": {
+              "type": "string",
+              "suggestions": ["topRight", "topLeft", "bottomRight", "bottomLeft"]
+            },
+            "offsetX": { "type": "number" },
+            "offsetY": { "type": "number" }
+          }
+        }
+      }
+    },
+    "tooltip_y": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "object",
+          "properties": {
+            "formatter": { "$ref": "urn:ignition-schema:schemas/components/javascript-function.json" }
+          }
+        },
+        "formatter": { "$ref": "urn:ignition-schema:schemas/components/javascript-function.json" }
+      }
+    }
+  },
+  "properties": {
+    "type": {
+      "default": "line",
+      "description": "Chart type.",
+      "$ref": "#/$defs/chart_type"
+    },
+    "options": {
+      "description": "Chart options.",
+      "$ref": "#/$defs/options"
+    },
+    "series": {
+      "description": "Chart series.",
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/series"
+      }
+    },
+    "events": {
+      "type": "object",
+      "description": "Component events.",
+      "properties": {
+        "dom": {
+          "$ref": "urn:ignition-schema:schemas/components/events-dom.json"
+        },
+        "lifecycle": {
+          "$ref": "urn:ignition-schema:schemas/components/events-lifecycle.json"
+        },
+        "chart": {
+          "type": "object",
+          "properties": {
+            "lifecycle": {
+              "$ref": "urn:ignition-schema:schemas/components/events-lifecycle.json"
+            }
+          }
+        }
+      }
+    },
+    "redraw": {
+      "description": "Teardown and redraw chart on every update.",
+      "type": ["boolean", "null"],
+      "default": false
+    },
+    "style": {
+      "$ref": "urn:ignition-schema:schemas/style-properties.schema.json",
+      "default": {
+        "classes": ""
+      }
+    }
+  },
+  "type": "object",
+  "required": ["type", "options", "series"]
+}
