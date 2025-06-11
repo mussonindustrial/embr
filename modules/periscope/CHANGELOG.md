@@ -1,5 +1,13 @@
 # @embr-modules/periscope
 
+## 0.7.5
+
+### Patch Changes
+
+- 8ae60a4: (Swiper Component) Add JavaScript proxy support via `component.getJavaScriptProxy('swiper')`.
+- Updated dependencies [8ae60a4]
+  - @embr-modules/periscope-web@0.7.5
+
 ## 0.7.4
 
 ### Patch Changes
