@@ -23,8 +23,6 @@ import ApexCharts from 'apexcharts'
 
 export const COMPONENT_TYPE = 'kyvislabs.display.apexchart'
 
-window['ApexCharts'] = ApexCharts
-
 const logger = makeLogger(COMPONENT_TYPE)
 
 export interface ApexChartProps {
