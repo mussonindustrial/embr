@@ -1,6 +1,7 @@
 ---
-'@embr-modules/charts-web': patch
 '@embr-modules/charts': patch
+'@embr-modules/periscope': patch
+'@embr-modules/sse': patch
 ---
 
-Update to use `moduleDependencySpecs` in `build.gradle.kts`.
+Migrate from deprecated `moduleDependencies` to supported `moduleDependencySpecs` in `build.gradle.kts`.
