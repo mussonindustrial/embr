@@ -21,8 +21,8 @@ import {
   getScriptTransform,
   JavaScriptRunEvent,
   useComponentEvents,
+  useRefLifecycleEvents,
 } from '@embr-js/perspective-client'
-import useRefLifecycleEvents from '@embr-js/perspective-client/src/hooks/useRefLifecycleEvents'
 
 export const COMPONENT_TYPE = 'embr.chart.chart-js'
 
@@ -111,15 +111,13 @@ export function ChartJsComponent(props: ComponentProps<ChartComponentProps>) {
 }
 
 class ChartJsComponentDelegate extends ComponentStoreDelegate {
-  private proxyProps: JsObject = {}
-
-  private jsProxy = new ComponentDelegateJavaScriptProxy(this, this.proxyProps)
+  private jsProxy = new ComponentDelegateJavaScriptProxy(this)
 
   setChart(chart?: Chart) {
-    this.proxyProps.chart = chart
+    this.jsProxy.setRef(chart)
   }
 
-  handleEvent(eventName: string, eventObject: JsObject): void {
+  handleEvent(eventName: string, eventObject: JsObject) {
     if (this.jsProxy.handles(eventName)) {
       this.jsProxy.handleEvent(eventObject as JavaScriptRunEvent)
     }

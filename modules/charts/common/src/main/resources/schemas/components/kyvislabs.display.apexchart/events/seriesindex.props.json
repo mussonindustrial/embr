@@ -1,0 +1,9 @@
+{
+  "type": "object",
+  "properties": {
+    "seriesIndex": {
+      "type": "number",
+      "description": "The series index"
+    }
+  }
+}
