@@ -6,7 +6,6 @@ import com.inductiveautomation.ignition.common.gson.JsonArray
 import com.inductiveautomation.ignition.common.gson.JsonObject
 import com.inductiveautomation.ignition.common.model.values.BasicQualifiedValue
 import com.inductiveautomation.ignition.common.script.builtin.KeywordArgs
-import com.inductiveautomation.ignition.common.util.LogUtil
 import com.inductiveautomation.perspective.common.api.PropertyType
 import com.inductiveautomation.perspective.common.property.Origin
 import com.inductiveautomation.perspective.gateway.api.*
@@ -38,7 +37,6 @@ import org.python.core.PyObject
 
 class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(component) {
 
-    private val log = LogUtil.getModuleLogger("embr-periscope", "FlexRepeaterModelDelegate")
     private val context = PeriscopeGatewayContext.instance
     private val queue = component.session.queue()
     private val props = PropsHandler(component.getPropertyTreeOf(PropertyType.props)!!)

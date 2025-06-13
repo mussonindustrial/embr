@@ -1,5 +1,11 @@
 # @embr-js/perspective-client
 
+## 0.5.0
+
+### Minor Changes
+
+- 36a7970: Move `useRefLifecycleEvents` away from default export.
+
 ## 0.4.0
 
 ### Minor Changes

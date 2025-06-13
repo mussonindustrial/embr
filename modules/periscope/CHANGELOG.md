@@ -1,5 +1,25 @@
 # @embr-modules/periscope
 
+## 0.8.0
+
+### Patch Changes
+
+- 36a7970: Migrate from deprecated `moduleDependencies` to supported `moduleDependencySpecs` in `build.gradle.kts`.
+- Updated dependencies [36a7970]
+- Updated dependencies [36a7970]
+  - @embr-jvm/perspective-gateway@0.9.0
+  - @embr-modules/periscope-web@0.8.0
+  - @embr-jvm/perspective-designer@0.9.0
+  - @embr-jvm/perspective-common@0.9.0
+
+## 0.7.5
+
+### Patch Changes
+
+- 8ae60a4: (Swiper Component) Add JavaScript proxy support via `component.getJavaScriptProxy('swiper')`.
+- Updated dependencies [8ae60a4]
+  - @embr-modules/periscope-web@0.7.5
+
 ## 0.7.4
 
 ### Patch Changes
