@@ -1,0 +1,36 @@
+{
+    "name": "@embr-js/monaco-editor",
+    "private": true,
+    "version": "0.1.0",
+    "scripts": {
+        "dev": "vite",
+        "build": "tsc && nx vite:build && nx vite:test --run",
+        "clean": "s",
+        "test": "nx vite:test --run",
+        "preview": "nx vite:test --preview",
+        "lint": "eslint src/**/*.ts",
+        "lint:prettier": "prettier -c  --cache --ignore-path=../../.prettierignore"
+    },
+    "dependencies": {
+        "@embr-js/utils": "0.6.0",
+        "@monaco-editor/react": "4.7.0",
+        "@shikijs/monaco": "^3.6.0",
+        "lodash": "^4.17.21",
+        "monaco-editor": "^0.52.2",
+        "normalize.css": "^8.0.1",
+        "react": "^18",
+        "react-dom": "^18",
+        "shiki": "^3.6.0"
+    },
+    "devDependencies": {
+        "@embr-js/eslint-config": "*",
+        "@embr-js/tsconfig": "*",
+        "@types/react": "^18.2.56",
+        "@types/react-dom": "^18.2.56",
+        "eslint": "^8.56.0",
+        "typescript": "^5.3.3",
+        "vite": "^5.0.10",
+        "vite-plugin-singlefile": "^2.2.0",
+        "vitest": "^1.6.0"
+    }
+}

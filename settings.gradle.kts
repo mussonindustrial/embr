@@ -21,6 +21,7 @@ include(
     ":libraries:perspective:gateway",
 
     ":libraries:javascript:event-stream",
+    ":libraries:javascript:monaco-editor",
 
     ":modules:charts:common",
     ":modules:charts:designer",

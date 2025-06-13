@@ -30,7 +30,7 @@ class PeriscopeGatewayContext(private val context: GatewayContext) :
             JsonView.asGatewayComponent { JsonViewModelDelegate(it) },
             Portal.asGatewayComponent(),
             React.asGatewayComponent(),
-            Swiper.asGatewayComponent { JavaScriptProxyableComponentModelDelegate(it) }
+            Swiper.asGatewayComponent { JavaScriptProxyableComponentModelDelegate(it) },
         )
 
     init {

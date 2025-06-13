@@ -1,6 +1,7 @@
 package com.mussonindustrial.ignition.embr.periscope
 
 import com.inductiveautomation.ignition.designer.model.DesignerContext
+import com.inductiveautomation.perspective.designer.DesignerHook
 import com.inductiveautomation.perspective.designer.api.PerspectiveDesignerInterface
 import com.mussonindustrial.embr.designer.EmbrDesignerContext
 import com.mussonindustrial.embr.designer.EmbrDesignerContextImpl
@@ -8,6 +9,7 @@ import com.mussonindustrial.embr.perspective.designer.component.asDesignerCompon
 import com.mussonindustrial.embr.perspective.designer.component.registerComponent
 import com.mussonindustrial.embr.perspective.designer.component.removeComponent
 import com.mussonindustrial.ignition.embr.periscope.component.ComponentIdSuggestionSource
+import com.mussonindustrial.ignition.embr.periscope.component.ReactDesignDelegate
 import com.mussonindustrial.ignition.embr.periscope.component.embedding.*
 
 class PeriscopeDesignerContext(private val context: DesignerContext) :
@@ -16,6 +18,7 @@ class PeriscopeDesignerContext(private val context: DesignerContext) :
         lateinit var instance: PeriscopeDesignerContext
     }
 
+    val perspectiveDesignerHook = DesignerHook.get(context)
     val perspectiveDesignerInterface: PerspectiveDesignerInterface
     private val componentIdSuggestionSource: ComponentIdSuggestionSource
     private val components =
@@ -40,9 +43,14 @@ class PeriscopeDesignerContext(private val context: DesignerContext) :
 
     fun registerComponents() {
         components.forEach { perspectiveDesignerInterface.registerComponent(it) }
+        perspectiveDesignerInterface.componentDesignDelegateRegistry.register(
+            React.id,
+            ReactDesignDelegate(instance),
+        )
     }
 
     fun removeComponents() {
         components.forEach { perspectiveDesignerInterface.removeComponent(it) }
+        perspectiveDesignerInterface.componentDesignDelegateRegistry.remove(React.id)
     }
 }

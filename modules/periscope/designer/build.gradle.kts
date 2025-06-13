@@ -10,4 +10,5 @@ dependencies {
     modlImplementation(projects.libraries.perspective.designer)
 
     compileOnly(projects.modules.periscope.common)
+    modlImplementation(projects.libraries.javascript.monacoEditor)
 }
