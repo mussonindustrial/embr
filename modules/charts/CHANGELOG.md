@@ -1,5 +1,71 @@
 # @mussonindustrial/embr-charts
 
+## 3.0.0
+
+### Major Changes
+
+- 36a7970: **(JavaScript Proxy)** `getJavaScriptProxy` no longer requires a `propertyName`.
+
+  Previously, `getJavaScriptProxy(propertyName)` allowed a component delegate to proxy multiple properties. However, since users couldn't interact with multiple proxy targets simultaneously, this design proved ineffective—requiring multiple proxy objects for multiple properties.
+
+  Now, a component delegate may only return a single proxied object. This encourages bundling proxyable state into one object, improving usability for component consumers.
+
+  The `getJavaScriptProxy(propertyName)` overload is still supported, but the `propertyName` is ignored.
+
+- 36a7970: Add ApexCharts (Legacy) component.
+
+  - This component is a one-for-one replacement of the ApexCharts component from the [Kyvis-Labs/ignition-apexcharts-module](https://github.com/Kyvis-Labs/ignition-apexcharts-module).
+  - This component matches the behavior, features, and property schema of the original Kyvis-Labs component version `1.0.23`.
+  - If both the Kyvis-Labs module and Embr-Charts are installed simultaneously, Embr-Charts will register and use the ApexCharts (Legacy) component in place of the Kyvis-Labs version, effectively overriding it to ensure compatibility and consistency.
+
+- 36a7970: Add `ApexCharts` component.
+
+  - This is a new implementation of the `ApexCharts` charting library as an Ignition component.
+  - Benefits over the `Legacy` component include:
+    - Simplified rendering lifecycle (i.e. quicker to render/update)
+    - JavaScript proxy support for direct chart interaction.
+    - Improved designer property schema support.
+    - Expanded selection of default component variants.
+
+### Patch Changes
+
+- 36a7970: Migrate from deprecated `moduleDependencies` to supported `moduleDependencySpecs` in `build.gradle.kts`.
+- Updated dependencies [36a7970]
+- Updated dependencies [36a7970]
+- Updated dependencies [36a7970]
+- Updated dependencies [36a7970]
+  - @embr-modules/charts-web@3.0.0
+  - @embr-jvm/perspective-gateway@0.9.0
+  - @embr-jvm/perspective-designer@0.9.0
+  - @embr-jvm/perspective-common@0.9.0
+
+## 2.2.6
+
+### Patch Changes
+
+- cded1e1: Update `chart.js` dependency to `4.4.9`.
+- Updated dependencies [cded1e1]
+- Updated dependencies [a8b2973]
+  - @embr-modules/charts-web@2.2.6
+  - @embr-jvm/perspective-designer@0.8.0
+  - @embr-jvm/perspective-gateway@0.8.0
+  - @embr-jvm/perspective-common@0.8.0
+  - @embr-jvm/core-common@0.7.0
+  - @embr-jvm/core-designer@0.7.0
+
+## 2.2.5
+
+### Patch Changes
+
+- 40ad4a7: Fix Perspective component schema validation errors on startup. #265
+
+  - This patch uses `DelegatedClassLoader` to simultaneously resolve schema definitions from both Perspective's and our own resources.
+
+- Updated dependencies [40ad4a7]
+  - @embr-jvm/core-common@0.6.1
+  - @embr-jvm/core-designer@0.6.1
+  - @embr-modules/charts-web@2.2.5
+
 ## 2.2.4
 
 ### Patch Changes

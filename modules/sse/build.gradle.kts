@@ -17,11 +17,12 @@ ignitionModule {
         ),
     )
 
-    moduleDependencies.set(
-        mapOf(
-            "com.inductiveautomation.perspective" to "G",
-        ),
-    )
+    moduleDependencySpecs {
+        register("com.inductiveautomation.perspective") {
+            scope = "G"
+            required = false
+        }
+    }
 
     hooks.putAll(
         mapOf(

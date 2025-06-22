@@ -16,12 +16,12 @@ class ThermoDesignerHook : AbstractDesignerModuleHook() {
     private lateinit var context: ThermoDesignerContext
 
     override fun startup(context: DesignerContext, activationState: LicenseState) {
-        logger.info("Embr Thermodynamics module started.")
+        logger.debug("Embr-Thermodynamics module startup.")
         this.context = ThermoDesignerContext(context)
     }
 
     override fun shutdown() {
-        logger.info("Shutting down Embr Thermodynamics module.")
+        logger.debug("Embr-Thermodynamics module shutdown.")
     }
 
     override fun initializeScriptManager(manager: ScriptManager) {

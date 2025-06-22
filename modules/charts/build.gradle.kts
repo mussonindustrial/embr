@@ -20,16 +20,17 @@ ignitionModule {
         ),
     )
 
-    moduleDependencies.set(
-        mapOf(
-            "com.inductiveautomation.perspective" to "GD",
-        ),
-    )
+    moduleDependencySpecs {
+        register("com.inductiveautomation.perspective") {
+            scope = "GD"
+            required = true
+        }
+    }
 
     hooks.putAll(
         mapOf(
-            "com.mussonindustrial.ignition.embr.charts.GatewayHook" to "G",
-            "com.mussonindustrial.ignition.embr.charts.DesignerHook" to "D",
+            "com.mussonindustrial.ignition.embr.charts.ChartsGatewayHook" to "G",
+            "com.mussonindustrial.ignition.embr.charts.ChartsDesignerHook" to "D",
         ),
     )
 }

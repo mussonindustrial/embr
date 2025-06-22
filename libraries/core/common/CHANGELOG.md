@@ -1,5 +1,17 @@
 # @mussonindustrial/embr-jvm-core-common
 
+## 0.7.0
+
+### Minor Changes
+
+- a8b2973: Add shared Perspective component loading utilities.
+
+## 0.6.1
+
+### Patch Changes
+
+- 40ad4a7: Introduce `DelegatedClassLoader`, which will search through a list of `ClassLoaders` in order to find a class or resource.
+
 ## 0.6.0
 
 ### Minor Changes

@@ -1,5 +1,75 @@
 # @embr-modules/periscope
 
+## 0.8.0
+
+### Patch Changes
+
+- 36a7970: Migrate from deprecated `moduleDependencies` to supported `moduleDependencySpecs` in `build.gradle.kts`.
+- Updated dependencies [36a7970]
+- Updated dependencies [36a7970]
+  - @embr-jvm/perspective-gateway@0.9.0
+  - @embr-modules/periscope-web@0.8.0
+  - @embr-jvm/perspective-designer@0.9.0
+  - @embr-jvm/perspective-common@0.9.0
+
+## 0.7.5
+
+### Patch Changes
+
+- 8ae60a4: (Swiper Component) Add JavaScript proxy support via `component.getJavaScriptProxy('swiper')`.
+- Updated dependencies [8ae60a4]
+  - @embr-modules/periscope-web@0.7.5
+
+## 0.7.4
+
+### Patch Changes
+
+- Updated dependencies [a8b2973]
+  - @embr-jvm/perspective-designer@0.8.0
+  - @embr-jvm/perspective-gateway@0.8.0
+  - @embr-jvm/perspective-common@0.8.0
+  - @embr-jvm/core-common@0.7.0
+  - @embr-jvm/core-designer@0.7.0
+  - @embr-modules/periscope-web@0.7.4
+
+## 0.7.3
+
+### Patch Changes
+
+- 3ea4d36: (FlexRepeaterPlus) Add instance `key` as an implicit parameter to the instance view.
+- 1bd2a1a: (FlexRepeaterPlus) Improve ViewModel caching.
+
+  - Move ViewModel caching from the instance level to the component level, allowing the ViewModel reference to be retained for the lifetime of the component.
+  - Previously, a ViewModel instance was only cached for the lifetime of its associated InstancePropsHandler, and not much care was taken to remember InstancePropsHandlers.
+
+  This resolves a bug that would occur when simultaneously (in a single update to `props.instances`):
+
+  1. Moving existing instances.
+  2. Adding new instances.
+  3. Changing the final size of the instances array.
+
+- 3b53009: (Toasts) Move `pointerEvents` setting from inline styles to CSS.
+
+  - This makes it easier for users to use the `style` property of the toast function.
+  - Users no longer need to add `pointerEvents: 'all'` to every inline style definition.
+
+- Updated dependencies [3ea4d36]
+- Updated dependencies [3b53009]
+  - @embr-modules/periscope-web@0.7.3
+
+## 0.7.2
+
+### Patch Changes
+
+- 40ad4a7: Fix Perspective component schema validation errors on startup. #265
+
+  - This patch uses `DelegatedClassLoader` to simultaneously resolve schema definitions from both Perspective's and our own resources.
+
+- Updated dependencies [40ad4a7]
+  - @embr-jvm/core-common@0.6.1
+  - @embr-jvm/core-designer@0.6.1
+  - @embr-modules/periscope-web@0.7.2
+
 ## 0.7.1
 
 ### Patch Changes

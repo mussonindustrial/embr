@@ -1,5 +1,45 @@
 # @mussonindustrial/embr-js-chart-js
 
+## 3.0.0
+
+### Major Changes
+
+- 36a7970: **(JavaScript Proxy)** `getJavaScriptProxy` no longer requires a `propertyName`.
+
+  Previously, `getJavaScriptProxy(propertyName)` allowed a component delegate to proxy multiple properties. However, since users couldn't interact with multiple proxy targets simultaneously, this design proved ineffective—requiring multiple proxy objects for multiple properties.
+
+  Now, a component delegate may only return a single proxied object. This encourages bundling proxyable state into one object, improving usability for component consumers.
+
+  The `getJavaScriptProxy(propertyName)` overload is still supported, but the `propertyName` is ignored.
+
+- 36a7970: Add ApexCharts (Legacy) component.
+
+  - This component is a one-for-one replacement of the ApexCharts component from the [Kyvis-Labs/ignition-apexcharts-module](https://github.com/Kyvis-Labs/ignition-apexcharts-module).
+  - This component matches the behavior, features, and property schema of the original Kyvis-Labs component version `1.0.23`.
+  - If both the Kyvis-Labs module and Embr-Charts are installed simultaneously, Embr-Charts will register and use the ApexCharts (Legacy) component in place of the Kyvis-Labs version, effectively overriding it to ensure compatibility and consistency.
+
+- 36a7970: Add `ApexCharts` component.
+
+  - This is a new implementation of the `ApexCharts` charting library as an Ignition component.
+  - Benefits over the `Legacy` component include:
+    - Simplified rendering lifecycle (i.e. quicker to render/update)
+    - JavaScript proxy support for direct chart interaction.
+    - Improved designer property schema support.
+    - Expanded selection of default component variants.
+
+### Patch Changes
+
+- Updated dependencies [36a7970]
+  - @embr-js/perspective-client@0.5.0
+
+## 2.2.6
+
+### Patch Changes
+
+- cded1e1: Update `chart.js` dependency to `4.4.9`.
+
+## 2.2.5
+
 ## 2.2.4
 
 ### Patch Changes

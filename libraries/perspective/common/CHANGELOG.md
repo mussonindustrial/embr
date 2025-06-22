@@ -1,5 +1,13 @@
 # @mussonindustrial/embr-jvm-perspective-core
 
+## 0.9.0
+
+## 0.8.0
+
+### Minor Changes
+
+- a8b2973: Add shared Perspective component loading utilities.
+
 ## 0.7.4
 
 ## 0.7.3

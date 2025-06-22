@@ -1,5 +1,42 @@
 # @mussonindustrial/embr-js-chart-js
 
+## 0.8.0
+
+### Minor Changes
+
+- 36a7970: **(JavaScript Proxy)** `getJavaScriptProxy` no longer requires a `propertyName`.
+
+  Previously, `getJavaScriptProxy(propertyName)` allowed a component delegate to proxy multiple properties. However, since users couldn't interact with multiple proxy targets simultaneously, this design proved ineffective—requiring multiple proxy objects for multiple properties.
+
+  Now, a component delegate may only return a single proxied object. This encourages bundling proxyable state into one object, improving usability for component consumers.
+
+  The `getJavaScriptProxy(propertyName)` overload is still supported, but the `propertyName` is ignored.
+
+### Patch Changes
+
+- Updated dependencies [36a7970]
+  - @embr-js/perspective-client@0.5.0
+
+## 0.7.5
+
+### Patch Changes
+
+- 8ae60a4: (Swiper Component) Add JavaScript proxy support via `component.getJavaScriptProxy('swiper')`.
+
+## 0.7.4
+
+## 0.7.3
+
+### Patch Changes
+
+- 3ea4d36: (FlexRepeaterPlus) Add instance `key` as an implicit parameter to the instance view.
+- 3b53009: (Toasts) Move `pointerEvents` setting from inline styles to CSS.
+
+  - This makes it easier for users to use the `style` property of the toast function.
+  - Users no longer need to add `pointerEvents: 'all'` to every inline style definition.
+
+## 0.7.2
+
 ## 0.7.1
 
 ## 0.7.0

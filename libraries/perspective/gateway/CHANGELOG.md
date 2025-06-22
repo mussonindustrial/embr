@@ -1,5 +1,23 @@
 # @embr-jvm/perspective-gateway
 
+## 0.9.0
+
+### Minor Changes
+
+- 36a7970: **(JavaScript Proxy)** `getJavaScriptProxy` no longer requires a `propertyName`.
+
+  Previously, `getJavaScriptProxy(propertyName)` allowed a component delegate to proxy multiple properties. However, since users couldn't interact with multiple proxy targets simultaneously, this design proved ineffective—requiring multiple proxy objects for multiple properties.
+
+  Now, a component delegate may only return a single proxied object. This encourages bundling proxyable state into one object, improving usability for component consumers.
+
+  The `getJavaScriptProxy(propertyName)` overload is still supported, but the `propertyName` is ignored.
+
+## 0.8.0
+
+### Minor Changes
+
+- a8b2973: Add shared Perspective component loading utilities.
+
 ## 0.7.4
 
 ### Patch Changes
