@@ -39,6 +39,10 @@ include(
     ":modules:thermo:client",
     ":modules:thermo:designer",
     ":modules:thermo:gateway",
+
+    ":modules:webassets:common",
+    ":modules:webassets:designer",
+    ":modules:webassets:gateway",
 )
 
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
