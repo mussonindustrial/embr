@@ -1,0 +1,19 @@
+{
+    "name": "@embr-modules/webassets",
+    "version": "0.1.0",
+    "private": false,
+    "keywords": [
+        "ignition",
+        "module",
+        "web",
+        "assets"
+    ],
+    "files": [
+        "**/*.modl",
+        "!**/*.unsigned.modl"
+    ],
+    "dependencies": {
+        "@embr-jvm/core-common": "0.7.0",
+        "@embr-jvm/core-servlets": "0.7.0"
+    }
+}

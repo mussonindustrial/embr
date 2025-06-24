@@ -12,4 +12,6 @@ dependencies {
     modlImplementation(projects.libraries.perspective.gateway)
     compileOnly(projects.modules.charts.common)
     modlImplementation(projects.modules.charts.web)
+
+    modlImplementation("org.webjars.npm:chart.js:4.4.9")
 }
