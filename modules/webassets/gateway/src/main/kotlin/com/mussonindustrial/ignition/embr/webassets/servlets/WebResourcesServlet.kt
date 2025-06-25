@@ -4,7 +4,6 @@ import com.mussonindustrial.embr.common.logging.getLogger
 import com.mussonindustrial.embr.gateway.api.getMimeTypeFromExtension
 import com.mussonindustrial.embr.gateway.api.sendError
 import com.mussonindustrial.embr.servlets.ModuleServletManager
-import com.mussonindustrial.ignition.embr.webassets.Meta
 import com.mussonindustrial.ignition.embr.webassets.WebAssetsGatewayContext
 import java.io.File
 import javax.servlet.http.HttpServlet
@@ -16,12 +15,7 @@ class WebResourcesServlet : HttpServlet() {
     private val logger = this.getLogger()
     private val context = WebAssetsGatewayContext.instance
 
-    private val rootPath =
-        context.systemManager.dataDir.resolve("modules/${Meta.MODULE_ID}/resources")
-
-    init {
-        rootPath.mkdirs()
-    }
+    private val rootPath = context.resourcesFolder
 
     companion object {
         fun register(servletManager: ModuleServletManager) {

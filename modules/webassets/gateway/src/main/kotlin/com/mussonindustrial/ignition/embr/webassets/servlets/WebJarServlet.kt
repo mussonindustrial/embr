@@ -4,7 +4,6 @@ import com.mussonindustrial.embr.common.logging.getLogger
 import com.mussonindustrial.embr.gateway.api.getMimeTypeFromExtension
 import com.mussonindustrial.embr.gateway.api.sendError
 import com.mussonindustrial.embr.servlets.ModuleServletManager
-import com.mussonindustrial.ignition.embr.webassets.Meta
 import com.mussonindustrial.ignition.embr.webassets.WebAssetsGatewayContext
 import java.io.File
 import javax.servlet.http.HttpServlet
@@ -16,12 +15,7 @@ class WebJarServlet : HttpServlet() {
     private val logger = this.getLogger()
     private val context = WebAssetsGatewayContext.instance
 
-    private val rootPath =
-        context.systemManager.dataDir.resolve("modules/${Meta.MODULE_ID}/webjars")
-
-    init {
-        rootPath.mkdirs()
-    }
+    private val classLoader = context.webjarClassLoader
 
     companion object {
         fun register(servletManager: ModuleServletManager) {
@@ -44,10 +38,10 @@ class WebJarServlet : HttpServlet() {
         val assetPath = "META-INF/resources/webjars/$requestedPathString"
         val requestedPath = File(assetPath)
 
-        val asset = context.gatewayModulesClassLoader.getResourceAsStream(assetPath)
+        val asset = classLoader.getResourceAsStream(assetPath)
         if (asset == null) {
             logger.warn("Received request for a resource that doesn't exist: {}", assetPath)
-            response.sendError("webjar asset not found")
+            response.sendError("file not found")
             return
         }
 

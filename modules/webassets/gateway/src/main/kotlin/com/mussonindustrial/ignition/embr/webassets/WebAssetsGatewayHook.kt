@@ -29,6 +29,9 @@ class WebAssetsGatewayHook : AbstractGatewayModuleHook() {
 
         logger.debug("Registering servlets...")
         context.registerServlets()
+
+        logger.debug("Starting folder watchers...")
+        context.startWebJarFolderWatcher()
     }
 
     override fun shutdown() {
@@ -38,8 +41,8 @@ class WebAssetsGatewayHook : AbstractGatewayModuleHook() {
         logger.debug("Removing module observers...")
         context.removeModuleObservers()
 
-        logger.debug("Removing servlets...")
-        context.removeServlets()
+        logger.debug("Stopping folder watchers...")
+        context.stopWebJarFolderWatcher()
     }
 
     override fun getMountedResourceFolder(): Optional<String> {
