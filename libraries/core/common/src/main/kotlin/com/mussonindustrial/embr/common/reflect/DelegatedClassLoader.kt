@@ -10,7 +10,7 @@ class DelegatedClassLoader(parent: ClassLoader, private vararg val delegates: Cl
         return parent.name + "_DelegatedClassLoader"
     }
 
-    override fun findClass(name: String): Class<*> {
+    public override fun findClass(name: String): Class<*> {
         for (delegate in delegates) {
             try {
                 return delegate.loadClass(name)
@@ -19,10 +19,10 @@ class DelegatedClassLoader(parent: ClassLoader, private vararg val delegates: Cl
         throw ClassNotFoundException(name)
     }
 
-    override fun findResource(name: String): URL? =
+    public override fun findResource(name: String): URL? =
         delegates.firstNotNullOfOrNull { it.getResource(name) }
 
-    override fun findResources(name: String): Enumeration<URL> =
+    public override fun findResources(name: String): Enumeration<URL> =
         Collections.enumeration(delegates.flatMap { it.getResources(name).toList() })
 }
 
