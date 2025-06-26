@@ -1,20 +1,18 @@
-import { DependencyList, useRef } from 'react'
-import { useFirstMountState } from '../useFirstMountState'
-import { useDeepCompareEffect } from '../useDeepCompareEffect'
+import React from 'react'
+import { useDeepCompareMemoize } from '../useDeepCompareMemoize'
 
-export function useDeepCompareMemo<T>(factory: () => T, deps: DependencyList) {
-  const firstMount = useFirstMountState()
-  const value = useRef<T>()
-
-  if (value.current === undefined) {
-    value.current = factory()
-  }
-
-  useDeepCompareEffect(() => {
-    if (!firstMount) {
-      value.current = factory()
-    }
-  }, deps)
-
-  return value.current as T
+/**
+ * `useDeepCompareMemo` will only recompute the memoized value when one of the
+ * `dependencies` has changed.
+ *
+ * Warning: `useDeepCompareMemo` should not be used with dependencies that
+ * are all primitive values. Use `React.useMemo` instead.
+ *
+ * @see {@link https://react.dev/reference/react/useMemo}
+ */
+export function useDeepCompareMemo<T>(
+  factory: () => T,
+  dependencies: React.DependencyList
+) {
+  return React.useMemo(factory, useDeepCompareMemoize(dependencies))
 }
