@@ -1,5 +1,17 @@
 # @embr-js/perspective-client
 
+## 0.6.0
+
+### Minor Changes
+
+- 0db6cfc: Add new deep comparison hooks:
+  - `useDeepCompareCallback`
+  - `useDeepCompareLayoutEffect`
+- 0db6cfc: Remove `useCustomCompareEffect` hook.
+- 0db6cfc: Reimplement existing deep comparison hooks:
+  - `useDeepCompareEffect`
+  - `useDeepCompareMemo` resolves #305
+
 ## 0.5.0
 
 ### Minor Changes

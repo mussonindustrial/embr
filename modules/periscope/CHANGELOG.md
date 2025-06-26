@@ -1,5 +1,12 @@
 # @embr-modules/periscope
 
+## 0.8.1
+
+### Patch Changes
+
+- 48ac511: (JsonView Component) Do not attempt to initialize a view without a root component.
+  - @embr-modules/periscope-web@0.8.1
+
 ## 0.8.0
 
 ### Patch Changes
