@@ -1,7 +1,6 @@
 package com.mussonindustrial.ignition.embr.periscope.component.embedding
 
 import com.inductiveautomation.ignition.common.gson.JsonObject
-import com.inductiveautomation.ignition.common.util.LogUtil
 import com.inductiveautomation.perspective.common.api.PropertyType
 import com.inductiveautomation.perspective.common.property.Origin
 import com.inductiveautomation.perspective.gateway.api.*
@@ -22,7 +21,6 @@ import java.util.concurrent.TimeUnit
 
 class EmbeddedViewModelDelegate(component: Component) : ComponentModelDelegate(component) {
 
-    private val log = LogUtil.getModuleLogger("embr-periscope", "EmbeddedViewModelDelegate")
     private val context = PeriscopeGatewayContext.instance
     private val queue = component.session.queue()
     private val props = PropsHandler(component.getPropertyTreeOf(PropertyType.props)!!)

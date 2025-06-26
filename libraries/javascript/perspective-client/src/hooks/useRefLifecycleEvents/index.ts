@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { ComponentLifecycleEvents } from '../useLifecycleEvents'
 
-export default function useRefLifecycleEvents<T>(
+export function useRefLifecycleEvents<T>(
   events: ComponentLifecycleEvents,
   ref: T | null | undefined
 ) {

@@ -1,5 +1,11 @@
 # @mussonindustrial/embr-tag-stream
 
+## 0.5.3
+
+### Patch Changes
+
+- 36a7970: Migrate from deprecated `moduleDependencies` to supported `moduleDependencySpecs` in `build.gradle.kts`.
+
 ## 0.5.2
 
 ### Patch Changes

@@ -1,0 +1,40 @@
+{
+  "type": "radialBar",
+  "series": [
+    44,
+    55,
+    67,
+    83
+  ],
+  "options": {
+    "chart": {},
+    "title": {
+      "align": "left",
+      "text": "Radial Bar Chart"
+    },
+    "plotOptions": {
+      "radialBar": {
+        "dataLabels": {
+          "name": {
+            "fontSize": "22px"
+          },
+          "value": {
+            "fontSize": "16px"
+          },
+          "total": {
+            "show": true,
+            "label": "Total",
+            "formatter": "(w) => 249"
+          }
+        }
+      }
+    },
+    "labels": [
+      "Apples",
+      "Oranges",
+      "Bananas",
+      "Berries"
+    ]
+  },
+  "style": {}
+}

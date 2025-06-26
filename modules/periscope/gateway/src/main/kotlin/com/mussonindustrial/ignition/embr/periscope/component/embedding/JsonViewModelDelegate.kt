@@ -1,7 +1,6 @@
 package com.mussonindustrial.ignition.embr.periscope.component.embedding
 
 import com.inductiveautomation.ignition.common.gson.JsonObject
-import com.inductiveautomation.ignition.common.util.LogUtil
 import com.inductiveautomation.perspective.common.api.PropertyType
 import com.inductiveautomation.perspective.common.config.ViewConfig
 import com.inductiveautomation.perspective.common.property.Origin
@@ -22,7 +21,6 @@ import java.util.*
 
 class JsonViewModelDelegate(component: Component) : ComponentModelDelegate(component) {
 
-    private val log = LogUtil.getModuleLogger("embr-periscope", "JsonViewModelDelegate")
     private val context = PeriscopeGatewayContext.instance
     private val props = PropsHandler(component.getPropertyTreeOf(PropertyType.props)!!)
     private val viewLoader = context.getViewLoader(component.page as PageModel)
