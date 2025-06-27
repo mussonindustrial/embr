@@ -11,8 +11,8 @@ import {
   StyleObject,
 } from '@inductiveautomation/perspective-client'
 import {
-  ComponentEvents,
   ComponentDelegateJavaScriptProxy,
+  ComponentEvents,
   ComponentLifecycleEvents,
   getScriptTransform,
   JavaScriptRunEvent,
@@ -113,10 +113,10 @@ export const ApexChartsComponentMeta: ComponentMeta = {
   getPropsReducer(tree: PropertyTree): ChartProps {
     return {
       type: tree.readString('type'),
-      options: tree.read('options', {}),
-      series: tree.read('series', {}),
-      redraw: tree.read('redraw', false),
-      events: tree.read('events', {}),
+      options: tree.readObject('options', {}),
+      series: tree.readArray('series', []),
+      redraw: tree.readBoolean('redraw', false),
+      events: tree.readObject('events', {}),
       style: tree.readStyle('style'),
     } as never
   },
