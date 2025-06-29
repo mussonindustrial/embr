@@ -1,7 +1,7 @@
 package com.mussonindustrial.ignition.embr.periscope.api
 
-import com.inductiveautomation.ignition.common.TypeUtilities
 import com.inductiveautomation.ignition.common.gson.JsonObject
+import com.inductiveautomation.ignition.common.script.builtin.SystemUtilities
 import com.mussonindustrial.embr.perspective.gateway.model.ThreadContext
 import org.python.core.PyDictionary
 
@@ -19,7 +19,7 @@ class JavaScriptRunMsg(
         return JsonObject().apply {
             addProperty("id", id)
             addProperty("function", function)
-            add("args", TypeUtilities.pyToGson(args))
+            addProperty("args", SystemUtilities.jsonEncode(args))
             add(
                 "context",
                 JsonObject().apply {

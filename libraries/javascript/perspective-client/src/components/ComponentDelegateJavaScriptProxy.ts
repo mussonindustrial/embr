@@ -1,7 +1,4 @@
-import {
-  ComponentStoreDelegate,
-  JsObject,
-} from '@inductiveautomation/perspective-client'
+import { ComponentStoreDelegate } from '@inductiveautomation/perspective-client'
 import { toUserScript } from '@embr-js/utils'
 import { createScriptingGlobals } from '../scripting'
 
@@ -15,7 +12,7 @@ export type JavaScriptRunEvent = {
   id: string
   property: string
   function: string
-  args: JsObject
+  args: string
 }
 
 export class ComponentDelegateJavaScriptProxy<T extends object> {
@@ -80,7 +77,7 @@ export class ComponentDelegateJavaScriptProxy<T extends object> {
       })
 
       const f = toUserScript(event.function, this.ref, globals)
-      return event.args !== undefined ? f.runNamed(event.args) : f()
+      return event.args !== undefined ? f.runNamed(JSON.parse(event.args)) : f()
     })
   }
 }

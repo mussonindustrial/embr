@@ -4,6 +4,7 @@ import com.inductiveautomation.ignition.common.TypeUtilities
 import com.inductiveautomation.ignition.common.gson.JsonElement
 import com.inductiveautomation.ignition.common.gson.JsonObject
 import com.inductiveautomation.ignition.common.script.builtin.KeywordArgs
+import com.inductiveautomation.ignition.common.script.builtin.SystemUtilities
 import com.inductiveautomation.perspective.gateway.api.Component
 import com.inductiveautomation.perspective.gateway.api.ComponentModelDelegate
 import com.inductiveautomation.perspective.gateway.api.ScriptCallable
@@ -187,7 +188,7 @@ open class JavaScriptProxyableComponentModelDelegate(component: Component) :
             return JsonObject().apply {
                 addProperty("id", id)
                 addProperty("function", function)
-                add("args", TypeUtilities.pyToGson(args))
+                addProperty("args", SystemUtilities.jsonEncode(args))
             }
         }
     }

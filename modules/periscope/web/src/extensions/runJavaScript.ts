@@ -45,7 +45,7 @@ export function installRunJavaScript(clientStore: ClientStore) {
       const globals = createScriptingGlobals({})
 
       const f = toUserScript(functionLiteral, thisArg, globals)
-      resolve(f.runNamed(args))
+      resolve(f.runNamed(JSON.parse(args)))
     })
       .then((result: unknown) => resolveSuccess(result))
       .catch((error: unknown) => resolveError(error))
