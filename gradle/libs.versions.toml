@@ -6,7 +6,7 @@ ignition = "8.1.33"
 ia-gson = "2.10.1"
 jetty = "10.0.21"
 if97 = "2.0.0"
-spotless = "7.0.4"
+spotless = "7.1.0"
 
 [plugins]
 kotlin = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
