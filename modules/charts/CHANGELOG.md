@@ -1,5 +1,12 @@
 # @mussonindustrial/embr-charts
 
+## 3.0.3
+
+### Patch Changes
+
+- 1a866c9: Fake changeset
+  - @embr-modules/charts-web@3.0.3
+
 ## 3.0.2
 
 ### Patch Changes
