@@ -14,10 +14,10 @@
     "dependencies": {
         "@embr-js/utils": "0.6.0",
         "@embr-js/perspective-client": "0.6.0",
-        "@inductiveautomation/perspective-client": "2.1.33",
-        "@inductiveautomation/perspective-components": "2.1.33",
-        "@inductiveautomation/perspective-designer": "2.1.33",
-        "@inductiveautomation/perspective-drawing-common": "2.1.33",
+        "@inductiveautomation/perspective-client": "2.3.0-beta1",
+        "@inductiveautomation/perspective-components": "2.3.0-beta1",
+        "@inductiveautomation/perspective-designer": "2.3.0-beta1",
+        "@inductiveautomation/perspective-drawing-common": "2.3.0-beta1",
         "lodash": "^4.17.21",
         "react-toastify": "11.0.5",
         "swiper": "^11.1.14"

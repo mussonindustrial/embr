@@ -14,7 +14,7 @@
         "lint:prettier": "prettier -c . --cache --ignore-path=../../.prettierignore"
     },
     "dependencies": {
-        "@inductiveautomation/perspective-client": "2.1.33",
+        "@inductiveautomation/perspective-client": "2.3.0-beta1",
         "lodash": "^4.17.21",
         "fast-deep-equal": "3.1.3"
     },

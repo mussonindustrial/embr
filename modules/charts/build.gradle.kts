@@ -9,7 +9,7 @@ ignitionModule {
     id.set("com.mussonindustrial.embr.charts")
     fileName.set("Embr-Charts-${version}.modl")
     freeModule.set(true)
-    requiredIgnitionVersion.set(libs.versions.ignition)
+    requiredIgnitionVersion.set("8.3.0")
     license.set("license.html")
 
     projectScopes.putAll(

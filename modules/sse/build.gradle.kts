@@ -8,7 +8,7 @@ ignitionModule {
     id.set("com.mussonindustrial.embr.sse")
     fileName.set("Embr-SSE-${version}.modl")
     freeModule.set(true)
-    requiredIgnitionVersion.set(libs.versions.ignition)
+    requiredIgnitionVersion.set("8.3.0")
 
     projectScopes.putAll(
         mapOf(

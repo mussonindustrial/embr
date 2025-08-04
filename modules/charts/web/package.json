@@ -14,7 +14,7 @@
     "dependencies": {
         "@embr-js/utils": "0.6.0",
         "@embr-js/perspective-client": "0.6.0",
-        "@inductiveautomation/perspective-client": "2.1.33",
+        "@inductiveautomation/perspective-client": "2.3.0-beta1",
         "@robloche/chartjs-plugin-streaming": "3.1.0",
         "@sgratzl/chartjs-chart-boxplot": "4.4.4",
         "apexcharts": "3.54.1",
