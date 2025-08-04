@@ -6,7 +6,7 @@ ignitionModule {
     name.set("Embr Server Sent Events")
     moduleDescription.set("Provides an API for streaming events via SSE.")
     id.set("com.mussonindustrial.embr.sse")
-    fileName.set("Embr-SSE-Ignition83-${version}.modl")
+    fileName.set("Embr-SSE-Ignition83Beta-${version}.modl")
     freeModule.set(true)
     requiredIgnitionVersion.set("8.3.0")
 

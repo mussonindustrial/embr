@@ -7,7 +7,7 @@ ignitionModule {
     name.set("Embr Periscope")
     moduleDescription.set("Design extensions and enhancements for Perspective.")
     id.set("com.mussonindustrial.embr.periscope")
-    fileName.set("Embr-Periscope-Ignition83-${version}.modl")
+    fileName.set("Embr-Periscope-Ignition83Beta-${version}.modl")
     freeModule.set(true)
     requiredIgnitionVersion.set("8.3.0")
     license.set("license.html")
