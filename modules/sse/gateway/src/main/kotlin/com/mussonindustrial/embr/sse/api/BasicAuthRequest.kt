@@ -6,6 +6,7 @@ import com.inductiveautomation.ignition.common.gson.JsonObject
 import com.inductiveautomation.ignition.common.gson.JsonSerializationContext
 import com.inductiveautomation.ignition.common.tags.model.SecurityContext
 import com.inductiveautomation.ignition.common.user.BasicAuthChallenge
+import com.inductiveautomation.ignition.common.user.SimpleAuthChallenge
 import com.mussonindustrial.embr.common.gson.JsonSerializable
 import com.mussonindustrial.embr.sse.EventStreamGatewayContext
 import java.lang.reflect.Type
@@ -44,7 +45,7 @@ class BasicAuthRequest(val username: String, val password: String) : AuthRequest
     }
 
     override fun getSecurityContext(context: EventStreamGatewayContext): SecurityContext {
-        val challenge = BasicAuthChallenge(username, password)
+        val challenge = SimpleAuthChallenge(username, password)
         val user = context.userSourceProfile.authenticate(challenge)
         return SecurityContext.fromAuthenticatedUser(user)
     }
