@@ -1,5 +1,6 @@
 package com.mussonindustrial.ignition.embr.charts
 
+import com.codahale.metrics.health.HealthCheckRegistry
 import com.inductiveautomation.ignition.gateway.model.DiagnosticsManager
 import com.inductiveautomation.ignition.gateway.model.GatewayContext
 import com.inductiveautomation.ignition.gateway.model.TelemetryManager
@@ -30,8 +31,6 @@ class ChartsGatewayContext(private val context: GatewayContext) :
             ChartJs.asGatewayComponent { JavaScriptProxyableComponentModelDelegate(it) },
         )
 
-    private val moduleObservers = listOf(KyvisLabsApexCharts.Observer(this))
-
     init {
         instance = this
         perspectiveContext = PerspectiveContext.get(context)
@@ -45,12 +44,8 @@ class ChartsGatewayContext(private val context: GatewayContext) :
         components.forEach { perspectiveContext.removeComponent(it) }
     }
 
-    fun registerModuleObservers() {
-        moduleObservers.forEach { moduleManager.addModuleObserver(it) }
-    }
-
-    fun removeModuleObservers() {
-        moduleObservers.forEach { moduleManager.removeModuleObserver(it) }
+    override fun getHealthCheckRegistry(): HealthCheckRegistry? {
+        return super.getHealthCheckRegistry()
     }
 
     override fun getTelemetryManager(): TelemetryManager? {

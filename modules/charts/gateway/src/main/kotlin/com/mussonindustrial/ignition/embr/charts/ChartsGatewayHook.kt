@@ -22,18 +22,12 @@ class ChartsGatewayHook : AbstractGatewayModuleHook() {
     override fun startup(activationState: LicenseState) {
         logger.debug("Embr-Charts module startup.")
 
-        logger.debug("Registering module observers...")
-        context.registerModuleObservers()
-
         logger.debug("Registering components...")
         context.registerComponents()
     }
 
     override fun shutdown() {
         logger.debug("Embr-Charts module shutdown.")
-
-        logger.debug("Removing module observers...")
-        context.removeModuleObservers()
 
         logger.debug("Removing components...")
         context.removeComponents()
