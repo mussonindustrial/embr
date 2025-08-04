@@ -3,14 +3,14 @@ name: 'Build'
 
 on:
   push:
-    branches-ignore: ['main']
+    branches-ignore: ['8.1/main']
   pull_request:
-    branches: ['main']
+    branches: ['8.1/main']
 
-# Cancel in progress workflows on pull_requests.
+# Cancel in-progress workflows on pull_requests.
 # https://docs.github.com/en/actions/using-jobs/using-concurrency#example-using-a-fallback-value
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: 8.1-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 env:

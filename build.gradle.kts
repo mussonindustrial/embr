@@ -27,7 +27,7 @@ val changesetPublish by tasks.registering(NpxTask::class) {
 
 val release by tasks.registering {
     group = "publishing"
-    dependsOn(tasks.build, changesetVersion, changesetPublish)
+    dependsOn(tasks.build, changesetVersion)
 }
 
 val assembleModules by tasks.registering(Copy::class) {
