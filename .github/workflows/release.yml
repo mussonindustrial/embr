@@ -2,9 +2,9 @@ name: Release
 
 on:
   push:
-    branches: ['main']
+    branches: ['8.1/main']
 
-concurrency: ${{ github.workflow }}-${{ github.ref }}
+concurrency: 8.1-${{ github.workflow }}-${{ github.ref }}
 
 env:
   JAVA_VERSION: 21
@@ -107,7 +107,7 @@ jobs:
         - name: Get Tag Name
           id: meta
           run: |
-            echo "tag_name=${{ matrix.package.name }}@${{ matrix.package.version }}" >> "$GITHUB_OUTPUT"
+            echo "tag_name=8.1/${{ matrix.package.name }}-${{ matrix.package.version }}" >> "$GITHUB_OUTPUT"
 
         - name: Publish Artifacts to Releases
           run: |

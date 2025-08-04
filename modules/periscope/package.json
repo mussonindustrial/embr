@@ -1,7 +1,7 @@
 {
     "name": "@embr-modules/periscope",
     "version": "0.8.1",
-    "private": false,
+    "private": true,
     "keywords": [
         "ignition",
         "module",

@@ -1,7 +1,7 @@
 {
     "name": "@embr-modules/sse",
     "version": "0.5.3",
-    "private": false,
+    "private": true,
     "keywords": [
         "ignition",
         "module"
