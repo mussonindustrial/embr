@@ -18,6 +18,7 @@ kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", v
 kotlin-stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib", version.ref = "kotlin"}
 jetty-server = { group = "org.eclipse.jetty", name = "jetty-server", version.ref = "jetty" }
 jetty-servlet = { group = "org.eclipse.jetty", name = "jetty-servlet", version.ref = "jetty" }
+jetty-servlet-api = { group = "org.eclipse.jetty", name = "jetty-servlet-api", version.ref = "jetty" }
 jetty-servlets = { group = "org.eclipse.jetty", name = "jetty-servlets", version.ref = "jetty" }
 ignition-common = { group = "com.inductiveautomation.ignitionsdk", name = "ignition-common", version.ref = "ignition" }
 ignition-gson = { group = "com.inductiveautomation.ignition", name = "ia-gson", version.ref = "ia-gson"}
@@ -46,7 +47,8 @@ gateway = [
     "ignition-gson",
     "ignition-common",
     "ignition-gateway-api",
-    "jetty-server"
+    "jetty-server",
+    "jetty-servlet-api"
 ]
 designer = [
     "ignition-gson",
