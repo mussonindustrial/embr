@@ -2,7 +2,7 @@
 java = "21"
 kotlin = "2.1.21"
 kotest = "5.9.1"
-ignition = "8.1.33"
+ignition = "8.3.0-beta1"
 ia-gson = "2.10.1"
 jetty = "10.0.21"
 if97 = "2.0.0"
@@ -46,6 +46,7 @@ gateway = [
     "ignition-gson",
     "ignition-common",
     "ignition-gateway-api",
+    "jetty-server"
 ]
 designer = [
     "ignition-gson",
