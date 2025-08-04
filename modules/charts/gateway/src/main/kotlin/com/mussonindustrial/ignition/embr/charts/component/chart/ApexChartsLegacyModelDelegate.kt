@@ -11,11 +11,11 @@ import com.inductiveautomation.ignition.gateway.dataroutes.RouteGroup
 import com.inductiveautomation.perspective.gateway.api.*
 import com.inductiveautomation.perspective.gateway.api.FetchableCache.Fetchable
 import com.inductiveautomation.perspective.gateway.messages.EventFiredMsg
+import jakarta.servlet.http.HttpServletResponse
 import java.io.IOException
 import java.io.OutputStreamWriter
 import java.nio.charset.StandardCharsets.UTF_8
 import java.util.concurrent.atomic.AtomicBoolean
-import javax.servlet.http.HttpServletResponse
 import org.python.core.Py
 import org.python.core.PyDictionary
 import org.python.core.PyObject

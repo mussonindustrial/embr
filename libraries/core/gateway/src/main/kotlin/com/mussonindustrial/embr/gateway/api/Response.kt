@@ -2,7 +2,7 @@ package com.mussonindustrial.embr.gateway.api
 
 import com.inductiveautomation.ignition.common.gson.JsonElement
 import com.inductiveautomation.ignition.common.gson.JsonObject
-import javax.servlet.http.HttpServletResponse
+import jakarta.servlet.http.HttpServletResponse
 import kotlin.text.Charsets.UTF_8
 
 fun <T : HttpServletResponse> T.sendSuccess(data: JsonElement) {

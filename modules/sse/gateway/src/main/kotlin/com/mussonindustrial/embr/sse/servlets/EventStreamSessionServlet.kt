@@ -13,9 +13,9 @@ import com.mussonindustrial.embr.sse.api.AuthRequest
 import com.mussonindustrial.embr.sse.api.BasicAuthRequest
 import com.mussonindustrial.embr.sse.api.EventStreamSessionRequest
 import com.mussonindustrial.embr.sse.api.PerspectiveAuthRequest
-import javax.servlet.http.HttpServlet
-import javax.servlet.http.HttpServletRequest
-import javax.servlet.http.HttpServletResponse
+import jakarta.servlet.http.HttpServlet
+import jakarta.servlet.http.HttpServletRequest
+import jakarta.servlet.http.HttpServletResponse
 
 class EventStreamSessionServlet : HttpServlet() {
     private val logger = this.getLogger()

@@ -15,8 +15,8 @@ import java.util.UUID
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.function.Supplier
+import org.eclipse.jetty.ee10.servlets.EventSource
 import org.eclipse.jetty.io.EofException
-import org.eclipse.jetty.servlets.EventSource
 
 class EventStreamManager(val context: EventStreamGatewayContext) {
     private val logger = this.getLogger()

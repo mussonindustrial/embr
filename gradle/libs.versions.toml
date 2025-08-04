@@ -4,7 +4,7 @@ kotlin = "2.1.21"
 kotest = "5.9.1"
 ignition = "8.3.0-beta1"
 ia-gson = "2.10.1"
-jetty = "10.0.21"
+jetty = "12.0.7"
 if97 = "2.0.0"
 spotless = "7.0.4"
 
@@ -17,9 +17,8 @@ spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 kotlin-stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib", version.ref = "kotlin"}
 jetty-server = { group = "org.eclipse.jetty", name = "jetty-server", version.ref = "jetty" }
-jetty-servlet = { group = "org.eclipse.jetty", name = "jetty-servlet", version.ref = "jetty" }
-jetty-servlet-api = { group = "org.eclipse.jetty", name = "jetty-servlet-api", version.ref = "jetty" }
-jetty-servlets = { group = "org.eclipse.jetty", name = "jetty-servlets", version.ref = "jetty" }
+jetty-servlet = { group = "org.eclipse.jetty.ee10", name = "jetty-ee10-servlet", version.ref = "jetty" }
+jetty-servlets = { group = "org.eclipse.jetty.ee10", name = "jetty-ee10-servlets", version.ref = "jetty" }
 ignition-common = { group = "com.inductiveautomation.ignitionsdk", name = "ignition-common", version.ref = "ignition" }
 ignition-gson = { group = "com.inductiveautomation.ignition", name = "ia-gson", version.ref = "ia-gson"}
 ignition-gateway-api = { group = "com.inductiveautomation.ignitionsdk", name = "gateway-api", version.ref = "ignition" }
@@ -48,7 +47,7 @@ gateway = [
     "ignition-common",
     "ignition-gateway-api",
     "jetty-server",
-    "jetty-servlet-api"
+    "jetty-servlet"
 ]
 designer = [
     "ignition-gson",

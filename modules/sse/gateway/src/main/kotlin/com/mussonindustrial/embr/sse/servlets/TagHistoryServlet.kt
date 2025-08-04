@@ -10,9 +10,9 @@ import com.mussonindustrial.embr.gateway.api.sendSuccess
 import com.mussonindustrial.embr.sse.api.TagHistoryRequest
 import com.mussonindustrial.embr.sse.history.TagStreamHistoryQueryParams
 import com.mussonindustrial.embr.sse.streams.TagStream
-import javax.servlet.http.HttpServlet
-import javax.servlet.http.HttpServletRequest
-import javax.servlet.http.HttpServletResponse
+import jakarta.servlet.http.HttpServlet
+import jakarta.servlet.http.HttpServletRequest
+import jakarta.servlet.http.HttpServletResponse
 
 class TagHistoryServlet : HttpServlet() {
     private val logger = this.getLogger()
