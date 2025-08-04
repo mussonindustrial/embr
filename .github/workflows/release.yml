@@ -20,7 +20,7 @@ jobs:
     name: Release Changeset
     runs-on: ubuntu-latest
     outputs:
-      published: ${{ steps.changesets.outputs.published }}
+      hasChangesets: ${{ steps.changesets.outputs.hasChangesets }}
       publishedPackages: ${{ steps.changesets.outputs.publishedPackages }}
     steps:
       - name: Checkout repository
@@ -74,7 +74,7 @@ jobs:
         uses: changesets/action@v1
         with:
           publish: ./gradlew release
-          title: Publish 8.1 Modules
+          title: Release 8.1 Modules
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
@@ -90,7 +90,7 @@ jobs:
       name: Publish to GitHub Releases
       runs-on: ubuntu-latest
       needs: release
-      if: needs.release.outputs.published == 'true'
+      if: needs.release.outputs.hasChangesets == 'true'
       strategy:
         fail-fast: true
         matrix:
