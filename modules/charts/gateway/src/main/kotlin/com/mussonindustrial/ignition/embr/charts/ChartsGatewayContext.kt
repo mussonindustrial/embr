@@ -15,7 +15,6 @@ import com.mussonindustrial.ignition.embr.charts.component.chart.ApexCharts
 import com.mussonindustrial.ignition.embr.charts.component.chart.ApexChartsLegacy
 import com.mussonindustrial.ignition.embr.charts.component.chart.ApexChartsLegacyModelDelegate
 import com.mussonindustrial.ignition.embr.charts.component.chart.ChartJs
-import com.mussonindustrial.ignition.embr.charts.modules.KyvisLabsApexCharts
 
 class ChartsGatewayContext(private val context: GatewayContext) :
     EmbrGatewayContext by EmbrGatewayContextImpl(context) {

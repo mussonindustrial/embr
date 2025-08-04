@@ -267,7 +267,7 @@ class TagStream : EventStream {
                 val date = TypeUtilities.toDate(results.getValueAt(row, 0))
                 val values = mutableListOf<Number>()
                 for (col in 1 until results.columnCount) {
-                    values.add(TypeUtilities.toNumber(results.getValueAt(row, col)))
+                    values.add(TypeUtilities.toNumber(results.getValueAt(row, col))!!)
                 }
                 sendMessage(id, date.time, values)
             }
@@ -280,7 +280,7 @@ class TagStream : EventStream {
             for (row in 0 until results.rowCount) {
                 val date = TypeUtilities.toDate(results.getValueAt(row, 3))
                 val tagId = TypeUtilities.toInteger(results.getValueAt(row, 0))
-                val value = TypeUtilities.toNumber(results.getValueAt(row, 1))
+                val value = TypeUtilities.toNumber(results.getValueAt(row, 1))!!
                 sendMessage(id, date.time, tagId, value)
             }
             endMessage(id)

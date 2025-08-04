@@ -5,7 +5,6 @@ import com.inductiveautomation.ignition.common.gson.JsonElement
 import com.inductiveautomation.ignition.common.gson.JsonObject
 import com.inductiveautomation.ignition.common.gson.JsonSerializationContext
 import com.inductiveautomation.ignition.common.tags.model.SecurityContext
-import com.inductiveautomation.ignition.common.user.BasicAuthChallenge
 import com.inductiveautomation.ignition.common.user.SimpleAuthChallenge
 import com.mussonindustrial.embr.common.gson.JsonSerializable
 import com.mussonindustrial.embr.sse.EventStreamGatewayContext
