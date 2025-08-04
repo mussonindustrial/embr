@@ -3,7 +3,7 @@ package com.mussonindustrial.ignition.embr.periscope.scripting
 import com.inductiveautomation.ignition.common.TypeUtilities
 import com.inductiveautomation.ignition.common.script.builtin.KeywordArgs
 import com.inductiveautomation.ignition.common.script.builtin.PyArgumentMap
-import com.inductiveautomation.ignition.common.script.hints.ScriptFunction
+import com.inductiveautomation.ignition.common.script.hints.JythonElement
 import com.inductiveautomation.ignition.common.util.ExecutionQueue
 import com.inductiveautomation.ignition.common.util.LogUtil
 import com.inductiveautomation.perspective.gateway.api.PerspectiveContext
@@ -165,7 +165,7 @@ class JavaScriptFunctions(private val context: PeriscopeGatewayContext) :
                 .build()
     }
 
-    @ScriptFunction(docBundlePrefix = "${Meta.BUNDLE_PREFIX}.script")
+    @JythonElement(docBundlePrefix = "${Meta.BUNDLE_PREFIX}.script")
     @KeywordArgs(
         names = ["function", "args", "sessionId", "pageId"],
         types = [String::class, PyDictionary::class, String::class, String::class],
@@ -174,7 +174,7 @@ class JavaScriptFunctions(private val context: PeriscopeGatewayContext) :
     fun runJavaScriptBlocking(args: Array<PyObject>, keywords: Array<String>) =
         overloads.runJavaScriptBlocking.call(args, keywords)
 
-    @ScriptFunction(docBundlePrefix = "${Meta.BUNDLE_PREFIX}.script")
+    @JythonElement(docBundlePrefix = "${Meta.BUNDLE_PREFIX}.script")
     @KeywordArgs(
         names = ["function", "args", "callback", "sessionId", "pageId"],
         types =
