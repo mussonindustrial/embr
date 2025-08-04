@@ -6,7 +6,7 @@ ignitionModule {
     name.set("Embr Thermodynamics")
     moduleDescription.set("Scripting functions for computing thermodynamic properties.")
     id.set("com.mussonindustrial.embr.thermo")
-    fileName.set("Embr-Thermodynamics-${version}.modl")
+    fileName.set("Embr-Thermodynamics-Ignition83-${version}.modl")
     freeModule.set(true)
     requiredIgnitionVersion.set("8.3.0")
     license.set("license.html")

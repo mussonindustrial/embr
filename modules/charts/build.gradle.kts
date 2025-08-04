@@ -7,7 +7,7 @@ ignitionModule {
     name.set("Embr Charts")
     moduleDescription.set("A collection of enhanced Perspective charting components.")
     id.set("com.mussonindustrial.embr.charts")
-    fileName.set("Embr-Charts-${version}.modl")
+    fileName.set("Embr-Charts-Ignition83-${version}.modl")
     freeModule.set(true)
     requiredIgnitionVersion.set("8.3.0")
     license.set("license.html")
