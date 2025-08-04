@@ -1,5 +1,5 @@
 {
-    "name": "charts",
+    "name": "@embr-modules/charts",
     "version": "3.0.1",
     "private": true,
     "keywords": [
