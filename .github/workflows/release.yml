@@ -74,6 +74,7 @@ jobs:
         uses: changesets/action@v1
         with:
           publish: ./gradlew release
+          title: Publish 8.1 Modules
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
