@@ -1,7 +1,7 @@
 {
     "name": "@embr-modules/thermo",
     "version": "1.0.4",
-    "private": true,
+    "private": false,
     "keywords": [
         "ignition",
         "module",

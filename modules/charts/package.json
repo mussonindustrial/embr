@@ -1,7 +1,7 @@
 {
     "name": "@embr-modules/charts",
     "version": "3.0.4",
-    "private": true,
+    "private": false,
     "keywords": [
         "ignition",
         "module",
