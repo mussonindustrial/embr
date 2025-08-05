@@ -60,7 +60,7 @@ jobs:
         run: |
           VERSION="8.1"
           DATE=$(date +%Y.%-m.%-d)
-          echo "RELEASE_NAME=Ignition v${VERSION} - ${DATE}" >> $GITHUB_ENV
+          echo "RELEASE_NAME=Embr v${VERSION} - ${DATE}" >> $GITHUB_ENV
           echo "RELEASE_TAG=releases/${VERSION}/${DATE}" >> $GITHUB_ENV
 
   release:
