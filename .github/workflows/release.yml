@@ -70,10 +70,7 @@ jobs:
     name: Release
     needs: [release-tag, changesets]
     if: >
-      (
-        needs.changesets.outputs.hasChangesets == 'false' &&
-        contains(github.event.head_commit.message, '[ci] release v8.1 branch')
-      ) || 
+      needs.changesets.outputs.hasChangesets == 'false' ||
       github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     permissions:
