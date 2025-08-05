@@ -1,5 +1,16 @@
 # @mussonindustrial/embr-charts
 
+## 3.0.2
+
+### Patch Changes
+
+- 151a940: (ApexCharts Component) Use type specific `PropertyTree` accessors.
+- 151a940: (ApexCharts Component) Specify that the default schema should contain an empty `series` array.
+  - This resolves an issue that would occur when rendering a Radar chart with non-persistent bindings. https://forum.inductiveautomation.com/t/musson-industrial-s-embr-charts-module/91618/271
+- Updated dependencies [151a940]
+- Updated dependencies [151a940]
+  - @embr-modules/charts-web@3.0.2
+
 ## 3.0.1
 
 ### Patch Changes
