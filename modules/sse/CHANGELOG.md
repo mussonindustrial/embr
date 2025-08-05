@@ -1,5 +1,11 @@
 # @mussonindustrial/embr-tag-stream
 
+## 0.5.4
+
+### Patch Changes
+
+- 92c744f: Fake changeset.
+
 ## 0.5.3
 
 ### Patch Changes

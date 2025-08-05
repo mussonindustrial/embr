@@ -1,6 +1,6 @@
 {
     "name": "@embr-modules/charts",
-    "version": "3.0.6",
+    "version": "3.0.7",
     "private": true,
     "keywords": [
         "ignition",
@@ -15,7 +15,7 @@
         "!**/*.unsigned.modl"
     ],
     "dependencies": {
-        "@embr-modules/charts-web": "3.0.6",
+        "@embr-modules/charts-web": "3.0.7",
         "@embr-jvm/core-common": "0.7.0",
         "@embr-jvm/core-designer": "0.7.0",
         "@embr-jvm/perspective-common": "0.9.0",
