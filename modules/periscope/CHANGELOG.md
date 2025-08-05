@@ -1,5 +1,12 @@
 # @embr-modules/periscope
 
+## 0.8.2
+
+### Patch Changes
+
+- 92c744f: Fake changeset.
+  - @embr-modules/periscope-web@0.8.2
+
 ## 0.8.1
 
 ### Patch Changes
