@@ -55,15 +55,12 @@ jobs:
       RELEASE_NAME: ${{ env.RELEASE_NAME }}
       RELEASE_TAG: ${{ env.RELEASE_TAG }}
     steps:
-      - name: Check out the repo
-        uses: actions/checkout@v4
-
-      - name: Create Release Tag
+      - name: Determine Release Tag
         id: get_release_tag
         run: |
           VERSION="8.1"
           DATE=$(date +%Y.%-m.%-d)
-          echo "RELEASE_NAME=(Ignition ${VERSION}) ${DATE}" >> $GITHUB_ENV
+          echo "RELEASE_NAME=Ignition v${VERSION} - ${DATE}" >> $GITHUB_ENV
           echo "RELEASE_TAG=releases/${VERSION}/${DATE}" >> $GITHUB_ENV
 
   release:
@@ -113,7 +110,6 @@ jobs:
         with:
           tag: ${{ needs.release-tag.outputs.RELEASE_TAG }}
           name: ${{ needs.release-tag.outputs.RELEASE_NAME }}
-          body: 'TODO: Merge all changelogs into the body of the release.'
           bodyFile: './RELEASE_NOTES.md'
           makeLatest: true
           skipIfReleaseExists: true

@@ -3,7 +3,6 @@ name: 'Build'
 
 on:
   push:
-    branches-ignore: ['8.1/main']
   pull_request:
     branches: ['8.1/main']
 
