@@ -1,5 +1,13 @@
 # @mussonindustrial/embr-js-chart-js
 
+## 3.0.6
+
+### Patch Changes
+
+- ae20d04: Fake changeset
+
+## 3.0.5
+
 ## 3.0.4
 
 ## 3.0.3

@@ -1,5 +1,20 @@
 # @mussonindustrial/embr-charts
 
+## 3.0.6
+
+### Patch Changes
+
+- ae20d04: Fake changeset
+- Updated dependencies [ae20d04]
+  - @embr-modules/charts-web@3.0.6
+
+## 3.0.5
+
+### Patch Changes
+
+- ef7ae2a: Fake changeset
+  - @embr-modules/charts-web@3.0.5
+
 ## 3.0.4
 
 ### Patch Changes
