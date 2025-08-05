@@ -1338,7 +1338,7 @@
   resolved "https://registry.yarnpkg.com/@icons/material/-/material-0.2.4.tgz#e90c9f71768b3736e76d7dd6783fc6c2afa88bc8"
   integrity sha512-QPcGmICAPbGLGb6F/yNf/KzKqvFx8z5qx3D1yFqVAjoFmXK35EgyW+cJ57Te3CNsmzblwtzakLGFqHPqrfb4Tw==
 
-"@inductiveautomation/perspective-client@2.3.0", "@inductiveautomation/perspective-client@2.3.0-beta1":
+"@inductiveautomation/perspective-client@2.3.0-beta1":
   version "2.3.0-beta1"
   resolved "https://nexus.inductiveautomation.com/repository/node-packages/@inductiveautomation/perspective-client/-/perspective-client-2.3.0-beta1.tgz#70e0230fa4e0ddba54826a420cc3b111ab955d4e"
   integrity sha512-+Qs3mnE7DD7JUEGHeBTA9yYC0soQP++JGm8IGZQ+238Wcg+bTl6g+qBnUyOkU8LTCGqZ/fYPEAgqib5fDcxzcw==
@@ -1429,7 +1429,7 @@
     react-virtualized "^9.22.3"
     transformation-matrix "^2.1.0"
 
-"@inductiveautomation/perspective-drawing-common@2.3.0", "@inductiveautomation/perspective-drawing-common@2.3.0-beta1":
+"@inductiveautomation/perspective-drawing-common@2.3.0-beta1":
   version "2.3.0-beta1"
   resolved "https://nexus.inductiveautomation.com/repository/node-packages/@inductiveautomation/perspective-drawing-common/-/perspective-drawing-common-2.3.0-beta1.tgz#a3147926f3bc76538016077b7c660b29cd18b9ee"
   integrity sha512-V0rHEKMT2FhihozfbvR0DZ7mkRxSobcuuDQ4l23fBOvUeQoTNjtVSx0zbhZ72lQKez5cuD3UEsRnKCuXTH90mQ==
