@@ -3,6 +3,7 @@ name: Release
 on:
   push:
     branches: ['8.1/main']
+  workflow_dispatch:
 
 concurrency: 8.1-${{ github.workflow }}-${{ github.ref }}
 
@@ -16,12 +17,67 @@ permissions:
   pull-requests: write
 
 jobs:
-  release:
-    name: Release Changeset
+  changesets:
+    name: Changesets
     runs-on: ubuntu-latest
     outputs:
       hasChangesets: ${{ steps.changesets.outputs.hasChangesets }}
-      publishedPackages: ${{ steps.changesets.outputs.publishedPackages }}
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '${{ env.NODE_VERSION }}'
+          cache: 'yarn'
+
+      - name: Install Dependencies
+        run: yarn install
+
+      - name: Create Release Pull Request
+        id: changesets
+        uses: changesets/action@v1
+        with:
+          commit: '[ci] release v8.1 branch'
+          title: '(CI) Release v8.1 Branch'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+  release-tag:
+    name: Release Tag
+    runs-on: ubuntu-latest
+    outputs:
+      RELEASE_NAME: ${{ env.RELEASE_NAME }}
+      RELEASE_TAG: ${{ env.RELEASE_TAG }}
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v4
+
+      - name: Create Release Tag
+        id: get_release_tag
+        run: |
+          VERSION="8.1"
+          DATE=$(date +%Y.%m.%d)
+          echo "RELEASE_NAME="(${VERSION}) ${DATE}" >> $GITHUB_ENV
+          echo "RELEASE_TAG="releases/${VERSION}/${DATE}" >> $GITHUB_ENV
+
+  release:
+    name: Release
+    needs: [release-tag, changesets]
+    if: >
+      (
+        needs.changesets.outputs.hasChangesets == 'false' &&
+        contains(github.event.head_commit.message, '[ci] release v8.1 branch')
+      ) || 
+      github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -31,6 +87,7 @@ jobs:
         with:
           java-version: '${{ env.JAVA_VERSION }}'
           distribution: 'zulu'
+
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
         with:
@@ -38,16 +95,20 @@ jobs:
           build-scan-publish: true
           build-scan-terms-of-use-url: "https://gradle.com/terms-of-service"
           build-scan-terms-of-use-agree: "yes"
+
       - name: Make gradlew executable
         run: chmod +x ./gradlew
+
       - name: Validate Gradle wrapper
         uses: gradle/actions/wrapper-validation@v4
 
-      - name: Set up Node.js
+      - name: Set up Node
         uses: actions/setup-node@v4
         with:
           node-version: '${{ env.NODE_VERSION }}'
-      - name: Initialize Node.js
+          cache: 'yarn'
+
+      - name: Install Dependencies
         run: yarn install
 
       - name: Load Organization gradle.properties
@@ -57,64 +118,33 @@ jobs:
           mkdir -p ~/.gradle/
           echo "GRADLE_USER_HOME=${HOME}/.gradle" >> $GITHUB_ENV
           echo "${props}" > ~/.gradle/gradle.properties
+
       - name: Load Organization Signing Cert
         run: |
           mkdir ./secrets
           echo -n "$cert_base64" | base64 --decode > ./secrets/cert.p7b
         env:
           cert_base64: ${{ secrets.IGNITION_MODULE_CERT_BASE64 }}
+
       - name: Load Organization Keystore
         run: |
           echo -n "$keystore_base64" | base64 --decode > ./secrets/keystore.jks
         env:
           keystore_base64: ${{ secrets.IGNITION_MODULE_KEYSTORE_BASE64 }}
 
-      - name: Publish on Version Change
-        id: changesets
-        uses: changesets/action@v1
+      - name: Build
+        run: ./gradlew --scan build
+
+      - name: Create Release
+        uses: ncipollo/release-action@v1
+        id: create_release
         with:
-          publish: ./gradlew release
-          title: Release 8.1 Modules
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-      - name: Archive build artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: build
-          path: |
-            ./build/
-
-  publish-gha:
-      name: Publish to GitHub Releases
-      runs-on: ubuntu-latest
-      needs: release
-      if: needs.release.outputs.hasChangesets == 'true'
-      strategy:
-        fail-fast: true
-        matrix:
-          package: ${{ fromJson(needs.release.outputs.publishedPackages) }}
-      steps:
-        - name: Checkout
-          uses: actions/checkout@v4
-
-        - name: Download Artifacts
-          uses: actions/download-artifact@v4
-          with:
-            name: build
-            path: ./build
-
-        - name: Get Tag Name
-          id: meta
-          run: |
-            echo "tag_name=8.1/${{ matrix.package.name }}-${{ matrix.package.version }}" >> "$GITHUB_OUTPUT"
-
-        - name: Publish Artifacts to Releases
-          run: |
-            gh release upload ${{ steps.meta.outputs.tag_name }} ./build/modules/*
-          env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ needs.release-tag.outputs.RELEASE_TAG }}
+          name: ${{ needs.release-tag.outputs.RELEASE_NAME }}
+          body: 'TODO: Merge all changelogs into the body of the release.'
+          makeLatest: true
+          skipIfReleaseExists: true
+          artifacts: './build/modules/*.modl'
 
   dependency-submission:
     runs-on: ubuntu-latest
