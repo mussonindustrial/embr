@@ -18,7 +18,7 @@ permissions:
 
 jobs:
   changesets:
-    name: Changesets
+    name: Process Changesets
     runs-on: ubuntu-latest
     outputs:
       hasChangesets: ${{ steps.changesets.outputs.hasChangesets }}
@@ -49,7 +49,7 @@ jobs:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
   release-tag:
-    name: Release Tag
+    name: Determine Release Tag
     runs-on: ubuntu-latest
     outputs:
       RELEASE_NAME: ${{ env.RELEASE_NAME }}
@@ -62,8 +62,8 @@ jobs:
         id: get_release_tag
         run: |
           VERSION="8.1"
-          DATE=$(date +%Y.%m.%d)
-          echo "RELEASE_NAME=(${VERSION}) ${DATE}" >> $GITHUB_ENV
+          DATE=$(date +%Y.%-m.%-d)
+          echo "RELEASE_NAME=(Ignition ${VERSION}) ${DATE}" >> $GITHUB_ENV
           echo "RELEASE_TAG=releases/${VERSION}/${DATE}" >> $GITHUB_ENV
 
   release:
@@ -76,61 +76,36 @@ jobs:
     permissions:
       contents: write
     steps:
-      - name: Checkout repository
+      - name: Checkout Repo
         uses: actions/checkout@v4
 
-      - name: 'Set up Java ${{ env.JAVA_VERSION }}'
-        uses: actions/setup-java@v4
+      - name: Configure Build Environment
+        uses: ./.github/actions/configure-build-env
         with:
           java-version: '${{ env.JAVA_VERSION }}'
-          distribution: 'zulu'
-
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v4
-        with:
-          cache-read-only: ${{ github.event_name == 'pull_request' }}
-          build-scan-publish: true
-          build-scan-terms-of-use-url: "https://gradle.com/terms-of-service"
-          build-scan-terms-of-use-agree: "yes"
-
-      - name: Make gradlew executable
-        run: chmod +x ./gradlew
-
-      - name: Validate Gradle wrapper
-        uses: gradle/actions/wrapper-validation@v4
-
-      - name: Set up Node
-        uses: actions/setup-node@v4
-        with:
           node-version: '${{ env.NODE_VERSION }}'
-          cache: 'yarn'
-
-      - name: Install Dependencies
-        run: yarn install
-
-      - name: Load Organization gradle.properties
-        env:
-          props: ${{ secrets.GRADLE_IGNITION_MODULE_SIGNING_PROPS }}
-        run: |
-          mkdir -p ~/.gradle/
-          echo "GRADLE_USER_HOME=${HOME}/.gradle" >> $GITHUB_ENV
-          echo "${props}" > ~/.gradle/gradle.properties
-
-      - name: Load Organization Signing Cert
-        run: |
-          mkdir ./secrets
-          echo -n "$cert_base64" | base64 --decode > ./secrets/cert.p7b
-        env:
-          cert_base64: ${{ secrets.IGNITION_MODULE_CERT_BASE64 }}
-
-      - name: Load Organization Keystore
-        run: |
-          echo -n "$keystore_base64" | base64 --decode > ./secrets/keystore.jks
-        env:
-          keystore_base64: ${{ secrets.IGNITION_MODULE_KEYSTORE_BASE64 }}
+          gradle-signing-props: '${{ secrets.GRADLE_IGNITION_MODULE_SIGNING_PROPS }}'
+          module-signing-certificate: '${{ secrets.IGNITION_MODULE_CERT_BASE64 }}'
+          module-signing-keystore: '${{ secrets.IGNITION_MODULE_KEYSTORE_BASE64 }}'
 
       - name: Build
         run: ./gradlew --scan build
+
+      - name: Extract Release Notes from Changesets PR
+        id: extract_release_notes
+        run: |
+          PR_NUMBER=$(gh pr list --search "(CI) Release v8.1 Branch" --state merged --json number -q '.[0].number')
+          if [ -z "$PR_NUMBER" ]; then
+            echo "No matching merged PR found."
+            exit 1
+          fi
+          
+          BODY=$(gh pr view "$PR_NUMBER" --json body -q .body)
+          # Extract everything after "# Releases"
+          RELEASE_NOTES=$(echo "$BODY" | awk '/^# Releases/{flag=1; next} flag')
+          echo "$RELEASE_NOTES" > ./RELEASE_NOTES.md
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create Release
         uses: ncipollo/release-action@v1
@@ -139,15 +114,17 @@ jobs:
           tag: ${{ needs.release-tag.outputs.RELEASE_TAG }}
           name: ${{ needs.release-tag.outputs.RELEASE_NAME }}
           body: 'TODO: Merge all changelogs into the body of the release.'
+          bodyFile: './RELEASE_NOTES.md'
           makeLatest: true
           skipIfReleaseExists: true
           artifacts: './build/modules/*.modl'
 
   dependency-submission:
     runs-on: ubuntu-latest
-    name: 'Submit dependencies'
+    name: Submit dependencies
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout Repo
+        uses: actions/checkout@v4
 
       - name: 'Set up Java ${{ env.JAVA_VERSION }}'
         uses: actions/setup-java@v4
@@ -155,10 +132,10 @@ jobs:
           java-version: '${{ env.JAVA_VERSION }}'
           distribution: 'zulu'
 
-      - name: 'Make gradlew executable'
+      - name: Make gradlew executable
         run: chmod +x ./gradlew
 
       # Generates and submits a dependency graph, enabling Dependabot Alerts for all project dependencies.
       # See: https://github.com/gradle/actions/blob/main/dependency-submission/README.md
-      - name: 'Generate and submit dependency graph'
+      - name: Generate and submit dependency graph
         uses: gradle/actions/dependency-submission@v4

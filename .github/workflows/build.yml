@@ -22,57 +22,22 @@ permissions:
   contents: write
   pull-requests: write
 
-
 jobs:
   build:
-    name: 'Build'
+    name: Build
     runs-on: ubuntu-latest
     steps:
-      - name: 'Checkout repository'
+      - name: Checkout Repo
         uses: actions/checkout@v4
 
-      - name: 'Set up Java ${{ env.JAVA_VERSION }}'
-        uses: actions/setup-java@v4
+      - name: Configure Build Environment
+        uses: ./.github/actions/configure-build-env
         with:
           java-version: '${{ env.JAVA_VERSION }}'
-          distribution: 'zulu'
-      - name: 'Setup Gradle'
-        uses: gradle/actions/setup-gradle@v4
-        with:
-          cache-read-only: ${{ github.event_name == 'pull_request' }}
-          build-scan-publish: true
-          build-scan-terms-of-use-url: "https://gradle.com/terms-of-service"
-          build-scan-terms-of-use-agree: "yes"
-      - name: 'Make gradlew executable'
-        run: chmod +x ./gradlew
-      - name: 'Validate Gradle wrapper'
-        uses: gradle/actions/wrapper-validation@v4
-
-      - name: 'Set up Node.js'
-        uses: actions/setup-node@v4
-        with:
           node-version: '${{ env.NODE_VERSION }}'
-      - name: 'Initialize Node.js'
-        run: yarn install
+          gradle-signing-props: '${{ secrets.GRADLE_IGNITION_MODULE_SIGNING_PROPS }}'
+          module-signing-certificate: '${{ secrets.IGNITION_MODULE_CERT_BASE64 }}'
+          module-signing-keystore: '${{ secrets.IGNITION_MODULE_KEYSTORE_BASE64 }}'
 
-      - name: 'Load Organization gradle.properties'
-        env:
-          props: ${{ secrets.GRADLE_IGNITION_MODULE_SIGNING_PROPS }}
-        run: |
-          mkdir -p ~/.gradle/
-          echo "GRADLE_USER_HOME=${HOME}/.gradle" >> $GITHUB_ENV
-          echo "${props}" > ~/.gradle/gradle.properties
-      - name: 'Load Organization Signing Cert'
-        run: |
-          mkdir ./secrets
-          echo -n "$cert_base64" | base64 --decode > ./secrets/cert.p7b
-        env:
-          cert_base64: ${{ secrets.IGNITION_MODULE_CERT_BASE64 }}
-      - name: 'Load Organization Keystore'
-        run: |
-          echo -n "$keystore_base64" | base64 --decode > ./secrets/keystore.jks
-        env:
-          keystore_base64: ${{ secrets.IGNITION_MODULE_KEYSTORE_BASE64 }}
-
-      - name: 'Build'
+      - name: Build
         run: ./gradlew --scan build
