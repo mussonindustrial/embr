@@ -64,7 +64,7 @@ jobs:
           VERSION="8.1"
           DATE=$(date +%Y.%m.%d)
           echo "RELEASE_NAME=(${VERSION}) ${DATE}" >> $GITHUB_ENV
-          echo "RELEASE_TAG="releases/${VERSION}/${DATE}" >> $GITHUB_ENV
+          echo "RELEASE_TAG=releases/${VERSION}/${DATE}" >> $GITHUB_ENV
 
   release:
     name: Release
