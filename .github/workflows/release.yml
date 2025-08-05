@@ -91,7 +91,7 @@ jobs:
       - name: Extract Release Notes from Changesets PR
         id: extract_release_notes
         run: |
-          PR_NUMBER=$(gh pr list --search "(CI) Release v8.3beta Branch" --state merged --json number -q '.[0].number')
+          PR_NUMBER=$(gh pr list --search "(CI) Release v8.3 Branch" --state merged --json number -q '.[0].number')
           if [ -z "$PR_NUMBER" ]; then
             echo "No matching merged PR found."
             exit 1
