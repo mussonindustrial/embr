@@ -1,5 +1,7 @@
 # @mussonindustrial/embr-js-chart-js
 
+## 3.0.5
+
 ## 3.0.4
 
 ## 3.0.3
