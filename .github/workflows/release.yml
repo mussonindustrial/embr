@@ -98,8 +98,8 @@ jobs:
           fi
           
           BODY=$(gh pr view "$PR_NUMBER" --json body -q .body)
-          # Extract everything after "# Releases"
-          RELEASE_NOTES=$(echo "$BODY" | awk '/^# Releases/{flag=1; next} flag')
+          # Include everything after "# Releases"
+          RELEASE_NOTES=$(echo "$BODY" | awk '/^# Releases/{flag=1} flag')
           echo "$RELEASE_NOTES" > ./RELEASE_NOTES.md
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
