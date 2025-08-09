@@ -14,26 +14,7 @@
     "dependencies": {
         "@embr-js/utils": "0.6.0",
         "@embr-js/perspective-client": "0.6.0",
-        "@inductiveautomation/perspective-client": "2.3.0-beta1",
-        "@inductiveautomation/perspective-components": "2.3.0-beta1",
-        "@inductiveautomation/perspective-designer": "2.3.0-beta1",
-        "@inductiveautomation/perspective-drawing-common": "2.3.0-beta1",
-        "lodash": "^4.17.21",
         "react-toastify": "11.0.5",
-        "swiper": "^11.1.14"
-    },
-    "devDependencies": {
-        "@embr-js/eslint-config": "*",
-        "@embr-js/tsconfig": "*",
-        "@types/lodash": "^4.14.202",
-        "@types/react": "^18.2.56",
-        "@types/react-dom": "^18.2.56",
-        "eslint": "^8.56.0",
-        "react": "^18",
-        "react-dom": "^18",
-        "mobx-react-lite": "^1.5.0",
-        "typescript": "^5.3.3",
-        "vite": "^5.0.10",
-        "vitest": "^1.6.0"
+        "swiper": "11.2.10"
     }
 }

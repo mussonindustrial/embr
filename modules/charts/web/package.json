@@ -14,7 +14,6 @@
     "dependencies": {
         "@embr-js/utils": "0.6.0",
         "@embr-js/perspective-client": "0.6.0",
-        "@inductiveautomation/perspective-client": "2.3.0-beta1",
         "@robloche/chartjs-plugin-streaming": "3.1.0",
         "@sgratzl/chartjs-chart-boxplot": "4.4.4",
         "apexcharts": "3.54.1",
@@ -41,23 +40,10 @@
         "chartjs-plugin-zoom": "2.2.0",
         "chartjs-scale-timestack": "1.0.1",
         "clean-deep": "3.4.0",
-        "lodash": "^4.17.21",
         "luxon": "3.5.0",
         "moment": "2.30.1",
         "object-scan": "20.0.1",
         "prop-types": "15.8.1",
-        "react": "^18",
-        "react-chartjs-2": "5.2.0",
-        "react-dom": "^18"
-    },
-    "devDependencies": {
-        "@embr-js/eslint-config": "*",
-        "@embr-js/tsconfig": "*",
-        "@types/lodash": "^4.14.202",
-        "@types/react": "^18.2.56",
-        "eslint": "^8.56.0",
-        "typescript": "^5.3.3",
-        "vite": "^5.0.10",
-        "vitest": "^1.6.0"
+        "react-chartjs-2": "5.2.0"
     }
 }
