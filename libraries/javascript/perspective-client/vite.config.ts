@@ -11,6 +11,7 @@ export default defineConfig(({ mode }) => ({
       fileName: (_, entryName) => {
         return `${packageName}-${entryName}.js`
       },
+      cssFileName: `${packageName}`,
       name: packageName,
       formats: ['umd'],
     },

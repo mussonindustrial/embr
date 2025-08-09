@@ -13,17 +13,10 @@
         "lint:prettier": "prettier -c . --cache --ignore-path=../../.prettierignore"
     },
     "dependencies": {
-        "eventsource": "^2.0.2",
-        "fetch-retry": "^6.0.0"
+        "eventsource": "4.0.0",
+        "fetch-retry": "6.0.0"
     },
     "devDependencies": {
-        "@embr-js/tsconfig": "*",
-        "@embr-js/utils": "0.6.0",
-        "@embr-js/eslint-config": "*",
-        "@types/eventsource": "^1.1.15",
-        "eslint": "^8.56.0",
-        "typescript": "^5.3.3",
-        "vite": "^5.0.10",
-        "vitest": "^1.6.0"
+        "@types/eventsource": "3.0.0"
     }
 }
