@@ -27,7 +27,6 @@ include(
     ":modules:charts:gateway",
     ":modules:charts:web",
 
-    ":modules:sse:common",
     ":modules:sse:gateway",
 
     ":modules:periscope:common",

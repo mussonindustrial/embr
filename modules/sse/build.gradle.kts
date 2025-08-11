@@ -12,7 +12,6 @@ ignitionModule {
 
     projectScopes.putAll(
         mapOf(
-            ":modules:sse:common" to "G",
             ":modules:sse:gateway" to "G",
         ),
     )

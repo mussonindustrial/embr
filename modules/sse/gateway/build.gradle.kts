@@ -8,8 +8,7 @@ dependencies {
     compileOnly(libs.jetty.server)
     compileOnly(libs.jetty.servlet)
     modlImplementation(libs.jetty.servlets)
-    compileOnly(projects.libraries.core.common)
+    modlImplementation(projects.libraries.core.common)
     modlImplementation(projects.libraries.core.gateway)
     modlImplementation(projects.libraries.core.servlets)
-    compileOnly(projects.modules.sse.common)
 }

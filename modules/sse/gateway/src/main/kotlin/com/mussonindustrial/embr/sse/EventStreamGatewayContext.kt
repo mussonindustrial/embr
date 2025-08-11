@@ -1,7 +1,9 @@
 package com.mussonindustrial.embr.sse
 
 import com.inductiveautomation.ignition.common.execution.ExecutionManager
+import com.inductiveautomation.ignition.gateway.model.DiagnosticsManager
 import com.inductiveautomation.ignition.gateway.model.GatewayContext
+import com.inductiveautomation.ignition.gateway.model.TelemetryManager
 import com.inductiveautomation.ignition.gateway.user.UserSourceProfile
 import com.inductiveautomation.perspective.common.PerspectiveModule
 import com.inductiveautomation.perspective.gateway.api.PerspectiveContext
@@ -23,7 +25,7 @@ data class EventStreamGatewayContext(val context: GatewayContext) :
     val eventStreamManager = EventStreamManager(this)
     val servletManager = ModuleServletManager(context.webResourceManager, Meta.urlAlias)
     val perspectiveContext: PerspectiveContext?
-    val userSourceProfile: UserSourceProfile = context.userSourceManager.getProfile("event-stream")
+    val userSourceProfile: UserSourceProfile = context.userSourceManager.getProfile("sse")
     val eventStreamExecutionManager: ExecutionManager =
         context.createExecutionManager(
             "Embr EventStream",
@@ -32,9 +34,17 @@ data class EventStreamGatewayContext(val context: GatewayContext) :
                 private val counter = AtomicInteger(0)
 
                 override fun newThread(r: Runnable): Thread =
-                    Thread(null, r, "embr-event-stream-executor-${counter.incrementAndGet()}")
+                    Thread(null, r, "embr-sse-executor-${counter.incrementAndGet()}")
             },
         )
+
+    override fun getTelemetryManager(): TelemetryManager? {
+        return super.getTelemetryManager()
+    }
+
+    override fun getDiagnosticsManager(): DiagnosticsManager? {
+        return super.getDiagnosticsManager()
+    }
 
     init {
         instance = this

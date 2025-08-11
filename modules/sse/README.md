@@ -16,26 +16,26 @@ All modern browsers support server-sent events: Firefox 6+, Google Chrome 6+, Op
 
 ## Gateway API
 
-- [Create a EventStream Session](#Create-a-EventStream) : `POST /embr/tag/stream/session`
-- [Subscribe to a EventStream Session](#Subscribe-to-a-EventStream) : `GET /embr/tag/stream/session/{session_id}`
+- [Create a EventStream Session](#Create-a-EventStream) : `POST /embr/sse/session`
+- [Subscribe to a EventStream Session](#Subscribe-to-a-EventStream) : `GET /embr/sse/session/{session_id}`
 
 ---
 
-### Create a EventStream Session
+### Create an EventStream Session
 
-Creates a EventStream session containing the specified tags.
+Creates an EventStream session containing the specified tags.
 The returned `session_id` is used to access the stream.
 
 As a security measure, the `session_id` is time-limited and single use.
 If the session is not accessed within 30 seconds after creation, a time-out occurs and the session is discarded.
 Only a single client may access a given `session_id`.
 
-| Item   | Value                      |
-| ------ | -------------------------- |
-| URL    | `/embr/tag/stream/session` |
-| Method | `POST`                     |
-| Body   | `{ tagPaths: [] }`         |
-| Auth   | `body`                     |
+| Item   | Value               |
+| ------ |---------------------|
+| URL    | `/embr/sse/session` |
+| Method | `POST`              |
+| Body   | `{ tagPaths: [] }`  |
+| Auth   | `body`              |
 
 #### Body Example
 
@@ -79,7 +79,7 @@ The [EventSource] messages will use this `tag_id` when sending tag change inform
 
 ---
 
-### Subscribe to a EventStream Session
+### Subscribe to an EventStream Session
 
 Subscribe to a EventStream by its `session_id`.
 This endpoint is meant to be accessed by an [EventSource].
@@ -87,7 +87,7 @@ For more details, see [Mozilla's MDN WebDocs](https://developer.mozilla.org/en-U
 
 | Item   | Value                                   |
 | ------ | --------------------------------------- |
-| URL    | `/embr/tag/stream/session/{session_id}` |
+| URL    | `/embr/sse/session/{session_id}` |
 | Method | `GET`                                   |
 | Params | `session_id`: EventStream session id    |
 | Auth   | None                                    |
