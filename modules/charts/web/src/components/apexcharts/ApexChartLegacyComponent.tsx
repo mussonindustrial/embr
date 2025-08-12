@@ -20,6 +20,7 @@ import { bind } from 'bind-decorator'
 import objectScan from 'object-scan'
 import cleanDeep from 'clean-deep'
 import ApexCharts from 'apexcharts'
+import isDeepEqualReact from "fast-deep-equal/react";
 
 export const COMPONENT_TYPE = 'kyvislabs.display.apexchart'
 
@@ -140,46 +141,21 @@ export class ApexChart extends Component<ComponentProps<ApexChartProps>, any> {
       return null
     }
 
-    const prevOptions = JSON.stringify(prevProps.props.options)
-    const newOptions = JSON.stringify(this.props.props.options)
-    const currentOptions = JSON.stringify(this.currentOptions)
+    if (this.props.props.type != prevProps.props.type) {
+      logger.debug(`Type changed ${prevProps.props.type} -> ${this.props.props.type}, creating new chart`)
+      this.createChart()
+    }
 
-    const prevSeries = JSON.stringify(prevProps.props.series)
-    const newSeries = JSON.stringify(this.props.props.series)
-    const currentSeries = JSON.stringify(this.currentSeries)
-
-    const prevType = prevProps.props.type
-    const currentType = this.props.props.type
-
-    if (
-      prevOptions === newOptions &&
-      prevSeries !== newSeries &&
-      newSeries !== currentSeries
-    ) {
-      // options are not changed, just the series is changed
-      logger.debug('Series changed, updating')
-      this.currentSeries = this.props.props.series
-      logger.debug('Series=' + JSON.stringify(this.currentSeries))
-      this.updateSeriesData()
-    } else if (
-      prevOptions !== newOptions &&
-      newOptions !== currentOptions &&
-      prevType === currentType
-    ) {
-      // options have changed
+    if (!isDeepEqualReact(this.props.props.options, prevProps.props.options)) {
       logger.debug('Options changed, updating')
       this.currentOptions = this.props.props.options
-      logger.debug('Options=' + JSON.stringify(this.currentOptions))
       this.updateOptions()
-    } else if (prevType !== currentType) {
-      logger.debug(
-        'Type changed ' +
-          prevType +
-          ' -> ' +
-          currentType +
-          ', creating new chart'
-      )
-      this.createChart()
+    }
+
+    if (!isDeepEqualReact(this.props.props.series, prevProps.props.series)) {
+      logger.debug('Series changed, updating')
+      this.currentSeries = this.props.props.series
+      this.updateSeriesData()
     }
   }
 
