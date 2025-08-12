@@ -1338,8 +1338,8 @@
   resolved "https://nexus.inductiveautomation.com/repository/node-packages/@inductiveautomation/perspective-components/-/perspective-components-2.3.0-beta1.tgz#2065eb19d047803d6094922785ad4f556a5a1241"
   integrity sha512-6CTVyd6UCB02w3GnRx91yDahYmja4iKQehg72/FbUmoRS8ntzKtVKyEKorD8weGNhIDuAEAUNukX/XZHCCfDug==
   dependencies:
-    "@inductiveautomation/perspective-client" "2.3.0"
-    "@inductiveautomation/perspective-drawing-common" "2.3.0"
+    "@inductiveautomation/perspective-client" "2.3.0-beta1"
+    "@inductiveautomation/perspective-drawing-common" "2.3.0-beta1"
     bind-decorator "^1.0.11"
     classnames "^2.3.1"
     csstype "2.6.20"
@@ -1375,8 +1375,8 @@
   resolved "https://nexus.inductiveautomation.com/repository/node-packages/@inductiveautomation/perspective-designer/-/perspective-designer-2.3.0-beta1.tgz#63ab863401c95b5ab149b1c7370823ff42a524d7"
   integrity sha512-Z37f900jekZApX9kW6qHNhzNEKXmJ4/ccx8pY7p8MSsaw3aZG0MqlozuVarsMVRuCg08Iqk02o4lSBtR6RJa6Q==
   dependencies:
-    "@inductiveautomation/perspective-client" "2.3.0"
-    "@inductiveautomation/perspective-drawing-common" "2.3.0"
+    "@inductiveautomation/perspective-client" "2.3.0-beta1"
+    "@inductiveautomation/perspective-drawing-common" "2.3.0-beta1"
     axios "1.10.0"
     bind-decorator "^1.0.11"
     history "^4.5.1"
