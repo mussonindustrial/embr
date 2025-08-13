@@ -1,5 +1,18 @@
 # @mussonindustrial/embr-js-chart-js
 
+## 3.0.3
+
+### Patch Changes
+
+- ec2bb29: ApexCharts (Legacy) - Fix bug #347 that would cause the chart to not detect changes to series/options.
+  - This patch updates the legacy component to use the change detection mechanism from the non-legacy component.
+- b59fe0c: Pin all JavaScript dependencies to _exact_ version matches, with minor bumps from current versions.
+- b59fe0c: Move development and common dependencies to the root `package.json`.
+- Updated dependencies [b59fe0c]
+- Updated dependencies [b59fe0c]
+  - @embr-js/perspective-client@0.6.1
+  - @embr-js/utils@0.6.1
+
 ## 3.0.2
 
 ### Patch Changes
@@ -30,13 +43,11 @@
   The `getJavaScriptProxy(propertyName)` overload is still supported, but the `propertyName` is ignored.
 
 - 36a7970: Add ApexCharts (Legacy) component.
-
   - This component is a one-for-one replacement of the ApexCharts component from the [Kyvis-Labs/ignition-apexcharts-module](https://github.com/Kyvis-Labs/ignition-apexcharts-module).
   - This component matches the behavior, features, and property schema of the original Kyvis-Labs component version `1.0.23`.
   - If both the Kyvis-Labs module and Embr-Charts are installed simultaneously, Embr-Charts will register and use the ApexCharts (Legacy) component in place of the Kyvis-Labs version, effectively overriding it to ensure compatibility and consistency.
 
 - 36a7970: Add `ApexCharts` component.
-
   - This is a new implementation of the `ApexCharts` charting library as an Ignition component.
   - Benefits over the `Legacy` component include:
     - Simplified rendering lifecycle (i.e. quicker to render/update)
@@ -98,7 +109,6 @@
 - 69904f1: Add DOM and Lifecycle event properties.
 
   Two new component events categories have been provided; DOM events and Lifecycle events.
-
   - Lifecycle events: `onMount`, `onRender`, and `onUnmount` events.
   - DOM events: `onCopy`, `onCut`, `onPaste`, `onCompositionEnd`, `onCompositionStart`, `onCompositionUpdate`, `onFocus`, `onBlur`, `onChange`, `onBeforeInput`, `onInput`, `onReset`, `onSubmit`, `onInvalid`, `onLoad`, `onError`, `onKeyDown`, `onKeyPress`, `onKeyUp`, `onAbort`, `onCanPlay`, `onCanPlayThrough`, `onDurationChange`, `onEmptied`, `onEncrypted`, `onEnded`, `onLoadedData`, `onLoadedMetadata`, `onPause`, `onPlay`, `onPlaying`, `onProgress`, `onRateChange`, `onResize`, `onSeeked`, `onSeeking`, `onStalled`, `onSuspend`, `onTimeUpdate`, `onVolumeChange`, `onWaiting`, `onAuxClick`, `onClick`, `onContextMenu`, `onDoubleClick`, `onDrag`, `onDragEnd`, `onDragEnter`, `onDragExit`, `onDragLeave`, `onDragOver`, `onDragStart`, `onDrop`, `onMouseDown`, `onMouseEnter`, `onMouseLeave`, `onMouseMove`, `onMouseOut`, `onMouseOver`, `onMouseUp`, `onSelect`, `onTouchCancel`, `onTouchEnd`, `onTouchMove`, `onTouchStart`, `onPointerDown`, `onPointerMove`, `onPointerUp`, `onPointerCancel`, `onPointerEnter`, `onPointerLeave`, `onPointerOver`, `onPointerOut`, `onScroll`, `onWheel`, `onAnimationStart`, `onAnimationEnd`, `onAnimationIteration`, and `onTransitionEnd`.
 

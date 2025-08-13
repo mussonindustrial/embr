@@ -1,6 +1,6 @@
 {
     "name": "@embr-js/eslint-config",
-    "version": "0.3.0",
+    "version": "0.3.1",
     "description": "ESLint config for embr",
     "repository": {
         "type": "git",

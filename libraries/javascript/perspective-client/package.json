@@ -1,7 +1,7 @@
 {
     "name": "@embr-js/perspective-client",
     "private": true,
-    "version": "0.6.0",
+    "version": "0.6.1",
     "description": "Perspective client extensions.",
     "main": "src/index.ts",
     "scripts": {

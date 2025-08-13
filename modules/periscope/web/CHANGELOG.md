@@ -1,5 +1,20 @@
 # @mussonindustrial/embr-js-chart-js
 
+## 0.9.0
+
+### Minor Changes
+
+- 09a404b: Rename `style.css` to `embr-periscope.css` to match new Vite defaults.
+
+### Patch Changes
+
+- b59fe0c: Pin all JavaScript dependencies to _exact_ version matches, with minor bumps from current versions.
+- b59fe0c: Move development and common dependencies to the root `package.json`.
+- Updated dependencies [b59fe0c]
+- Updated dependencies [b59fe0c]
+  - @embr-js/perspective-client@0.6.1
+  - @embr-js/utils@0.6.1
+
 ## 0.8.1
 
 ### Patch Changes
@@ -40,7 +55,6 @@
 
 - 3ea4d36: (FlexRepeaterPlus) Add instance `key` as an implicit parameter to the instance view.
 - 3b53009: (Toasts) Move `pointerEvents` setting from inline styles to CSS.
-
   - This makes it easier for users to use the `style` property of the toast function.
   - Users no longer need to add `pointerEvents: 'all'` to every inline style definition.
 
@@ -72,7 +86,6 @@
 
   This helper function enabled easier creation of views in user supplied JavaScript.
   The minimum set of parameters provided by the user is:
-
   - `resourcePath` - Path to the view.
   - `mountPath` - The unique mount path of the view. Must be stable.
 

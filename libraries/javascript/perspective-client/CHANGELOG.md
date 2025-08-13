@@ -1,5 +1,12 @@
 # @embr-js/perspective-client
 
+## 0.6.1
+
+### Patch Changes
+
+- b59fe0c: Pin all JavaScript dependencies to _exact_ version matches, with minor bumps from current versions.
+- b59fe0c: Move development and common dependencies to the root `package.json`.
+
 ## 0.6.0
 
 ### Minor Changes
@@ -23,7 +30,6 @@
 ### Minor Changes
 
 - b2f5657: Add a mechanism for other packages to register scripting globals.
-
   - Using `getEmbrGlobals()`, other packages can access a global namespace used by Embr.
   - Keys to the `scripting.globals` object will be made available in all user-supplied JavaScript functions.
 
