@@ -1,5 +1,16 @@
 # @mussonindustrial/embr-charts
 
+## 3.0.10
+
+### Patch Changes
+
+- 4c53074: ApexCharts (Legacy) - Fix bug #347 that would cause the chart to not detect changes to series/options.
+  - This patch updates the legacy component to use the change detection mechanism from the non-legacy component.
+- Updated dependencies [4c53074]
+- Updated dependencies [3b22851]
+- Updated dependencies [3b22851]
+  - @embr-modules/charts-web@3.0.10
+
 ## 3.0.9
 
 ### Patch Changes
@@ -80,13 +91,11 @@
   The `getJavaScriptProxy(propertyName)` overload is still supported, but the `propertyName` is ignored.
 
 - 36a7970: Add ApexCharts (Legacy) component.
-
   - This component is a one-for-one replacement of the ApexCharts component from the [Kyvis-Labs/ignition-apexcharts-module](https://github.com/Kyvis-Labs/ignition-apexcharts-module).
   - This component matches the behavior, features, and property schema of the original Kyvis-Labs component version `1.0.23`.
   - If both the Kyvis-Labs module and Embr-Charts are installed simultaneously, Embr-Charts will register and use the ApexCharts (Legacy) component in place of the Kyvis-Labs version, effectively overriding it to ensure compatibility and consistency.
 
 - 36a7970: Add `ApexCharts` component.
-
   - This is a new implementation of the `ApexCharts` charting library as an Ignition component.
   - Benefits over the `Legacy` component include:
     - Simplified rendering lifecycle (i.e. quicker to render/update)
@@ -125,7 +134,6 @@
 ### Patch Changes
 
 - 40ad4a7: Fix Perspective component schema validation errors on startup. #265
-
   - This patch uses `DelegatedClassLoader` to simultaneously resolve schema definitions from both Perspective's and our own resources.
 
 - Updated dependencies [40ad4a7]
@@ -181,7 +189,6 @@
 - 69904f1: Add DOM and Lifecycle event properties.
 
   Two new component events categories have been provided; DOM events and Lifecycle events.
-
   - Lifecycle events: `onMount`, `onRender`, and `onUnmount` events.
   - DOM events: `onCopy`, `onCut`, `onPaste`, `onCompositionEnd`, `onCompositionStart`, `onCompositionUpdate`, `onFocus`, `onBlur`, `onChange`, `onBeforeInput`, `onInput`, `onReset`, `onSubmit`, `onInvalid`, `onLoad`, `onError`, `onKeyDown`, `onKeyPress`, `onKeyUp`, `onAbort`, `onCanPlay`, `onCanPlayThrough`, `onDurationChange`, `onEmptied`, `onEncrypted`, `onEnded`, `onLoadedData`, `onLoadedMetadata`, `onPause`, `onPlay`, `onPlaying`, `onProgress`, `onRateChange`, `onResize`, `onSeeked`, `onSeeking`, `onStalled`, `onSuspend`, `onTimeUpdate`, `onVolumeChange`, `onWaiting`, `onAuxClick`, `onClick`, `onContextMenu`, `onDoubleClick`, `onDrag`, `onDragEnd`, `onDragEnter`, `onDragExit`, `onDragLeave`, `onDragOver`, `onDragStart`, `onDrop`, `onMouseDown`, `onMouseEnter`, `onMouseLeave`, `onMouseMove`, `onMouseOut`, `onMouseOver`, `onMouseUp`, `onSelect`, `onTouchCancel`, `onTouchEnd`, `onTouchMove`, `onTouchStart`, `onPointerDown`, `onPointerMove`, `onPointerUp`, `onPointerCancel`, `onPointerEnter`, `onPointerLeave`, `onPointerOver`, `onPointerOut`, `onScroll`, `onWheel`, `onAnimationStart`, `onAnimationEnd`, `onAnimationIteration`, and `onTransitionEnd`.
 
@@ -254,7 +261,6 @@
 - 7f90e53: (BREAKING) New scriptable properties `this` and global context.
 
   In scriptable property functions:
-
   1.  `this` is now a reference to the component itself.
   2.  Global variables `self` and `client` have been removed.
       - These have been replaced with a Perspective specific namespace, accessible through the global `perspective` object.
@@ -270,7 +276,6 @@
 - 7f90e53: (Feature) Added `component.getJavaScriptProxy(property)` component function.
   This function allows you to access a JavaScriptProxy object by property name, then run client-side JavaScript against it.
   Current proxy-able properties:
-
   - `chart`: Chart.js chart instance.
 
   Example:

@@ -1,5 +1,12 @@
 # @mussonindustrial/embr-js-tag-stream
 
+## 0.4.1
+
+### Patch Changes
+
+- 3b22851: Pin all JavaScript dependencies to _exact_ version matches, with minor bumps from current versions.
+- 3b22851: Move development and common dependencies to the root `package.json`.
+
 ## 0.4.0
 
 ### Minor Changes

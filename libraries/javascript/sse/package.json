@@ -1,7 +1,7 @@
 {
     "name": "@embr-js/sse",
     "private": true,
-    "version": "0.4.0",
+    "version": "0.4.1",
     "scripts": {
         "dev": "vite",
         "build": "tsc && nx vite:build && nx vite:test --run",
