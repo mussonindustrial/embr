@@ -1,5 +1,13 @@
 # @mussonindustrial/embr-js-chart-js
 
+## 3.1.0
+
+### Minor Changes
+
+- 9216f8b: (Chart.js Component) - Reperform property transformations when the chart's parent is changed.
+  - This allows CSS properties to correctly resolve to the parent element.
+  - Resolves #354.
+
 ## 3.0.10
 
 ### Patch Changes
