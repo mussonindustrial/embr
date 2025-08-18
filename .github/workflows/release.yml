@@ -27,7 +27,7 @@ jobs:
       pull-requests: write
     steps:
       - name: Checkout Repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set up Node
         uses: actions/setup-node@v4
@@ -74,7 +74,7 @@ jobs:
       contents: write
     steps:
       - name: Checkout Repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Configure Build Environment
         uses: ./.github/actions/configure-build-env
@@ -120,7 +120,7 @@ jobs:
     name: Submit dependencies
     steps:
       - name: Checkout Repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: 'Set up Java ${{ env.JAVA_VERSION }}'
         uses: actions/setup-java@v4
