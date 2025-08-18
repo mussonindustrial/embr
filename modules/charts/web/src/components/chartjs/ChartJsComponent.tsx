@@ -77,7 +77,7 @@ export function ChartJsComponent(props: ComponentProps<ChartComponentProps>) {
 
     installPropsData(transformedProps, data)
     return transformedProps
-  }, [props.props])
+  }, [props.props, chartRef.current?.canvas.parentElement])
 
   // Call component lifecycle events
   useComponentEvents(
