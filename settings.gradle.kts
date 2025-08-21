@@ -7,6 +7,8 @@ pluginManagement {
     }
 }
 
+includeBuild("build-logic")
+
 include(
     ":",
 
@@ -20,12 +22,13 @@ include(
     ":libraries:perspective:designer",
     ":libraries:perspective:gateway",
 
-    ":libraries:javascript:event-stream",
+    ":libraries:testing:e2e-testing",
 
     ":modules:charts:common",
     ":modules:charts:designer",
     ":modules:charts:gateway",
     ":modules:charts:web",
+    ":modules:charts:e2e",
 
     ":modules:sse:common",
     ":modules:sse:gateway",

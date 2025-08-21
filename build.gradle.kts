@@ -1,8 +1,10 @@
 import com.github.gradle.node.npm.task.NpxTask
+import com.mussonindustrial.ignition.embr.e2e.env.TestEnvironmentTask
 
 plugins {
     base
     id("com.github.node-gradle.node")
+    id("embr.e2e-test-environment")
 }
 
 repositories {
@@ -40,7 +42,6 @@ val assembleModules by tasks.registering(Copy::class) {
         it.outputs.files.singleFile
     }
 
-
     inputs.files(signedModules)
     dependsOn(signModuleTasks)
 
@@ -57,6 +58,17 @@ val zipModules by tasks.registering(Zip::class) {
     from(assembleModules.get().destinationDir)
 }
 
-tasks.build {
+tasks.assemble {
     dependsOn(zipModules)
+}
+
+tasks.withType<TestEnvironmentTask>().configureEach {
+    dependsOn(tasks.assemble)
+}
+
+testEnvironment {
+    ignitionImageTag = "inductiveautomation/ignition:8.1.48"
+    ignitionGatewayBackup = project.layout.projectDirectory.file("e2e.gwbk")
+    ignitionModulesDir = file("build/modules")
+    playwrightImageTag = "mcr.microsoft.com/playwright:v1.55.0-noble"
 }

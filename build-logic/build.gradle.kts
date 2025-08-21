@@ -4,6 +4,7 @@ plugins {
 
 repositories {
     mavenCentral()
+    mavenLocal()
     gradlePluginPortal()
     maven(url = "https://nexus.inductiveautomation.com/repository/public/")
     maven(url = "https://nexus.inductiveautomation.com/repository/inductiveautomation-releases/")
@@ -16,6 +17,4 @@ dependencies {
     implementation("gradle.plugin.io.ia.sdk:gradle-module-plugin:0.4.1")
     implementation("com.diffplug.spotless:spotless-plugin-gradle:7.0.4")
     implementation("io.kotest:io.kotest.gradle.plugin:6.0.0")
-    implementation("org.testcontainers:testcontainers:1.21.3")
-    implementation("com.mussonindustrial:testcontainers-ignition:0.4.3")
 }
