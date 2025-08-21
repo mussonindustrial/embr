@@ -6,6 +6,7 @@ ignition = "8.1.33"
 ia-gson = "2.10.1"
 jetty = "10.0.21"
 if97 = "2.0.0"
+imagecomparison = "4.4.0"
 playwright = "1.54.0"
 spotless = "7.0.4"
 testcontainers-core = "1.21.3"
@@ -34,6 +35,7 @@ ignition-perspective-designer = { group = "com.inductiveautomation.ignitionsdk",
 if97 = { group = "com.hummeling", name = "if97", version.ref = "if97"}
 
 # test framework
+imagecomparison = { group = "com.github.romankh3", name = "image-comparison", version.ref = "imagecomparison"}
 kotest-junit = { group = "io.kotest", name = "kotest-runner-junit5", version.ref = "kotest" }
 kotest-assertions-core = { group = "io.kotest", name = "kotest-assertions-core", version.ref = "kotest" }
 kotest-property = { group = "io.kotest", name = "kotest-property", version.ref = "kotest" }

@@ -5,9 +5,11 @@ import io.kotest.extensions.testcontainers.TestContainerProjectExtension
 
 object Containers {
     val gateway =
-        IgnitionContainer("inductiveautomation/ignition:8.1.33").apply {
+        IgnitionContainer("inductiveautomation/ignition:8.1.48").apply {
             acceptLicense()
             withExposedPorts(8088)
+            withThirdPartyModules("./build/test-resources/module.modl")
+            withGatewayBackup("./build/resources/test/test.gwbk")
         }
     val extension = TestContainerProjectExtension(gateway)
 }
