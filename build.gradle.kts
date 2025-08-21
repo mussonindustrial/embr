@@ -57,6 +57,6 @@ val zipModules by tasks.registering(Zip::class) {
     from(assembleModules.get().destinationDir)
 }
 
-tasks.build {
+tasks.assemble {
     dependsOn(zipModules)
 }
