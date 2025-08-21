@@ -38,5 +38,8 @@ jobs:
           module-signing-certificate: '${{ secrets.IGNITION_MODULE_CERT_BASE64 }}'
           module-signing-keystore: '${{ secrets.IGNITION_MODULE_KEYSTORE_BASE64 }}'
 
+      - name: Install playwright dependencies
+        run: npx playwright install --with-deps
+
       - name: Build
         run: ./gradlew --scan build
