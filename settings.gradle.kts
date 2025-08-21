@@ -26,6 +26,7 @@ include(
     ":modules:charts:designer",
     ":modules:charts:gateway",
     ":modules:charts:web",
+    ":modules:charts:e2e",
 
     ":modules:sse:common",
     ":modules:sse:gateway",

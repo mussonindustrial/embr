@@ -15,4 +15,5 @@ dependencies {
     implementation("com.github.node-gradle:gradle-node-plugin:7.1.0")
     implementation("gradle.plugin.io.ia.sdk:gradle-module-plugin:0.4.1")
     implementation("com.diffplug.spotless:spotless-plugin-gradle:7.0.4")
+    implementation("io.kotest:io.kotest.gradle.plugin:6.0.0")
 }

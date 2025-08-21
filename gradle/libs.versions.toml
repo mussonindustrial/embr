@@ -1,12 +1,15 @@
 [versions]
 java = "21"
 kotlin = "2.1.21"
-kotest = "5.9.1"
+kotest = "6.0.0"
 ignition = "8.1.33"
 ia-gson = "2.10.1"
 jetty = "10.0.21"
 if97 = "2.0.0"
+playwright = "1.54.0"
 spotless = "7.0.4"
+testcontainers-core = "1.21.3"
+testcontainers-ignition = "0.4.3"
 
 [plugins]
 kotlin = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
@@ -34,8 +37,11 @@ if97 = { group = "com.hummeling", name = "if97", version.ref = "if97"}
 kotest-junit = { group = "io.kotest", name = "kotest-runner-junit5", version.ref = "kotest" }
 kotest-assertions-core = { group = "io.kotest", name = "kotest-assertions-core", version.ref = "kotest" }
 kotest-property = { group = "io.kotest", name = "kotest-property", version.ref = "kotest" }
-kotest-data = { group = "io.kotest", name = "kotest-framework-datatest", version.ref = "kotest" }
+kotest-testcontainers = { group = "io.kotest", name = "kotest-extensions-testcontainers", version.ref = "kotest" }
 mockk = { group = "io.mockk", name = "mockk", version = "1.14.4" }
+playwright = { group = "com.microsoft.playwright", name = "playwright", version.ref = "playwright"}
+testcontainers-core = { group = "org.testcontainers", name = "testcontainers", version.ref = "testcontainers-core" }
+testcontainers-ignition = { group = "com.mussonindustrial", name = "testcontainers-ignition", version.ref = "testcontainers-ignition" }
 
 [bundles]
 common = [
@@ -78,7 +84,11 @@ perspectiveGateway = [
 ]
 kotest = [
     "kotest-assertions-core",
-    "kotest-data",
     "kotest-junit",
     "kotest-property",
+    "kotest-testcontainers"
+]
+testcontainers = [
+    "testcontainers-core",
+    "testcontainers-ignition"
 ]
