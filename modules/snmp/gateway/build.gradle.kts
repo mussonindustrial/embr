@@ -1,5 +1,5 @@
 plugins {
-    id("embr.ignition-module-library-conventions")
+    id("embr.build.ignition-module-library")
 }
 
 dependencies {
