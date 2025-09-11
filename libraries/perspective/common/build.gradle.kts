@@ -1,5 +1,5 @@
 plugins {
-    id("embr.library-perspective-conventions")
+    id("embr.build.library-perspective")
 }
 
 dependencies {

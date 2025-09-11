@@ -1,24 +1,20 @@
 rootProject.name = "build-logic"
 
-pluginManagement {
-    repositories {
-        mavenCentral()
-        gradlePluginPortal()
-    }
+plugins {
+    id("dev.panuszewski.typesafe-conventions") version "0.7.4"
 }
 
 dependencyResolutionManagement {
-    versionCatalogs {
-        create("libs") {
-            from(files("../gradle/libs.versions.toml"))
-        }
-    }
     repositories {
         mavenCentral()
         gradlePluginPortal()
+        maven(url = "https://nexus.inductiveautomation.com/repository/public/")
+        maven(url = "https://nexus.inductiveautomation.com/repository/inductiveautomation-releases/")
+        maven(url = "https://nexus.inductiveautomation.com/repository/inductiveautomation-snapshots/")
     }
 }
 
 include(
+    "conventions",
     "e2e-env"
 )

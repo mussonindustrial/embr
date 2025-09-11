@@ -1,5 +1,5 @@
 plugins {
-    id("embr.ignition-module-conventions")
+    id("embr.build.ignition-module")
 }
 
 ignitionModule {
@@ -8,7 +8,7 @@ ignitionModule {
     id.set("com.mussonindustrial.embr.sse")
     fileName.set("Embr-SSE-Ignition81-${version}.modl")
     freeModule.set(true)
-    requiredIgnitionVersion.set(libs.versions.ignition)
+    requiredIgnitionVersion.set(libs.versions.ignition.sdk)
 
     projectScopes.putAll(
         mapOf(
