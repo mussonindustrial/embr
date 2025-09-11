@@ -14,6 +14,18 @@ repositories {
     gradlePluginPortal()
 }
 
+testEnvironment {
+    ignition {
+        dockerImage = "inductiveautomation/ignition:8.1.48"
+        gatewayBackup = project.layout.projectDirectory.file("e2e.gwbk")
+        modulesDir = file("build/modules")
+    }
+
+    playwright {
+        dockerImage = "mcr.microsoft.com/playwright:v1.55.0-noble"
+    }
+}
+
 val changesetVersion by tasks.registering(NpxTask::class) {
     group = "changesets"
     command.set("changeset")

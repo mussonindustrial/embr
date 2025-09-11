@@ -1,5 +1,3 @@
-import com.mussonindustrial.ignition.embr.e2e.env.TestEnvironmentTask
-
 plugins {
     id("embr.build.ignition-module-test")
     id("embr.e2e.test-environment")
