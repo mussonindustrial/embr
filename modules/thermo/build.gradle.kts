@@ -1,5 +1,5 @@
 plugins {
-    id("embr.ignition-module-conventions")
+    id("embr.build.ignition-module")
 }
 
 ignitionModule {
@@ -8,7 +8,7 @@ ignitionModule {
     id.set("com.mussonindustrial.embr.thermo")
     fileName.set("Embr-Thermodynamics-Ignition83-${version}.modl")
     freeModule.set(true)
-    requiredIgnitionVersion.set("8.3.0")
+    requiredIgnitionVersion.set(libs.versions.ignition.sdk)
     license.set("license.html")
 
     projectScopes.putAll(

@@ -1,5 +1,5 @@
 plugins {
-    id("embr.library-core-conventions")
+    id("embr.build.library-core")
 }
 
 dependencies {
