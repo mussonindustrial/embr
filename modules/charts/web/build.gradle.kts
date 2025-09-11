@@ -1,5 +1,5 @@
 plugins {
-    id("embr.ignition-webjar-conventions")
+    id("embr.build.ignition-webjar")
 }
 
 group = "com.mussonindustrial.embr.charts"

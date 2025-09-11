@@ -15,8 +15,9 @@ val testEnvironment =
         parameters.playwrightImageTag = testEnvironmentExtension.playwrightImageTag
     }
 
-tasks.withType<TestEnvironmentTask>().configureEach {
+tasks.withType<Test>().configureEach {
     usesService(testEnvironment)
+
     doFirst {
         environment("PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD", "1")
 

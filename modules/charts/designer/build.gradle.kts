@@ -1,8 +1,5 @@
-import com.mussonindustrial.ignition.embr.e2e.env.TestEnvironmentTask
-
 plugins {
-    id("embr.ignition-module-library-conventions")
-    id("embr.e2e-test-environment")
+    id("embr.build.ignition-module-library")
 }
 
 group = "com.mussonindustrial.embr.charts"
@@ -15,5 +12,3 @@ dependencies {
     modlImplementation(projects.libraries.perspective.designer)
     compileOnly(projects.modules.charts.common)
 }
-
-val customTest by tasks.registering(TestEnvironmentTask::class)

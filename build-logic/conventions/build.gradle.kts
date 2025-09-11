@@ -11,8 +11,3 @@ spotless {
 }
 
 tasks.compileKotlin { dependsOn(tasks.spotlessCheck) }
-
-dependencies {
-    implementation(libs.testcontainers.core)
-    implementation(libs.testcontainers.ignition)
-}

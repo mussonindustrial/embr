@@ -45,7 +45,7 @@ jobs:
         run: ./gradlew --scan assemble
 
       - name: E2E Tests
-        run: ./gradlew e2eTests
+        run: ./gradlew test
 
       - uses: actions/upload-artifact@v4
         if: always()

@@ -3,8 +3,8 @@ import com.mussonindustrial.ignition.embr.e2e.env.TestEnvironmentTask
 
 plugins {
     base
-    id("com.github.node-gradle.node")
-    id("embr.e2e-test-environment")
+    id("embr.e2e.test-environment")
+    alias(libs.plugins.node.gradle)
 }
 
 repositories {
@@ -64,11 +64,4 @@ tasks.assemble {
 
 tasks.withType<TestEnvironmentTask>().configureEach {
     dependsOn(tasks.assemble)
-}
-
-testEnvironment {
-    ignitionImageTag = "inductiveautomation/ignition:8.1.48"
-    ignitionGatewayBackup = project.layout.projectDirectory.file("e2e.gwbk")
-    ignitionModulesDir = file("build/modules")
-    playwrightImageTag = "mcr.microsoft.com/playwright:v1.55.0-noble"
 }
