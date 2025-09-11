@@ -1,6 +1,5 @@
 import com.mussonindustrial.ignition.embr.e2e.env.TestEnvironmentExtension
 import com.mussonindustrial.ignition.embr.e2e.env.TestEnvironmentService
-import com.mussonindustrial.ignition.embr.e2e.env.TestEnvironmentTask
 
 extensions.create<TestEnvironmentExtension>("testEnvironment")
 
@@ -9,10 +8,10 @@ val testEnvironmentExtension = extensions.getByType<TestEnvironmentExtension>()
 val testEnvironment =
     gradle.sharedServices.registerIfAbsent("testEnvironment", TestEnvironmentService::class.java) {
         maxParallelUsages = 1
-        parameters.ignitionImageTag = testEnvironmentExtension.ignitionImageTag
-        parameters.ignitionGatewayBackup = testEnvironmentExtension.ignitionGatewayBackup
-        parameters.ignitionModulesDir = testEnvironmentExtension.ignitionModulesDir
-        parameters.playwrightImageTag = testEnvironmentExtension.playwrightImageTag
+        parameters.ignitionDockerImage = testEnvironmentExtension.ignition.dockerImage
+        parameters.ignitionGatewayBackup = testEnvironmentExtension.ignition.gatewayBackup
+        parameters.ignitionModulesDir = testEnvironmentExtension.ignition.modulesDir
+        parameters.playwrightDockerImage = testEnvironmentExtension.playwright.dockerImage
     }
 
 tasks.withType<Test>().configureEach {

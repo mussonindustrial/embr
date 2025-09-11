@@ -4,6 +4,7 @@ import com.github.romankh3.image.comparison.ImageComparison
 import com.github.romankh3.image.comparison.ImageComparisonUtil
 import com.github.romankh3.image.comparison.model.ImageComparisonState
 import com.microsoft.playwright.Page
+import java.io.ByteArrayInputStream
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
@@ -21,6 +22,7 @@ fun Page.assertMatchesScreenshot(testName: String) {
     val baseline = baselinePath(testName)
     val current = currentPath(testName)
 
+    println("$testName - Taking screenshot")
     screenshot(Page.ScreenshotOptions().setPath(current))
 
     if (System.getProperty("updateScreenshots") == "true") {
@@ -34,6 +36,7 @@ fun Page.assertMatchesScreenshot(testName: String) {
         "Baseline not found: $baseline. Run with -DupdateScreenshots=true to create it."
     }
 
+    println("$testName - Starting Image Comparison")
     val expected = ImageComparisonUtil.readImageFromResources(baseline.toString())
     val actual = ImageComparisonUtil.readImageFromResources(current.toString())
     val result = ImageComparison(expected, actual).compareImages()
