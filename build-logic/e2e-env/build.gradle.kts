@@ -1,6 +1,6 @@
 plugins {
     `kotlin-dsl`
-//    alias(libs.plugins.spotless)
+    alias(libs.plugins.spotless)
 }
 
 spotless {
