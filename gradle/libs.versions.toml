@@ -3,18 +3,12 @@ allure-gradle = "3.0.0"
 ia-gson = "2.10.1"
 if97 = "2.0.0"
 ignition-module = "0.4.1"
-ignition-sdk = "8.1.33"
+ignition-sdk = "8.3.0-beta1"
 imagecomparison = "4.4.0"
 java = "21"
-jetty = "10.0.21"
+jetty = "12.0.7"
 kotlin = "2.1.21"
 kotest = "6.0.0"
-allure-gradle = "3.0.0"
-ignition = "8.3.0-beta1"
-ia-gson = "2.10.1"
-jetty = "12.0.7"
-if97 = "2.0.0"
-imagecomparison = "4.4.0"
 node-gradle = "7.1.0"
 playwright = "1.55.0"
 spotless = "7.0.4"
@@ -41,18 +35,8 @@ ignition-perspective-common = { group = "com.inductiveautomation.ignitionsdk", n
 ignition-perspective-designer = { group = "com.inductiveautomation.ignitionsdk", name = "perspective-designer", version.ref = "ignition-sdk" }
 ignition-perspective-gateway = { group = "com.inductiveautomation.ignitionsdk", name = "perspective-gateway", version.ref = "ignition-sdk" }
 jetty-server = { group = "org.eclipse.jetty", name = "jetty-server", version.ref = "jetty" }
-jetty-servlet = { group = "org.eclipse.jetty", name = "jetty-servlet", version.ref = "jetty" }
-jetty-servlets = { group = "org.eclipse.jetty", name = "jetty-servlets", version.ref = "jetty" }
-ignition-common = { group = "com.inductiveautomation.ignitionsdk", name = "ignition-common", version.ref = "ignition" }
-ignition-gson = { group = "com.inductiveautomation.ignition", name = "ia-gson", version.ref = "ia-gson"}
-ignition-gateway-api = { group = "com.inductiveautomation.ignitionsdk", name = "gateway-api", version.ref = "ignition" }
-ignition-designer-api = { group = "com.inductiveautomation.ignitionsdk", name = "designer-api", version.ref = "ignition" }
-ignition-client-api = { group = "com.inductiveautomation.ignitionsdk", name = "client-api", version.ref = "ignition" }
-ignition-vision-client-api = { group = "com.inductiveautomation.ignitionsdk", name = "vision-client-api", version.ref = "ignition" }
-ignition-perspective-common = { group = "com.inductiveautomation.ignitionsdk", name = "perspective-common", version.ref = "ignition" }
-ignition-perspective-gateway = { group = "com.inductiveautomation.ignitionsdk", name = "perspective-gateway", version.ref = "ignition" }
-ignition-perspective-designer = { group = "com.inductiveautomation.ignitionsdk", name = "perspective-designer", version.ref = "ignition" }
-if97 = { group = "com.hummeling", name = "if97", version.ref = "if97"}
+jetty-servlet = { group = "org.eclipse.jetty.ee10", name = "jetty-ee10-servlet", version.ref = "jetty" }
+jetty-servlets = { group = "org.eclipse.jetty.ee10", name = "jetty-ee10-servlets", version.ref = "jetty" }
 
 # test framework
 imagecomparison = { group = "com.github.romankh3", name = "image-comparison", version.ref = "imagecomparison"}
