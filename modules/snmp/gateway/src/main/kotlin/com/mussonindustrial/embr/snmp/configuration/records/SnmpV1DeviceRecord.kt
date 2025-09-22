@@ -17,24 +17,29 @@ class SnmpV1DeviceRecord : SnmpV1DeviceSettings, PersistentRecord() {
 
         val HOSTNAME = StringField(META, "Hostname", SFieldFlags.SMANDATORY)
         val PORT = IntField(META, "Port", SFieldFlags.SMANDATORY).apply { default = 161 }
-        val COMMUNITY =
-            StringField(META, "Community", SFieldFlags.SMANDATORY).apply { default = "public" }
-        val CONNECTION_TIMEOUT =
-            LongField(META, "ConnectionTimeout", SFieldFlags.SMANDATORY).apply { default = 10000 }
+        val COMMUNITY_READ =
+            StringField(META, "CommunityRead", SFieldFlags.SMANDATORY).apply { default = "public" }
+        val COMMUNITY_WRITE =
+            StringField(META, "CommunityWrite", SFieldFlags.SMANDATORY).apply { default = "public" }
         val CATEGORY_NETWORK =
             Category("SnmpV1DeviceRecord.Network", 1001).apply {
                 include(HOSTNAME)
                 include(PORT)
-                include(COMMUNITY)
-                include(CONNECTION_TIMEOUT)
+                include(COMMUNITY_READ)
+                include(COMMUNITY_WRITE)
             }
 
+        val HEALTHCHECK_FREQUENCY =
+            LongField(META, "HealthcheckFrequency", SFieldFlags.SMANDATORY).apply {
+                default = 10000
+            }
         val HEALTHCHECK_OID =
             StringField(META, "HealthcheckOid", SFieldFlags.SMANDATORY).apply {
                 default = "1.3.6.1.2.1.1.2.0"
             }
         val CATEGORY_HEALTHCHECK =
             Category("SnmpV1DeviceRecord.Healthcheck", 1002, true).apply {
+                include(HEALTHCHECK_FREQUENCY)
                 include(HEALTHCHECK_OID)
             }
     }
@@ -49,11 +54,14 @@ class SnmpV1DeviceRecord : SnmpV1DeviceSettings, PersistentRecord() {
     override val port: Int
         get() = getInt(PORT)
 
-    override val community: String
-        get() = getString(COMMUNITY)
+    override val communityRead: String
+        get() = getString(COMMUNITY_READ)
 
-    override val connectionTimeout: Long
-        get() = getLong(CONNECTION_TIMEOUT)
+    override val communityWrite: String
+        get() = getString(COMMUNITY_WRITE)
+
+    override val healthcheckFrequency: Long
+        get() = getLong(HEALTHCHECK_FREQUENCY)
 
     override val healthcheckOid: String
         get() = getString(HEALTHCHECK_OID)

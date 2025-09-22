@@ -79,13 +79,13 @@ class SnmpDeviceImpl<T : SnmpDeviceSettings>(override val context: SnmpContext<T
         while (remaining.isNotEmpty()) {
 
             val pdus =
-                context.target.createSizeBoundedPDUs(remaining.flatMap { it.value }) {
+                context.readTarget.createSizeBoundedPDUs(remaining.flatMap { it.value }) {
                     type = PDU.GET
                 }
 
             pdus.forEach { pdu ->
                 try {
-                    val response = context.snmp.send(pdu, context.target).response
+                    val response = context.snmp.send(pdu, context.readTarget).response
                     if (response == null) {
                         logger.warn("GET failed: no response.")
                         return reads.map {
@@ -145,7 +145,7 @@ class SnmpDeviceImpl<T : SnmpDeviceSettings>(override val context: SnmpContext<T
                 }
 
             try {
-                val response = context.snmp.send(pdu, context.target).response
+                val response = context.snmp.send(pdu, context.writeTarget).response
                 if (response == null) {
                     logger.warn("SET failed: no response.")
                     StatusCode(StatusCodes.Bad_CommunicationError).toOidWriteResult()
@@ -177,7 +177,7 @@ class SnmpDeviceImpl<T : SnmpDeviceSettings>(override val context: SnmpContext<T
                     .scheduleWithFixedDelay(
                         this::doHealthcheck,
                         1000,
-                        context.snmpSettings.connectionTimeout,
+                        context.snmpSettings.healthcheckFrequency,
                         TimeUnit.MILLISECONDS,
                     )
         }

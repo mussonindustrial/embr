@@ -19,13 +19,10 @@ class SnmpV3DeviceRecord : SnmpV3DeviceSettings, PersistentRecord() {
 
         val HOSTNAME = StringField(META, "Hostname", SFieldFlags.SMANDATORY)
         val PORT = IntField(META, "Port", SFieldFlags.SMANDATORY).apply { default = 161 }
-        val CONNECTION_TIMEOUT =
-            LongField(META, "ConnectionTimeout", SFieldFlags.SMANDATORY).apply { default = 10000 }
         val CATEGORY_NETWORK =
             Category("SnmpV3DeviceRecord.Network", 1001).apply {
                 include(HOSTNAME)
                 include(PORT)
-                include(CONNECTION_TIMEOUT)
             }
 
         val AUTH_PROTOCOL =
@@ -58,12 +55,17 @@ class SnmpV3DeviceRecord : SnmpV3DeviceSettings, PersistentRecord() {
                 include(PRIVACY_PASSWORD)
             }
 
+        val HEALTHCHECK_FREQUENCY =
+            LongField(META, "HealthcheckFrequency", SFieldFlags.SMANDATORY).apply {
+                default = 10000
+            }
         val HEALTHCHECK_OID =
             StringField(META, "HealthcheckOid", SFieldFlags.SMANDATORY).apply {
                 default = "1.3.6.1.2.1.1.2.0"
             }
         val CATEGORY_HEALTHCHECK =
             Category("SnmpV3DeviceRecord.Healthcheck", 1004, true).apply {
+                include(HEALTHCHECK_FREQUENCY)
                 include(HEALTHCHECK_OID)
             }
     }
@@ -78,8 +80,8 @@ class SnmpV3DeviceRecord : SnmpV3DeviceSettings, PersistentRecord() {
     override val port: Int
         get() = getInt(PORT)
 
-    override val connectionTimeout: Long
-        get() = getLong(CONNECTION_TIMEOUT)
+    override val healthcheckFrequency: Long
+        get() = getLong(HEALTHCHECK_FREQUENCY)
 
     override val healthcheckOid: String
         get() = getString(HEALTHCHECK_OID)
