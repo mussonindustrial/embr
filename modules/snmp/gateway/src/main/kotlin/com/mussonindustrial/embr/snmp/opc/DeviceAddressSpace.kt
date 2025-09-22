@@ -5,7 +5,7 @@ import com.mussonindustrial.embr.snmp.utils.removeAllNodes
 import org.eclipse.milo.opcua.sdk.core.Reference
 import org.eclipse.milo.opcua.sdk.server.Lifecycle
 import org.eclipse.milo.opcua.sdk.server.nodes.UaFolderNode
-import org.eclipse.milo.opcua.stack.core.Identifiers
+import org.eclipse.milo.opcua.stack.core.NodeIds
 import org.eclipse.milo.opcua.stack.core.types.builtin.LocalizedText
 
 class DeviceAddressSpace(device: SnmpDeviceImpl<*>) :
@@ -14,9 +14,9 @@ class DeviceAddressSpace(device: SnmpDeviceImpl<*>) :
     private val deviceFolderNode =
         UaFolderNode(
             nodeContext,
-            getDeviceNodeId(),
-            qualifiedName("[${getName()}]"),
-            LocalizedText("[${getName()}]"),
+            deviceNodeId,
+            qualifiedName("[${name}]"),
+            LocalizedText("[${name}]"),
         )
 
     init {
@@ -27,7 +27,7 @@ class DeviceAddressSpace(device: SnmpDeviceImpl<*>) :
                     deviceFolderNode.addReference(
                         Reference(
                             deviceFolderNode.nodeId,
-                            Identifiers.Organizes,
+                            NodeIds.Organizes,
                             getRootNodeId().expanded(),
                             Reference.Direction.INVERSE,
                         )

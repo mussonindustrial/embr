@@ -2,10 +2,14 @@ package com.mussonindustrial.embr.snmp
 
 import com.inductiveautomation.ignition.common.BundleUtil
 import com.inductiveautomation.ignition.common.licensing.LicenseState
+import com.inductiveautomation.ignition.gateway.config.migration.IdbMigrationStrategy
 import com.inductiveautomation.ignition.gateway.model.GatewayContext
 import com.inductiveautomation.ignition.gateway.opcua.server.api.AbstractDeviceModuleHook
-import com.inductiveautomation.ignition.gateway.opcua.server.api.DeviceType
+import com.inductiveautomation.ignition.gateway.opcua.server.api.DeviceExtensionPoint
 import com.mussonindustrial.embr.common.Embr
+import com.mussonindustrial.embr.snmp.configuration.extensions.SnmpV1ExtensionPoint
+import com.mussonindustrial.embr.snmp.configuration.extensions.SnmpV2CExtensionPoint
+import com.mussonindustrial.embr.snmp.configuration.extensions.SnmpV3ExtensionPoint
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -22,8 +26,6 @@ class SnmpGatewayHook : AbstractDeviceModuleHook() {
         BundleUtil.get().addBundle("Snmp", this::class.java.classLoader, "localization")
 
         super.setup(SnmpGatewayContext(context))
-
-        snmpContext.updatePersistentRecords()
     }
 
     override fun startup(activationState: LicenseState) {
@@ -38,8 +40,16 @@ class SnmpGatewayHook : AbstractDeviceModuleHook() {
         super.shutdown()
     }
 
-    override fun getDeviceTypes(): List<DeviceType> {
-        return snmpContext.deviceTypes
+    override fun getDeviceExtensionPoints(): List<DeviceExtensionPoint<*>> {
+        return listOf(SnmpV1ExtensionPoint, SnmpV2CExtensionPoint, SnmpV3ExtensionPoint)
+    }
+
+    override fun getRecordMigrationStrategies(): List<IdbMigrationStrategy> {
+        return listOf(
+            SnmpV1ExtensionPoint.recordMigrationStrategy,
+            SnmpV2CExtensionPoint.recordMigrationStrategy,
+            SnmpV3ExtensionPoint.recordMigrationStrategy,
+        )
     }
 
     override fun isFreeModule(): Boolean {

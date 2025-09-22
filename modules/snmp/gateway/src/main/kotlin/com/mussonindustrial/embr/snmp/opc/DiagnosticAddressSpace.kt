@@ -9,7 +9,7 @@ import org.eclipse.milo.opcua.sdk.server.nodes.UaFolderNode
 import org.eclipse.milo.opcua.sdk.server.nodes.UaVariableNode
 import org.eclipse.milo.opcua.sdk.server.nodes.filters.AttributeFilter
 import org.eclipse.milo.opcua.sdk.server.nodes.filters.AttributeFilters
-import org.eclipse.milo.opcua.stack.core.Identifiers
+import org.eclipse.milo.opcua.stack.core.NodeIds
 import org.eclipse.milo.opcua.stack.core.types.builtin.DataValue
 import org.eclipse.milo.opcua.stack.core.types.builtin.LocalizedText
 import org.eclipse.milo.opcua.stack.core.types.builtin.NodeId
@@ -47,8 +47,8 @@ class DiagnosticAddressSpace(device: SnmpDeviceImpl<*>) :
         diagnosticsFolder.addReference(
             Reference(
                 diagnosticsFolder.nodeId,
-                Identifiers.Organizes,
-                getDeviceNodeId().expanded(),
+                NodeIds.Organizes,
+                deviceNodeId.expanded(),
                 Reference.Direction.INVERSE,
             )
         )
@@ -56,19 +56,21 @@ class DiagnosticAddressSpace(device: SnmpDeviceImpl<*>) :
         addDiagnosticNode(
             diagnosticsFolder,
             "Hostname",
-            Identifiers.String,
-            AttributeFilters.getValue { DataValue(Variant(device.context.snmpSettings.hostname)) },
+            NodeIds.String,
+            AttributeFilters.getValue {
+                DataValue(Variant(device.context.snmpConfig.network.hostname))
+            },
         )
         addDiagnosticNode(
             diagnosticsFolder,
             "Status",
-            Identifiers.String,
+            NodeIds.String,
             AttributeFilters.getValue { DataValue(Variant(device.status.toString())) },
         )
         addDiagnosticNode(
             diagnosticsFolder,
             "Connected",
-            Identifiers.Boolean,
+            NodeIds.Boolean,
             AttributeFilters.getValue {
                 DataValue(Variant(device.status == SnmpDevice.Status.CONNECTED))
             },
@@ -89,7 +91,7 @@ class DiagnosticAddressSpace(device: SnmpDeviceImpl<*>) :
             addReference(
                 Reference(
                     nodeId,
-                    Identifiers.HasComponent,
+                    NodeIds.HasComponent,
                     folder.nodeId.expanded(),
                     Reference.Direction.INVERSE,
                 )

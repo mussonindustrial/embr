@@ -3,7 +3,7 @@ package com.mussonindustrial.embr.snmp.devices
 import com.inductiveautomation.ignition.gateway.opcua.server.api.Device
 import com.mussonindustrial.embr.snmp.requests.OidReadResult
 import com.mussonindustrial.embr.snmp.requests.OidWriteResult
-import org.eclipse.milo.opcua.sdk.server.api.AddressSpaceFragment
+import org.eclipse.milo.opcua.sdk.server.AddressSpaceFragment
 import org.eclipse.milo.opcua.stack.core.types.builtin.NodeId
 import org.snmp4j.smi.VariableBinding
 
@@ -17,7 +17,7 @@ interface SnmpDevice : AddressSpaceFragment, Device {
 
     fun stripDeviceName(nodeId: NodeId): String {
         val id = nodeId.identifier.toString()
-        val name = "[${getName()}]"
+        val name = "[${context.deviceContext.name}]"
         return id.substring(id.indexOf(name) + name.length)
     }
 

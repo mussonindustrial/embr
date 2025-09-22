@@ -1,6 +1,5 @@
 package com.mussonindustrial.embr.snmp.opc
 
-import com.mussonindustrial.embr.common.logging.getLogger
 import com.mussonindustrial.embr.snmp.devices.SnmpDeviceImpl
 import com.mussonindustrial.embr.snmp.requests.OidReadRequest
 import com.mussonindustrial.embr.snmp.requests.OidReadResult
@@ -12,17 +11,16 @@ import com.mussonindustrial.embr.snmp.utils.toVariable
 import kotlin.jvm.optionals.getOrNull
 import org.eclipse.milo.opcua.sdk.core.AccessLevel
 import org.eclipse.milo.opcua.sdk.core.ValueRank
+import org.eclipse.milo.opcua.sdk.server.AddressSpace
+import org.eclipse.milo.opcua.sdk.server.AddressSpaceFilter
+import org.eclipse.milo.opcua.sdk.server.AddressSpaceFragment
 import org.eclipse.milo.opcua.sdk.server.Lifecycle
-import org.eclipse.milo.opcua.sdk.server.api.AddressSpaceFilter
-import org.eclipse.milo.opcua.sdk.server.api.AddressSpaceFragment
-import org.eclipse.milo.opcua.sdk.server.api.DataItem
-import org.eclipse.milo.opcua.sdk.server.api.MonitoredItem
-import org.eclipse.milo.opcua.sdk.server.api.SimpleAddressSpaceFilter
-import org.eclipse.milo.opcua.sdk.server.api.services.AttributeServices
-import org.eclipse.milo.opcua.sdk.server.api.services.ViewServices
+import org.eclipse.milo.opcua.sdk.server.SimpleAddressSpaceFilter
+import org.eclipse.milo.opcua.sdk.server.items.DataItem
+import org.eclipse.milo.opcua.sdk.server.items.MonitoredItem
 import org.eclipse.milo.opcua.sdk.server.util.SubscriptionModel
 import org.eclipse.milo.opcua.stack.core.AttributeId
-import org.eclipse.milo.opcua.stack.core.BuiltinDataType
+import org.eclipse.milo.opcua.stack.core.OpcUaDataType
 import org.eclipse.milo.opcua.stack.core.StatusCodes
 import org.eclipse.milo.opcua.stack.core.UaException
 import org.eclipse.milo.opcua.stack.core.types.builtin.DataValue
@@ -41,10 +39,8 @@ import org.snmp4j.smi.VariableBinding
 
 class OidAddressSpace(val device: SnmpDeviceImpl<*>) : AddressSpaceFragment, Lifecycle {
 
-    private val logger = this.getLogger()
     private val filter = SimpleAddressSpaceFilter.create { it.getPath().isOid() }
-    private val subscriptionModel =
-        SubscriptionModel(device.context.deviceContext.getServer(), this)
+    private val subscriptionModel = SubscriptionModel(device.context.deviceContext.server, this)
 
     override fun startup() {
         subscriptionModel.startup()
@@ -57,11 +53,11 @@ class OidAddressSpace(val device: SnmpDeviceImpl<*>) : AddressSpaceFragment, Lif
     }
 
     override fun read(
-        context: AttributeServices.ReadContext,
+        context: AddressSpace.ReadContext,
         maxAge: Double,
         timestamps: TimestampsToReturn,
         readValueIds: List<ReadValueId>,
-    ) {
+    ): List<DataValue?> {
         val results = readValueIds.map { ReadRequest(it) }
         val toProcess = results.filter { it.result == null }
 
@@ -79,7 +75,7 @@ class OidAddressSpace(val device: SnmpDeviceImpl<*>) : AddressSpaceFragment, Lif
         val nonValueReadResults = readNonValueAttributes(nonValueReads)
         nonValueReadResults.zip(nonValueReads).forEach { (value, result) -> result.result = value }
 
-        context.success(results.map { it.result?.value })
+        return results.map { it.result?.value }
     }
 
     fun readNonValueAttributes(results: List<ReadRequest>): List<OidReadResult> {
@@ -103,7 +99,7 @@ class OidAddressSpace(val device: SnmpDeviceImpl<*>) : AddressSpaceFragment, Lif
                         AttributeId.WriteMask,
                         AttributeId.UserWriteMask -> UInteger.valueOf(0)
 
-                        AttributeId.DataType -> BuiltinDataType.String.nodeId
+                        AttributeId.DataType -> OpcUaDataType.String.nodeId
 
                         AttributeId.ValueRank -> ValueRank.Scalar.value
 
@@ -132,7 +128,10 @@ class OidAddressSpace(val device: SnmpDeviceImpl<*>) : AddressSpaceFragment, Lif
         }
     }
 
-    override fun write(context: AttributeServices.WriteContext, writeValues: List<WriteValue>) {
+    override fun write(
+        context: AddressSpace.WriteContext,
+        writeValues: List<WriteValue>,
+    ): List<StatusCode?> {
         val results = writeValues.map { WriteRequest(it) }
 
         results.forEach {
@@ -152,23 +151,23 @@ class OidAddressSpace(val device: SnmpDeviceImpl<*>) : AddressSpaceFragment, Lif
             device.write(valueWrites.map { VariableBinding(it.oid, it.value.toVariable()) })
         valueWriteResults.zip(valueWrites).forEach { (value, result) -> result.result = value }
 
-        context.success(results.map { it.result?.statusCode })
+        return results.map { it.result?.statusCode }
     }
 
     override fun browse(
-        context: ViewServices.BrowseContext,
+        context: AddressSpace.BrowseContext,
         view: ViewDescription,
-        nodeId: NodeId,
-    ) {
-        context.success(emptyList())
+        nodeIds: List<NodeId>,
+    ): List<AddressSpace.ReferenceResult> {
+        return emptyList()
     }
 
-    override fun getReferences(
-        context: ViewServices.BrowseContext,
+    override fun gather(
+        context: AddressSpace.BrowseContext,
         view: ViewDescription,
         nodeId: NodeId,
-    ) {
-        context.success(emptyList())
+    ): AddressSpace.ReferenceResult.ReferenceList {
+        return AddressSpace.ReferenceResult.ReferenceList(emptyList())
     }
 
     override fun onDataItemsCreated(items: List<DataItem>) {
@@ -187,7 +186,7 @@ class OidAddressSpace(val device: SnmpDeviceImpl<*>) : AddressSpaceFragment, Lif
         subscriptionModel.onMonitoringModeChanged(items)
     }
 
-    override fun getFilter(): AddressSpaceFilter? {
+    override fun getFilter(): AddressSpaceFilter {
         return filter
     }
 

@@ -2,23 +2,24 @@ package com.mussonindustrial.embr.snmp.opc
 
 import com.inductiveautomation.ignition.gateway.opcua.server.api.DeviceContext
 import com.mussonindustrial.embr.snmp.devices.SnmpDeviceImpl
+import org.eclipse.milo.opcua.sdk.server.AddressSpaceFilter
 import org.eclipse.milo.opcua.sdk.server.Lifecycle
+import org.eclipse.milo.opcua.sdk.server.ManagedAddressSpaceFragmentWithLifecycle
 import org.eclipse.milo.opcua.sdk.server.OpcUaServer
-import org.eclipse.milo.opcua.sdk.server.api.AddressSpaceFilter
-import org.eclipse.milo.opcua.sdk.server.api.DataItem
-import org.eclipse.milo.opcua.sdk.server.api.ManagedAddressSpaceFragmentWithLifecycle
-import org.eclipse.milo.opcua.sdk.server.api.MonitoredItem
-import org.eclipse.milo.opcua.sdk.server.api.SimpleAddressSpaceFilter
+import org.eclipse.milo.opcua.sdk.server.SimpleAddressSpaceFilter
+import org.eclipse.milo.opcua.sdk.server.items.DataItem
+import org.eclipse.milo.opcua.sdk.server.items.MonitoredItem
 import org.eclipse.milo.opcua.sdk.server.util.SubscriptionModel
+import org.eclipse.milo.opcua.stack.core.types.builtin.NodeId
+import org.eclipse.milo.opcua.stack.core.types.builtin.QualifiedName
 
 open class SnmpDeviceManagedAddressSpaceFragment(val device: SnmpDeviceImpl<*>) :
-    ManagedAddressSpaceFragmentWithLifecycle(device.context.deviceContext.getServer(), device),
+    ManagedAddressSpaceFragmentWithLifecycle(device.context.deviceContext.server, device),
     Lifecycle,
     DeviceContext by device.context.deviceContext {
 
     private val filter = SimpleAddressSpaceFilter.create { nodeManager.containsNode(it) }
-    private val subscriptionModel =
-        SubscriptionModel(device.context.deviceContext.getServer(), this)
+    private val subscriptionModel = SubscriptionModel(device.context.deviceContext.server, this)
 
     init {
         lifecycleManager.addLifecycle(subscriptionModel)
@@ -44,7 +45,19 @@ open class SnmpDeviceManagedAddressSpaceFragment(val device: SnmpDeviceImpl<*>) 
         subscriptionModel.onMonitoringModeChanged(items)
     }
 
+    override fun getDeviceNodeId(): NodeId {
+        return super.getDeviceNodeId()
+    }
+
     override fun getServer(): OpcUaServer {
         return super.getServer()
+    }
+
+    override fun nodeId(id: Any): NodeId {
+        return super.nodeId(id)
+    }
+
+    override fun qualifiedName(name: String): QualifiedName {
+        return super.qualifiedName(name)
     }
 }
