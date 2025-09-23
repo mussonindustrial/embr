@@ -43,8 +43,7 @@ class SnmpV3DeviceRecord : SnmpV3DeviceSettings, PersistentRecord() {
                 include(AUTH_PASSWORD)
             }
 
-        val PRIVACY_PROTOCOL =
-            EnumField(META, "PrivacyProtocol", TargetBuilder.PrivProtocol::class.java)
+        val PRIVACY_PROTOCOL = EnumField(META, "PrivacyProtocol", PrivacyProtocol::class.java)
         val PRIVACY_PASSWORD =
             EncodedStringField(META, "PrivacyPassword").apply {
                 formMeta.editorSource = PasswordEditorSource.getSharedInstance()
