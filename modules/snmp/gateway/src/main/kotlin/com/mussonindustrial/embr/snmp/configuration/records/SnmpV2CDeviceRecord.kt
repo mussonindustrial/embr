@@ -18,8 +18,10 @@ class SnmpV2CDeviceRecord : PersistentRecord() {
 
         val HOSTNAME = StringField(META, "Hostname")
         val PORT = IntField(META, "Port")
+
         val COMMUNITY_READ = StringField(META, "CommunityRead")
         val COMMUNITY_WRITE = StringField(META, "CommunityWrite")
+
         val HEALTHCHECK_FREQUENCY = LongField(META, "HealthcheckFrequency")
         val HEALTHCHECK_OID = StringField(META, "HealthcheckOid")
     }

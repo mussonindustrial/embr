@@ -16,8 +16,6 @@ import com.mussonindustrial.embr.snmp.devices.SnmpDeviceImpl
 import java.util.*
 import org.snmp4j.DirectUserTarget
 import org.snmp4j.Snmp
-import org.snmp4j.security.AuthMD5
-import org.snmp4j.security.PrivAES256
 import org.snmp4j.smi.Address
 import org.snmp4j.smi.GenericAddress
 import org.snmp4j.smi.OctetString
@@ -109,9 +107,9 @@ object SnmpV3ExtensionPoint :
             DirectUserTarget(
                 address,
                 OctetString(snmpConfig.security.authentication.username),
-                AuthMD5(),
+                snmpConfig.security.authentication.protocol.mappedProtocol,
                 authenticationPassphrase,
-                PrivAES256(),
+                snmpConfig.security.privacy.protocol.mappedProtocol,
                 privacyPassphrase,
             )
 

@@ -24,8 +24,10 @@ class SnmpV3DeviceRecord : PersistentRecord() {
         val AUTH_PROTOCOL = EnumField(META, "AuthProtocol", AuthenticationProtocol::class.java)
         val AUTH_USERNAME = StringField(META, "AuthUsername")
         val AUTH_PASSWORD = EncodedStringField(META, "AuthPassword")
+
         val PRIVACY_PROTOCOL = EnumField(META, "PrivacyProtocol", PrivacyProtocol::class.java)
         val PRIVACY_PASSWORD = EncodedStringField(META, "PrivacyPassword")
+
         val HEALTHCHECK_FREQUENCY = LongField(META, "HealthcheckFrequency")
         val HEALTHCHECK_OID = StringField(META, "HealthcheckOid")
     }
