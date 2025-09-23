@@ -20,6 +20,7 @@ class SnmpV3DeviceRecord : PersistentRecord() {
 
         val HOSTNAME = StringField(META, "Hostname")
         val PORT = IntField(META, "Port")
+        val TIMEOUT = IntField(META, "Timeout")
 
         val AUTH_PROTOCOL = EnumField(META, "AuthProtocol", AuthenticationProtocol::class.java)
         val AUTH_USERNAME = StringField(META, "AuthUsername")
