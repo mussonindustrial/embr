@@ -17,6 +17,7 @@ class SnmpV2CDeviceRecord : SnmpV2CDeviceSettings, PersistentRecord() {
 
         val HOSTNAME = StringField(META, "Hostname", SFieldFlags.SMANDATORY)
         val PORT = IntField(META, "Port", SFieldFlags.SMANDATORY).apply { default = 161 }
+        val TIMEOUT = IntField(META, "Timeout")
         val COMMUNITY_READ =
             StringField(META, "CommunityRead", SFieldFlags.SMANDATORY).apply { default = "public" }
         val COMMUNITY_WRITE =

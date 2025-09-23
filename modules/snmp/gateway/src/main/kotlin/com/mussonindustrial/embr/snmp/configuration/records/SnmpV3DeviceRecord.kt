@@ -19,6 +19,7 @@ class SnmpV3DeviceRecord : SnmpV3DeviceSettings, PersistentRecord() {
 
         val HOSTNAME = StringField(META, "Hostname", SFieldFlags.SMANDATORY)
         val PORT = IntField(META, "Port", SFieldFlags.SMANDATORY).apply { default = 161 }
+        val TIMEOUT = IntField(META, "Timeout")
         val CATEGORY_NETWORK =
             Category("SnmpV3DeviceRecord.Network", 1001).apply {
                 include(HOSTNAME)
