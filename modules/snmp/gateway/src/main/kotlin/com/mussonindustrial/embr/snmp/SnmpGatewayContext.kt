@@ -1,11 +1,14 @@
 package com.mussonindustrial.embr.snmp
 
 import com.codahale.metrics.health.HealthCheckRegistry
+import com.inductiveautomation.ignition.common.execution.ExecutionManager
 import com.inductiveautomation.ignition.gateway.model.DiagnosticsManager
 import com.inductiveautomation.ignition.gateway.model.GatewayContext
 import com.inductiveautomation.ignition.gateway.model.TelemetryManager
 import com.mussonindustrial.embr.gateway.EmbrGatewayContext
 import com.mussonindustrial.embr.gateway.EmbrGatewayContextImpl
+import java.util.concurrent.ThreadFactory
+import java.util.concurrent.atomic.AtomicInteger
 import org.snmp4j.SNMP4JSettings
 import org.snmp4j.mp.MPv3
 import org.snmp4j.security.*
@@ -21,6 +24,17 @@ class SnmpGatewayContext(private val context: GatewayContext) :
     val usm: USM
     val securityProtocols: SecurityProtocols = SecurityProtocols.getInstance()
     val securityModels: SecurityModels = SecurityModels.getInstance()
+    val snmpExecutionManager: ExecutionManager =
+        context.createExecutionManager(
+            "Embr SNMP Driver",
+            3,
+            object : ThreadFactory {
+                private val counter = AtomicInteger(0)
+
+                override fun newThread(r: Runnable): Thread =
+                    Thread(null, r, "embr-snmp-executor-${counter.incrementAndGet()}")
+            },
+        )
 
     init {
         instance = this

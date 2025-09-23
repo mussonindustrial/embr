@@ -1,6 +1,7 @@
 package com.mussonindustrial.embr.snmp.devices
 
 import com.inductiveautomation.ignition.common.util.LoggerEx
+import com.mussonindustrial.embr.snmp.SnmpGatewayContext
 import com.mussonindustrial.embr.snmp.configuration.extensions.SnmpDeviceConfig
 import com.mussonindustrial.embr.snmp.opc.DeviceAddressSpace
 import com.mussonindustrial.embr.snmp.opc.DiagnosticAddressSpace
@@ -12,7 +13,6 @@ import com.mussonindustrial.embr.snmp.requests.toOidWriteResult
 import com.mussonindustrial.embr.snmp.utils.addLifecycle
 import com.mussonindustrial.embr.snmp.utils.createSizeBoundedPDUs
 import com.mussonindustrial.embr.snmp.utils.toDataValue
-import java.util.concurrent.ScheduledFuture
 import java.util.concurrent.TimeUnit
 import org.eclipse.milo.opcua.sdk.server.AddressSpaceComposite
 import org.eclipse.milo.opcua.sdk.server.Lifecycle
@@ -32,8 +32,10 @@ class SnmpDeviceImpl<T : SnmpDeviceConfig>(override val context: SnmpContext<T>)
             .mdcContext(
                 "device-name",
                 context.deviceContext.name,
-                "target",
-                "${context.snmpConfig.network.hostname}:${context.snmpConfig.network.port}",
+                "device-type",
+                context.deviceConfig.type,
+                "hostname",
+                "${context.snmpConfig.connectivity.hostname}:${context.snmpConfig.connectivity.port}",
             )
             .build(SnmpDeviceImpl::class.java)
     val lifecycleManager = LifecycleManager()
@@ -125,7 +127,7 @@ class SnmpDeviceImpl<T : SnmpDeviceConfig>(override val context: SnmpContext<T>)
                         }
                     }
                 } catch (e: Exception) {
-                    logger.debug("GET failed with exception", e)
+                    logger.warn("GET failed with exception", e)
                     return reads.map {
                         DataValue(StatusCodes.Bad_CommunicationError).toOidReadResult()
                     }
@@ -138,6 +140,10 @@ class SnmpDeviceImpl<T : SnmpDeviceConfig>(override val context: SnmpContext<T>)
 
     override fun write(writes: List<VariableBinding>): List<OidWriteResult> {
         return writes.map {
+            if (context.writeTarget == null) {
+                return@map StatusCode(StatusCodes.Bad_WriteNotSupported).toOidWriteResult()
+            }
+
             val pdu =
                 PDU().apply {
                     type = PDU.SET
@@ -148,45 +154,65 @@ class SnmpDeviceImpl<T : SnmpDeviceConfig>(override val context: SnmpContext<T>)
                 val response = context.snmp.send(pdu, context.writeTarget).response
                 if (response == null) {
                     logger.warn("SET failed: no response.")
-                    StatusCode(StatusCodes.Bad_CommunicationError).toOidWriteResult()
+                    return@map StatusCode(StatusCodes.Bad_CommunicationError).toOidWriteResult()
                 }
 
                 if (response.errorStatus == 0) {
-                    StatusCode.GOOD.toOidWriteResult()
+                    return@map StatusCode.GOOD.toOidWriteResult()
                 } else {
-                    StatusCode.BAD.toOidWriteResult()
+                    return@map StatusCode.BAD.toOidWriteResult()
                 }
             } catch (e: Exception) {
-                logger.debug("GET failed with exception", e)
-                StatusCode(StatusCodes.Bad_CommunicationError).toOidWriteResult()
+                logger.warn("SET failed with exception", e)
+                return@map StatusCode(StatusCodes.Bad_CommunicationError).toOidWriteResult()
             }
         }
     }
 
     inner class Healthcheck : Lifecycle {
 
-        private var future: ScheduledFuture<*>? = null
+        private val taskOwner = "healthcheck"
+        private val taskName = context.deviceContext.name
 
         override fun startup() {
-            future?.cancel(true)
+            if (!canDoHealthCheck()) {
+                status = SnmpDevice.Status.UNKNOWN
+                return
+            }
 
-            future =
-                context.deviceContext.gatewayContext.scheduledExecutorService
-                    .scheduleWithFixedDelay(
-                        this::doHealthcheck,
-                        1000,
-                        context.snmpConfig.healthcheck.frequency,
-                        TimeUnit.MILLISECONDS,
-                    )
+            SnmpGatewayContext.instance.snmpExecutionManager.registerAtFixedRateWithInitialDelay(
+                taskOwner,
+                taskName,
+                this::doHealthcheck,
+                context.snmpConfig.healthcheck.frequency!!,
+                TimeUnit.MILLISECONDS,
+                1000,
+            )
         }
 
         override fun shutdown() {
-            future?.cancel(true)
+            SnmpGatewayContext.instance.snmpExecutionManager.unRegister(taskOwner, taskName)
+        }
+
+        fun canDoHealthCheck(): Boolean {
+            context.snmpConfig.healthcheck.frequency.let {
+                if (it == null || it <= 0) {
+                    return false
+                }
+            }
+
+            context.snmpConfig.healthcheck.oid.let {
+                if (it == null || it.isEmpty()) {
+                    return false
+                }
+            }
+
+            return true
         }
 
         private fun doHealthcheck() {
-            if (context.snmpConfig.healthcheck.oid.isBlank()) {
-                status = SnmpDevice.Status.CONNECTED
+            if (!canDoHealthCheck()) {
+                status = SnmpDevice.Status.UNKNOWN
                 return
             }
 
