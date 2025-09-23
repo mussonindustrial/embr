@@ -13,6 +13,6 @@ interface SnmpContext<T : SnmpDeviceSettings> {
     val snmpSettings: T
 
     val readTarget: Target<Address>
-    val writeTarget: Target<Address>
+    val writeTarget: Target<Address>?
     val snmp: Snmp
 }

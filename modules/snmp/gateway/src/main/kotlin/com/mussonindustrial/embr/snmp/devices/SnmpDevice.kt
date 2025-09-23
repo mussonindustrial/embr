@@ -22,6 +22,7 @@ interface SnmpDevice : AddressSpaceFragment, Device {
     }
 
     enum class Status(private val value: String) {
+        UNKNOWN("Unknown"),
         DISCONNECTED("Disconnected"),
         CONNECTED("Connected");
 
