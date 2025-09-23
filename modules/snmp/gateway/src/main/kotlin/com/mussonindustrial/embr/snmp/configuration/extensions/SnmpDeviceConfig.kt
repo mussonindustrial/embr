@@ -1,17 +1,10 @@
 package com.mussonindustrial.embr.snmp.configuration.extensions
 
-import com.inductiveautomation.ignition.gateway.dataroutes.openapi.annotations.DefaultValue
-import com.inductiveautomation.ignition.gateway.dataroutes.openapi.annotations.Description
-import com.inductiveautomation.ignition.gateway.dataroutes.openapi.annotations.Enumeration
-import com.inductiveautomation.ignition.gateway.dataroutes.openapi.annotations.FormCategory
-import com.inductiveautomation.ignition.gateway.dataroutes.openapi.annotations.FormField
-import com.inductiveautomation.ignition.gateway.dataroutes.openapi.annotations.Label
-import com.inductiveautomation.ignition.gateway.dataroutes.openapi.annotations.Required
+import com.inductiveautomation.ignition.gateway.dataroutes.openapi.annotations.*
 import com.inductiveautomation.ignition.gateway.secrets.SecretConfig
 import com.inductiveautomation.ignition.gateway.web.nav.FormFieldType
-import com.mussonindustrial.embr.snmp.configuration.extensions.SnmpV3ExtensionPoint.AuthenticationProtocolProvider
-import com.mussonindustrial.embr.snmp.configuration.extensions.SnmpV3ExtensionPoint.PrivacyProtocolProvider
-import org.snmp4j.fluent.TargetBuilder
+import com.mussonindustrial.embr.snmp.configuration.protocols.AuthenticationProtocol
+import com.mussonindustrial.embr.snmp.configuration.protocols.PrivacyProtocol
 
 interface SnmpDeviceConfig {
     val network: SnmpNetworkConfig
@@ -19,15 +12,15 @@ interface SnmpDeviceConfig {
 }
 
 data class SnmpNetworkConfig(
-    @FormCategory("NETWORK")
+    @FormCategoryKey("Snmp.config.category.Network")
     @Label("Hostname *")
-    @Description("Hostname/IP address of the SNMP device.")
+    @DescriptionKey("Snmp.config.Network.Hostname.Description")
     @FormField(FormFieldType.TEXT)
     @Required
     val hostname: String,
-    @FormCategory("NETWORK")
+    @FormCategoryKey("Snmp.config.category.Network")
     @Label("Port *")
-    @Description("Port to connect to on the remote device.")
+    @DescriptionKey("Snmp.config.Network.Port.Description")
     @DefaultValue("161")
     @FormField(FormFieldType.NUMBER)
     @Required
@@ -35,16 +28,16 @@ data class SnmpNetworkConfig(
 )
 
 data class SnmpHealthcheckConfig(
-    @FormCategory("HEALTHCHECK")
+    @FormCategoryKey("Snmp.config.category.Healthcheck")
     @Label("Healthcheck Frequency *")
-    @Description("The time in milliseconds between connection validation checks.")
+    @DescriptionKey("Snmp.config.Healthcheck.Frequency.Description")
     @DefaultValue("10000")
     @FormField(FormFieldType.NUMBER)
     @Required
     val frequency: Long,
-    @FormCategory("HEALTHCHECK")
+    @FormCategoryKey("Snmp.config.category.Healthcheck")
     @Label("Healthcheck OID *")
-    @Description("This OID will be queried to validate the connection.")
+    @DescriptionKey("Snmp.config.Healthcheck.Oid.Description")
     @DefaultValue("1.3.6.1.2.1.1.2.0")
     @FormField(FormFieldType.TEXT)
     @Required
@@ -52,16 +45,16 @@ data class SnmpHealthcheckConfig(
 )
 
 data class SnmpCommunityConfig(
-    @FormCategory("COMMUNITY")
+    @FormCategoryKey("Snmp.config.category.Community")
     @Label("Read Community *")
-    @Description("The SNMP community used for reads.")
+    @DescriptionKey("Snmp.config.Community.ReadCommunity.Description")
     @FormField(FormFieldType.TEXT)
     @DefaultValue("public")
     @Required
     val read: String,
-    @FormCategory("COMMUNITY")
+    @FormCategoryKey("Snmp.config.category.Community")
     @Label("Write Community *")
-    @Description("The SNMP community used for writes.")
+    @DescriptionKey("Snmp.config.Community.WriteCommunity.Description")
     @FormField(FormFieldType.TEXT)
     @DefaultValue("public")
     @Required
@@ -74,39 +67,37 @@ data class SnmpV3SecurityConfig(
 )
 
 data class SnmpV3AuthenticationConfig(
-    @FormCategory("AUTHENTICATION")
+    @FormCategoryKey("Snmp.config.category.Authentication")
     @Label("Username *")
-    @Description("Username")
+    @DescriptionKey("Snmp.config.Authentication.Username.Description")
     @FormField(FormFieldType.TEXT)
     @Required
     val username: String,
-    @FormCategory("AUTHENTICATION")
+    @FormCategoryKey("Snmp.config.category.Authentication")
     @Label("Authentication Protocol *")
-    @Description("Protocol used for authentication")
+    @DescriptionKey("Snmp.config.Authentication.AuthProtocol.Description")
     @FormField(FormFieldType.SELECT)
-    @Enumeration(AuthenticationProtocolProvider::class)
+    @Enumeration(AuthenticationProtocol.Provider::class)
     @Required
-    val protocol: TargetBuilder.AuthProtocol,
-    @FormCategory("AUTHENTICATION")
+    val protocol: AuthenticationProtocol,
+    @FormCategoryKey("Snmp.config.category.Authentication")
     @Label("Authentication Password *")
-    @Description("Password used for authentication")
+    @DescriptionKey("Snmp.config.Authentication.AuthPassword.Description")
     @FormField(FormFieldType.SECRET)
-    @Required
-    val password: SecretConfig,
+    val password: SecretConfig?,
 )
 
 data class SnmpV3PrivacyConfig(
-    @FormCategory("AUTHENTICATION")
+    @FormCategoryKey("Snmp.config.category.Authentication")
     @Label("Privacy Protocol *")
-    @Description("Protocol used for privacy")
+    @DescriptionKey("Snmp.config.Authentication.PrivacyProtocol.Description")
     @FormField(FormFieldType.SELECT)
-    @Enumeration(PrivacyProtocolProvider::class)
+    @Enumeration(PrivacyProtocol.Provider::class)
     @Required
-    val protocol: TargetBuilder.PrivProtocol,
-    @FormCategory("AUTHENTICATION")
+    val protocol: PrivacyProtocol,
+    @FormCategoryKey("Snmp.config.category.Authentication")
     @Label("Privacy Password *")
-    @Description("Password used for privacy")
+    @DescriptionKey("Snmp.config.Authentication.PrivacyPassword.Description")
     @FormField(FormFieldType.SECRET)
-    @Required
-    val password: SecretConfig,
+    val password: SecretConfig?,
 )

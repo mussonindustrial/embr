@@ -3,7 +3,6 @@ package com.mussonindustrial.embr.snmp.configuration.extensions
 import com.inductiveautomation.ignition.gateway.config.ExtensionPoint
 import com.inductiveautomation.ignition.gateway.config.migration.ExtensionPointRecordMigrationStrategy
 import com.inductiveautomation.ignition.gateway.dataroutes.openapi.SchemaUtil
-import com.inductiveautomation.ignition.gateway.dataroutes.openapi.annotations.Enumeration
 import com.inductiveautomation.ignition.gateway.opcua.server.api.Device
 import com.inductiveautomation.ignition.gateway.opcua.server.api.DeviceContext
 import com.inductiveautomation.ignition.gateway.opcua.server.api.DeviceExtensionPoint
@@ -15,14 +14,14 @@ import com.mussonindustrial.embr.gateway.secrets.getAsString
 import com.mussonindustrial.embr.snmp.devices.SnmpContext
 import com.mussonindustrial.embr.snmp.devices.SnmpDeviceImpl
 import java.util.*
+import org.snmp4j.DirectUserTarget
 import org.snmp4j.Snmp
-import org.snmp4j.Target
-import org.snmp4j.fluent.SnmpBuilder
-import org.snmp4j.fluent.TargetBuilder
-import org.snmp4j.mp.SnmpConstants
+import org.snmp4j.security.AuthMD5
+import org.snmp4j.security.PrivAES256
 import org.snmp4j.smi.Address
 import org.snmp4j.smi.GenericAddress
 import org.snmp4j.smi.OctetString
+import org.snmp4j.transport.DefaultUdpTransportMapping
 
 @Suppress("DEPRECATION")
 private typealias SnmpV3DeviceRecord =
@@ -80,18 +79,6 @@ object SnmpV3ExtensionPoint :
         )
     }
 
-    class AuthenticationProtocolProvider : Enumeration.Provider {
-        override fun values(): Array<out Any> {
-            return TargetBuilder.AuthProtocol.entries.toTypedArray()
-        }
-    }
-
-    class PrivacyProtocolProvider : Enumeration.Provider {
-        override fun values(): Array<out Any> {
-            return TargetBuilder.PrivProtocol.entries.toTypedArray()
-        }
-    }
-
     class Config(
         override val network: SnmpNetworkConfig,
         val security: SnmpV3SecurityConfig,
@@ -108,32 +95,30 @@ object SnmpV3ExtensionPoint :
             GenericAddress.parse(
                 ("udp:" + snmpConfig.network.hostname + "/" + snmpConfig.network.port)
             )
-        val securityName = OctetString(snmpConfig.security.authentication.username)
-        val authoritativeEngineId = byteArrayOf()
 
-        val builder = SnmpBuilder()
+        val authenticationPassphrase =
+            snmpConfig.security.authentication.password?.let {
+                OctetString(deviceContext.gatewayContext.getAsString(it))
+            }
+        val privacyPassphrase =
+            snmpConfig.security.privacy.password?.let {
+                OctetString(deviceContext.gatewayContext.getAsString(it))
+            }
 
-        val target: Target<Address> =
-            builder
-                .target(address)
-                .user(snmpConfig.security.authentication.username)
-                .auth(snmpConfig.security.authentication.protocol)
-                .authPassphrase(
-                    deviceContext.gatewayContext.getAsString(
-                        snmpConfig.security.authentication.password
-                    )
-                )
-                .priv(snmpConfig.security.privacy.protocol)
-                .privPassphrase(
-                    deviceContext.gatewayContext.getAsString(snmpConfig.security.privacy.password)
-                )
-                .done()
-                .build()
-                .apply { version = SnmpConstants.version3 }
+        val target =
+            DirectUserTarget(
+                address,
+                OctetString(snmpConfig.security.authentication.username),
+                AuthMD5(),
+                authenticationPassphrase,
+                PrivAES256(),
+                privacyPassphrase,
+            )
 
         override val readTarget = target
         override val writeTarget = target
 
-        override val snmp: Snmp = builder.udp().v3().usm().build()
+        val transportMapping = DefaultUdpTransportMapping()
+        override val snmp = Snmp(transportMapping)
     }
 }
