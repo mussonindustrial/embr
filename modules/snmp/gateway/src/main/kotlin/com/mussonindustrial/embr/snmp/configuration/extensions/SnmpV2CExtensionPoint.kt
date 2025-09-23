@@ -1,6 +1,7 @@
 package com.mussonindustrial.embr.snmp.configuration.extensions
 
 import com.inductiveautomation.ignition.gateway.config.ExtensionPoint
+import com.inductiveautomation.ignition.gateway.config.ValidationErrors
 import com.inductiveautomation.ignition.gateway.config.migration.ExtensionPointRecordMigrationStrategy
 import com.inductiveautomation.ignition.gateway.dataroutes.openapi.SchemaUtil
 import com.inductiveautomation.ignition.gateway.opcua.server.api.Device
@@ -42,8 +43,9 @@ object SnmpV2CExtensionPoint :
             .settingsMeta(SnmpV2CDeviceRecord.META)
             .settingsEncoder { builder ->
                 SnmpV2CDeviceRecord.apply {
-                    builder.withCustomFieldName(HOSTNAME, "network.hostname")
-                    builder.withCustomFieldName(PORT, "network.port")
+                    builder.withCustomFieldName(HOSTNAME, "connectivity.hostname")
+                    builder.withCustomFieldName(PORT, "connectivity.port")
+                    builder.withCustomFieldName(TIMEOUT, "connectivity.timeout")
                     builder.withCustomFieldName(HEALTHCHECK_FREQUENCY, "healthcheck.frequency")
                     builder.withCustomFieldName(HEALTHCHECK_OID, "healthcheck.oid")
                     builder.withCustomFieldName(COMMUNITY_READ, "community.read")
@@ -74,8 +76,17 @@ object SnmpV2CExtensionPoint :
         )
     }
 
+    override fun validate(settings: Config?, errors: ValidationErrors.Builder) {
+        if (settings == null) {
+            return
+        }
+        settings.connectivity.validate(errors)
+        settings.community.validate(errors)
+        settings.healthcheck.validate(errors)
+    }
+
     class Config(
-        override val network: SnmpNetworkConfig,
+        override val connectivity: SnmpConnectivityConfig,
         val community: SnmpCommunityConfig,
         override val healthcheck: SnmpHealthcheckConfig,
     ) : SnmpDeviceConfig
@@ -88,16 +99,20 @@ object SnmpV2CExtensionPoint :
 
         val address: Address =
             GenericAddress.parse(
-                ("udp:" + snmpConfig.network.hostname + "/" + snmpConfig.network.port)
+                ("udp:" + snmpConfig.connectivity.hostname + "/" + snmpConfig.connectivity.port)
             )
 
         override val readTarget =
             CommunityTarget(address, OctetString(snmpConfig.community.read)).apply {
                 version = SnmpConstants.version2c
+                timeout = snmpConfig.connectivity.timeout
             }
         override val writeTarget =
-            CommunityTarget(address, OctetString(snmpConfig.community.write)).apply {
-                version = SnmpConstants.version2c
+            snmpConfig.community.write?.let {
+                CommunityTarget(address, OctetString(it)).apply {
+                    version = SnmpConstants.version2c
+                    timeout = snmpConfig.connectivity.timeout
+                }
             }
 
         val transportMapping = DefaultUdpTransportMapping()
