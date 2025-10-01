@@ -1,0 +1,95 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "definitions": {
+        "component": {
+            "type": "object",
+            "properties": {
+                "custom": { "$ref": "#/definitions/component_custom" },
+                "children": {
+                    "type": "array",
+                    "items": { "$ref": "#/definitions/component" },
+                    "default": []
+                },
+                "meta": { "$ref": "#/definitions/component_meta" },
+                "position": { "$ref": "#/definitions/component_position" },
+                "props": { "$ref": "#/definitions/component_props" },
+                "type": { "$ref": "#/definitions/component_type" }
+            },
+            "required": ["meta", "type"]
+        },
+        "component_custom": { "type": "object", "default": {} },
+        "component_meta": {
+            "type": "object",
+            "default": {
+                "name": "Name"
+            },
+            "properties": {
+                "name": { "type": "string" }
+            },
+            "required": ["name"]
+        },
+        "component_position": { "type": "object", "default": {} },
+        "component_props": { "type": "object", "default": {} },
+        "component_type": {
+            "type":  "string",
+            "default": "",
+            "extension": {
+                "suggestion-source": "embr-periscope-component-id"
+            }
+        },
+        "view_config": {
+            "type": "object",
+            "properties": {
+                "custom": { "type": "object" },
+                "params": { "type": "object" },
+                "props": { "type": "object" },
+                "root": { "$ref": "#/definitions/component" }
+            },
+            "required": ["root"]
+        }
+    },
+    "properties": {
+        "viewJson": {
+            "$ref": "#/definitions/view_config",
+            "description": "Json representation of the view.",
+            "additionalProperties": true,
+            "default": {}
+        },
+        "viewParams": {
+            "type": "object",
+            "description": "Parameters for this instance.",
+            "default": {}
+        },
+        "viewStyle": {
+            "$ref": "urn:ignition-schema:schemas/style-properties.schema.json",
+            "default": {
+                "classes": ""
+            }
+        },
+        "useDefaultHeight": {
+            "type": "boolean",
+            "description": "Use default view height."
+        },
+        "useDefaultMinHeight": {
+            "type": "boolean",
+            "description": "Use default minimum view height."
+        },
+        "useDefaultMinWidth": {
+            "type": "boolean",
+            "description": "Use default minimum view height."
+        },
+        "useDefaultWidth": {
+            "type": "boolean",
+            "description": "Use default view width."
+        },
+        "style": {
+            "$ref": "urn:ignition-schema:schemas/style-properties.schema.json",
+            "default": {
+                "classes": "",
+                "overflow": "auto"
+            }
+        }
+    },
+    "type": "object",
+    "required": ["viewJson"]
+}
