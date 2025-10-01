@@ -72,14 +72,14 @@ class DelegatingSubscriptionModel(
     val dataItems: MutableList<DataItem>
         get() = itemSet.toMutableList()
 
-    inner class ScheduledUpdateContext(
+    class ScheduledUpdateContext(
+        val server: OpcUaServer,
         val session: Session,
         val samplingInterval: Double,
         val maxAge: Double,
         val timestamps: TimestampsToReturn,
         val readValueIds: List<ReadValueId>,
     ) {
-        val server = this@DelegatingSubscriptionModel.server
         val context = AddressSpace.ReadContext(server, session)
     }
 
@@ -97,6 +97,7 @@ class DelegatingSubscriptionModel(
                             val ids = pending.stream().map { it.input }.collect(Collectors.toList())
                             val context =
                                 ScheduledUpdateContext(
+                                    server,
                                     session,
                                     samplingInterval,
                                     0.0,
