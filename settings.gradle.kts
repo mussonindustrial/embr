@@ -27,6 +27,11 @@ include(
     ":modules:charts:gateway",
     ":modules:charts:web",
 
+    ":modules:muijoy:common",
+    ":modules:muijoy:designer",
+    ":modules:muijoy:gateway",
+    ":modules:muijoy:web",
+
     ":modules:sse:common",
     ":modules:sse:gateway",
 
