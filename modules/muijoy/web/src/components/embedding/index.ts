@@ -1,5 +1,1 @@
-export * from './flex-repeater'
-export * from './json-view'
-export * from './portal'
-export * from './swiper'
-export * from './view'
+export * from './muijoy-component'

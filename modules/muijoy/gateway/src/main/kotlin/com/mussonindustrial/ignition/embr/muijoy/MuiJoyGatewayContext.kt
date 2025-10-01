@@ -16,7 +16,8 @@ import com.mussonindustrial.embr.perspective.gateway.component.asGatewayComponen
 import com.mussonindustrial.embr.perspective.gateway.component.registerComponent
 import com.mussonindustrial.embr.perspective.gateway.component.removeComponent
 import com.mussonindustrial.embr.perspective.gateway.reflect.ViewLoader
-import com.mussonindustrial.ignition.embr.muijoy.component.embedding.*
+import com.mussonindustrial.ignition.embr.muijoy.component.input.Button
+import com.mussonindustrial.ignition.embr.muijoy.component.input.ButtonGroup
 import java.util.WeakHashMap
 
 class MuiJoyGatewayContext(private val context: GatewayContext) :
@@ -28,11 +29,8 @@ class MuiJoyGatewayContext(private val context: GatewayContext) :
     val perspectiveContext: PerspectiveContext
     private val components =
         listOf(
-            EmbeddedView.asGatewayComponent { EmbeddedViewModelDelegate(it) },
-            FlexRepeater.asGatewayComponent { FlexRepeaterModelDelegate(it) },
-            JsonView.asGatewayComponent { JsonViewModelDelegate(it) },
-            Portal.asGatewayComponent(),
-            Swiper.asGatewayComponent { JavaScriptProxyableComponentModelDelegate(it) },
+            Button.asGatewayComponent { JavaScriptProxyableComponentModelDelegate(it) },
+            ButtonGroup.asGatewayComponent { JavaScriptProxyableComponentModelDelegate(it) },
         )
 
     init {
