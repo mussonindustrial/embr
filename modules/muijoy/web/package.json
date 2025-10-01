@@ -12,7 +12,11 @@
         "lint:prettier": "prettier -c . --cache --ignore-path=../../.prettierignore"
     },
     "dependencies": {
+        "@embr-js/perspective-client": "0.6.1",
         "@embr-js/utils": "0.6.1",
-        "@embr-js/perspective-client": "0.6.1"
+        "@emotion/react": "^11.14.0",
+        "@emotion/styled": "^11.14.1",
+        "@fontsource/inter": "^5.2.8",
+        "@mui/joy": "^5.0.0-beta.52"
     }
 }

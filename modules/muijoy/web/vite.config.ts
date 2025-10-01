@@ -39,7 +39,11 @@ export default defineConfig(({ mode }) => ({
       },
     },
   },
+  define: {
+    'process.env': {},
+  },
   test: {
+    passWithNoTests: true,
     fileParallelism: mode !== 'benchmark',
     globals: true,
     environment: 'node',
@@ -52,8 +56,5 @@ export default defineConfig(({ mode }) => ({
       reportsDirectory: '../coverage/js/chart-js',
       provider: 'v8',
     },
-  },
-  define: {
-    'process.env.NODE_ENV': JSON.stringify(mode),
   },
 }))

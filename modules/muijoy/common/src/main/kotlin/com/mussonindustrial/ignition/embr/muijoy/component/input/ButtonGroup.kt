@@ -1,35 +1,35 @@
-package com.mussonindustrial.ignition.embr.muijoy.component.embedding
+package com.mussonindustrial.ignition.embr.muijoy.component.input
 
 import com.inductiveautomation.perspective.common.api.ComponentDescriptor
 import com.inductiveautomation.perspective.common.api.ComponentDescriptorImpl
 import com.mussonindustrial.embr.perspective.common.component.PaletteEntry
 import com.mussonindustrial.embr.perspective.common.component.PerspectiveComponent
 import com.mussonindustrial.embr.perspective.common.component.addPaletteEntry
-import com.mussonindustrial.ignition.embr.muijoy.Meta.MODULE_ID
+import com.mussonindustrial.ignition.embr.muijoy.Meta
 import com.mussonindustrial.ignition.embr.muijoy.MuiJoyComponents
 
-class JsonView {
+class ButtonGroup {
     companion object : PerspectiveComponent {
-        override val id: String = "embr.muijoy.embedding.json-view"
+        override val id: String = "embr.muijoy.input.button-group"
 
         private val VARIANT_BASE =
             PaletteEntry(
                 this::class.java,
                 id,
                 "base",
-                "Json View",
-                "Renders a view from its Json representation.",
+                "Button Group",
+                "The Button Group combines a set of related buttons.",
             )
 
         override val descriptor: ComponentDescriptor =
             ComponentDescriptorImpl.ComponentBuilder.newBuilder()
-                .setPaletteCategory("Embedding +")
+                .setPaletteCategory("MUI Joy")
                 .setId(id)
-                .setModuleId(MODULE_ID)
+                .setModuleId(Meta.MODULE_ID)
                 .setSchema(schema)
-                .setName("Json View")
+                .setName("Button Group")
                 .addPaletteEntry(VARIANT_BASE)
-                .setDefaultMetaName("JsonView")
+                .setDefaultMetaName("ButtonGroup")
                 .setResources(MuiJoyComponents.BROWSER_RESOURCES)
                 .build()
     }
