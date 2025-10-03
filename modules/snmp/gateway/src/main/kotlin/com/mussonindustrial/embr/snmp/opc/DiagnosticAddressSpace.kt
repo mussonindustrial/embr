@@ -84,7 +84,7 @@ class DiagnosticAddressSpace(device: SnmpDeviceImpl<*>) :
         attributeFilter: AttributeFilter,
     ) {
         UaVariableNode.UaVariableNodeBuilder(nodeContext).run {
-            setNodeId(nodeId("${root}/${name}"))
+            setNodeId(nodeId("${root}${name}"))
             setBrowseName(qualifiedName(name))
             setDisplayName(LocalizedText.english(name))
             setDataType(dataType)
