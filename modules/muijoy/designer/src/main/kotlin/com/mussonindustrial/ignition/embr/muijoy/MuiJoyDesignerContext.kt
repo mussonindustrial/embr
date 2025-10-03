@@ -8,8 +8,7 @@ import com.mussonindustrial.embr.perspective.designer.component.asDesignerCompon
 import com.mussonindustrial.embr.perspective.designer.component.registerComponent
 import com.mussonindustrial.embr.perspective.designer.component.removeComponent
 import com.mussonindustrial.ignition.embr.muijoy.component.ComponentIdSuggestionSource
-import com.mussonindustrial.ignition.embr.muijoy.component.input.Button
-import com.mussonindustrial.ignition.embr.muijoy.component.input.ButtonGroup
+import com.mussonindustrial.ignition.embr.muijoy.component.input.*
 
 class MuiJoyDesignerContext(private val context: DesignerContext) :
     EmbrDesignerContext by EmbrDesignerContextImpl(context) {
@@ -19,7 +18,7 @@ class MuiJoyDesignerContext(private val context: DesignerContext) :
 
     val perspectiveDesignerInterface: PerspectiveDesignerInterface
     private val componentIdSuggestionSource: ComponentIdSuggestionSource
-    private val components = listOf(Button.asDesignerComponent(), ButtonGroup.asDesignerComponent())
+    private val components = MuiJoyComponents.components.map { it.asDesignerComponent() }
 
     init {
         instance = this

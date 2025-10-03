@@ -1,16 +1,28 @@
 import { ComponentRegistry } from '@inductiveautomation/perspective-client'
-import { makeComponent, TestComponent } from './components'
+import { InteractionRegistry } from '@inductiveautomation/perspective-designer'
+import { waitForClientStore } from '@embr-js/perspective-client'
 
+import { makeComponent, Slot } from './components'
+export * from './utilities'
+
+import {
+  Button,
+  ButtonGroup,
+  Dropdown,
+  Menu,
+  MenuButton,
+  MenuItem,
+} from '@mui/joy'
 import '@fontsource/inter'
 
-import { Button, ButtonGroup } from '@mui/joy'
-import { waitForClientStore } from '@embr-js/perspective-client'
-import { InteractionRegistry } from '@inductiveautomation/perspective-designer'
-
 const components = [
-  makeComponent('embr.muijoy.test', TestComponent),
   makeComponent('embr.muijoy.input.button', Button),
   makeComponent('embr.muijoy.input.button-group', ButtonGroup),
+  makeComponent('embr.muijoy.input.dropdown', Dropdown),
+  makeComponent('embr.muijoy.input.menu', Menu),
+  makeComponent('embr.muijoy.input.menu-button', MenuButton),
+  makeComponent('embr.muijoy.input.menu-item', MenuItem),
+  makeComponent('embr.muijoy.slot', Slot),
 ]
 
 components.forEach((c) => ComponentRegistry.register(c.meta))

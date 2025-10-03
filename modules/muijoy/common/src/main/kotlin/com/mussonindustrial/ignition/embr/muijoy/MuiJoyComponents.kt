@@ -2,6 +2,13 @@ package com.mussonindustrial.ignition.embr.muijoy
 
 import com.inductiveautomation.perspective.common.api.BrowserResource
 import com.mussonindustrial.ignition.embr.muijoy.Meta.SHORT_MODULE_ID
+import com.mussonindustrial.ignition.embr.muijoy.component.input.Button
+import com.mussonindustrial.ignition.embr.muijoy.component.input.ButtonGroup
+import com.mussonindustrial.ignition.embr.muijoy.component.input.Dropdown
+import com.mussonindustrial.ignition.embr.muijoy.component.input.Menu
+import com.mussonindustrial.ignition.embr.muijoy.component.input.MenuButton
+import com.mussonindustrial.ignition.embr.muijoy.component.input.MenuItem
+import com.mussonindustrial.ignition.embr.muijoy.component.input.Slot
 
 object MuiJoyComponents {
 
@@ -20,4 +27,6 @@ object MuiJoyComponents {
         )
     val BROWSER_RESOURCES = mutableSetOf(JS_RESOURCE, CSS_RESOURCE)
     val REQUIRED_RESOURCES = mutableSetOf(JS_RESOURCE, CSS_RESOURCE)
+
+    val components = listOf(Button, ButtonGroup, Dropdown, Menu, MenuButton, MenuItem, Slot)
 }

@@ -6,7 +6,6 @@ import com.inductiveautomation.ignition.gateway.model.GatewayContext
 import com.inductiveautomation.ignition.gateway.model.TelemetryManager
 import com.inductiveautomation.perspective.common.PerspectiveModule
 import com.inductiveautomation.perspective.gateway.api.PerspectiveContext
-import com.inductiveautomation.perspective.gateway.model.PageModel
 import com.mussonindustrial.embr.gateway.EmbrGatewayContext
 import com.mussonindustrial.embr.gateway.EmbrGatewayContextImpl
 import com.mussonindustrial.embr.perspective.common.component.addResourcesTo
@@ -15,10 +14,7 @@ import com.mussonindustrial.embr.perspective.gateway.component.JavaScriptProxyab
 import com.mussonindustrial.embr.perspective.gateway.component.asGatewayComponent
 import com.mussonindustrial.embr.perspective.gateway.component.registerComponent
 import com.mussonindustrial.embr.perspective.gateway.component.removeComponent
-import com.mussonindustrial.embr.perspective.gateway.reflect.ViewLoader
-import com.mussonindustrial.ignition.embr.muijoy.component.input.Button
-import com.mussonindustrial.ignition.embr.muijoy.component.input.ButtonGroup
-import java.util.WeakHashMap
+import com.mussonindustrial.ignition.embr.muijoy.component.input.*
 
 class MuiJoyGatewayContext(private val context: GatewayContext) :
     EmbrGatewayContext by EmbrGatewayContextImpl(context) {
@@ -28,26 +24,13 @@ class MuiJoyGatewayContext(private val context: GatewayContext) :
 
     val perspectiveContext: PerspectiveContext
     private val components =
-        listOf(
-            Button.asGatewayComponent { JavaScriptProxyableComponentModelDelegate(it) },
-            ButtonGroup.asGatewayComponent { JavaScriptProxyableComponentModelDelegate(it) },
-        )
+        MuiJoyComponents.components.map { component ->
+            component.asGatewayComponent { JavaScriptProxyableComponentModelDelegate(it) }
+        }
 
     init {
         instance = this
         perspectiveContext = PerspectiveContext.get(context)
-    }
-
-    private val viewLoaders = WeakHashMap<PageModel, ViewLoader>()
-
-    fun getViewLoader(pageModel: PageModel): ViewLoader {
-        viewLoaders[pageModel]?.apply {
-            return this
-        }
-
-        val newViewLoader = ViewLoader(pageModel)
-        viewLoaders[pageModel] = newViewLoader
-        return newViewLoader
     }
 
     fun registerComponents() {
