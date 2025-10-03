@@ -69,18 +69,8 @@ fun <A : Address> Target<A>.createSizeBoundedPDUs(
     configure: PDU.() -> Unit = {},
 ): List<PDU> {
 
-    val pduFactory =
-        when (this.version) {
-            3 -> {
-                { ScopedPDU() }
-            }
-            else -> {
-                { PDU() }
-            }
-        }
-
     val pdus = mutableListOf<PDU>()
-    var pdu = pduFactory().apply { configure(this) }
+    var pdu = createPDU().apply { configure(this) }
 
     bindings.forEach { binding ->
         pdu.add(binding)
@@ -88,7 +78,7 @@ fun <A : Address> Target<A>.createSizeBoundedPDUs(
         if (pdu.berLength > maxSizeRequestPDU) {
             pdu.trim()
             pdus.add(pdu)
-            pdu = pduFactory().apply { configure(this) }
+            pdu = createPDU().apply { configure(this) }
         }
     }
     if (pdu.size() > 0) {
@@ -96,4 +86,16 @@ fun <A : Address> Target<A>.createSizeBoundedPDUs(
     }
 
     return pdus
+}
+
+fun <A : Address> Target<A>.createPDU(): PDU {
+    return when (this.version) {
+        3 -> {
+            ScopedPDU()
+        }
+
+        else -> {
+            PDU()
+        }
+    }
 }
