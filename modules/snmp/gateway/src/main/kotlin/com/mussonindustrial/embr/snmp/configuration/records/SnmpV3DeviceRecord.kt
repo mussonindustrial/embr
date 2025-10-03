@@ -3,8 +3,9 @@ package com.mussonindustrial.embr.snmp.configuration.records
 import com.inductiveautomation.ignition.gateway.localdb.persistence.*
 import com.inductiveautomation.ignition.gateway.opcua.server.api.DeviceSettingsRecord
 import com.inductiveautomation.ignition.gateway.web.components.editors.PasswordEditorSource
+import com.mussonindustrial.embr.snmp.configuration.protocols.AuthenticationProtocol
+import com.mussonindustrial.embr.snmp.configuration.protocols.PrivacyProtocol
 import com.mussonindustrial.embr.snmp.configuration.settings.SnmpV3DeviceSettings
-import org.snmp4j.fluent.TargetBuilder
 import simpleorm.dataset.SFieldFlags
 
 class SnmpV3DeviceRecord : SnmpV3DeviceSettings, PersistentRecord() {
@@ -19,38 +20,37 @@ class SnmpV3DeviceRecord : SnmpV3DeviceSettings, PersistentRecord() {
 
         val HOSTNAME = StringField(META, "Hostname", SFieldFlags.SMANDATORY)
         val PORT = IntField(META, "Port", SFieldFlags.SMANDATORY).apply { default = 161 }
-        val TIMEOUT = IntField(META, "Timeout")
-        val CATEGORY_NETWORK =
-            Category("SnmpV3DeviceRecord.Network", 1001).apply {
+        val TIMEOUT = LongField(META, "Timeout", SFieldFlags.SMANDATORY).apply { default = 1000 }
+        val CATEGORY_CONNECTIVITY =
+            Category("SnmpV3DeviceRecord.Connectivity", 1001).apply {
                 include(HOSTNAME)
                 include(PORT)
+                include(TIMEOUT)
             }
 
+        val AUTH_USERNAME = StringField(META, "AuthUsername", SFieldFlags.SMANDATORY)
         val AUTH_PROTOCOL =
-            EnumField<TargetBuilder.AuthProtocol>(
+            EnumField(
                 META,
                 "AuthProtocol",
-                TargetBuilder.AuthProtocol::class.java,
+                AuthenticationProtocol::class.java,
+                SFieldFlags.SMANDATORY,
             )
-        val AUTH_USERNAME = StringField(META, "AuthUsername")
         val AUTH_PASSWORD =
             EncodedStringField(META, "AuthPassword").apply {
                 formMeta.editorSource = PasswordEditorSource.getSharedInstance()
             }
-        val CATEGORY_AUTH =
-            Category("SnmpV3DeviceRecord.Auth", 1002).apply {
-                include(AUTH_PROTOCOL)
-                include(AUTH_USERNAME)
-                include(AUTH_PASSWORD)
-            }
-
-        val PRIVACY_PROTOCOL = EnumField(META, "PrivacyProtocol", PrivacyProtocol::class.java)
+        val PRIVACY_PROTOCOL =
+            EnumField(META, "PrivacyProtocol", PrivacyProtocol::class.java, SFieldFlags.SMANDATORY)
         val PRIVACY_PASSWORD =
             EncodedStringField(META, "PrivacyPassword").apply {
                 formMeta.editorSource = PasswordEditorSource.getSharedInstance()
             }
-        val CATEGORY_PRIVACY =
-            Category("SnmpV3DeviceRecord.Privacy", 1003).apply {
+        val CATEGORY_AUTH =
+            Category("SnmpV3DeviceRecord.Authentication", 1002).apply {
+                include(AUTH_USERNAME)
+                include(AUTH_PROTOCOL)
+                include(AUTH_PASSWORD)
                 include(PRIVACY_PROTOCOL)
                 include(PRIVACY_PASSWORD)
             }
@@ -80,8 +80,11 @@ class SnmpV3DeviceRecord : SnmpV3DeviceSettings, PersistentRecord() {
     override val port: Int
         get() = getInt(PORT)
 
-    override val healthcheckFrequency: Long
-        get() = getLong(HEALTHCHECK_FREQUENCY)
+    override val timeout: Long
+        get() = getLong(TIMEOUT)
+
+    override val healthcheckFrequency: Int
+        get() = getInt(HEALTHCHECK_FREQUENCY)
 
     override val healthcheckOid: String
         get() = getString(HEALTHCHECK_OID)
@@ -89,13 +92,13 @@ class SnmpV3DeviceRecord : SnmpV3DeviceSettings, PersistentRecord() {
     override val username: String
         get() = getString(AUTH_USERNAME)
 
-    override val authProtocol: TargetBuilder.AuthProtocol
+    override val authProtocol: AuthenticationProtocol
         get() = getEnum(AUTH_PROTOCOL)
 
     override val authPassword: String
         get() = getString(AUTH_PASSWORD)
 
-    override val privacyProtocol: TargetBuilder.PrivProtocol
+    override val privacyProtocol: PrivacyProtocol
         get() = getEnum(PRIVACY_PROTOCOL)
 
     override val privacyPassword: String

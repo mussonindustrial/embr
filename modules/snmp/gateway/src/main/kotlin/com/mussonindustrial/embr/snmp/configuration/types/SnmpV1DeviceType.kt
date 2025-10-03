@@ -55,10 +55,14 @@ object SnmpV1DeviceType :
         override val readTarget =
             CommunityTarget(address, OctetString(snmpSettings.communityRead)).apply {
                 version = SnmpConstants.version1
+                timeout = snmpSettings.timeout
             }
         override val writeTarget =
-            CommunityTarget(address, OctetString(snmpSettings.communityWrite)).apply {
-                version = SnmpConstants.version1
+            snmpSettings.communityWrite?.let {
+                CommunityTarget(address, OctetString(snmpSettings.communityWrite)).apply {
+                    version = SnmpConstants.version1
+                    timeout = snmpSettings.timeout
+                }
             }
 
         val transportMapping = DefaultUdpTransportMapping()

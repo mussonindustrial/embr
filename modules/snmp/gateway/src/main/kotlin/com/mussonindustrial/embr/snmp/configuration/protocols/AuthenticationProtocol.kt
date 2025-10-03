@@ -1,6 +1,5 @@
 package com.mussonindustrial.embr.snmp.configuration.protocols
 
-import com.inductiveautomation.ignition.gateway.dataroutes.openapi.annotations.Enumeration
 import org.snmp4j.security.AuthGeneric
 import org.snmp4j.security.AuthHMAC128SHA224
 import org.snmp4j.security.AuthHMAC256SHA384
@@ -19,11 +18,5 @@ enum class AuthenticationProtocol(val mappedProtocol: AuthGeneric?, val prettyNa
 
     override fun toString(): String {
         return prettyName
-    }
-
-    class Provider : Enumeration.Provider {
-        override fun values(): Array<out Any> {
-            return AuthenticationProtocol.entries.toTypedArray()
-        }
     }
 }

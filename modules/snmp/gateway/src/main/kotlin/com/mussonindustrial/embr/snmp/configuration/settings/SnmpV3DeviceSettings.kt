@@ -1,11 +1,12 @@
 package com.mussonindustrial.embr.snmp.configuration.settings
 
-import org.snmp4j.fluent.TargetBuilder
+import com.mussonindustrial.embr.snmp.configuration.protocols.AuthenticationProtocol
+import com.mussonindustrial.embr.snmp.configuration.protocols.PrivacyProtocol
 
 interface SnmpV3DeviceSettings : SnmpDeviceSettings {
     val username: String
-    val authProtocol: TargetBuilder.AuthProtocol
-    val authPassword: String
-    val privacyProtocol: TargetBuilder.PrivProtocol
-    val privacyPassword: String
+    val authProtocol: AuthenticationProtocol
+    val authPassword: String?
+    val privacyProtocol: PrivacyProtocol
+    val privacyPassword: String?
 }

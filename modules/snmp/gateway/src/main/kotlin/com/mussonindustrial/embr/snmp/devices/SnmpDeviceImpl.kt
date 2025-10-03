@@ -2,7 +2,7 @@ package com.mussonindustrial.embr.snmp.devices
 
 import com.inductiveautomation.ignition.common.util.LoggerEx
 import com.mussonindustrial.embr.snmp.SnmpGatewayContext
-import com.mussonindustrial.embr.snmp.configuration.extensions.SnmpDeviceSettings
+import com.mussonindustrial.embr.snmp.configuration.settings.SnmpDeviceSettings
 import com.mussonindustrial.embr.snmp.opc.DeviceAddressSpace
 import com.mussonindustrial.embr.snmp.opc.DiagnosticAddressSpace
 import com.mussonindustrial.embr.snmp.opc.OidAddressSpace
@@ -31,11 +31,11 @@ class SnmpDeviceImpl<T : SnmpDeviceSettings>(override val context: SnmpContext<T
         LoggerEx.newBuilder()
             .mdcContext(
                 "device-name",
-                context.deviceContext.name,
+                context.deviceContext.getName(),
                 "device-type",
-                context.deviceConfig.type,
+                context.deviceSettings.type,
                 "hostname",
-                "${context.snmpConfig.connectivity.hostname}:${context.snmpConfig.connectivity.port}",
+                "${context.snmpSettings.hostname}:${context.snmpSettings.port}",
             )
             .build(SnmpDeviceImpl::class.java)
     val lifecycleManager = LifecycleManager()
@@ -104,7 +104,7 @@ class SnmpDeviceImpl<T : SnmpDeviceSettings>(override val context: SnmpContext<T
                     }
 
                     if (response.errorStatus == 0) {
-                        logger.trace("GET successful: {}", response.variableBindings)
+                        logger.trace("GET successful: ${response.variableBindings}")
                         response.variableBindings.forEach { binding ->
                             remaining[binding.oid]?.forEach {
                                 results[it] = binding.variable.toDataValue().toOidReadResult()
@@ -116,9 +116,7 @@ class SnmpDeviceImpl<T : SnmpDeviceSettings>(override val context: SnmpContext<T
                         if (errorIdx in 1..pdu.size()) {
                             val badOid = pdu.get(errorIdx - 1).oid
                             logger.debug(
-                                "GET failed at OID: {} (index {}), removing and retrying...",
-                                badOid,
-                                errorIdx,
+                                "GET failed at OID: $badOid (index ${errorIdx}), removing and retrying..."
                             )
                             val failedResults = remaining.remove(badOid)
                             failedResults?.forEach {
@@ -180,7 +178,7 @@ class SnmpDeviceImpl<T : SnmpDeviceSettings>(override val context: SnmpContext<T
     inner class Healthcheck : Lifecycle {
 
         private val taskOwner = "healthcheck"
-        private val taskName = context.deviceContext.name
+        private val taskName = context.deviceContext.getName()
 
         override fun startup() {
             if (!canDoHealthCheck()) {
@@ -192,7 +190,7 @@ class SnmpDeviceImpl<T : SnmpDeviceSettings>(override val context: SnmpContext<T
                 taskOwner,
                 taskName,
                 this::doHealthcheck,
-                context.snmpConfig.healthcheck.frequency!!,
+                context.snmpSettings.healthcheckFrequency!!,
                 TimeUnit.MILLISECONDS,
                 1000,
             )
@@ -203,13 +201,13 @@ class SnmpDeviceImpl<T : SnmpDeviceSettings>(override val context: SnmpContext<T
         }
 
         fun canDoHealthCheck(): Boolean {
-            context.snmpConfig.healthcheck.frequency.let {
+            context.snmpSettings.healthcheckFrequency.let {
                 if (it == null || it <= 0) {
                     return false
                 }
             }
 
-            context.snmpConfig.healthcheck.oid.let {
+            context.snmpSettings.healthcheckOid.let {
                 if (it == null || it.isEmpty()) {
                     return false
                 }

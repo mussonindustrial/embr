@@ -1,6 +1,5 @@
 package com.mussonindustrial.embr.snmp.configuration.protocols
 
-import com.inductiveautomation.ignition.gateway.dataroutes.openapi.annotations.Enumeration
 import org.snmp4j.security.Priv3DES
 import org.snmp4j.security.PrivAES128
 import org.snmp4j.security.PrivAES192
@@ -24,11 +23,5 @@ enum class PrivacyProtocol(
 
     override fun toString(): String {
         return prettyName
-    }
-
-    class Provider : Enumeration.Provider {
-        override fun values(): Array<out Any> {
-            return PrivacyProtocol.entries.toTypedArray()
-        }
     }
 }

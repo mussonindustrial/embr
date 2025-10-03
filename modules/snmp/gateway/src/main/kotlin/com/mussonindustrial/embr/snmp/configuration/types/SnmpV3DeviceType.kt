@@ -11,13 +11,12 @@ import com.mussonindustrial.embr.snmp.configuration.records.SnmpV3DeviceRecord
 import com.mussonindustrial.embr.snmp.configuration.settings.SnmpV3DeviceSettings
 import com.mussonindustrial.embr.snmp.devices.SnmpContext
 import com.mussonindustrial.embr.snmp.devices.SnmpDeviceImpl
+import org.snmp4j.DirectUserTarget
 import org.snmp4j.Snmp
-import org.snmp4j.Target
-import org.snmp4j.fluent.SnmpBuilder
-import org.snmp4j.mp.SnmpConstants
 import org.snmp4j.smi.Address
 import org.snmp4j.smi.GenericAddress
 import org.snmp4j.smi.OctetString
+import org.snmp4j.transport.DefaultUdpTransportMapping
 
 object SnmpV3DeviceType :
     DeviceType(
@@ -51,26 +50,26 @@ object SnmpV3DeviceType :
 
         val address: Address =
             GenericAddress.parse(("udp:" + snmpSettings.hostname + "/" + snmpSettings.port))
-        val securityName = OctetString(snmpSettings.username)
-        val authoritativeEngineId = byteArrayOf()
 
-        val builder = SnmpBuilder()
+        val authenticationPassphrase = snmpSettings.authPassword?.let { OctetString(it) }
 
-        val target: Target<Address> =
-            builder
-                .target(address)
-                .user(snmpSettings.username)
-                .auth(snmpSettings.authProtocol)
-                .authPassphrase(snmpSettings.authPassword)
-                .priv(snmpSettings.privacyProtocol)
-                .privPassphrase(snmpSettings.privacyPassword)
-                .done()
-                .build()
-                .apply { version = SnmpConstants.version3 }
+        val privacyPassphrase = snmpSettings.authPassword?.let { OctetString(it) }
+
+        val target =
+            DirectUserTarget(
+                    address,
+                    OctetString(snmpSettings.username),
+                    snmpSettings.authProtocol.mappedProtocol,
+                    authenticationPassphrase,
+                    snmpSettings.privacyProtocol.mappedProtocol,
+                    privacyPassphrase,
+                )
+                .apply { timeout = snmpSettings.timeout }
 
         override val readTarget = target
         override val writeTarget = target
 
-        override val snmp: Snmp = builder.udp().v3().usm().build()
+        val transportMapping = DefaultUdpTransportMapping()
+        override val snmp = Snmp(transportMapping)
     }
 }

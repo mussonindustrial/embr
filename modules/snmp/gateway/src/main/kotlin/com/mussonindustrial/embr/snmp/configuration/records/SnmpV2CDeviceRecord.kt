@@ -17,15 +17,19 @@ class SnmpV2CDeviceRecord : SnmpV2CDeviceSettings, PersistentRecord() {
 
         val HOSTNAME = StringField(META, "Hostname", SFieldFlags.SMANDATORY)
         val PORT = IntField(META, "Port", SFieldFlags.SMANDATORY).apply { default = 161 }
-        val TIMEOUT = IntField(META, "Timeout")
-        val COMMUNITY_READ =
-            StringField(META, "CommunityRead", SFieldFlags.SMANDATORY).apply { default = "public" }
-        val COMMUNITY_WRITE =
-            StringField(META, "CommunityWrite", SFieldFlags.SMANDATORY).apply { default = "public" }
-        val CATEGORY_NETWORK =
-            Category("SnmpV2CDeviceRecord.Network", 1001).apply {
+        val TIMEOUT = LongField(META, "Timeout", SFieldFlags.SMANDATORY).apply { default = 1000 }
+        val CATEGORY_CONNECTIVITY =
+            Category("SnmpV1DeviceRecord.Connectivity", 1001).apply {
                 include(HOSTNAME)
                 include(PORT)
+                include(TIMEOUT)
+            }
+
+        val COMMUNITY_READ =
+            StringField(META, "CommunityRead", SFieldFlags.SMANDATORY).apply { default = "public" }
+        val COMMUNITY_WRITE = StringField(META, "CommunityWrite").apply { default = "private" }
+        val CATEGORY_COMMUNITY =
+            Category("SnmpV1DeviceRecord.Community", 1001).apply {
                 include(COMMUNITY_READ)
                 include(COMMUNITY_WRITE)
             }
@@ -55,14 +59,17 @@ class SnmpV2CDeviceRecord : SnmpV2CDeviceSettings, PersistentRecord() {
     override val port: Int
         get() = getInt(PORT)
 
+    override val timeout: Long
+        get() = getLong(TIMEOUT)
+
     override val communityRead: String
         get() = getString(COMMUNITY_READ)
 
     override val communityWrite: String
         get() = getString(COMMUNITY_WRITE)
 
-    override val healthcheckFrequency: Long
-        get() = getLong(HEALTHCHECK_FREQUENCY)
+    override val healthcheckFrequency: Int
+        get() = getInt(HEALTHCHECK_FREQUENCY)
 
     override val healthcheckOid: String
         get() = getString(HEALTHCHECK_OID)
