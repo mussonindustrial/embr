@@ -20,7 +20,7 @@ class SnmpV3DeviceRecord : SnmpV3DeviceSettings, PersistentRecord() {
 
         val HOSTNAME = StringField(META, "Hostname", SFieldFlags.SMANDATORY)
         val PORT = IntField(META, "Port", SFieldFlags.SMANDATORY).apply { default = 161 }
-        val TIMEOUT = LongField(META, "Timeout", SFieldFlags.SMANDATORY).apply { default = 1000 }
+        val TIMEOUT = IntField(META, "Timeout", SFieldFlags.SMANDATORY).apply { default = 1000 }
         val CATEGORY_CONNECTIVITY =
             Category("SnmpV3DeviceRecord.Connectivity", 1001).apply {
                 include(HOSTNAME)
@@ -64,7 +64,7 @@ class SnmpV3DeviceRecord : SnmpV3DeviceSettings, PersistentRecord() {
                 default = "1.3.6.1.2.1.1.2.0"
             }
         val CATEGORY_HEALTHCHECK =
-            Category("SnmpV3DeviceRecord.Healthcheck", 1004, true).apply {
+            Category("SnmpV3DeviceRecord.Healthcheck", 1003, true).apply {
                 include(HEALTHCHECK_FREQUENCY)
                 include(HEALTHCHECK_OID)
             }
@@ -80,8 +80,8 @@ class SnmpV3DeviceRecord : SnmpV3DeviceSettings, PersistentRecord() {
     override val port: Int
         get() = getInt(PORT)
 
-    override val timeout: Long
-        get() = getLong(TIMEOUT)
+    override val timeout: Int
+        get() = getInt(TIMEOUT)
 
     override val healthcheckFrequency: Int
         get() = getInt(HEALTHCHECK_FREQUENCY)
@@ -95,12 +95,12 @@ class SnmpV3DeviceRecord : SnmpV3DeviceSettings, PersistentRecord() {
     override val authProtocol: AuthenticationProtocol
         get() = getEnum(AUTH_PROTOCOL)
 
-    override val authPassword: String
+    override val authPassword: String?
         get() = getString(AUTH_PASSWORD)
 
     override val privacyProtocol: PrivacyProtocol
         get() = getEnum(PRIVACY_PROTOCOL)
 
-    override val privacyPassword: String
+    override val privacyPassword: String?
         get() = getString(PRIVACY_PASSWORD)
 }

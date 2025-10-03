@@ -17,7 +17,7 @@ class SnmpV1DeviceRecord : SnmpV1DeviceSettings, PersistentRecord() {
 
         val HOSTNAME = StringField(META, "Hostname", SFieldFlags.SMANDATORY)
         val PORT = IntField(META, "Port", SFieldFlags.SMANDATORY).apply { default = 161 }
-        val TIMEOUT = LongField(META, "Timeout", SFieldFlags.SMANDATORY).apply { default = 1000 }
+        val TIMEOUT = IntField(META, "Timeout", SFieldFlags.SMANDATORY).apply { default = 1000 }
         val CATEGORY_CONNECTIVITY =
             Category("SnmpV1DeviceRecord.Connectivity", 1001).apply {
                 include(HOSTNAME)
@@ -29,7 +29,7 @@ class SnmpV1DeviceRecord : SnmpV1DeviceSettings, PersistentRecord() {
             StringField(META, "CommunityRead", SFieldFlags.SMANDATORY).apply { default = "public" }
         val COMMUNITY_WRITE = StringField(META, "CommunityWrite").apply { default = "private" }
         val CATEGORY_COMMUNITY =
-            Category("SnmpV1DeviceRecord.Community", 1001).apply {
+            Category("SnmpV1DeviceRecord.Community", 1002).apply {
                 include(COMMUNITY_READ)
                 include(COMMUNITY_WRITE)
             }
@@ -41,7 +41,7 @@ class SnmpV1DeviceRecord : SnmpV1DeviceSettings, PersistentRecord() {
                 default = "1.3.6.1.2.1.1.2.0"
             }
         val CATEGORY_HEALTHCHECK =
-            Category("SnmpV1DeviceRecord.Healthcheck", 1002, true).apply {
+            Category("SnmpV1DeviceRecord.Healthcheck", 1003, true).apply {
                 include(HEALTHCHECK_FREQUENCY)
                 include(HEALTHCHECK_OID)
             }
@@ -57,8 +57,8 @@ class SnmpV1DeviceRecord : SnmpV1DeviceSettings, PersistentRecord() {
     override val port: Int
         get() = getInt(PORT)
 
-    override val timeout: Long
-        get() = getLong(TIMEOUT)
+    override val timeout: Int
+        get() = getInt(TIMEOUT)
 
     override val communityRead: String
         get() = getString(COMMUNITY_READ)

@@ -14,7 +14,10 @@ import com.mussonindustrial.embr.snmp.configuration.types.SnmpV2CDeviceType
 import com.mussonindustrial.embr.snmp.configuration.types.SnmpV3DeviceType
 import java.util.concurrent.ThreadFactory
 import java.util.concurrent.atomic.AtomicInteger
-import org.snmp4j.security.*
+import org.snmp4j.security.SecurityModels
+import org.snmp4j.security.SecurityProtocols
+import org.snmp4j.security.USM
+import org.snmp4j.smi.OctetString
 
 class SnmpGatewayContext(private val context: GatewayContext) :
     EmbrGatewayContext by EmbrGatewayContextImpl(context) {
@@ -25,6 +28,17 @@ class SnmpGatewayContext(private val context: GatewayContext) :
     val deviceTypes = listOf(SnmpV1DeviceType, SnmpV2CDeviceType, SnmpV3DeviceType)
     private val records =
         listOf(SnmpV1DeviceRecord.META, SnmpV2CDeviceRecord.META, SnmpV3DeviceRecord.META)
+
+    val securityProtocols: SecurityProtocols =
+        SecurityProtocols.getInstance().apply {
+            addPredefinedProtocolSet(SecurityProtocols.SecurityProtocolSet.any)
+        }
+    val engineId: OctetString = OctetString.fromHexStringPairs("63707")
+    val usm =
+        USM(securityProtocols, engineId, 0).apply {
+            SecurityModels.getInstance().addSecurityModel(this)
+        }
+
     val snmpExecutionManager: ExecutionManager =
         context.createExecutionManager(
             "Embr SNMP Driver",

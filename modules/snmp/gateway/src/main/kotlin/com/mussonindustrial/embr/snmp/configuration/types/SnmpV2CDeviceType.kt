@@ -55,13 +55,13 @@ object SnmpV2CDeviceType :
         override val readTarget =
             CommunityTarget(address, OctetString(snmpSettings.communityRead)).apply {
                 version = SnmpConstants.version2c
-                timeout = snmpSettings.timeout
+                timeout = snmpSettings.timeout.toLong()
             }
         override val writeTarget =
             snmpSettings.communityWrite?.let {
                 CommunityTarget(address, OctetString(snmpSettings.communityWrite)).apply {
-                    version = SnmpConstants.version1
-                    timeout = snmpSettings.timeout
+                    version = SnmpConstants.version2c
+                    timeout = snmpSettings.timeout.toLong()
                 }
             }
 

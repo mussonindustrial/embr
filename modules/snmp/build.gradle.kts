@@ -6,7 +6,7 @@ ignitionModule {
     name.set("Embr SNMP Driver")
     moduleDescription.set("Driver for connecting to devices over SNMP.")
     id.set("com.mussonindustrial.embr.snmp")
-    fileName.set("Embr-SNMP-${version}.modl")
+    fileName.set("Embr-SNMP-Ignition81-${version}.modl")
     freeModule.set(true)
     requiredIgnitionVersion.set(libs.versions.ignition)
     license.set("license.html")

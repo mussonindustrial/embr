@@ -8,6 +8,7 @@ import org.eclipse.milo.opcua.stack.core.types.builtin.DataValue
 import org.eclipse.milo.opcua.stack.core.types.builtin.Variant
 import org.snmp4j.PDU
 import org.snmp4j.SNMP4JSettings
+import org.snmp4j.ScopedPDU
 import org.snmp4j.Snmp
 import org.snmp4j.Target
 import org.snmp4j.smi.Address
@@ -67,8 +68,19 @@ fun <A : Address> Target<A>.createSizeBoundedPDUs(
     bindings: List<VariableBinding>,
     configure: PDU.() -> Unit = {},
 ): List<PDU> {
+
+    val pduFactory =
+        when (this.version) {
+            3 -> {
+                { ScopedPDU() }
+            }
+            else -> {
+                { PDU() }
+            }
+        }
+
     val pdus = mutableListOf<PDU>()
-    var pdu = PDU().apply { configure(this) }
+    var pdu = pduFactory().apply { configure(this) }
 
     bindings.forEach { binding ->
         pdu.add(binding)
@@ -76,7 +88,7 @@ fun <A : Address> Target<A>.createSizeBoundedPDUs(
         if (pdu.berLength > maxSizeRequestPDU) {
             pdu.trim()
             pdus.add(pdu)
-            pdu = PDU().apply { configure(this) }
+            pdu = pduFactory().apply { configure(this) }
         }
     }
     if (pdu.size() > 0) {

@@ -53,7 +53,7 @@ object SnmpV3DeviceType :
 
         val authenticationPassphrase = snmpSettings.authPassword?.let { OctetString(it) }
 
-        val privacyPassphrase = snmpSettings.authPassword?.let { OctetString(it) }
+        val privacyPassphrase = snmpSettings.privacyPassword?.let { OctetString(it) }
 
         val target =
             DirectUserTarget(
@@ -64,7 +64,7 @@ object SnmpV3DeviceType :
                     snmpSettings.privacyProtocol.mappedProtocol,
                     privacyPassphrase,
                 )
-                .apply { timeout = snmpSettings.timeout }
+                .apply { timeout = snmpSettings.timeout.toLong() }
 
         override val readTarget = target
         override val writeTarget = target

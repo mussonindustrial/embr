@@ -17,9 +17,9 @@ class SnmpV2CDeviceRecord : SnmpV2CDeviceSettings, PersistentRecord() {
 
         val HOSTNAME = StringField(META, "Hostname", SFieldFlags.SMANDATORY)
         val PORT = IntField(META, "Port", SFieldFlags.SMANDATORY).apply { default = 161 }
-        val TIMEOUT = LongField(META, "Timeout", SFieldFlags.SMANDATORY).apply { default = 1000 }
+        val TIMEOUT = IntField(META, "Timeout", SFieldFlags.SMANDATORY).apply { default = 1000 }
         val CATEGORY_CONNECTIVITY =
-            Category("SnmpV1DeviceRecord.Connectivity", 1001).apply {
+            Category("SnmpV2CDeviceRecord.Connectivity", 1001).apply {
                 include(HOSTNAME)
                 include(PORT)
                 include(TIMEOUT)
@@ -29,21 +29,19 @@ class SnmpV2CDeviceRecord : SnmpV2CDeviceSettings, PersistentRecord() {
             StringField(META, "CommunityRead", SFieldFlags.SMANDATORY).apply { default = "public" }
         val COMMUNITY_WRITE = StringField(META, "CommunityWrite").apply { default = "private" }
         val CATEGORY_COMMUNITY =
-            Category("SnmpV1DeviceRecord.Community", 1001).apply {
+            Category("SnmpV2CDeviceRecord.Community", 1002).apply {
                 include(COMMUNITY_READ)
                 include(COMMUNITY_WRITE)
             }
 
         val HEALTHCHECK_FREQUENCY =
-            LongField(META, "HealthcheckFrequency", SFieldFlags.SMANDATORY).apply {
-                default = 10000
-            }
+            IntField(META, "HealthcheckFrequency", SFieldFlags.SMANDATORY).apply { default = 10000 }
         val HEALTHCHECK_OID =
             StringField(META, "HealthcheckOid", SFieldFlags.SMANDATORY).apply {
                 default = "1.3.6.1.2.1.1.2.0"
             }
         val CATEGORY_HEALTHCHECK =
-            Category("SnmpV2CDeviceRecord.Healthcheck", 1002, true).apply {
+            Category("SnmpV2CDeviceRecord.Healthcheck", 1003, true).apply {
                 include(HEALTHCHECK_FREQUENCY)
                 include(HEALTHCHECK_OID)
             }
@@ -59,8 +57,8 @@ class SnmpV2CDeviceRecord : SnmpV2CDeviceSettings, PersistentRecord() {
     override val port: Int
         get() = getInt(PORT)
 
-    override val timeout: Long
-        get() = getLong(TIMEOUT)
+    override val timeout: Int
+        get() = getInt(TIMEOUT)
 
     override val communityRead: String
         get() = getString(COMMUNITY_READ)
