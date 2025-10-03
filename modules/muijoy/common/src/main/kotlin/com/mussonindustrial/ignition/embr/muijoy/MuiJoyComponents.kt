@@ -2,13 +2,21 @@ package com.mussonindustrial.ignition.embr.muijoy
 
 import com.inductiveautomation.perspective.common.api.BrowserResource
 import com.mussonindustrial.ignition.embr.muijoy.Meta.SHORT_MODULE_ID
+import com.mussonindustrial.ignition.embr.muijoy.component.Slot
 import com.mussonindustrial.ignition.embr.muijoy.component.input.Button
 import com.mussonindustrial.ignition.embr.muijoy.component.input.ButtonGroup
-import com.mussonindustrial.ignition.embr.muijoy.component.input.Dropdown
-import com.mussonindustrial.ignition.embr.muijoy.component.input.Menu
-import com.mussonindustrial.ignition.embr.muijoy.component.input.MenuButton
-import com.mussonindustrial.ignition.embr.muijoy.component.input.MenuItem
-import com.mussonindustrial.ignition.embr.muijoy.component.input.Slot
+import com.mussonindustrial.ignition.embr.muijoy.component.input.Checkbox
+import com.mussonindustrial.ignition.embr.muijoy.component.input.FormControl
+import com.mussonindustrial.ignition.embr.muijoy.component.input.FormHelperText
+import com.mussonindustrial.ignition.embr.muijoy.component.input.FormLabel
+import com.mussonindustrial.ignition.embr.muijoy.component.input.Input
+import com.mussonindustrial.ignition.embr.muijoy.component.input.Radio
+import com.mussonindustrial.ignition.embr.muijoy.component.input.RadioGroup
+import com.mussonindustrial.ignition.embr.muijoy.component.input.Slider
+import com.mussonindustrial.ignition.embr.muijoy.component.nav.Dropdown
+import com.mussonindustrial.ignition.embr.muijoy.component.nav.Menu
+import com.mussonindustrial.ignition.embr.muijoy.component.nav.MenuButton
+import com.mussonindustrial.ignition.embr.muijoy.component.nav.MenuItem
 
 object MuiJoyComponents {
 
@@ -28,5 +36,22 @@ object MuiJoyComponents {
     val BROWSER_RESOURCES = mutableSetOf(JS_RESOURCE, CSS_RESOURCE)
     val REQUIRED_RESOURCES = mutableSetOf(JS_RESOURCE, CSS_RESOURCE)
 
-    val components = listOf(Button, ButtonGroup, Dropdown, Menu, MenuButton, MenuItem, Slot)
+    val components =
+        listOf(
+            Button,
+            ButtonGroup,
+            Checkbox,
+            Dropdown,
+            FormControl,
+            FormHelperText,
+            FormLabel,
+            Input,
+            Menu,
+            MenuButton,
+            MenuItem,
+            Radio,
+            RadioGroup,
+            Slider,
+            Slot,
+        )
 }

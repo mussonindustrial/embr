@@ -4,10 +4,10 @@ plugins {
 }
 
 ignitionModule {
-    name.set("Embr MUI Joy")
-    moduleDescription.set("MUI Joy components Perspective.")
+    name.set("Embr Mui Joy")
+    moduleDescription.set("Mui Joy components Perspective.")
     id.set("com.mussonindustrial.embr.muijoy")
-    fileName.set("Embr-MUIJoy-Ignition83-${version}.modl")
+    fileName.set("Embr-MuiJoy-Ignition83-${version}.modl")
     freeModule.set(true)
     requiredIgnitionVersion.set("8.3.0")
     license.set("license.html")

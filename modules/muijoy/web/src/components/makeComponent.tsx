@@ -27,7 +27,7 @@ import {
   MuiJoyComponentMeta,
   MuiJoyComponentStoreDelegate,
 } from './MuiJoyComponent'
-import { PropsDecorator } from '../utilities'
+import { EmitterExtender } from '../utilities/EmitterExtender'
 
 export type BaseComponentProps = PlainObject & {
   events: ComponentEvents & {
@@ -41,7 +41,10 @@ export type BaseComponentProps = PlainObject & {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function makeComponent<C extends React.ComponentType<any>>(
   type: string,
-  componentType: C
+  componentType: C,
+  propOverrides?: (
+    props: ComponentProps<React.ComponentProps<C> & BaseComponentProps>
+  ) => Partial<React.ComponentProps<C>>
 ): MuijoyComponent {
   type ThisComponentProps = React.ComponentProps<C> & BaseComponentProps
 
@@ -53,6 +56,8 @@ export function makeComponent<C extends React.ComponentType<any>>(
         getScriptTransform(props, props.store),
       ]) as ThisComponentProps
     }, [props.props])
+
+    const overrides = propOverrides?.(props)
 
     // Register the component with the component delegate
     useEffect(() => {
@@ -77,10 +82,10 @@ export function makeComponent<C extends React.ComponentType<any>>(
     const [, forceUpdate] = React.useReducer((x) => x + 1, 0)
     useEffect(() => {
       const disposers = slotChildren.map((child) => {
-        let previousName = child.props.readStringIfExists('name')
+        let previousName = child.props.readStringIfExists('slotName')
 
         return child.props.subscribe(() => {
-          const name = child.props.readStringIfExists('name')
+          const name = child.props.readStringIfExists('slotName')
           if (name != previousName) {
             console.log(
               `forcing update because ${child.addressPathString} slot named has changed`
@@ -101,11 +106,13 @@ export function makeComponent<C extends React.ComponentType<any>>(
         return
       }
 
+      child.emitterFactory()
+
       const Component = child.getComponent()
       slotProps[name] = (
-        <PropsDecorator key={child.addressPathString}>
+        <EmitterExtender componentStore={child} key={child.addressPathString}>
           <Component layout={layoutCallbackCreator.forStyle(() => ({}))} />
-        </PropsDecorator>
+        </EmitterExtender>
       )
     })
 
@@ -115,12 +122,12 @@ export function makeComponent<C extends React.ComponentType<any>>(
 
     const componentProps = {
       ...transformedProps,
-      ...props.emit({}, true),
+      ...props.emit({
+        classes: ['MuiJoy'],
+      }),
       ...slotProps,
-      forwardRef: ref,
+      ...overrides,
     }
-
-    console.log(props.props, transformedProps, componentProps)
 
     return createElement(
       componentType,
@@ -128,10 +135,15 @@ export function makeComponent<C extends React.ComponentType<any>>(
       ...nonSlotChildren.map((child) => {
         const Component = child.getComponent()
         return (
-          <PropsDecorator key={child.addressPathString}>
+          <EmitterExtender componentStore={child} key={child.addressPathString}>
             <Component layout={layoutCallbackCreator.forStyle(() => ({}))} />
-          </PropsDecorator>
+          </EmitterExtender>
         )
+        // return (
+        //   <PropsDecorator key={child.addressPathString}>
+        //     <Component layout={layoutCallbackCreator.forStyle(() => ({}))} />
+        //   </PropsDecorator>
+        // )
       })
     )
   }
