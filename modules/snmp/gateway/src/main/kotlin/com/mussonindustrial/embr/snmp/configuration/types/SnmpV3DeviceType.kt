@@ -7,6 +7,8 @@ import com.inductiveautomation.ignition.gateway.opcua.server.api.Device
 import com.inductiveautomation.ignition.gateway.opcua.server.api.DeviceContext
 import com.inductiveautomation.ignition.gateway.opcua.server.api.DeviceSettingsRecord
 import com.inductiveautomation.ignition.gateway.opcua.server.api.DeviceType
+import com.mussonindustrial.embr.snmp.configuration.protocols.AuthenticationProtocol
+import com.mussonindustrial.embr.snmp.configuration.protocols.PrivacyProtocol
 import com.mussonindustrial.embr.snmp.configuration.records.SnmpV3DeviceRecord
 import com.mussonindustrial.embr.snmp.configuration.settings.SnmpV3DeviceSettings
 import com.mussonindustrial.embr.snmp.devices.SnmpContext
@@ -51,9 +53,15 @@ object SnmpV3DeviceType :
         val address: Address =
             GenericAddress.parse(("udp:" + snmpSettings.hostname + "/" + snmpSettings.port))
 
-        val authenticationPassphrase = snmpSettings.authPassword?.let { OctetString(it) }
+        val authenticationPassphrase =
+            snmpSettings.authPassword
+                ?.takeIf { snmpSettings.authProtocol != AuthenticationProtocol.NONE }
+                ?.let { OctetString(it) }
 
-        val privacyPassphrase = snmpSettings.privacyPassword?.let { OctetString(it) }
+        val privacyPassphrase =
+            snmpSettings.privacyPassword
+                ?.takeIf { snmpSettings.privacyProtocol != PrivacyProtocol.NONE }
+                ?.let { OctetString(it) }
 
         val target =
             DirectUserTarget(
