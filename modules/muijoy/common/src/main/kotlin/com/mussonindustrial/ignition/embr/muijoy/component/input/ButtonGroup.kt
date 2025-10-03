@@ -23,7 +23,7 @@ class ButtonGroup {
 
         override val descriptor: ComponentDescriptor =
             ComponentDescriptorImpl.ComponentBuilder.newBuilder()
-                .setPaletteCategory("MUI Joy")
+                .setPaletteCategory("Mui Joy Input")
                 .setId(id)
                 .setModuleId(Meta.MODULE_ID)
                 .setSchema(schema)

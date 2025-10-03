@@ -52,7 +52,9 @@ export class MuiJoyComponentMeta implements ComponentMeta {
   }
 
   getPropsReducer(tree: PropertyTree) {
-    return tree.readObject('')
+    const fullTree = tree.readObject('')
+    delete fullTree['style']
+    return fullTree
   }
 
   createDelegate(
