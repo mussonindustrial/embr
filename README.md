@@ -24,13 +24,13 @@
 
 <div align="center">
   
-| Module                                          | Description                                                                           | Release Notes                                                                                                                                                                       |
-|-------------------------------------------------|---------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| [embr-charts](modules/charts/README.md)         | A collection of enhanced Perspective charting components.                             | [![version](https://img.shields.io/github/package-json/v/mussonindustrial/embr?filename=modules%2Fcharts%2Fpackage.json&style=for-the-badge)](modules/charts/CHANGELOG.md)          |
+| Module                                          | Description                                                                          | Release Notes                                                                                                                                                                       |
+|-------------------------------------------------|--------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| [embr-charts](modules/charts/README.md)         | A collection of enhanced Perspective charting components.                            | [![version](https://img.shields.io/github/package-json/v/mussonindustrial/embr?filename=modules%2Fcharts%2Fpackage.json&style=for-the-badge)](modules/charts/CHANGELOG.md)          |
 | [embr-sse](modules/sse/README.md)               | Provides an API for high-speed streaming of tag changes via SSE (server-sent events). | [![version](https://img.shields.io/github/package-json/v/mussonindustrial/embr?filename=modules%2Fsse%2Fpackage.json&style=for-the-badge)](modules/sse/CHANGELOG.md)                |
-| [embr-periscope](modules/periscope/README.md)   | Design extensions and enhancements for Perspective.                                   | [![version](https://img.shields.io/github/package-json/v/mussonindustrial/embr?filename=modules%2Fperiscope%2Fpackage.json&style=for-the-badge)](modules/event-stream/CHANGELOG.md) |
-| [embr-thermodynamics](modules/thermo/README.md) | Scripting functions for computing thermodynamic properties.                           | [![version](https://img.shields.io/github/package-json/v/mussonindustrial/embr?filename=modules%2Fthermo%2Fpackage.json&style=for-the-badge)](modules/thermo/CHANGELOG.md)          |
-
+| [embr-periscope](modules/periscope/README.md)   | Design extensions and enhancements for Perspective.                                  | [![version](https://img.shields.io/github/package-json/v/mussonindustrial/embr?filename=modules%2Fperiscope%2Fpackage.json&style=for-the-badge)](modules/event-stream/CHANGELOG.md) |
+| [embr-thermodynamics](modules/thermo/README.md) | Scripting functions for computing thermodynamic properties. | [![version](https://img.shields.io/github/package-json/v/mussonindustrial/embr?filename=modules%2Fthermo%2Fpackage.json&style=for-the-badge)](modules/thermo/CHANGELOG.md)          |
+| [embr-snmp](modules/snmp/README.md)| Provides a set of OPC UA device drivers for SNMPv1, SNMPv2c, and SNMPv3| [![version](https://img.shields.io/github/package-json/v/mussonindustrial/embr?filename=modules%2Fsnmp%2Fpackage.json&style=for-the-badge)](modules/snmp/CHANGELOG.md)|
 </div>
 
 ## Install / Build
