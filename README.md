@@ -37,8 +37,9 @@
 | [SSE](modules/sse/README.md)               | Provides an API for high-speed streaming of tag changes via SSE (server-sent events). | [![version](https://img.shields.io/github/package-json/v/mussonindustrial/embr/8.3%2Fmain?filename=modules%2Fsse%2Fpackage.json&style=for-the-badge&label=version)](modules/sse/CHANGELOG.md)                |
 | [Periscope](modules/periscope/README.md)   | Design extensions and enhancements for Perspective.                                   | [![version](https://img.shields.io/github/package-json/v/mussonindustrial/embr/8.3%2Fmain?filename=modules%2Fperiscope%2Fpackage.json&style=for-the-badge&label=version)](modules/event-stream/CHANGELOG.md) |
 | [Thermodynamics](modules/thermo/README.md) | Scripting functions for computing thermodynamic properties.                           | [![version](https://img.shields.io/github/package-json/v/mussonindustrial/embr/8.3%2Fmain?filename=modules%2Fthermo%2Fpackage.json&style=for-the-badge&label=version)](modules/thermo/CHANGELOG.md)          |
+| [SNMP](modules/snmp/README.md)| Provides a set of OPC UA device drivers for SNMPv1, SNMPv2c, and SNMPv3 devices.| [![version](https://img.shields.io/github/package-json/v/mussonindustrial/embr/8.3%2main?filename=modules%2Fsnmp%2Fpackage.json&style=for-the-badge)](modules/snmp/CHANGELOG.md)|
 
-</div>
+</div>s
 
 
 ## Build
