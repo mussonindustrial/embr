@@ -56,12 +56,12 @@ object SnmpV3DeviceType :
 
         val authenticationPassphrase =
             snmpSettings.authPassword
-                ?.takeIf { snmpSettings.authProtocol != AuthenticationProtocol.NONE }
+                ?.takeIf { snmpSettings.authProtocol != AuthenticationProtocol.None }
                 ?.let { OctetString(it) }
 
         val privacyPassphrase =
             snmpSettings.privacyPassword
-                ?.takeIf { snmpSettings.privacyProtocol != PrivacyProtocol.NONE }
+                ?.takeIf { snmpSettings.privacyProtocol != PrivacyProtocol.None }
                 ?.let { OctetString(it) }
 
         val target =
