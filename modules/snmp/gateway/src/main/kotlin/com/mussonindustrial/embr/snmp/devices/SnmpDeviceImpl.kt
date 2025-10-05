@@ -11,7 +11,6 @@ import com.mussonindustrial.embr.snmp.requests.OidWriteResult
 import com.mussonindustrial.embr.snmp.requests.toOidReadResult
 import com.mussonindustrial.embr.snmp.requests.toOidWriteResult
 import com.mussonindustrial.embr.snmp.utils.addLifecycle
-import com.mussonindustrial.embr.snmp.utils.createPDU
 import com.mussonindustrial.embr.snmp.utils.createSizeBoundedPDUs
 import com.mussonindustrial.embr.snmp.utils.toDataValue
 import java.util.concurrent.TimeUnit
@@ -22,7 +21,6 @@ import org.eclipse.milo.opcua.stack.core.StatusCodes
 import org.eclipse.milo.opcua.stack.core.types.builtin.DataValue
 import org.eclipse.milo.opcua.stack.core.types.builtin.StatusCode
 import org.snmp4j.PDU
-import org.snmp4j.Target
 import org.snmp4j.smi.OID
 import org.snmp4j.smi.VariableBinding
 
@@ -85,7 +83,10 @@ class SnmpDeviceImpl<T : SnmpDeviceConfig>(override val context: SnmpContext<T>)
         while (remaining.isNotEmpty()) {
 
             val pdus =
-                context.readTarget.createSizeBoundedPDUs(remaining.flatMap { it.value }) {
+                context.readTarget.createSizeBoundedPDUs(
+                    context.pduFactory,
+                    remaining.flatMap { it.value },
+                ) {
                     type = PDU.GET
                 }
 
@@ -147,7 +148,7 @@ class SnmpDeviceImpl<T : SnmpDeviceConfig>(override val context: SnmpContext<T>)
             }
 
             val pdu =
-                (context.writeTarget as Target<out Any?>).createPDU().apply {
+                context.pduFactory.createPDU(context.writeTarget).apply {
                     type = PDU.SET
                     add(it)
                 }
