@@ -19,6 +19,7 @@ import org.snmp4j.smi.Address
 import org.snmp4j.smi.GenericAddress
 import org.snmp4j.smi.OctetString
 import org.snmp4j.transport.DefaultUdpTransportMapping
+import org.snmp4j.util.DefaultPDUFactory
 
 object SnmpV3DeviceType :
     DeviceType(
@@ -77,6 +78,7 @@ object SnmpV3DeviceType :
         override val readTarget = target
         override val writeTarget = target
 
+        override val pduFactory = DefaultPDUFactory()
         val transportMapping = DefaultUdpTransportMapping()
         override val snmp = Snmp(transportMapping)
     }

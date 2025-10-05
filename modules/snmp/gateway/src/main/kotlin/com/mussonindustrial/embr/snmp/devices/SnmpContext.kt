@@ -6,6 +6,7 @@ import com.mussonindustrial.embr.snmp.configuration.settings.SnmpDeviceSettings
 import org.snmp4j.Snmp
 import org.snmp4j.Target
 import org.snmp4j.smi.Address
+import org.snmp4j.util.PDUFactory
 
 interface SnmpContext<T : SnmpDeviceSettings> {
     val deviceContext: DeviceContext
@@ -14,5 +15,6 @@ interface SnmpContext<T : SnmpDeviceSettings> {
 
     val readTarget: Target<Address>
     val writeTarget: Target<Address>?
+    val pduFactory: PDUFactory
     val snmp: Snmp
 }
