@@ -1,6 +1,5 @@
 package com.mussonindustrial.embr.snmp.devices
 
-import com.inductiveautomation.ignition.common.util.LoggerEx
 import com.mussonindustrial.embr.snmp.SnmpGatewayContext
 import com.mussonindustrial.embr.snmp.configuration.extensions.SnmpDeviceConfig
 import com.mussonindustrial.embr.snmp.opc.DeviceAddressSpace
@@ -67,12 +66,12 @@ class SnmpDeviceImpl<T : SnmpDeviceConfig>(override val context: SnmpContext<T>)
     }
 
     override fun startup() {
-        logger.debug("Starting up...")
+        context.logger.debug("Starting up...")
         lifecycleManager.startup()
     }
 
     override fun shutdown() {
-        logger.debug("Shutting down...")
+        context.logger.debug("Shutting down...")
         lifecycleManager.shutdown()
     }
 
@@ -94,14 +93,14 @@ class SnmpDeviceImpl<T : SnmpDeviceConfig>(override val context: SnmpContext<T>)
                 try {
                     val response = context.snmp.send(pdu, context.readTarget).response
                     if (response == null) {
-                        logger.warn("GET failed: no response.")
+                        context.logger.warn("GET failed: no response.")
                         return reads.map {
                             DataValue(StatusCodes.Bad_CommunicationError).toOidReadResult()
                         }
                     }
 
                     if (response.errorStatus == 0) {
-                        logger.trace("GET successful: ${response.variableBindings}")
+                        context.logger.trace("GET successful: ${response.variableBindings}")
                         response.variableBindings.forEach { binding ->
                             remaining[binding.oid]?.forEach {
                                 results[it] = binding.variable.toDataValue().toOidReadResult()
@@ -112,8 +111,8 @@ class SnmpDeviceImpl<T : SnmpDeviceConfig>(override val context: SnmpContext<T>)
                         val errorIdx = response.errorIndex
                         if (errorIdx in 1..pdu.size()) {
                             val badOid = pdu.get(errorIdx - 1).oid
-                            logger.debug(
-                                "GET failed at OID: $badOid (index $errorIdx), removing and retrying..."
+                            context.logger.debug(
+                                "GET failed at OID: $badOid (index ${errorIdx}), removing and retrying..."
                             )
                             val failedResults = remaining.remove(badOid)
                             failedResults?.forEach {
@@ -121,7 +120,7 @@ class SnmpDeviceImpl<T : SnmpDeviceConfig>(override val context: SnmpContext<T>)
                                     DataValue(StatusCodes.Bad_NodeIdUnknown).toOidReadResult()
                             }
                         } else {
-                            logger.warn(
+                            context.logger.warn(
                                 "GET failed with errorStatusText: ${response.errorStatusText}"
                             )
                             return reads.map {
@@ -130,7 +129,7 @@ class SnmpDeviceImpl<T : SnmpDeviceConfig>(override val context: SnmpContext<T>)
                         }
                     }
                 } catch (e: Exception) {
-                    logger.warn("GET failed with exception", e)
+                    context.logger.warn("GET failed with exception", e)
                     return reads.map {
                         DataValue(StatusCodes.Bad_CommunicationError).toOidReadResult()
                     }
@@ -156,7 +155,7 @@ class SnmpDeviceImpl<T : SnmpDeviceConfig>(override val context: SnmpContext<T>)
             try {
                 val response = context.snmp.send(pdu, context.writeTarget).response
                 if (response == null) {
-                    logger.warn("SET failed: no response.")
+                    context.logger.warn("SET failed: no response.")
                     return@map StatusCode(StatusCodes.Bad_CommunicationError).toOidWriteResult()
                 }
 
@@ -166,7 +165,7 @@ class SnmpDeviceImpl<T : SnmpDeviceConfig>(override val context: SnmpContext<T>)
                     return@map StatusCode.BAD.toOidWriteResult()
                 }
             } catch (e: Exception) {
-                logger.warn("SET failed with exception", e)
+                context.logger.warn("SET failed with exception", e)
                 return@map StatusCode(StatusCodes.Bad_CommunicationError).toOidWriteResult()
             }
         }
@@ -179,15 +178,17 @@ class SnmpDeviceImpl<T : SnmpDeviceConfig>(override val context: SnmpContext<T>)
 
         override fun startup() {
             if (!canDoHealthCheck()) {
+                context.logger.debug("Health check disabled, skipping scheduling...")
                 status = SnmpDevice.Status.UNKNOWN
                 return
             }
 
+            context.logger.debug("Starting health check...")
             SnmpGatewayContext.instance.snmpExecutionManager.registerAtFixedRateWithInitialDelay(
                 taskOwner,
                 taskName,
                 this::doHealthcheck,
-                context.snmpConfig.healthcheck.frequency!!,
+                context.snmpSettings.healthcheckFrequency ?: 10000,
                 TimeUnit.MILLISECONDS,
                 1000,
             )
@@ -214,13 +215,15 @@ class SnmpDeviceImpl<T : SnmpDeviceConfig>(override val context: SnmpContext<T>)
         }
 
         private fun doHealthcheck() {
+            context.logger.trace("Starting health check.")
             if (!canDoHealthCheck()) {
                 status = SnmpDevice.Status.UNKNOWN
                 return
             }
 
-            val response = read(listOf(VariableBinding(OID(context.snmpConfig.healthcheck.oid))))
-            val isGood = response.first().value.statusCode.isGood
+            val response = read(listOf(VariableBinding(OID(context.snmpSettings.healthcheckOid))))
+            val isGood = response.first().value.statusCode?.isGood
+            context.logger.trace("Health check result: $isGood")
 
             status =
                 if (isGood) {

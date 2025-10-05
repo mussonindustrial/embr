@@ -55,11 +55,9 @@ class DiagnosticAddressSpace(device: SnmpDeviceImpl<*>) :
 
         addDiagnosticNode(
             diagnosticsFolder,
-            "Hostname",
-            NodeIds.String,
-            AttributeFilters.getValue {
-                DataValue(Variant(device.context.snmpConfig.connectivity.hostname))
-            },
+            "Address",
+            Identifiers.String,
+            AttributeFilters.getValue { DataValue(Variant(device.context.snmpSettings.address)) },
         )
         addDiagnosticNode(
             diagnosticsFolder,

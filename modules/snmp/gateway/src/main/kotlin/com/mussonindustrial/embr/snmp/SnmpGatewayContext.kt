@@ -9,6 +9,7 @@ import com.mussonindustrial.embr.gateway.EmbrGatewayContext
 import com.mussonindustrial.embr.gateway.EmbrGatewayContextImpl
 import java.util.concurrent.ThreadFactory
 import java.util.concurrent.atomic.AtomicInteger
+import org.snmp4j.SNMP4JSettings
 import org.snmp4j.security.SecurityModels
 import org.snmp4j.security.SecurityProtocols
 import org.snmp4j.security.USM
@@ -18,6 +19,9 @@ class SnmpGatewayContext(private val context: GatewayContext) :
     EmbrGatewayContext by EmbrGatewayContextImpl(context) {
     companion object {
         lateinit var instance: SnmpGatewayContext
+
+        // Musson Industrial's Private Enterprise Number (PEN)
+        // See https://www.iana.org/assignments/enterprise-numbers/ for more information.
         const val PRIVATE_ENTERPRISE_NUMBER = 63707
     }
 
@@ -29,7 +33,7 @@ class SnmpGatewayContext(private val context: GatewayContext) :
         SecurityProtocols.getInstance().apply {
             addPredefinedProtocolSet(SecurityProtocols.SecurityProtocolSet.any)
         }
-    val engineId: OctetString = OctetString.fromHexStringPairs("63707")
+    val engineId: OctetString = OctetString.fromHexStringPairs(PRIVATE_ENTERPRISE_NUMBER.toString())
     val usm =
         USM(securityProtocols, engineId, 0).apply {
             SecurityModels.getInstance().addSecurityModel(this)
@@ -49,15 +53,7 @@ class SnmpGatewayContext(private val context: GatewayContext) :
 
     init {
         instance = this
-
         SNMP4JSettings.setEnterpriseID(PRIVATE_ENTERPRISE_NUMBER)
-
-        securityProtocols.addPredefinedProtocolSet(SecurityProtocols.SecurityProtocolSet.any)
-        usm =
-            USM(securityProtocols, OctetString(MPv3.createLocalEngineID()), 0).apply {
-                isEngineDiscoveryEnabled = true
-            }
-        securityModels.addSecurityModel(usm)
     }
 
     override fun getHealthCheckRegistry(): HealthCheckRegistry? {
