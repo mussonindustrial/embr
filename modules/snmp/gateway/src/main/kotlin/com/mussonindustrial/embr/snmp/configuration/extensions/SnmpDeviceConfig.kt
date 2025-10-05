@@ -33,7 +33,7 @@ data class SnmpConnectivityConfig(
     @DefaultValue("1000")
     @FormField(FormFieldType.NUMBER)
     @Required
-    val timeout: Long,
+    val timeout: Int,
 ) {
     fun validate(errors: ValidationErrors.Builder) =
         errors.apply {

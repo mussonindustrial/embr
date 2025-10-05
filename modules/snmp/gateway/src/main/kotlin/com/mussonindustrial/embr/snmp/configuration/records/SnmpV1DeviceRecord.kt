@@ -23,7 +23,7 @@ class SnmpV1DeviceRecord : PersistentRecord() {
         val COMMUNITY_READ = StringField(META, "CommunityRead")
         val COMMUNITY_WRITE = StringField(META, "CommunityWrite")
 
-        val HEALTHCHECK_FREQUENCY = LongField(META, "HealthcheckFrequency")
+        val HEALTHCHECK_FREQUENCY = IntField(META, "HealthcheckFrequency")
         val HEALTHCHECK_OID = StringField(META, "HealthcheckOid")
     }
 

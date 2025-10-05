@@ -12,6 +12,8 @@ import com.inductiveautomation.ignition.gateway.opcua.server.api.DeviceSettingsR
 import com.inductiveautomation.ignition.gateway.web.nav.ExtensionPointResourceForm
 import com.inductiveautomation.ignition.gateway.web.nav.WebUiComponent
 import com.mussonindustrial.embr.gateway.secrets.getAsString
+import com.mussonindustrial.embr.snmp.configuration.protocols.AuthenticationProtocol
+import com.mussonindustrial.embr.snmp.configuration.protocols.PrivacyProtocol
 import com.mussonindustrial.embr.snmp.devices.SnmpContext
 import com.mussonindustrial.embr.snmp.devices.SnmpDeviceImpl
 import java.util.*
@@ -21,6 +23,7 @@ import org.snmp4j.smi.Address
 import org.snmp4j.smi.GenericAddress
 import org.snmp4j.smi.OctetString
 import org.snmp4j.transport.DefaultUdpTransportMapping
+import org.snmp4j.util.DefaultPDUFactory
 
 @Suppress("DEPRECATION")
 private typealias SnmpV3DeviceRecord =
@@ -105,13 +108,14 @@ object SnmpV3ExtensionPoint :
             )
 
         val authenticationPassphrase =
-            snmpConfig.security.authentication.password?.let {
-                OctetString(deviceContext.gatewayContext.getAsString(it))
-            }
+            snmpConfig.security.authentication.password
+                ?.takeIf { snmpConfig.security.authentication.protocol != AuthenticationProtocol.None }
+                ?.let { OctetString(deviceContext.gatewayContext.getAsString(it)) }
+
         val privacyPassphrase =
-            snmpConfig.security.privacy.password?.let {
-                OctetString(deviceContext.gatewayContext.getAsString(it))
-            }
+            snmpConfig.security.privacy.password
+                ?.takeIf { snmpConfig.security.privacy.protocol != PrivacyProtocol.None }
+                ?.let { OctetString(deviceContext.gatewayContext.getAsString(it)) }
 
         val target =
             DirectUserTarget(
@@ -122,11 +126,12 @@ object SnmpV3ExtensionPoint :
                     snmpConfig.security.privacy.protocol.mappedProtocol,
                     privacyPassphrase,
                 )
-                .apply { timeout = snmpConfig.connectivity.timeout }
+                .apply { timeout = snmpConfig.connectivity.timeout.toLong() }
 
         override val readTarget = target
         override val writeTarget = target
 
+        override val pduFactory = DefaultPDUFactory()
         val transportMapping = DefaultUdpTransportMapping()
         override val snmp = Snmp(transportMapping)
     }

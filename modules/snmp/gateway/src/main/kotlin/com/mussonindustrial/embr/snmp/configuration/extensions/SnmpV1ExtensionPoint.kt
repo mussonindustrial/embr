@@ -17,6 +17,7 @@ import org.snmp4j.smi.Address
 import org.snmp4j.smi.GenericAddress
 import org.snmp4j.smi.OctetString
 import org.snmp4j.transport.DefaultUdpTransportMapping
+import org.snmp4j.util.DefaultPDUFactory
 
 @Suppress("DEPRECATION")
 private typealias SnmpV1DeviceRecord =
@@ -101,16 +102,17 @@ object SnmpV1ExtensionPoint :
         override val readTarget =
             CommunityTarget(address, OctetString(snmpConfig.community.read)).apply {
                 version = SnmpConstants.version1
-                timeout = snmpConfig.connectivity.timeout
+                timeout = snmpConfig.connectivity.timeout.toLong()
             }
         override val writeTarget =
             snmpConfig.community.write?.let {
                 CommunityTarget(address, OctetString(it)).apply {
                     version = SnmpConstants.version1
-                    timeout = snmpConfig.connectivity.timeout
+                    timeout = snmpConfig.connectivity.timeout.toLong()
                 }
             }
 
+        override val pduFactory = DefaultPDUFactory()
         val transportMapping = DefaultUdpTransportMapping()
         override val snmp = Snmp(transportMapping)
     }
