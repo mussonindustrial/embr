@@ -1,8 +1,7 @@
 package com.mussonindustrial.embr.snmp.configuration.settings
 
 interface SnmpDeviceSettings {
-    val hostname: String
-    val port: Int
+    val address: String
     val timeout: Int
     val healthcheckFrequency: Int?
     val healthcheckOid: String?

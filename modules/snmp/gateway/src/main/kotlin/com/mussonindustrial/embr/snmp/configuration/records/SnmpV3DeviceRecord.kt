@@ -18,13 +18,11 @@ class SnmpV3DeviceRecord : SnmpV3DeviceSettings, PersistentRecord() {
             ReferenceField(META, DeviceSettingsRecord.META, "DeviceSettings", DEVICE_SETTINGS_ID)
                 .apply { formMeta.isVisible = false }
 
-        val HOSTNAME = StringField(META, "Hostname", SFieldFlags.SMANDATORY)
-        val PORT = IntField(META, "Port", SFieldFlags.SMANDATORY).apply { default = 161 }
+        val ADDRESS = StringField(META, "Address", SFieldFlags.SMANDATORY)
         val TIMEOUT = IntField(META, "Timeout", SFieldFlags.SMANDATORY).apply { default = 1000 }
         val CATEGORY_CONNECTIVITY =
             Category("SnmpV3DeviceRecord.Connectivity", 1001).apply {
-                include(HOSTNAME)
-                include(PORT)
+                include(ADDRESS)
                 include(TIMEOUT)
             }
 
@@ -78,11 +76,8 @@ class SnmpV3DeviceRecord : SnmpV3DeviceSettings, PersistentRecord() {
         return META
     }
 
-    override val hostname: String
-        get() = getString(HOSTNAME)
-
-    override val port: Int
-        get() = getInt(PORT)
+    override val address: String
+        get() = getString(ADDRESS)
 
     override val timeout: Int
         get() = getInt(TIMEOUT)

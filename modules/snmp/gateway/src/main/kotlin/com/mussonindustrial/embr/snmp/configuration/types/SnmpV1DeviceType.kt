@@ -17,6 +17,7 @@ import org.snmp4j.mp.SnmpConstants
 import org.snmp4j.smi.Address
 import org.snmp4j.smi.GenericAddress
 import org.snmp4j.smi.OctetString
+import org.snmp4j.transport.DefaultTcpTransportMapping
 import org.snmp4j.transport.DefaultUdpTransportMapping
 import org.snmp4j.util.DefaultPDUFactory
 
@@ -31,7 +32,6 @@ object SnmpV1DeviceType :
     override fun createDevice(context: DeviceContext, settings: DeviceSettingsRecord): Device {
         val snmpSettings =
             findProfileSettingsRecord<SnmpV1DeviceRecord>(context.getGatewayContext(), settings)
-
         val snmpContext = Context(context, settings, snmpSettings)
         return SnmpDeviceImpl(snmpContext)
     }
@@ -51,7 +51,11 @@ object SnmpV1DeviceType :
     ) : SnmpContext<SnmpV1DeviceSettings> {
 
         val address: Address =
-            GenericAddress.parse(("udp:" + snmpSettings.hostname + "/" + snmpSettings.port))
+            GenericAddress.parse(snmpSettings.address)
+                ?: let {
+                    logger.error("Failed to parse address ${snmpSettings.address}.")
+                    GenericAddress.parse("udp:0.0.0.0/161")
+                }
 
         override val readTarget =
             CommunityTarget(address, OctetString(snmpSettings.communityRead)).apply {
@@ -67,7 +71,9 @@ object SnmpV1DeviceType :
             }
 
         override val pduFactory = DefaultPDUFactory()
-        val transportMapping = DefaultUdpTransportMapping()
-        override val snmp = Snmp(transportMapping)
+        override val snmp =
+            Snmp(DefaultUdpTransportMapping()).apply {
+                addTransportMapping(DefaultTcpTransportMapping())
+            }
     }
 }

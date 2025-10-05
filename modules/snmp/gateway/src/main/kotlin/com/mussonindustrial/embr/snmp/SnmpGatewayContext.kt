@@ -14,6 +14,7 @@ import com.mussonindustrial.embr.snmp.configuration.types.SnmpV2CDeviceType
 import com.mussonindustrial.embr.snmp.configuration.types.SnmpV3DeviceType
 import java.util.concurrent.ThreadFactory
 import java.util.concurrent.atomic.AtomicInteger
+import org.snmp4j.SNMP4JSettings
 import org.snmp4j.security.SecurityModels
 import org.snmp4j.security.SecurityProtocols
 import org.snmp4j.security.USM
@@ -23,6 +24,10 @@ class SnmpGatewayContext(private val context: GatewayContext) :
     EmbrGatewayContext by EmbrGatewayContextImpl(context) {
     companion object {
         lateinit var instance: SnmpGatewayContext
+
+        // Musson Industrial's Private Enterprise Number (PEN)
+        // See https://www.iana.org/assignments/enterprise-numbers/ for more information.
+        const val PRIVATE_ENTERPRISE_NUMBER = 63707
     }
 
     val deviceTypes = listOf(SnmpV1DeviceType, SnmpV2CDeviceType, SnmpV3DeviceType)
@@ -33,7 +38,7 @@ class SnmpGatewayContext(private val context: GatewayContext) :
         SecurityProtocols.getInstance().apply {
             addPredefinedProtocolSet(SecurityProtocols.SecurityProtocolSet.any)
         }
-    val engineId: OctetString = OctetString.fromHexStringPairs("63707")
+    val engineId: OctetString = OctetString.fromHexStringPairs(PRIVATE_ENTERPRISE_NUMBER.toString())
     val usm =
         USM(securityProtocols, engineId, 0).apply {
             SecurityModels.getInstance().addSecurityModel(this)
@@ -53,6 +58,7 @@ class SnmpGatewayContext(private val context: GatewayContext) :
 
     init {
         instance = this
+        SNMP4JSettings.setEnterpriseID(PRIVATE_ENTERPRISE_NUMBER)
     }
 
     fun updatePersistentRecords() {
