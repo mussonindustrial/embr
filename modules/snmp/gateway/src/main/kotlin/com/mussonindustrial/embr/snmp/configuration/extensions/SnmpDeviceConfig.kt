@@ -95,11 +95,6 @@ data class SnmpCommunityConfig(
         errors.apply { requireNotBlank("community.read", read) }
 }
 
-data class SnmpV3SecurityConfig(
-    val authentication: SnmpV3AuthenticationConfig,
-    val privacy: SnmpV3PrivacyConfig,
-)
-
 data class SnmpV3AuthenticationConfig(
     @FormCategoryKey("Snmp.config.category.Authentication")
     @Label("Username *")
@@ -113,16 +108,7 @@ data class SnmpV3AuthenticationConfig(
     @FormField(FormFieldType.SELECT)
     @FormChoices(
         ids = ["None", "Md5", "Sha1", "Sha224", "Sha256", "Sha384", "Sha512"],
-        labels =
-            [
-                "None (INSECURE)",
-                "MD-5 (INSECURE)",
-                "SHA-1 (INSECURE)",
-                "SHA-224",
-                "SHA-256",
-                "SHA-384",
-                "SHA-512",
-            ],
+        labels = ["None", "MD-5", "SHA-1", "SHA-224", "SHA-256", "SHA-384", "SHA-512"],
     )
     @Required
     val protocol: AuthenticationProtocol,
@@ -142,9 +128,9 @@ data class SnmpV3PrivacyConfig(
         ids = ["None", "Des", "Tdes", "Aes128", "Aes192", "Aes256", "Aes192Tdes", "Aes256Tdes"],
         labels =
             [
-                "None (INSECURE)",
-                "DES (INSECURE)",
-                "3DES/TDES/TDEA (INSECURE)",
+                "None",
+                "DES",
+                "3DES/TDES/TDEA",
                 "AES-128",
                 "AES-192",
                 "AES-256",

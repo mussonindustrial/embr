@@ -50,11 +50,11 @@ object SnmpV3ExtensionPoint :
                     builder.withCustomFieldName(TIMEOUT, "connectivity.timeout")
                     builder.withCustomFieldName(HEALTHCHECK_FREQUENCY, "healthcheck.frequency")
                     builder.withCustomFieldName(HEALTHCHECK_OID, "healthcheck.oid")
-                    builder.withCustomFieldName(AUTH_USERNAME, "security.authentication.username")
-                    builder.withCustomFieldName(AUTH_PROTOCOL, "security.authentication.protocol")
-                    builder.withCustomFieldName(AUTH_PASSWORD, "security.authentication.password")
-                    builder.withCustomFieldName(PRIVACY_PROTOCOL, "security.privacy.protocol")
-                    builder.withCustomFieldName(PRIVACY_PASSWORD, "security.privacy.password")
+                    builder.withCustomFieldName(AUTH_USERNAME, "authentication.username")
+                    builder.withCustomFieldName(AUTH_PROTOCOL, "authentication.protocol")
+                    builder.withCustomFieldName(AUTH_PASSWORD, "authentication.password")
+                    builder.withCustomFieldName(PRIVACY_PROTOCOL, "privacy.protocol")
+                    builder.withCustomFieldName(PRIVACY_PASSWORD, "privacy.password")
                 }
             }
             .build()
@@ -91,7 +91,8 @@ object SnmpV3ExtensionPoint :
 
     class Config(
         override val connectivity: SnmpConnectivityConfig,
-        val security: SnmpV3SecurityConfig,
+        val authentication: SnmpV3AuthenticationConfig,
+        val privacy: SnmpV3PrivacyConfig,
         override val healthcheck: SnmpHealthcheckConfig,
     ) : SnmpDeviceConfig
 
@@ -109,24 +110,22 @@ object SnmpV3ExtensionPoint :
                 }
 
         val authenticationPassphrase =
-            snmpConfig.security.authentication.password
-                ?.takeIf {
-                    snmpConfig.security.authentication.protocol != AuthenticationProtocol.None
-                }
+            snmpConfig.authentication.password
+                ?.takeIf { snmpConfig.authentication.protocol != AuthenticationProtocol.None }
                 ?.let { OctetString(deviceContext.gatewayContext.getAsString(it)) }
 
         val privacyPassphrase =
-            snmpConfig.security.privacy.password
-                ?.takeIf { snmpConfig.security.privacy.protocol != PrivacyProtocol.None }
+            snmpConfig.privacy.password
+                ?.takeIf { snmpConfig.privacy.protocol != PrivacyProtocol.None }
                 ?.let { OctetString(deviceContext.gatewayContext.getAsString(it)) }
 
         val target =
             DirectUserTarget(
                     address,
-                    OctetString(snmpConfig.security.authentication.username),
-                    snmpConfig.security.authentication.protocol.mappedProtocol,
+                    OctetString(snmpConfig.authentication.username),
+                    snmpConfig.authentication.protocol.mappedProtocol,
                     authenticationPassphrase,
-                    snmpConfig.security.privacy.protocol.mappedProtocol,
+                    snmpConfig.privacy.protocol.mappedProtocol,
                     privacyPassphrase,
                 )
                 .apply { timeout = snmpConfig.connectivity.timeout.toLong() }
