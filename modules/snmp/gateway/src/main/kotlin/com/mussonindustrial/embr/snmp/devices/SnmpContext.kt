@@ -3,7 +3,6 @@ package com.mussonindustrial.embr.snmp.devices
 import com.inductiveautomation.ignition.common.util.LoggerEx
 import com.inductiveautomation.ignition.gateway.opcua.server.api.DeviceContext
 import com.inductiveautomation.ignition.gateway.opcua.server.api.DeviceProfileConfig
-import com.mussonindustrial.embr.common.logging.getLoggerEx
 import com.mussonindustrial.embr.snmp.configuration.extensions.SnmpDeviceConfig
 import org.eclipse.milo.opcua.sdk.server.Lifecycle
 import org.snmp4j.Snmp

@@ -7,17 +7,9 @@ import com.inductiveautomation.ignition.gateway.dataroutes.openapi.SchemaUtil
 import com.inductiveautomation.ignition.gateway.dataroutes.openapi.annotations.*
 import com.inductiveautomation.ignition.gateway.opcua.server.api.*
 import com.inductiveautomation.ignition.gateway.web.nav.*
-import com.mussonindustrial.embr.snmp.devices.SnmpContext
 import com.mussonindustrial.embr.snmp.devices.SnmpDeviceImpl
+import com.mussonindustrial.embr.snmp.devices.SnmpV1Context
 import java.util.*
-import org.snmp4j.CommunityTarget
-import org.snmp4j.Snmp
-import org.snmp4j.mp.SnmpConstants
-import org.snmp4j.smi.Address
-import org.snmp4j.smi.GenericAddress
-import org.snmp4j.smi.OctetString
-import org.snmp4j.transport.DefaultUdpTransportMapping
-import org.snmp4j.util.DefaultPDUFactory
 
 @Suppress("DEPRECATION")
 private typealias SnmpV1DeviceRecord =
@@ -55,7 +47,7 @@ object SnmpV1ExtensionPoint :
         deviceConfig: DeviceProfileConfig,
         snmpConfig: Config,
     ): Device {
-        val snmpContext = Context(context, deviceConfig, snmpConfig)
+        val snmpContext = SnmpV1Context(context, deviceConfig, snmpConfig)
         return SnmpDeviceImpl(snmpContext)
     }
 
@@ -86,35 +78,4 @@ object SnmpV1ExtensionPoint :
         val community: SnmpCommunityConfig,
         override val healthcheck: SnmpHealthcheckConfig,
     ) : SnmpDeviceConfig
-
-    class Context(
-        override val deviceContext: DeviceContext,
-        override val deviceConfig: DeviceProfileConfig,
-        override val snmpConfig: Config,
-    ) : SnmpContext<Config> {
-
-        val address: Address =
-            GenericAddress.parse(snmpConfig.connectivity.address)
-                ?: let {
-                    logger.error("Failed to parse address ${snmpConfig.connectivity.address}.")
-                    GenericAddress.parse("udp:0.0.0.0/161")
-                }
-
-        override val readTarget =
-            CommunityTarget(address, OctetString(snmpConfig.community.read)).apply {
-                version = SnmpConstants.version1
-                timeout = snmpConfig.connectivity.timeout.toLong()
-            }
-        override val writeTarget =
-            snmpConfig.community.write?.let {
-                CommunityTarget(address, OctetString(it)).apply {
-                    version = SnmpConstants.version1
-                    timeout = snmpConfig.connectivity.timeout.toLong()
-                }
-            }
-
-        override val pduFactory = DefaultPDUFactory()
-        val transportMapping = DefaultUdpTransportMapping()
-        override val snmp = Snmp(transportMapping)
-    }
 }

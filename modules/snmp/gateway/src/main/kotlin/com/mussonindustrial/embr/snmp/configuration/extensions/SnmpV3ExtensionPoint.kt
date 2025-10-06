@@ -11,19 +11,9 @@ import com.inductiveautomation.ignition.gateway.opcua.server.api.DeviceProfileCo
 import com.inductiveautomation.ignition.gateway.opcua.server.api.DeviceSettingsRecord
 import com.inductiveautomation.ignition.gateway.web.nav.ExtensionPointResourceForm
 import com.inductiveautomation.ignition.gateway.web.nav.WebUiComponent
-import com.mussonindustrial.embr.gateway.secrets.getAsString
-import com.mussonindustrial.embr.snmp.configuration.protocols.AuthenticationProtocol
-import com.mussonindustrial.embr.snmp.configuration.protocols.PrivacyProtocol
-import com.mussonindustrial.embr.snmp.devices.SnmpContext
 import com.mussonindustrial.embr.snmp.devices.SnmpDeviceImpl
+import com.mussonindustrial.embr.snmp.devices.SnmpV3Context
 import java.util.*
-import org.snmp4j.DirectUserTarget
-import org.snmp4j.Snmp
-import org.snmp4j.smi.Address
-import org.snmp4j.smi.GenericAddress
-import org.snmp4j.smi.OctetString
-import org.snmp4j.transport.DefaultUdpTransportMapping
-import org.snmp4j.util.DefaultPDUFactory
 
 @Suppress("DEPRECATION")
 private typealias SnmpV3DeviceRecord =
@@ -64,7 +54,7 @@ object SnmpV3ExtensionPoint :
         deviceConfig: DeviceProfileConfig,
         snmpConfig: Config,
     ): Device {
-        val snmpContext = Context(context, deviceConfig, snmpConfig)
+        val snmpContext = SnmpV3Context(context, deviceConfig, snmpConfig)
         return SnmpDeviceImpl(snmpContext)
     }
 
@@ -95,46 +85,4 @@ object SnmpV3ExtensionPoint :
         val privacy: SnmpV3PrivacyConfig,
         override val healthcheck: SnmpHealthcheckConfig,
     ) : SnmpDeviceConfig
-
-    class Context(
-        override val deviceContext: DeviceContext,
-        override val deviceConfig: DeviceProfileConfig,
-        override val snmpConfig: Config,
-    ) : SnmpContext<Config> {
-
-        val address: Address =
-            GenericAddress.parse(snmpConfig.connectivity.address)
-                ?: let {
-                    logger.error("Failed to parse address ${snmpConfig.connectivity.address}.")
-                    GenericAddress.parse("udp:0.0.0.0/161")
-                }
-
-        val authenticationPassphrase =
-            snmpConfig.authentication.password
-                ?.takeIf { snmpConfig.authentication.protocol != AuthenticationProtocol.None }
-                ?.let { OctetString(deviceContext.gatewayContext.getAsString(it)) }
-
-        val privacyPassphrase =
-            snmpConfig.privacy.password
-                ?.takeIf { snmpConfig.privacy.protocol != PrivacyProtocol.None }
-                ?.let { OctetString(deviceContext.gatewayContext.getAsString(it)) }
-
-        val target =
-            DirectUserTarget(
-                    address,
-                    OctetString(snmpConfig.authentication.username),
-                    snmpConfig.authentication.protocol.mappedProtocol,
-                    authenticationPassphrase,
-                    snmpConfig.privacy.protocol.mappedProtocol,
-                    privacyPassphrase,
-                )
-                .apply { timeout = snmpConfig.connectivity.timeout.toLong() }
-
-        override val readTarget = target
-        override val writeTarget = target
-
-        override val pduFactory = DefaultPDUFactory()
-        val transportMapping = DefaultUdpTransportMapping()
-        override val snmp = Snmp(transportMapping)
-    }
 }

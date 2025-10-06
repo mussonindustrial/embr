@@ -58,6 +58,10 @@ class SnmpGatewayContext(private val context: GatewayContext) :
             },
         )
 
+    override fun getHealthCheckRegistry(): HealthCheckRegistry? {
+        return super.getHealthCheckRegistry()
+    }
+
     override fun getTelemetryManager(): TelemetryManager? {
         return super.getTelemetryManager()
     }

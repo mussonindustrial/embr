@@ -2,11 +2,12 @@ package com.mussonindustrial.embr.snmp.devices
 
 import com.inductiveautomation.ignition.common.util.LoggerEx
 import com.inductiveautomation.ignition.gateway.opcua.server.api.DeviceContext
-import com.inductiveautomation.ignition.gateway.opcua.server.api.DeviceSettingsRecord
+import com.inductiveautomation.ignition.gateway.opcua.server.api.DeviceProfileConfig
 import com.mussonindustrial.embr.common.logging.getLoggerEx
+import com.mussonindustrial.embr.gateway.secrets.getAsString
+import com.mussonindustrial.embr.snmp.configuration.extensions.SnmpV3ExtensionPoint.Config
 import com.mussonindustrial.embr.snmp.configuration.protocols.AuthenticationProtocol
 import com.mussonindustrial.embr.snmp.configuration.protocols.PrivacyProtocol
-import com.mussonindustrial.embr.snmp.configuration.settings.SnmpV3DeviceSettings
 import org.snmp4j.DirectUserTarget
 import org.snmp4j.Snmp
 import org.snmp4j.Target
@@ -19,16 +20,16 @@ import org.snmp4j.util.DefaultPDUFactory
 
 class SnmpV3Context(
     override val deviceContext: DeviceContext,
-    override val deviceSettings: DeviceSettingsRecord,
-    override val snmpSettings: SnmpV3DeviceSettings,
-) : SnmpContext<SnmpV3DeviceSettings> {
+    override val deviceConfig: DeviceProfileConfig,
+    override val snmpConfig: Config,
+) : SnmpContext<Config> {
 
     override val logger: LoggerEx =
         this.getLoggerEx(
             mapOf(
-                "device-name" to this.deviceContext.getName(),
-                "device-type" to this.deviceSettings.type,
-                "address" to this.snmpSettings.address,
+                "device-name" to deviceContext.name,
+                "device-type" to deviceConfig.type,
+                "address" to snmpConfig.connectivity.address,
             )
         )
 
@@ -43,29 +44,31 @@ class SnmpV3Context(
 
     override fun startup() {
         val address: Address =
-            GenericAddress.parse(snmpSettings.address)
-                ?: let { throw Exception("Failed to parse address ${snmpSettings.address}.") }
+            GenericAddress.parse(snmpConfig.connectivity.address)
+                ?: let {
+                    throw Exception("Failed to parse address ${snmpConfig.connectivity.address}.")
+                }
 
         val authenticationPassphrase =
-            snmpSettings.authPassword
-                ?.takeIf { snmpSettings.authProtocol != AuthenticationProtocol.None }
-                ?.let { OctetString(it) }
+            snmpConfig.authentication.password
+                ?.takeIf { snmpConfig.authentication.protocol != AuthenticationProtocol.None }
+                ?.let { OctetString(deviceContext.gatewayContext.getAsString(it)) }
 
         val privacyPassphrase =
-            snmpSettings.privacyPassword
-                ?.takeIf { snmpSettings.privacyProtocol != PrivacyProtocol.None }
-                ?.let { OctetString(it) }
+            snmpConfig.privacy.password
+                ?.takeIf { snmpConfig.privacy.protocol != PrivacyProtocol.None }
+                ?.let { OctetString(deviceContext.gatewayContext.getAsString(it)) }
 
         val target =
             DirectUserTarget(
                     address,
-                    OctetString(snmpSettings.username),
-                    snmpSettings.authProtocol.mappedProtocol,
+                    OctetString(snmpConfig.authentication.username),
+                    snmpConfig.authentication.protocol.mappedProtocol,
                     authenticationPassphrase,
-                    snmpSettings.privacyProtocol.mappedProtocol,
+                    snmpConfig.privacy.protocol.mappedProtocol,
                     privacyPassphrase,
                 )
-                .apply { timeout = snmpSettings.timeout.toLong() }
+                .apply { timeout = snmpConfig.connectivity.timeout.toLong() }
 
         readTarget = target
         writeTarget = target

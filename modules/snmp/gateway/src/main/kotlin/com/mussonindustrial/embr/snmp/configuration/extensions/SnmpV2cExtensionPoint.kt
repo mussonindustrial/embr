@@ -11,27 +11,19 @@ import com.inductiveautomation.ignition.gateway.opcua.server.api.DeviceProfileCo
 import com.inductiveautomation.ignition.gateway.opcua.server.api.DeviceSettingsRecord
 import com.inductiveautomation.ignition.gateway.web.nav.ExtensionPointResourceForm
 import com.inductiveautomation.ignition.gateway.web.nav.WebUiComponent
-import com.mussonindustrial.embr.snmp.devices.SnmpContext
 import com.mussonindustrial.embr.snmp.devices.SnmpDeviceImpl
+import com.mussonindustrial.embr.snmp.devices.SnmpV2cContext
 import java.util.*
-import org.snmp4j.CommunityTarget
-import org.snmp4j.Snmp
-import org.snmp4j.mp.SnmpConstants
-import org.snmp4j.smi.Address
-import org.snmp4j.smi.GenericAddress
-import org.snmp4j.smi.OctetString
-import org.snmp4j.transport.DefaultUdpTransportMapping
-import org.snmp4j.util.DefaultPDUFactory
 
 @Suppress("DEPRECATION")
 private typealias SnmpV2CDeviceRecord =
-    com.mussonindustrial.embr.snmp.configuration.records.SnmpV2CDeviceRecord
+    com.mussonindustrial.embr.snmp.configuration.records.SnmpV2cDeviceRecord
 
-object SnmpV2CExtensionPoint :
-    DeviceExtensionPoint<SnmpV2CExtensionPoint.Config>(
+object SnmpV2cExtensionPoint :
+    DeviceExtensionPoint<SnmpV2cExtensionPoint.Config>(
         "embr-snmp-v2c",
-        "Snmp.device.SnmpV2CDevice.DisplayName",
-        "Snmp.device.SnmpV2CDevice.Description",
+        "Snmp.device.SnmpV2cDevice.DisplayName",
+        "Snmp.device.SnmpV2cDevice.Description",
         Config::class.java,
     ) {
 
@@ -59,7 +51,7 @@ object SnmpV2CExtensionPoint :
         deviceConfig: DeviceProfileConfig,
         snmpConfig: Config,
     ): Device {
-        val snmpContext = Context(context, deviceConfig, snmpConfig)
+        val snmpContext = SnmpV2cContext(context, deviceConfig, snmpConfig)
         return SnmpDeviceImpl(snmpContext)
     }
 
@@ -90,35 +82,4 @@ object SnmpV2CExtensionPoint :
         val community: SnmpCommunityConfig,
         override val healthcheck: SnmpHealthcheckConfig,
     ) : SnmpDeviceConfig
-
-    class Context(
-        override val deviceContext: DeviceContext,
-        override val deviceConfig: DeviceProfileConfig,
-        override val snmpConfig: Config,
-    ) : SnmpContext<Config> {
-
-        val address: Address =
-            GenericAddress.parse(snmpConfig.connectivity.address)
-                ?: let {
-                    logger.error("Failed to parse address ${snmpConfig.connectivity.address}.")
-                    GenericAddress.parse("udp:0.0.0.0/161")
-                }
-
-        override val readTarget =
-            CommunityTarget(address, OctetString(snmpConfig.community.read)).apply {
-                version = SnmpConstants.version2c
-                timeout = snmpConfig.connectivity.timeout.toLong()
-            }
-        override val writeTarget =
-            snmpConfig.community.write?.let {
-                CommunityTarget(address, OctetString(it)).apply {
-                    version = SnmpConstants.version2c
-                    timeout = snmpConfig.connectivity.timeout.toLong()
-                }
-            }
-
-        override val pduFactory = DefaultPDUFactory()
-        val transportMapping = DefaultUdpTransportMapping()
-        override val snmp = Snmp(transportMapping)
-    }
 }

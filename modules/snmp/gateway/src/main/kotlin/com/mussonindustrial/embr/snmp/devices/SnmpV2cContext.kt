@@ -2,9 +2,9 @@ package com.mussonindustrial.embr.snmp.devices
 
 import com.inductiveautomation.ignition.common.util.LoggerEx
 import com.inductiveautomation.ignition.gateway.opcua.server.api.DeviceContext
-import com.inductiveautomation.ignition.gateway.opcua.server.api.DeviceSettingsRecord
+import com.inductiveautomation.ignition.gateway.opcua.server.api.DeviceProfileConfig
 import com.mussonindustrial.embr.common.logging.getLoggerEx
-import com.mussonindustrial.embr.snmp.configuration.settings.SnmpV2cDeviceSettings
+import com.mussonindustrial.embr.snmp.configuration.extensions.SnmpV2cExtensionPoint.Config
 import org.snmp4j.CommunityTarget
 import org.snmp4j.Snmp
 import org.snmp4j.Target
@@ -18,16 +18,16 @@ import org.snmp4j.util.DefaultPDUFactory
 
 class SnmpV2cContext(
     override val deviceContext: DeviceContext,
-    override val deviceSettings: DeviceSettingsRecord,
-    override val snmpSettings: SnmpV2cDeviceSettings,
-) : SnmpContext<SnmpV2cDeviceSettings> {
+    override val deviceConfig: DeviceProfileConfig,
+    override val snmpConfig: Config,
+) : SnmpContext<Config> {
 
     override val logger: LoggerEx =
         this.getLoggerEx(
             mapOf(
-                "device-name" to this.deviceContext.getName(),
-                "device-type" to this.deviceSettings.type,
-                "address" to this.snmpSettings.address,
+                "device-name" to deviceContext.name,
+                "device-type" to deviceConfig.type,
+                "address" to snmpConfig.connectivity.address,
             )
         )
 
@@ -42,19 +42,21 @@ class SnmpV2cContext(
 
     override fun startup() {
         val address: Address =
-            GenericAddress.parse(snmpSettings.address)
-                ?: let { throw Exception("Failed to parse address ${snmpSettings.address}.") }
+            GenericAddress.parse(snmpConfig.connectivity.address)
+                ?: let {
+                    throw Exception("Failed to parse address ${snmpConfig.connectivity.address}.")
+                }
 
         readTarget =
-            CommunityTarget(address, OctetString(snmpSettings.communityRead)).apply {
+            CommunityTarget(address, OctetString(snmpConfig.community.read)).apply {
                 version = SnmpConstants.version2c
-                timeout = snmpSettings.timeout.toLong()
+                timeout = snmpConfig.connectivity.timeout.toLong()
             }
         writeTarget =
-            snmpSettings.communityWrite?.let {
-                CommunityTarget(address, OctetString(snmpSettings.communityWrite)).apply {
+            snmpConfig.community.write?.let {
+                CommunityTarget(address, OctetString(snmpConfig.community.write)).apply {
                     version = SnmpConstants.version2c
-                    timeout = snmpSettings.timeout.toLong()
+                    timeout = snmpConfig.connectivity.timeout.toLong()
                 }
             }
 
