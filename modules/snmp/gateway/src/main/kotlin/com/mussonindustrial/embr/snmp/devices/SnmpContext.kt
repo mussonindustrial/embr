@@ -5,12 +5,13 @@ import com.inductiveautomation.ignition.gateway.opcua.server.api.DeviceContext
 import com.inductiveautomation.ignition.gateway.opcua.server.api.DeviceProfileConfig
 import com.mussonindustrial.embr.common.logging.getLoggerEx
 import com.mussonindustrial.embr.snmp.configuration.extensions.SnmpDeviceConfig
+import org.eclipse.milo.opcua.sdk.server.Lifecycle
 import org.snmp4j.Snmp
 import org.snmp4j.Target
 import org.snmp4j.smi.Address
 import org.snmp4j.util.PDUFactory
 
-interface SnmpContext<T : SnmpDeviceConfig> {
+interface SnmpContext<T : SnmpDeviceConfig> : Lifecycle {
     val deviceContext: DeviceContext
     val deviceConfig: DeviceProfileConfig
     val snmpConfig: T
@@ -21,12 +22,4 @@ interface SnmpContext<T : SnmpDeviceConfig> {
     val snmp: Snmp
 
     val logger: LoggerEx
-        get() =
-            this.getLoggerEx(
-                mapOf(
-                    "device-name" to this.deviceContext.name,
-                    "device-type" to this.deviceConfig.type,
-                    "address" to this.snmpConfig.connectivity.address,
-                )
-            )
 }

@@ -6,11 +6,11 @@ import simpleorm.dataset.SFieldFlags
 
 @Deprecated("since 8.3")
 @SuppressWarnings("unused")
-class SnmpV2CDeviceRecord : PersistentRecord() {
+class SnmpV2cDeviceRecord : PersistentRecord() {
 
     @Suppress("DEPRECATION")
     companion object {
-        val META = RecordMeta(SnmpV2CDeviceRecord::class.java, "EmbrSnmpV2CDeviceSettings")
+        val META = RecordMeta(SnmpV2cDeviceRecord::class.java, "EmbrSnmpV2cDeviceSettings")
 
         val DEVICE_SETTINGS_ID = LongField(META, "DeviceSettingsId", SFieldFlags.SPRIMARY_KEY)
         val DEVICE_SETTINGS =
