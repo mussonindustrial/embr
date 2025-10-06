@@ -18,13 +18,11 @@ class SnmpV3DeviceRecord : SnmpV3DeviceSettings, PersistentRecord() {
             ReferenceField(META, DeviceSettingsRecord.META, "DeviceSettings", DEVICE_SETTINGS_ID)
                 .apply { formMeta.isVisible = false }
 
-        val HOSTNAME = StringField(META, "Hostname", SFieldFlags.SMANDATORY)
-        val PORT = IntField(META, "Port", SFieldFlags.SMANDATORY).apply { default = 161 }
+        val ADDRESS = StringField(META, "Address", SFieldFlags.SMANDATORY)
         val TIMEOUT = IntField(META, "Timeout", SFieldFlags.SMANDATORY).apply { default = 1000 }
         val CATEGORY_CONNECTIVITY =
             Category("SnmpV3DeviceRecord.Connectivity", 1001).apply {
-                include(HOSTNAME)
-                include(PORT)
+                include(ADDRESS)
                 include(TIMEOUT)
             }
 
@@ -40,17 +38,21 @@ class SnmpV3DeviceRecord : SnmpV3DeviceSettings, PersistentRecord() {
             EncodedStringField(META, "AuthPassword").apply {
                 formMeta.editorSource = PasswordEditorSource.getSharedInstance()
             }
+        val CATEGORY_AUTH =
+            Category("SnmpV3DeviceRecord.Authentication", 1002).apply {
+                include(AUTH_USERNAME)
+                include(AUTH_PROTOCOL)
+                include(AUTH_PASSWORD)
+            }
+
         val PRIVACY_PROTOCOL =
             EnumField(META, "PrivacyProtocol", PrivacyProtocol::class.java, SFieldFlags.SMANDATORY)
         val PRIVACY_PASSWORD =
             EncodedStringField(META, "PrivacyPassword").apply {
                 formMeta.editorSource = PasswordEditorSource.getSharedInstance()
             }
-        val CATEGORY_AUTH =
-            Category("SnmpV3DeviceRecord.Authentication", 1002).apply {
-                include(AUTH_USERNAME)
-                include(AUTH_PROTOCOL)
-                include(AUTH_PASSWORD)
+        val CATEGORY_PRIVACY =
+            Category("SnmpV3DeviceRecord.Privacy", 1003).apply {
                 include(PRIVACY_PROTOCOL)
                 include(PRIVACY_PASSWORD)
             }
@@ -64,7 +66,7 @@ class SnmpV3DeviceRecord : SnmpV3DeviceSettings, PersistentRecord() {
                 default = "1.3.6.1.2.1.1.2.0"
             }
         val CATEGORY_HEALTHCHECK =
-            Category("SnmpV3DeviceRecord.Healthcheck", 1003, true).apply {
+            Category("SnmpV3DeviceRecord.Healthcheck", 1004, true).apply {
                 include(HEALTHCHECK_FREQUENCY)
                 include(HEALTHCHECK_OID)
             }
@@ -74,11 +76,8 @@ class SnmpV3DeviceRecord : SnmpV3DeviceSettings, PersistentRecord() {
         return META
     }
 
-    override val hostname: String
-        get() = getString(HOSTNAME)
-
-    override val port: Int
-        get() = getInt(PORT)
+    override val address: String
+        get() = getString(ADDRESS)
 
     override val timeout: Int
         get() = getInt(TIMEOUT)

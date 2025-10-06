@@ -11,7 +11,6 @@ import com.mussonindustrial.embr.snmp.requests.OidWriteResult
 import com.mussonindustrial.embr.snmp.requests.toOidReadResult
 import com.mussonindustrial.embr.snmp.requests.toOidWriteResult
 import com.mussonindustrial.embr.snmp.utils.addLifecycle
-import com.mussonindustrial.embr.snmp.utils.createPDU
 import com.mussonindustrial.embr.snmp.utils.createSizeBoundedPDUs
 import com.mussonindustrial.embr.snmp.utils.toDataValue
 import java.util.concurrent.TimeUnit
@@ -22,25 +21,15 @@ import org.eclipse.milo.opcua.stack.core.StatusCodes
 import org.eclipse.milo.opcua.stack.core.types.builtin.DataValue
 import org.eclipse.milo.opcua.stack.core.types.builtin.StatusCode
 import org.snmp4j.PDU
-import org.snmp4j.Target
 import org.snmp4j.smi.OID
 import org.snmp4j.smi.VariableBinding
 
 class SnmpDeviceImpl<T : SnmpDeviceSettings>(override val context: SnmpContext<T>) :
     AddressSpaceComposite(context.deviceContext.getServer()), SnmpDevice {
 
-    val logger: LoggerEx =
-        LoggerEx.newBuilder()
-            .mdcContext(
-                "device-name",
-                context.deviceContext.getName(),
-                "device-type",
-                context.deviceSettings.type,
-                "hostname",
-                "${context.snmpSettings.hostname}:${context.snmpSettings.port}",
-            )
-            .build(SnmpDeviceImpl::class.java)
     val lifecycleManager = LifecycleManager()
+
+    val logger: LoggerEx = context.logger.createSubLogger(this::class.java)
 
     var status: SnmpDevice.Status = SnmpDevice.Status.DISCONNECTED
         private set
@@ -52,7 +41,7 @@ class SnmpDeviceImpl<T : SnmpDeviceSettings>(override val context: SnmpContext<T
     val oidAddressSpace = OidAddressSpace(this)
 
     init {
-        lifecycleManager.addLifecycle(context.snmp)
+        lifecycleManager.addLifecycle(context)
         lifecycleManager.addLifecycle(healthcheck)
         lifecycleManager.addLifecycle(deviceAddressSpace)
         lifecycleManager.addLifecycle(diagnosticAddressSpace)
@@ -91,7 +80,10 @@ class SnmpDeviceImpl<T : SnmpDeviceSettings>(override val context: SnmpContext<T
         while (remaining.isNotEmpty()) {
 
             val pdus =
-                context.readTarget.createSizeBoundedPDUs(remaining.flatMap { it.value }) {
+                context.readTarget.createSizeBoundedPDUs(
+                    context.pduFactory,
+                    remaining.flatMap { it.value },
+                ) {
                     type = PDU.GET
                 }
 
@@ -153,7 +145,7 @@ class SnmpDeviceImpl<T : SnmpDeviceSettings>(override val context: SnmpContext<T
             }
 
             val pdu =
-                (context.writeTarget as Target<out Any?>).createPDU().apply {
+                context.pduFactory.createPDU(context.writeTarget).apply {
                     type = PDU.SET
                     add(it)
                 }
@@ -184,15 +176,17 @@ class SnmpDeviceImpl<T : SnmpDeviceSettings>(override val context: SnmpContext<T
 
         override fun startup() {
             if (!canDoHealthCheck()) {
+                logger.debug("Health check disabled, skipping scheduling...")
                 status = SnmpDevice.Status.UNKNOWN
                 return
             }
 
+            logger.debug("Starting health check...")
             SnmpGatewayContext.instance.snmpExecutionManager.registerAtFixedRateWithInitialDelay(
                 taskOwner,
                 taskName,
                 this::doHealthcheck,
-                context.snmpSettings.healthcheckFrequency!!,
+                context.snmpSettings.healthcheckFrequency ?: 10000,
                 TimeUnit.MILLISECONDS,
                 1000,
             )
@@ -219,6 +213,7 @@ class SnmpDeviceImpl<T : SnmpDeviceSettings>(override val context: SnmpContext<T
         }
 
         private fun doHealthcheck() {
+            logger.trace("Starting health check.")
             if (!canDoHealthCheck()) {
                 status = SnmpDevice.Status.UNKNOWN
                 return
@@ -226,6 +221,7 @@ class SnmpDeviceImpl<T : SnmpDeviceSettings>(override val context: SnmpContext<T
 
             val response = read(listOf(VariableBinding(OID(context.snmpSettings.healthcheckOid))))
             val isGood = response.first().value.statusCode?.isGood
+            logger.trace("Health check result: $isGood")
 
             status =
                 if (isGood == true) {
