@@ -25,10 +25,6 @@ class SnmpGatewayContext(private val context: GatewayContext) :
         const val PRIVATE_ENTERPRISE_NUMBER = 63707
     }
 
-    val deviceTypes = listOf(SnmpV1DeviceType, SnmpV2CDeviceType, SnmpV3DeviceType)
-    private val records =
-        listOf(SnmpV1DeviceRecord.META, SnmpV2CDeviceRecord.META, SnmpV3DeviceRecord.META)
-
     val securityProtocols: SecurityProtocols =
         SecurityProtocols.getInstance().apply {
             addPredefinedProtocolSet(SecurityProtocols.SecurityProtocolSet.any)

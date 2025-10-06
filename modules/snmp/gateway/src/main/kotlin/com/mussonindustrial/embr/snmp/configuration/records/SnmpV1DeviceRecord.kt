@@ -17,7 +17,6 @@ class SnmpV1DeviceRecord : PersistentRecord() {
             ReferenceField(META, DeviceSettingsRecord.META, "DeviceSettings", DEVICE_SETTINGS_ID)
 
         val ADDRESS = StringField(META, "Address")
-        val PORT = IntField(META, "Port")
         val TIMEOUT = IntField(META, "Timeout")
 
         val COMMUNITY_READ = StringField(META, "CommunityRead")

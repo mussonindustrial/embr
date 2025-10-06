@@ -24,9 +24,9 @@ interface SnmpContext<T : SnmpDeviceConfig> {
         get() =
             this.getLoggerEx(
                 mapOf(
-                    "device-name" to this.deviceContext.getName(),
-                    "device-type" to this.deviceSettings.type,
-                    "address" to this.snmpSettings.address,
+                    "device-name" to this.deviceContext.name,
+                    "device-type" to this.deviceConfig.type,
+                    "address" to this.snmpConfig.connectivity.address,
                 )
             )
 }

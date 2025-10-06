@@ -44,8 +44,7 @@ object SnmpV2CExtensionPoint :
             .settingsMeta(SnmpV2CDeviceRecord.META)
             .settingsEncoder { builder ->
                 SnmpV2CDeviceRecord.apply {
-                    builder.withCustomFieldName(HOSTNAME, "connectivity.hostname")
-                    builder.withCustomFieldName(PORT, "connectivity.port")
+                    builder.withCustomFieldName(ADDRESS, "connectivity.address")
                     builder.withCustomFieldName(TIMEOUT, "connectivity.timeout")
                     builder.withCustomFieldName(HEALTHCHECK_FREQUENCY, "healthcheck.frequency")
                     builder.withCustomFieldName(HEALTHCHECK_OID, "healthcheck.oid")
@@ -99,9 +98,11 @@ object SnmpV2CExtensionPoint :
     ) : SnmpContext<Config> {
 
         val address: Address =
-            GenericAddress.parse(
-                ("udp:" + snmpConfig.connectivity.hostname + "/" + snmpConfig.connectivity.port)
-            )
+            GenericAddress.parse(snmpConfig.connectivity.address)
+                ?: let {
+                    logger.error("Failed to parse address ${snmpConfig.connectivity.address}.")
+                    GenericAddress.parse("udp:0.0.0.0/161")
+                }
 
         override val readTarget =
             CommunityTarget(address, OctetString(snmpConfig.community.read)).apply {

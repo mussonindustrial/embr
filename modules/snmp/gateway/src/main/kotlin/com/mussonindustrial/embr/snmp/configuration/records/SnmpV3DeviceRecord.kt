@@ -19,11 +19,10 @@ class SnmpV3DeviceRecord : PersistentRecord() {
             ReferenceField(META, DeviceSettingsRecord.META, "DeviceSettings", DEVICE_SETTINGS_ID)
 
         val ADDRESS = StringField(META, "Address")
-        val PORT = IntField(META, "Port")
         val TIMEOUT = IntField(META, "Timeout")
 
-        val AUTH_PROTOCOL = EnumField(META, "AuthProtocol", AuthenticationProtocol::class.java)
         val AUTH_USERNAME = StringField(META, "AuthUsername")
+        val AUTH_PROTOCOL = EnumField(META, "AuthProtocol", AuthenticationProtocol::class.java)
         val AUTH_PASSWORD = EncodedStringField(META, "AuthPassword")
 
         val PRIVACY_PROTOCOL = EnumField(META, "PrivacyProtocol", PrivacyProtocol::class.java)

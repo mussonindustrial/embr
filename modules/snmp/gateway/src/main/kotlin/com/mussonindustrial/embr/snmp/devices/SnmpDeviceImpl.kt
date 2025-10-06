@@ -26,17 +26,6 @@ import org.snmp4j.smi.VariableBinding
 class SnmpDeviceImpl<T : SnmpDeviceConfig>(override val context: SnmpContext<T>) :
     AddressSpaceComposite(context.deviceContext.server), SnmpDevice {
 
-    val logger: LoggerEx =
-        LoggerEx.newBuilder()
-            .mdcContext(
-                "device-name",
-                context.deviceContext.name,
-                "device-type",
-                context.deviceConfig.type,
-                "hostname",
-                "${context.snmpConfig.connectivity.hostname}:${context.snmpConfig.connectivity.port}",
-            )
-            .build(SnmpDeviceImpl::class.java)
     val lifecycleManager = LifecycleManager()
 
     var status: SnmpDevice.Status = SnmpDevice.Status.DISCONNECTED
@@ -188,7 +177,7 @@ class SnmpDeviceImpl<T : SnmpDeviceConfig>(override val context: SnmpContext<T>)
                 taskOwner,
                 taskName,
                 this::doHealthcheck,
-                context.snmpSettings.healthcheckFrequency ?: 10000,
+                context.snmpConfig.healthcheck.frequency ?: 10000,
                 TimeUnit.MILLISECONDS,
                 1000,
             )
@@ -221,8 +210,8 @@ class SnmpDeviceImpl<T : SnmpDeviceConfig>(override val context: SnmpContext<T>)
                 return
             }
 
-            val response = read(listOf(VariableBinding(OID(context.snmpSettings.healthcheckOid))))
-            val isGood = response.first().value.statusCode?.isGood
+            val response = read(listOf(VariableBinding(OID(context.snmpConfig.healthcheck.oid))))
+            val isGood = response.first().value.statusCode.isGood
             context.logger.trace("Health check result: $isGood")
 
             status =

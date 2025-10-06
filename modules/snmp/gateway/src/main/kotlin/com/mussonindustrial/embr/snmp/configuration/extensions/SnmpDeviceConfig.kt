@@ -6,6 +6,7 @@ import com.inductiveautomation.ignition.gateway.secrets.SecretConfig
 import com.inductiveautomation.ignition.gateway.web.nav.FormFieldType
 import com.mussonindustrial.embr.snmp.configuration.protocols.AuthenticationProtocol
 import com.mussonindustrial.embr.snmp.configuration.protocols.PrivacyProtocol
+import org.snmp4j.smi.GenericAddress
 import org.snmp4j.smi.OID
 
 interface SnmpDeviceConfig {
@@ -15,18 +16,12 @@ interface SnmpDeviceConfig {
 
 data class SnmpConnectivityConfig(
     @FormCategoryKey("Snmp.config.category.Connectivity")
-    @Label("Hostname *")
-    @DescriptionKey("Snmp.config.Connectivity.Hostname.Description")
+    @Label("Address *")
+    @DescriptionKey("Snmp.config.Connectivity.Address.Description")
+    @ExampleValue("udp:127.0.0.1/161")
     @FormField(FormFieldType.TEXT)
     @Required
-    val hostname: String,
-    @FormCategoryKey("Snmp.config.category.Connectivity")
-    @Label("Port *")
-    @DescriptionKey("Snmp.config.Connectivity.Port.Description")
-    @DefaultValue("161")
-    @FormField(FormFieldType.NUMBER)
-    @Required
-    val port: Int,
+    val address: String,
     @FormCategoryKey("Snmp.config.category.Connectivity")
     @Label("Timeout *")
     @DescriptionKey("Snmp.config.Connectivity.Timeout.Description")
@@ -37,8 +32,12 @@ data class SnmpConnectivityConfig(
 ) {
     fun validate(errors: ValidationErrors.Builder) =
         errors.apply {
-            requireNotBlank("connectivity.hostname", hostname)
-            checkField(port >= 1, "connectivity.hostname", "Port must be greater than 1")
+            requireNotBlank("connectivity.address", address)
+            checkField(
+                GenericAddress.parse(address) != null,
+                "connectivity.address",
+                "Address must be valid.",
+            )
             checkField(timeout >= 1, "connectivity.timeout", "Timeout must not be negative")
         }
 }
