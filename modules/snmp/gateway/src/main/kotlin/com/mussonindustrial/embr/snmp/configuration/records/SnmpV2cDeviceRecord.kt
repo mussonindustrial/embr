@@ -2,13 +2,13 @@ package com.mussonindustrial.embr.snmp.configuration.records
 
 import com.inductiveautomation.ignition.gateway.localdb.persistence.*
 import com.inductiveautomation.ignition.gateway.opcua.server.api.DeviceSettingsRecord
-import com.mussonindustrial.embr.snmp.configuration.settings.SnmpV2CDeviceSettings
+import com.mussonindustrial.embr.snmp.configuration.settings.SnmpV2cDeviceSettings
 import simpleorm.dataset.SFieldFlags
 
-class SnmpV2CDeviceRecord : SnmpV2CDeviceSettings, PersistentRecord() {
+class SnmpV2cDeviceRecord : SnmpV2cDeviceSettings, PersistentRecord() {
 
     companion object {
-        val META = RecordMeta(SnmpV2CDeviceRecord::class.java, "EmbrSnmpV2CDeviceSettings")
+        val META = RecordMeta(SnmpV2cDeviceRecord::class.java, "EmbrSnmpV2cDeviceSettings")
 
         val DEVICE_SETTINGS_ID = LongField(META, "DeviceSettingsId", SFieldFlags.SPRIMARY_KEY)
         val DEVICE_SETTINGS =
@@ -18,7 +18,7 @@ class SnmpV2CDeviceRecord : SnmpV2CDeviceSettings, PersistentRecord() {
         val ADDRESS = StringField(META, "Address", SFieldFlags.SMANDATORY)
         val TIMEOUT = IntField(META, "Timeout", SFieldFlags.SMANDATORY).apply { default = 1000 }
         val CATEGORY_CONNECTIVITY =
-            Category("SnmpV2CDeviceRecord.Connectivity", 1001).apply {
+            Category("SnmpV2cDeviceRecord.Connectivity", 1001).apply {
                 include(ADDRESS)
                 include(TIMEOUT)
             }
@@ -27,7 +27,7 @@ class SnmpV2CDeviceRecord : SnmpV2CDeviceSettings, PersistentRecord() {
             StringField(META, "CommunityRead", SFieldFlags.SMANDATORY).apply { default = "public" }
         val COMMUNITY_WRITE = StringField(META, "CommunityWrite").apply { default = "private" }
         val CATEGORY_COMMUNITY =
-            Category("SnmpV2CDeviceRecord.Community", 1002).apply {
+            Category("SnmpV2cDeviceRecord.Community", 1002).apply {
                 include(COMMUNITY_READ)
                 include(COMMUNITY_WRITE)
             }
@@ -39,7 +39,7 @@ class SnmpV2CDeviceRecord : SnmpV2CDeviceSettings, PersistentRecord() {
                 default = "1.3.6.1.2.1.1.2.0"
             }
         val CATEGORY_HEALTHCHECK =
-            Category("SnmpV2CDeviceRecord.Healthcheck", 1003, true).apply {
+            Category("SnmpV2cDeviceRecord.Healthcheck", 1003, true).apply {
                 include(HEALTHCHECK_FREQUENCY)
                 include(HEALTHCHECK_OID)
             }

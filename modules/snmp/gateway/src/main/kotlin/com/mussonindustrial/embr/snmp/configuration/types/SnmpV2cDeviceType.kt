@@ -7,30 +7,30 @@ import com.inductiveautomation.ignition.gateway.opcua.server.api.Device
 import com.inductiveautomation.ignition.gateway.opcua.server.api.DeviceContext
 import com.inductiveautomation.ignition.gateway.opcua.server.api.DeviceSettingsRecord
 import com.inductiveautomation.ignition.gateway.opcua.server.api.DeviceType
-import com.mussonindustrial.embr.snmp.configuration.records.SnmpV1DeviceRecord
+import com.mussonindustrial.embr.snmp.configuration.records.SnmpV2cDeviceRecord
 import com.mussonindustrial.embr.snmp.devices.SnmpDeviceImpl
-import com.mussonindustrial.embr.snmp.devices.SnmpV1Context
+import com.mussonindustrial.embr.snmp.devices.SnmpV2cContext
 
-object SnmpV1DeviceType :
+object SnmpV2cDeviceType :
     DeviceType(
-        "embr-snmp-v1",
-        "Snmp.device.SnmpV1Device.DisplayName",
-        "Snmp.device.SnmpV1Device.Description",
+        "embr-snmp-v2c",
+        "Snmp.device.SnmpV2cDevice.DisplayName",
+        "Snmp.device.SnmpV2cDevice.Description",
     ) {
-    @Suppress("unused") private fun readResolve(): Any = SnmpV1DeviceType
+    @Suppress("unused") private fun readResolve(): Any = SnmpV2cDeviceType
 
     override fun createDevice(context: DeviceContext, settings: DeviceSettingsRecord): Device {
         val snmpSettings =
-            findProfileSettingsRecord<SnmpV1DeviceRecord>(context.getGatewayContext(), settings)
-        val snmpContext = SnmpV1Context(context, settings, snmpSettings)
+            findProfileSettingsRecord<SnmpV2cDeviceRecord>(context.getGatewayContext(), settings)
+        val snmpContext = SnmpV2cContext(context, settings, snmpSettings)
         return SnmpDeviceImpl(snmpContext)
     }
 
     override fun getSettingsRecordType(): RecordMeta<out PersistentRecord> {
-        return SnmpV1DeviceRecord.META
+        return SnmpV2cDeviceRecord.META
     }
 
     override fun getSettingsRecordForeignKey(): ReferenceField<*> {
-        return SnmpV1DeviceRecord.DEVICE_SETTINGS
+        return SnmpV2cDeviceRecord.DEVICE_SETTINGS
     }
 }
