@@ -58,7 +58,7 @@ class SnmpV2cDeviceRecord : SnmpV2cDeviceSettings, PersistentRecord() {
     override val communityRead: String
         get() = getString(COMMUNITY_READ)
 
-    override val communityWrite: String
+    override val communityWrite: String?
         get() = getString(COMMUNITY_WRITE)
 
     override val healthcheckFrequency: Int
