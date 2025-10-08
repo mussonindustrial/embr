@@ -1,12 +1,7 @@
 package com.mussonindustrial.embr.snmp.opc
 
-import com.mussonindustrial.embr.common.logging.getLogger
-import com.mussonindustrial.embr.snmp.devices.SnmpDeviceImpl
-import com.mussonindustrial.embr.snmp.requests.OidReadRequest
-import com.mussonindustrial.embr.snmp.requests.OidReadResult
-import com.mussonindustrial.embr.snmp.requests.OidWriteRequest
-import com.mussonindustrial.embr.snmp.requests.OidWriteResult
-import com.mussonindustrial.embr.snmp.requests.toOidWriteResult
+import com.mussonindustrial.embr.snmp.devices.SnmpDevice
+import com.mussonindustrial.embr.snmp.requests.*
 import com.mussonindustrial.embr.snmp.utils.isOid
 import com.mussonindustrial.embr.snmp.utils.toVariable
 import kotlin.jvm.optionals.getOrNull
@@ -39,21 +34,18 @@ import org.eclipse.milo.opcua.stack.core.types.structured.WriteValue
 import org.snmp4j.smi.OID
 import org.snmp4j.smi.VariableBinding
 
-class OidAddressSpace(val device: SnmpDeviceImpl<*>) : AddressSpaceFragment, Lifecycle {
+class OidAddressSpace(val device: SnmpDevice) : AddressSpaceFragment, Lifecycle {
 
-    private val logger = this.getLogger()
     private val filter = SimpleAddressSpaceFilter.create { it.getPath().isOid() }
     private val subscriptionModel =
         SubscriptionModel(device.context.deviceContext.getServer(), this)
 
     override fun startup() {
         subscriptionModel.startup()
-        device.register(this)
     }
 
     override fun shutdown() {
         subscriptionModel.shutdown()
-        device.unregister(this)
     }
 
     override fun read(

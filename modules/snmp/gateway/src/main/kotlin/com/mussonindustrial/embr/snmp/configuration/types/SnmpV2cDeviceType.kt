@@ -8,8 +8,8 @@ import com.inductiveautomation.ignition.gateway.opcua.server.api.DeviceContext
 import com.inductiveautomation.ignition.gateway.opcua.server.api.DeviceSettingsRecord
 import com.inductiveautomation.ignition.gateway.opcua.server.api.DeviceType
 import com.mussonindustrial.embr.snmp.configuration.records.SnmpV2cDeviceRecord
+import com.mussonindustrial.embr.snmp.context.SnmpV2cContext
 import com.mussonindustrial.embr.snmp.devices.SnmpDeviceImpl
-import com.mussonindustrial.embr.snmp.devices.SnmpV2cContext
 
 object SnmpV2cDeviceType :
     DeviceType(

@@ -1,4 +1,4 @@
-package com.mussonindustrial.embr.snmp.devices
+package com.mussonindustrial.embr.snmp.context
 
 import com.inductiveautomation.ignition.common.util.LoggerEx
 import com.inductiveautomation.ignition.gateway.opcua.server.api.DeviceContext
