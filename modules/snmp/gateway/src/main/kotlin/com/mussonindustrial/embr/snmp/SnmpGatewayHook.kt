@@ -7,9 +7,9 @@ import com.inductiveautomation.ignition.gateway.model.GatewayContext
 import com.inductiveautomation.ignition.gateway.opcua.server.api.AbstractDeviceModuleHook
 import com.inductiveautomation.ignition.gateway.opcua.server.api.DeviceExtensionPoint
 import com.mussonindustrial.embr.common.Embr
-import com.mussonindustrial.embr.snmp.configuration.extensions.SnmpV1ExtensionPoint
-import com.mussonindustrial.embr.snmp.configuration.extensions.SnmpV2cExtensionPoint
-import com.mussonindustrial.embr.snmp.configuration.extensions.SnmpV3ExtensionPoint
+import com.mussonindustrial.embr.snmp.agents.configuration.extensions.SnmpAgentV1ExtensionPoint
+import com.mussonindustrial.embr.snmp.agents.configuration.extensions.SnmpAgentV2cExtensionPoint
+import com.mussonindustrial.embr.snmp.agents.configuration.extensions.SnmpAgentV3ExtensionPoint
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -41,14 +41,18 @@ class SnmpGatewayHook : AbstractDeviceModuleHook() {
     }
 
     override fun getDeviceExtensionPoints(): List<DeviceExtensionPoint<*>> {
-        return listOf(SnmpV1ExtensionPoint, SnmpV2cExtensionPoint, SnmpV3ExtensionPoint)
+        return listOf(
+            SnmpAgentV1ExtensionPoint,
+            SnmpAgentV2cExtensionPoint,
+            SnmpAgentV3ExtensionPoint,
+        )
     }
 
     override fun getRecordMigrationStrategies(): List<IdbMigrationStrategy> {
         return listOf(
-            SnmpV1ExtensionPoint.recordMigrationStrategy,
-            SnmpV2cExtensionPoint.recordMigrationStrategy,
-            SnmpV3ExtensionPoint.recordMigrationStrategy,
+            SnmpAgentV1ExtensionPoint.recordMigrationStrategy,
+            SnmpAgentV2cExtensionPoint.recordMigrationStrategy,
+            SnmpAgentV3ExtensionPoint.recordMigrationStrategy,
         )
     }
 

@@ -1,20 +1,33 @@
-package com.mussonindustrial.embr.snmp.opc
+package com.mussonindustrial.embr.snmp.agents.opc
 
-import com.mussonindustrial.embr.snmp.devices.SnmpDevice
-import com.mussonindustrial.embr.snmp.requests.*
+import com.mussonindustrial.embr.snmp.agents.devices.SnmpAgentDevice
+import com.mussonindustrial.embr.snmp.opc.DelegatingSubscriptionModel
+import com.mussonindustrial.embr.snmp.requests.OidReadRequest
+import com.mussonindustrial.embr.snmp.requests.OidReadResult
+import com.mussonindustrial.embr.snmp.requests.OidWriteRequest
+import com.mussonindustrial.embr.snmp.requests.OidWriteResult
+import com.mussonindustrial.embr.snmp.requests.toOidWriteResult
 import com.mussonindustrial.embr.snmp.utils.isOid
 import com.mussonindustrial.embr.snmp.utils.toVariable
 import kotlin.jvm.optionals.getOrNull
 import org.eclipse.milo.opcua.sdk.core.AccessLevel
 import org.eclipse.milo.opcua.sdk.core.ValueRank
-import org.eclipse.milo.opcua.sdk.server.*
+import org.eclipse.milo.opcua.sdk.server.AddressSpace
+import org.eclipse.milo.opcua.sdk.server.AddressSpaceFilter
+import org.eclipse.milo.opcua.sdk.server.AddressSpaceFragment
+import org.eclipse.milo.opcua.sdk.server.Lifecycle
+import org.eclipse.milo.opcua.sdk.server.SimpleAddressSpaceFilter
 import org.eclipse.milo.opcua.sdk.server.items.DataItem
 import org.eclipse.milo.opcua.sdk.server.items.MonitoredItem
 import org.eclipse.milo.opcua.stack.core.AttributeId
 import org.eclipse.milo.opcua.stack.core.OpcUaDataType
 import org.eclipse.milo.opcua.stack.core.StatusCodes
 import org.eclipse.milo.opcua.stack.core.UaException
-import org.eclipse.milo.opcua.stack.core.types.builtin.*
+import org.eclipse.milo.opcua.stack.core.types.builtin.DataValue
+import org.eclipse.milo.opcua.stack.core.types.builtin.LocalizedText
+import org.eclipse.milo.opcua.stack.core.types.builtin.NodeId
+import org.eclipse.milo.opcua.stack.core.types.builtin.StatusCode
+import org.eclipse.milo.opcua.stack.core.types.builtin.Variant
 import org.eclipse.milo.opcua.stack.core.types.builtin.unsigned.UInteger
 import org.eclipse.milo.opcua.stack.core.types.enumerated.NodeClass
 import org.eclipse.milo.opcua.stack.core.types.enumerated.TimestampsToReturn
@@ -24,7 +37,7 @@ import org.eclipse.milo.opcua.stack.core.types.structured.WriteValue
 import org.snmp4j.smi.OID
 import org.snmp4j.smi.VariableBinding
 
-class OidAddressSpace(val device: SnmpDevice) : AddressSpaceFragment, Lifecycle {
+class OidAddressSpace(val device: SnmpAgentDevice) : AddressSpaceFragment, Lifecycle {
 
     private val filter = SimpleAddressSpaceFilter.create { it.getPath().isOid() }
     private val subscriptionModel =

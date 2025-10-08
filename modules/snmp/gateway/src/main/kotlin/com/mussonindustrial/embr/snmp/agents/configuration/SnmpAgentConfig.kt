@@ -1,15 +1,15 @@
-package com.mussonindustrial.embr.snmp.configuration.extensions
+package com.mussonindustrial.embr.snmp.agents.configuration
 
 import com.inductiveautomation.ignition.gateway.config.ValidationErrors
 import com.inductiveautomation.ignition.gateway.dataroutes.openapi.annotations.*
 import com.inductiveautomation.ignition.gateway.secrets.SecretConfig
 import com.inductiveautomation.ignition.gateway.web.nav.FormFieldType
-import com.mussonindustrial.embr.snmp.configuration.protocols.AuthenticationProtocol
-import com.mussonindustrial.embr.snmp.configuration.protocols.PrivacyProtocol
+import com.mussonindustrial.embr.snmp.protocols.AuthenticationProtocol
+import com.mussonindustrial.embr.snmp.protocols.PrivacyProtocol
 import org.snmp4j.smi.GenericAddress
 import org.snmp4j.smi.OID
 
-interface SnmpDeviceConfig {
+interface SnmpAgentConfig {
     val connectivity: SnmpConnectivityConfig
     val healthcheck: SnmpHealthcheckConfig
 }
