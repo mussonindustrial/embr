@@ -1,7 +1,12 @@
-package com.mussonindustrial.embr.snmp.opc
+package com.mussonindustrial.embr.snmp.agents.opc
 
-import com.mussonindustrial.embr.snmp.devices.SnmpDevice
-import com.mussonindustrial.embr.snmp.requests.*
+import com.mussonindustrial.embr.snmp.agents.devices.SnmpAgentDevice
+import com.mussonindustrial.embr.snmp.opc.DelegatingSubscriptionModel
+import com.mussonindustrial.embr.snmp.requests.OidReadRequest
+import com.mussonindustrial.embr.snmp.requests.OidReadResult
+import com.mussonindustrial.embr.snmp.requests.OidWriteRequest
+import com.mussonindustrial.embr.snmp.requests.OidWriteResult
+import com.mussonindustrial.embr.snmp.requests.toOidWriteResult
 import com.mussonindustrial.embr.snmp.utils.isOid
 import com.mussonindustrial.embr.snmp.utils.toVariable
 import org.eclipse.milo.opcua.sdk.core.AccessLevel
@@ -33,7 +38,7 @@ import org.eclipse.milo.opcua.stack.core.types.structured.WriteValue
 import org.snmp4j.smi.OID
 import org.snmp4j.smi.VariableBinding
 
-class OidAddressSpace(val device: SnmpDevice) : AddressSpaceFragment, Lifecycle {
+class OidAddressSpace(val device: SnmpAgentDevice) : AddressSpaceFragment, Lifecycle {
 
     private val filter = SimpleAddressSpaceFilter.create { it.getPath().isOid() }
     private val subscriptionModel =

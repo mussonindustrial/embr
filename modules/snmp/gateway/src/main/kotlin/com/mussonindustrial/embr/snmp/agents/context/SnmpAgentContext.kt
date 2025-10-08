@@ -1,4 +1,4 @@
-package com.mussonindustrial.embr.snmp.context
+package com.mussonindustrial.embr.snmp.agents.context
 
 import com.inductiveautomation.ignition.common.util.LoggerEx
 import com.inductiveautomation.ignition.gateway.opcua.server.api.DeviceContext
@@ -10,7 +10,7 @@ import org.snmp4j.Target
 import org.snmp4j.smi.Address
 import org.snmp4j.util.PDUFactory
 
-interface SnmpContext<T : SnmpDeviceSettings> : Lifecycle {
+interface SnmpAgentContext<T : SnmpDeviceSettings> : Lifecycle {
     val deviceContext: DeviceContext
     val deviceSettings: DeviceSettingsRecord
     val snmpSettings: T

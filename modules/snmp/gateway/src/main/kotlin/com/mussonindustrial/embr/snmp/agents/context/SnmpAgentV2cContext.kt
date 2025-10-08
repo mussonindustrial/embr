@@ -1,4 +1,4 @@
-package com.mussonindustrial.embr.snmp.context
+package com.mussonindustrial.embr.snmp.agents.context
 
 import com.inductiveautomation.ignition.common.util.LoggerEx
 import com.inductiveautomation.ignition.gateway.opcua.server.api.DeviceContext
@@ -16,7 +16,7 @@ import org.snmp4j.transport.DefaultTcpTransportMapping
 import org.snmp4j.transport.DefaultUdpTransportMapping
 import org.snmp4j.util.DefaultPDUFactory
 
-class SnmpV2cContext(
+class SnmpAgentV2cContext(
     override val deviceContext: DeviceContext,
     override val deviceSettings: DeviceSettingsRecord,
     override val snmpSettings: SnmpV2cDeviceSettings,
