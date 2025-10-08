@@ -88,7 +88,7 @@ data class SnmpCommunityConfig(
     @Label("Write Community")
     @DescriptionKey("Snmp.config.Community.WriteCommunity.Description")
     @FormField(FormFieldType.TEXT)
-    @DefaultValue("public")
+    @DefaultValue("private")
     val write: String?,
 ) {
     fun validate(errors: ValidationErrors.Builder) =
