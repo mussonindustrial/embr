@@ -3,7 +3,6 @@ import {
   JsObject,
 } from '@inductiveautomation/perspective-client'
 import { toUserScript } from '@embr-js/utils'
-import _ from 'lodash'
 import { createScriptingGlobals } from '../scripting'
 
 const MESSAGES = {
@@ -19,17 +18,21 @@ export type JavaScriptRunEvent = {
   args: JsObject
 }
 
-export class ComponentDelegateJavaScriptProxy {
+export class ComponentDelegateJavaScriptProxy<T extends object> {
   private readonly delegate: ComponentStoreDelegate
-  private readonly props?: JsObject
+  private ref: T | undefined
 
-  constructor(delegate: ComponentStoreDelegate, props?: JsObject) {
+  constructor(delegate: ComponentStoreDelegate, ref?: T) {
     this.delegate = delegate
-    this.props = props
+    this.ref = ref
+  }
+
+  setRef(ref?: T) {
+    this.ref = ref
   }
 
   handles(eventName: string) {
-    return eventName == 'js-run'
+    return eventName == MESSAGES.JS_RUN
   }
 
   private resolveSuccess(id: string, data: unknown) {
@@ -69,7 +72,6 @@ export class ComponentDelegateJavaScriptProxy {
 
   handleEvent(event: JavaScriptRunEvent) {
     this.run(event.id, () => {
-      const property = _.get(this.props, event.property)
       const globals = createScriptingGlobals({
         client: this.delegate.component.view.page.parent,
         page: this.delegate.component.view.page,
@@ -77,7 +79,7 @@ export class ComponentDelegateJavaScriptProxy {
         component: this.delegate.component,
       })
 
-      const f = toUserScript(event.function, property, globals)
+      const f = toUserScript(event.function, this.ref, globals)
       return event.args !== undefined ? f.runNamed(event.args) : f()
     })
   }

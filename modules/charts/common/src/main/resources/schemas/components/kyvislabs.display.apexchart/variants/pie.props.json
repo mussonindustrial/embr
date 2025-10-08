@@ -1,0 +1,58 @@
+{
+  "type": "pie",
+  "options": {
+    "chart": {
+      "type": "pie",
+      "width": 380,
+      "events": {
+        "animationEnd": false,
+        "beforeMount": false,
+        "mounted": false,
+        "updated": false,
+        "mouseMove": false,
+        "mouseLeave": false,
+        "click": false,
+        "legendClick": false,
+        "markerClick": false,
+        "xAxisLabelClick": false,
+        "selection": false,
+        "dataPointSelection": false,
+        "dataPointMouseEnter": false,
+        "dataPointMouseLeave": false,
+        "beforeZoom": false,
+        "beforeResetZoom": false,
+        "beforeZoom": false,
+        "zoomed": false,
+        "scrolled": false,
+        "brushScrolled": false
+      }
+    },
+    "labels": [
+      "Team A",
+      "Team B",
+      "Team C",
+      "Team D",
+      "Team E"
+    ],
+    "responsive": [
+      {
+        "breakpoint": 480,
+        "options": {
+          "chart": {
+            "width": 200
+          },
+          "legend": {
+            "position": "bottom"
+          }
+        }
+      }
+    ]
+  },
+  "series": [
+    44,
+    55,
+    13,
+    43,
+    22
+  ]
+}

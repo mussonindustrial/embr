@@ -11,6 +11,7 @@ export default defineConfig(({ mode }) => ({
       fileName: (_, entryName) => {
         return `${packageName}-${entryName}.js`
       },
+      cssFileName: `${packageName}`,
       name: 'EmbrCharts',
       formats: ['umd'],
     },
@@ -30,6 +31,9 @@ export default defineConfig(({ mode }) => ({
         },
       },
     },
+  },
+  define: {
+    'process.env': {},
   },
   test: {
     passWithNoTests: true,

@@ -6,7 +6,7 @@ ignitionModule {
     name.set("Embr Server Sent Events")
     moduleDescription.set("Provides an API for streaming events via SSE.")
     id.set("com.mussonindustrial.embr.sse")
-    fileName.set("Embr-SSE-${version}.modl")
+    fileName.set("Embr-SSE-Ignition81-${version}.modl")
     freeModule.set(true)
     requiredIgnitionVersion.set(libs.versions.ignition)
 
@@ -17,11 +17,12 @@ ignitionModule {
         ),
     )
 
-    moduleDependencies.set(
-        mapOf(
-            "com.inductiveautomation.perspective" to "G",
-        ),
-    )
+    moduleDependencySpecs {
+        register("com.inductiveautomation.perspective") {
+            scope = "G"
+            required = false
+        }
+    }
 
     hooks.putAll(
         mapOf(

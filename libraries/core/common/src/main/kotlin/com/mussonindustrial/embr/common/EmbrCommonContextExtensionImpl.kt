@@ -7,7 +7,7 @@ class EmbrCommonContextExtensionImpl(val context: CommonContext) : EmbrCommonCon
         return try {
             context.getModule(moduleId)
         } catch (_: Throwable) {
-            false
+            null
         }
     }
 

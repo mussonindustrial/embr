@@ -7,7 +7,7 @@ ignitionModule {
     name.set("Embr Charts")
     moduleDescription.set("A collection of enhanced Perspective charting components.")
     id.set("com.mussonindustrial.embr.charts")
-    fileName.set("Embr-Charts-${version}.modl")
+    fileName.set("Embr-Charts-Ignition81-${version}.modl")
     freeModule.set(true)
     requiredIgnitionVersion.set(libs.versions.ignition)
     license.set("license.html")
@@ -20,11 +20,12 @@ ignitionModule {
         ),
     )
 
-    moduleDependencies.set(
-        mapOf(
-            "com.inductiveautomation.perspective" to "GD",
-        ),
-    )
+    moduleDependencySpecs {
+        register("com.inductiveautomation.perspective") {
+            scope = "GD"
+            required = true
+        }
+    }
 
     hooks.putAll(
         mapOf(

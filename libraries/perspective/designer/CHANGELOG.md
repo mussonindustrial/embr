@@ -1,5 +1,11 @@
 # @mussonindustrial/embr-jvm-perspective-designer
 
+## 0.9.0
+
+### Minor Changes
+
+- 36a7970: Properly support default inherited `DesignerComponentDescriptor` methods.
+
 ## 0.8.0
 
 ### Minor Changes

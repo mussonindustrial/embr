@@ -15,7 +15,7 @@ object PeriscopeComponents {
     private val CSS_RESOURCE =
         BrowserResource(
             "embr-periscope-css",
-            "/res/${SHORT_MODULE_ID}/style.css",
+            "/res/${SHORT_MODULE_ID}/embr-periscope.css",
             BrowserResource.ResourceType.CSS,
         )
     val BROWSER_RESOURCES = mutableSetOf(JS_RESOURCE, CSS_RESOURCE)

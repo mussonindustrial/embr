@@ -1,0 +1,110 @@
+{
+  "type": "line",
+  "series": [
+    {
+      "name": "Session Duration",
+      "data": [
+        { "x": "01 Jan", "y": 45 },
+        { "x": "02 Jan", "y": 52 },
+        { "x": "03 Jan", "y": 38 },
+        { "x": "04 Jan", "y": 24 },
+        { "x": "05 Jan", "y": 33 },
+        { "x": "06 Jan", "y": 26 },
+        { "x": "07 Jan", "y": 21 },
+        { "x": "08 Jan", "y": 20 },
+        { "x": "09 Jan", "y": 6 },
+        { "x": "10 Jan", "y": 8 },
+        { "x": "11 Jan", "y": 15 },
+        { "x": "12 Jan", "y": 10 }
+      ]
+    },
+    {
+      "name": "Page Views",
+      "data": [
+        { "x": "01 Jan", "y": 35 },
+        { "x": "02 Jan", "y": 41 },
+        { "x": "03 Jan", "y": 62 },
+        { "x": "04 Jan", "y": 42 },
+        { "x": "05 Jan", "y": 13 },
+        { "x": "06 Jan", "y": 18 },
+        { "x": "07 Jan", "y": 29 },
+        { "x": "08 Jan", "y": 37 },
+        { "x": "09 Jan", "y": 36 },
+        { "x": "10 Jan", "y": 51 },
+        { "x": "11 Jan", "y": 32 },
+        { "x": "12 Jan", "y": 35 }
+      ]
+    },
+    {
+      "name": "Total Visits",
+      "data": [
+        { "x": "01 Jan", "y": 87 },
+        { "x": "02 Jan", "y": 57 },
+        { "x": "03 Jan", "y": 74 },
+        { "x": "04 Jan", "y": 99 },
+        { "x": "05 Jan", "y": 75 },
+        { "x": "06 Jan", "y": 38 },
+        { "x": "07 Jan", "y": 62 },
+        { "x": "08 Jan", "y": 47 },
+        { "x": "09 Jan", "y": 82 },
+        { "x": "10 Jan", "y": 56 },
+        { "x": "11 Jan", "y": 45 },
+        { "x": "12 Jan", "y": 47 }
+      ]
+    }
+  ],
+  "options": {
+    "chart": {
+      "zoom": {
+        "enabled": false
+      }
+    },
+    "dataLabels": {
+      "enabled": false
+    },
+    "stroke": {
+      "width": [5, 7, 5],
+      "curve": "straight",
+      "dashArray": [0, 8, 5]
+    },
+    "title": {
+      "align": "left",
+      "text": "Line Chart"
+    },
+    "legend": {
+      "tooltipHoverFormatter": "(val, opts) => val + ' - <strong>' + opts.w.globals.series[opts.seriesIndex][opts.dataPointIndex] + '</strong>'"
+    },
+    "markers": {
+      "size": 0,
+      "hover": {
+        "sizeOffset": 6
+      }
+    },
+    "xaxis": {
+      "position": "bottom"
+    },
+    "tooltip": {
+      "y": [
+        {
+          "title": {
+            "formatter": "val => val + ' (mins)'"
+          }
+        },
+        {
+          "title": {
+            "formatter": "val => val + ' per session'"
+          }
+        },
+        {
+          "title": {
+            "formatter": "val => val"
+          }
+        }
+      ]
+    },
+    "grid": {
+      "borderColor": "#f1f1f1"
+    }
+  },
+  "style": {}
+}

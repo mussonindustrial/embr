@@ -1,5 +1,52 @@
 # @embr-modules/periscope
 
+## 0.9.0
+
+### Minor Changes
+
+- 6a74904: Rename `style.css` to `embr-periscope.css` to match new Vite defaults.
+
+### Patch Changes
+
+- Updated dependencies [6a74904]
+- Updated dependencies [3b22851]
+- Updated dependencies [3b22851]
+  - @embr-modules/periscope-web@0.9.0
+
+## 0.8.2
+
+### Patch Changes
+
+- 92c744f: Fake changeset.
+  - @embr-modules/periscope-web@0.8.2
+
+## 0.8.1
+
+### Patch Changes
+
+- 48ac511: (JsonView Component) Do not attempt to initialize a view without a root component.
+  - @embr-modules/periscope-web@0.8.1
+
+## 0.8.0
+
+### Patch Changes
+
+- 36a7970: Migrate from deprecated `moduleDependencies` to supported `moduleDependencySpecs` in `build.gradle.kts`.
+- Updated dependencies [36a7970]
+- Updated dependencies [36a7970]
+  - @embr-jvm/perspective-gateway@0.9.0
+  - @embr-modules/periscope-web@0.8.0
+  - @embr-jvm/perspective-designer@0.9.0
+  - @embr-jvm/perspective-common@0.9.0
+
+## 0.7.5
+
+### Patch Changes
+
+- 8ae60a4: (Swiper Component) Add JavaScript proxy support via `component.getJavaScriptProxy('swiper')`.
+- Updated dependencies [8ae60a4]
+  - @embr-modules/periscope-web@0.7.5
+
 ## 0.7.4
 
 ### Patch Changes
@@ -18,18 +65,15 @@
 
 - 3ea4d36: (FlexRepeaterPlus) Add instance `key` as an implicit parameter to the instance view.
 - 1bd2a1a: (FlexRepeaterPlus) Improve ViewModel caching.
-
   - Move ViewModel caching from the instance level to the component level, allowing the ViewModel reference to be retained for the lifetime of the component.
   - Previously, a ViewModel instance was only cached for the lifetime of its associated InstancePropsHandler, and not much care was taken to remember InstancePropsHandlers.
 
   This resolves a bug that would occur when simultaneously (in a single update to `props.instances`):
-
   1. Moving existing instances.
   2. Adding new instances.
   3. Changing the final size of the instances array.
 
 - 3b53009: (Toasts) Move `pointerEvents` setting from inline styles to CSS.
-
   - This makes it easier for users to use the `style` property of the toast function.
   - Users no longer need to add `pointerEvents: 'all'` to every inline style definition.
 
@@ -42,7 +86,6 @@
 ### Patch Changes
 
 - 40ad4a7: Fix Perspective component schema validation errors on startup. #265
-
   - This patch uses `DelegatedClassLoader` to simultaneously resolve schema definitions from both Perspective's and our own resources.
 
 - Updated dependencies [40ad4a7]
@@ -55,7 +98,6 @@
 ### Patch Changes
 
 - 7d41dd1: Perspective Toasts have been changed to respect mounted docked views.
-
   - Toasts are now contained within the center viewport.
   - @embr-modules/periscope-web@0.7.1
 
@@ -83,7 +125,6 @@
 
   This helper function enabled easier creation of views in user supplied JavaScript.
   The minimum set of parameters provided by the user is:
-
   - `resourcePath` - Path to the view.
   - `mountPath` - The unique mount path of the view. Must be stable.
 
@@ -182,7 +223,6 @@
 - 7f90e53: (BREAKING) New `this` and global context.
 
   In `system.perspective.runJavaScript~` functions:
-
   1. `this` is now a reference to the `clientStore`.
   2. A new Perspective specific namespace, accessible through the global `perspective` object is provided.
      - This object contains a `context` that can be used to access the `clientStore` (i.e. `perspective.context.client`).

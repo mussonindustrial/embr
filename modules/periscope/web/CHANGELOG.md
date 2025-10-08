@@ -1,5 +1,54 @@
 # @mussonindustrial/embr-js-chart-js
 
+## 0.9.0
+
+### Minor Changes
+
+- 6a74904: Rename `style.css` to `embr-periscope.css` to match new Vite defaults.
+
+### Patch Changes
+
+- 3b22851: Pin all JavaScript dependencies to _exact_ version matches, with minor bumps from current versions.
+- 3b22851: Move development and common dependencies to the root `package.json`.
+- Updated dependencies [3b22851]
+- Updated dependencies [3b22851]
+  - @embr-js/perspective-client@0.6.1
+  - @embr-js/utils@0.6.1
+
+## 0.8.2
+
+## 0.8.1
+
+### Patch Changes
+
+- Updated dependencies [0db6cfc]
+- Updated dependencies [0db6cfc]
+- Updated dependencies [0db6cfc]
+  - @embr-js/perspective-client@0.6.0
+
+## 0.8.0
+
+### Minor Changes
+
+- 36a7970: **(JavaScript Proxy)** `getJavaScriptProxy` no longer requires a `propertyName`.
+
+  Previously, `getJavaScriptProxy(propertyName)` allowed a component delegate to proxy multiple properties. However, since users couldn't interact with multiple proxy targets simultaneously, this design proved ineffective—requiring multiple proxy objects for multiple properties.
+
+  Now, a component delegate may only return a single proxied object. This encourages bundling proxyable state into one object, improving usability for component consumers.
+
+  The `getJavaScriptProxy(propertyName)` overload is still supported, but the `propertyName` is ignored.
+
+### Patch Changes
+
+- Updated dependencies [36a7970]
+  - @embr-js/perspective-client@0.5.0
+
+## 0.7.5
+
+### Patch Changes
+
+- 8ae60a4: (Swiper Component) Add JavaScript proxy support via `component.getJavaScriptProxy('swiper')`.
+
 ## 0.7.4
 
 ## 0.7.3
@@ -8,7 +57,6 @@
 
 - 3ea4d36: (FlexRepeaterPlus) Add instance `key` as an implicit parameter to the instance view.
 - 3b53009: (Toasts) Move `pointerEvents` setting from inline styles to CSS.
-
   - This makes it easier for users to use the `style` property of the toast function.
   - Users no longer need to add `pointerEvents: 'all'` to every inline style definition.
 
@@ -40,7 +88,6 @@
 
   This helper function enabled easier creation of views in user supplied JavaScript.
   The minimum set of parameters provided by the user is:
-
   - `resourcePath` - Path to the view.
   - `mountPath` - The unique mount path of the view. Must be stable.
 

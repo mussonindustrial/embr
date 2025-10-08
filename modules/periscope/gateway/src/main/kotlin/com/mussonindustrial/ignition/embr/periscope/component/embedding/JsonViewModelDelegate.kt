@@ -1,7 +1,6 @@
 package com.mussonindustrial.ignition.embr.periscope.component.embedding
 
 import com.inductiveautomation.ignition.common.gson.JsonObject
-import com.inductiveautomation.ignition.common.util.LogUtil
 import com.inductiveautomation.perspective.common.api.PropertyType
 import com.inductiveautomation.perspective.common.config.ViewConfig
 import com.inductiveautomation.perspective.common.property.Origin
@@ -22,7 +21,6 @@ import java.util.*
 
 class JsonViewModelDelegate(component: Component) : ComponentModelDelegate(component) {
 
-    private val log = LogUtil.getModuleLogger("embr-periscope", "JsonViewModelDelegate")
     private val context = PeriscopeGatewayContext.instance
     private val props = PropsHandler(component.getPropertyTreeOf(PropertyType.props)!!)
     private val viewLoader = context.getViewLoader(component.page as PageModel)
@@ -81,6 +79,11 @@ class JsonViewModelDelegate(component: Component) : ComponentModelDelegate(compo
     }
 
     private fun initializeView() {
+        if (props.viewConfig.root == null) {
+            log.debugf("No root component for view.")
+            return
+        }
+
         val page = (component.page as PageModel)
         val viewId = ViewInstanceId(props.resourcePath, props.mountPath)
 
@@ -154,12 +157,12 @@ class JsonViewModelDelegate(component: Component) : ComponentModelDelegate(compo
     inner class PropsHandler(val tree: PropertyTree) {
         val viewJson: JsonObject
             get() {
-                val viewPath = tree.read("viewJson")
-                if (viewPath.isEmpty) {
+                val viewJson = tree.read("viewJson")
+                if (viewJson.isEmpty) {
                     return JsonObject()
                 }
 
-                return toJsonDeep(viewPath.get()).asJsonObject
+                return toJsonDeep(viewJson.get()).asJsonObject
             }
 
         val viewConfig: ViewConfig

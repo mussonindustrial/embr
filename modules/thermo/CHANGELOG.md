@@ -1,5 +1,11 @@
 # @embr-modules/thermo
 
+## 1.0.5
+
+### Patch Changes
+
+- 92c744f: Fake changeset.
+
 ## 1.0.4
 
 ### Patch Changes

@@ -1,0 +1,55 @@
+{
+  "type": "object",
+  "properties": {
+    "dataPointIndex": {
+      "type": "number",
+      "description": "The datapoint index"
+    },
+    "seriesIndex": {
+      "type": "number",
+      "description": "The series index"
+    },
+    "labelIndex": {
+      "type": "number",
+      "description": "The label index"
+    },
+    "mouseEvent": {
+      "type": "object",
+      "description": "The mouse event",
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "The type of mouse event"
+        },
+        "x": {
+          "type": "number",
+          "description": "The X coordinate of the mouse pointer in local (DOM content) coordinates"
+        },
+        "y": {
+          "type": "number",
+          "description": "The Y coordinate of the mouse pointer in local (DOM content) coordinates"
+        },
+        "screenX": {
+          "type": "number",
+          "description": "The X coordinate of the mouse pointer in global (screen) coordinates"
+        },
+        "screenY": {
+          "type": "number",
+          "description": "The Y coordinate of the mouse pointer in global (screen) coordinates"
+        },
+        "altKey": {
+          "type": "boolean",
+          "description": "Returns true if the alt key was down when the mouse event was fired"
+        },
+        "ctrlKey": {
+          "type": "boolean",
+          "description": "Returns true if the control key was down when the mouse event was fired"
+        },
+        "shiftKey": {
+          "type": "boolean",
+          "description": "Returns true if the shift key was down when the mouse event was fired"
+        }
+      }
+    }
+  }
+}

@@ -1,5 +1,91 @@
 # @mussonindustrial/embr-js-chart-js
 
+## 3.1.0
+
+### Minor Changes
+
+- 9216f8b: (Chart.js Component) - Reperform property transformations when the chart's parent is changed.
+  - This allows CSS properties to correctly resolve to the parent element.
+  - Resolves #354.
+
+## 3.0.10
+
+### Patch Changes
+
+- 4c53074: ApexCharts (Legacy) - Fix bug #347 that would cause the chart to not detect changes to series/options.
+  - This patch updates the legacy component to use the change detection mechanism from the non-legacy component.
+- 3b22851: Pin all JavaScript dependencies to _exact_ version matches, with minor bumps from current versions.
+- 3b22851: Move development and common dependencies to the root `package.json`.
+- Updated dependencies [3b22851]
+- Updated dependencies [3b22851]
+  - @embr-js/perspective-client@0.6.1
+  - @embr-js/utils@0.6.1
+
+## 3.0.9
+
+## 3.0.8
+
+## 3.0.7
+
+## 3.0.6
+
+### Patch Changes
+
+- ae20d04: Fake changeset
+
+## 3.0.5
+
+## 3.0.4
+
+## 3.0.3
+
+## 3.0.2
+
+### Patch Changes
+
+- 151a940: (ApexCharts Component) Use type specific `PropertyTree` accessors.
+- 151a940: (ApexCharts Component) Specify that the default schema should contain an empty `series` array.
+  - This resolves an issue that would occur when rendering a Radar chart with non-persistent bindings. https://forum.inductiveautomation.com/t/musson-industrial-s-embr-charts-module/91618/271
+
+## 3.0.1
+
+### Patch Changes
+
+- Updated dependencies [0db6cfc]
+- Updated dependencies [0db6cfc]
+- Updated dependencies [0db6cfc]
+  - @embr-js/perspective-client@0.6.0
+
+## 3.0.0
+
+### Major Changes
+
+- 36a7970: **(JavaScript Proxy)** `getJavaScriptProxy` no longer requires a `propertyName`.
+
+  Previously, `getJavaScriptProxy(propertyName)` allowed a component delegate to proxy multiple properties. However, since users couldn't interact with multiple proxy targets simultaneously, this design proved ineffective—requiring multiple proxy objects for multiple properties.
+
+  Now, a component delegate may only return a single proxied object. This encourages bundling proxyable state into one object, improving usability for component consumers.
+
+  The `getJavaScriptProxy(propertyName)` overload is still supported, but the `propertyName` is ignored.
+
+- 36a7970: Add ApexCharts (Legacy) component.
+  - This component is a one-for-one replacement of the ApexCharts component from the [Kyvis-Labs/ignition-apexcharts-module](https://github.com/Kyvis-Labs/ignition-apexcharts-module).
+  - This component matches the behavior, features, and property schema of the original Kyvis-Labs component version `1.0.23`.
+  - If both the Kyvis-Labs module and Embr-Charts are installed simultaneously, Embr-Charts will register and use the ApexCharts (Legacy) component in place of the Kyvis-Labs version, effectively overriding it to ensure compatibility and consistency.
+
+- 36a7970: Add `ApexCharts` component.
+  - This is a new implementation of the `ApexCharts` charting library as an Ignition component.
+  - Benefits over the `Legacy` component include:
+    - Simplified rendering lifecycle (i.e. quicker to render/update)
+    - JavaScript proxy support for direct chart interaction.
+    - Improved designer property schema support.
+    - Expanded selection of default component variants.
+
+### Patch Changes
+
+- Updated dependencies [36a7970]
+  - @embr-js/perspective-client@0.5.0
+
 ## 2.2.6
 
 ### Patch Changes
@@ -49,7 +135,6 @@
 - 69904f1: Add DOM and Lifecycle event properties.
 
   Two new component events categories have been provided; DOM events and Lifecycle events.
-
   - Lifecycle events: `onMount`, `onRender`, and `onUnmount` events.
   - DOM events: `onCopy`, `onCut`, `onPaste`, `onCompositionEnd`, `onCompositionStart`, `onCompositionUpdate`, `onFocus`, `onBlur`, `onChange`, `onBeforeInput`, `onInput`, `onReset`, `onSubmit`, `onInvalid`, `onLoad`, `onError`, `onKeyDown`, `onKeyPress`, `onKeyUp`, `onAbort`, `onCanPlay`, `onCanPlayThrough`, `onDurationChange`, `onEmptied`, `onEncrypted`, `onEnded`, `onLoadedData`, `onLoadedMetadata`, `onPause`, `onPlay`, `onPlaying`, `onProgress`, `onRateChange`, `onResize`, `onSeeked`, `onSeeking`, `onStalled`, `onSuspend`, `onTimeUpdate`, `onVolumeChange`, `onWaiting`, `onAuxClick`, `onClick`, `onContextMenu`, `onDoubleClick`, `onDrag`, `onDragEnd`, `onDragEnter`, `onDragExit`, `onDragLeave`, `onDragOver`, `onDragStart`, `onDrop`, `onMouseDown`, `onMouseEnter`, `onMouseLeave`, `onMouseMove`, `onMouseOut`, `onMouseOver`, `onMouseUp`, `onSelect`, `onTouchCancel`, `onTouchEnd`, `onTouchMove`, `onTouchStart`, `onPointerDown`, `onPointerMove`, `onPointerUp`, `onPointerCancel`, `onPointerEnter`, `onPointerLeave`, `onPointerOver`, `onPointerOut`, `onScroll`, `onWheel`, `onAnimationStart`, `onAnimationEnd`, `onAnimationIteration`, and `onTransitionEnd`.
 

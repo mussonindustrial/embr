@@ -1,0 +1,87 @@
+{
+  "type": "bar",
+  "series": [
+    {
+      "name": "Net Profit",
+      "data": [
+        { "x": "Feb", "y": 44 },
+        { "x": "Mar", "y": 55 },
+        { "x": "Apr", "y": 57 },
+        { "x": "May", "y": 56 },
+        { "x": "Jun", "y": 61 },
+        { "x": "Jul", "y": 58 },
+        { "x": "Aug", "y": 63 },
+        { "x": "Sep", "y": 60 },
+        { "x": "Oct", "y": 66 }
+      ]
+    },
+    {
+      "name": "Revenue",
+      "data": [
+        { "x": "Feb", "y": 76 },
+        { "x": "Mar", "y": 85 },
+        { "x": "Apr", "y": 101 },
+        { "x": "May", "y": 98 },
+        { "x": "Jun", "y": 87 },
+        { "x": "Jul", "y": 105 },
+        { "x": "Aug", "y": 91 },
+        { "x": "Sep", "y": 114 },
+        { "x": "Oct", "y": 94 }
+      ]
+    },
+    {
+      "name": "Free Cash Flow",
+      "data": [
+        { "x": "Feb", "y": 35 },
+        { "x": "Mar", "y": 41 },
+        { "x": "Apr", "y": 36 },
+        { "x": "May", "y": 26 },
+        { "x": "Jun", "y": 45 },
+        { "x": "Jul", "y": 48 },
+        { "x": "Aug", "y": 52 },
+        { "x": "Sep", "y": 53 },
+        { "x": "Oct", "y": 41 }
+      ]
+    }
+  ],
+  "options": {
+    "chart": {},
+    "plotOptions": {
+      "bar": {
+        "horizontal": false,
+        "columnWidth": "75%",
+        "borderRadius": 2,
+        "borderRadiusApplication": "end"
+      }
+    },
+    "dataLabels": {
+      "enabled": false
+    },
+    "title": {
+      "align": "left",
+      "text": "Column Chart"
+    },
+    "stroke": {
+      "show": true,
+      "width": 2,
+      "colors": ["transparent"]
+    },
+    "xaxis": {
+      "categories": ["Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct"]
+    },
+    "yaxis": {
+      "title": {
+        "text": "$ (thousands)"
+      }
+    },
+    "fill": {
+      "opacity": 1
+    },
+    "tooltip": {
+      "y": {
+        "formatter": "(val) => '$ ' + val + ' thousands'"
+      }
+    }
+  },
+  "style": {}
+}

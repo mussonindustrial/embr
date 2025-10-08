@@ -21,6 +21,7 @@ import {
   ComponentLifecycleEvents,
   getScriptTransform,
   useComponentEvents,
+  useRefLifecycleEvents,
   waitForClientStore,
 } from '@embr-js/perspective-client'
 import {
@@ -30,7 +31,6 @@ import {
   PreferredLocation,
   SelectionStore,
 } from '@inductiveautomation/perspective-designer'
-import useRefLifecycleEvents from '@embr-js/perspective-client/src/hooks/useRefLifecycleEvents'
 
 const COMPONENT_TYPE = 'embr.periscope.embedding.portal'
 

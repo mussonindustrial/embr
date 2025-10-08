@@ -12,11 +12,11 @@
   ],
   "linked": [],
   "access": "public",
-  "baseBranch": "main",
+  "baseBranch": "8.1/main",
   "updateInternalDependencies": "patch",
   "ignore": [],
   "privatePackages": {
     "version": true,
-    "tag": false
+    "tag": true
   }
 }
