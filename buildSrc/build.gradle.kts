@@ -13,6 +13,6 @@ repositories {
 dependencies {
     implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:2.1.21")
     implementation("com.github.node-gradle:gradle-node-plugin:7.1.0")
-    implementation("gradle.plugin.io.ia.sdk:gradle-module-plugin:0.4.1")
+    implementation("gradle.plugin.io.ia.sdk:gradle-module-plugin:0.5.0")
     implementation("com.diffplug.spotless:spotless-plugin-gradle:8.0.0")
 }
