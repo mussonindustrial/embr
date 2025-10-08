@@ -7,11 +7,11 @@ ia-gson = "2.10.1"
 jetty = "12.0.7"
 if97 = "2.0.0"
 snmp4j = "3.9.3"
-spotless = "7.0.4"
+spotless = "8.0.0"
 
 [plugins]
 kotlin = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
-modl = { id = "io.ia.sdk.modl", version = "0.4.1" }
+modl = { id = "io.ia.sdk.modl", version = "0.5.0" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 
 [libraries]
