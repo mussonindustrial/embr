@@ -53,10 +53,12 @@ class JavaScriptFunctions(private val context: PeriscopeGatewayContext) :
         )
     }
 
+    @Suppress("UNUSED_PARAMETER")
     private fun onJavaScriptResolve(messageChannel: MessageChannel, message: JavaScriptResolveMsg) {
         requestsInProgress[message.id]?.complete(message.getValue())
     }
 
+    @Suppress("UNUSED_PARAMETER")
     private fun onJavaScriptError(messageChannel: MessageChannel, message: JavaScriptErrorMsg) {
         requestsInProgress[message.id]?.completeExceptionally(message.getError())
     }

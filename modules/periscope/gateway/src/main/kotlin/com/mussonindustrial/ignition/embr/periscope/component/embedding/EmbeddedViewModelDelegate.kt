@@ -209,7 +209,7 @@ class EmbeddedViewModelDelegate(component: Component) : ComponentModelDelegate(c
 
         val mountPath: String
             get() {
-                return "${component.view?.id?.mountPath}.${component.componentAddressPath}"
+                return "${component.view.id?.mountPath}.${component.componentAddressPath}"
             }
     }
 }

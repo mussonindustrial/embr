@@ -349,7 +349,7 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
 
         val mountPath: String
             get() {
-                return "${component.view?.id?.mountPath}$${component.componentAddressPath}.$key"
+                return "${component.view.id?.mountPath}$${component.componentAddressPath}.$key"
             }
 
         fun onView(block: (ViewModel) -> Unit) {
