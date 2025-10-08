@@ -5,7 +5,7 @@
 [![Ignition](https://img.shields.io/badge/Ignition-8.1.33+-rebeccapurple.svg)](https://inductiveautomation.com/)
 [![Documentation](https://img.shields.io/badge/Documentation-docs.mussonindustrial.com-white.svg?logo=docusaurus)](https://docs.mussonindustrial.com/ignition/embr-snmp)
 
-Embr-SNMP provides a set of OPC UA device drivers for SNMPv1, SNMPv2c, and SNMPv3.
+A module for Ignition that provides a set of OPC UA drivers for SNMPv1, SNMPv2c, and SNMPv3 devices.
 
 ## Getting Started
 
@@ -15,10 +15,6 @@ Embr-SNMP provides a set of OPC UA device drivers for SNMPv1, SNMPv2c, and SNMPv
 ### Module Documentation
 
 - [Module documentation] is available at [docs.mussonindustrial.com].
-
-### Component Directory
-
-### Scripting Directory
 
 ## Changelog
 
