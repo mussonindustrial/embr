@@ -16,7 +16,7 @@
     <img src="https://img.shields.io/badge/kotlin-2.1.21-blue.svg?logo=kotlin">
   </a>
   <a href="https://inductiveautomation.com/">
-    <img src="https://img.shields.io/badge/Ignition-8.3.0&#8211beta-rebeccapurple.svg">
+    <img src="https://img.shields.io/badge/Ignition-8.3.0-rebeccapurple.svg">
   </a>
   <a href="https://github.com/mussonindustrial/embr/blob/main/LICENSE">
     <img src="https://img.shields.io/badge/License-MIT-yellow.svg">
