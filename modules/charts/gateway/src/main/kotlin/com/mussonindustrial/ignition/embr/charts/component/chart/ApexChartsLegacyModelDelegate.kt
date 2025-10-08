@@ -311,6 +311,7 @@ class ApexChartsLegacyModelDelegate(component: Component) : ComponentModelDelega
         }
     }
 
+    @Suppress("UNUSED_PARAMETER")
     private inner class ApexDataFetch(session: Session, val json: JsonElement) : Fetchable {
 
         @Throws(IOException::class)
