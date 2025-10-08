@@ -1,6 +1,6 @@
 
 plugins {
-    id("embr.ignition-module-conventions")
+    id("embr.build.ignition-module")
 }
 
 ignitionModule {
@@ -9,7 +9,7 @@ ignitionModule {
     id.set("com.mussonindustrial.embr.periscope")
     fileName.set("Embr-Periscope-Ignition81-${version}.modl")
     freeModule.set(true)
-    requiredIgnitionVersion.set(libs.versions.ignition)
+    requiredIgnitionVersion.set(libs.versions.ignition.sdk)
     license.set("license.html")
 
     projectScopes.putAll(
