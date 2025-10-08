@@ -3,8 +3,8 @@ plugins {
 }
 
 ignitionModule {
-    name.set("Embr SNMP Driver")
-    moduleDescription.set("Driver for connecting to devices over SNMP.")
+    name.set("Embr SNMP Drivers")
+    moduleDescription.set("Drivers for connecting to devices over SNMP.")
     id.set("com.mussonindustrial.embr.snmp")
     fileName.set("Embr-SNMP-Ignition81-${version}.modl")
     freeModule.set(true)
