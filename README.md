@@ -39,7 +39,7 @@
 | [Thermodynamics](modules/thermo/README.md) | Scripting functions for computing thermodynamic properties.                           | [![version](https://img.shields.io/github/package-json/v/mussonindustrial/embr/8.1%2Fmain?filename=modules%2Fthermo%2Fpackage.json&style=for-the-badge&label=version)](modules/thermo/CHANGELOG.md)          |
 | [SNMP](modules/snmp/README.md)             | Provides a set of OPC UA drivers for SNMPv1, SNMPv2c, and SNMPv3 devices.             | [![version](https://img.shields.io/github/package-json/v/mussonindustrial/embr/8.1%2Fmain?filename=modules%2Fsnmp%2Fpackage.json&style=for-the-badge&label=version)](modules/snmp/CHANGELOG.md)              |
 
-</div>s
+</div>
 
 ## Build
 
