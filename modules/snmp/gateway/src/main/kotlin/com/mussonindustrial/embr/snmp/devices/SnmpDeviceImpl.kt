@@ -3,6 +3,7 @@ package com.mussonindustrial.embr.snmp.devices
 import com.inductiveautomation.ignition.common.util.LoggerEx
 import com.mussonindustrial.embr.snmp.SnmpGatewayContext
 import com.mussonindustrial.embr.snmp.configuration.extensions.SnmpDeviceConfig
+import com.mussonindustrial.embr.snmp.context.SnmpContext
 import com.mussonindustrial.embr.snmp.opc.DeviceAddressSpace
 import com.mussonindustrial.embr.snmp.opc.DiagnosticAddressSpace
 import com.mussonindustrial.embr.snmp.opc.OidAddressSpace
@@ -10,7 +11,6 @@ import com.mussonindustrial.embr.snmp.requests.OidReadResult
 import com.mussonindustrial.embr.snmp.requests.OidWriteResult
 import com.mussonindustrial.embr.snmp.requests.toOidReadResult
 import com.mussonindustrial.embr.snmp.requests.toOidWriteResult
-import com.mussonindustrial.embr.snmp.utils.addLifecycle
 import com.mussonindustrial.embr.snmp.utils.createSizeBoundedPDUs
 import com.mussonindustrial.embr.snmp.utils.toDataValue
 import java.util.concurrent.TimeUnit
@@ -31,13 +31,13 @@ class SnmpDeviceImpl<T : SnmpDeviceConfig>(override val context: SnmpContext<T>)
 
     val logger: LoggerEx = context.logger.createSubLogger(this::class.java)
 
-    var status: SnmpDevice.Status = SnmpDevice.Status.DISCONNECTED
+    override var status: SnmpDevice.Status = SnmpDevice.Status.DISCONNECTED
         private set
 
     val healthcheck = Healthcheck()
 
-    val deviceAddressSpace = DeviceAddressSpace(this)
-    val diagnosticAddressSpace = DiagnosticAddressSpace(this)
+    val deviceAddressSpace = DeviceAddressSpace(this, this)
+    val diagnosticAddressSpace = DiagnosticAddressSpace(this, this)
     val oidAddressSpace = OidAddressSpace(this)
 
     init {
@@ -60,11 +60,13 @@ class SnmpDeviceImpl<T : SnmpDeviceConfig>(override val context: SnmpContext<T>)
     override fun startup() {
         logger.debug("Starting up...")
         lifecycleManager.startup()
+        register(oidAddressSpace)
     }
 
     override fun shutdown() {
         logger.debug("Shutting down...")
         lifecycleManager.shutdown()
+        unregister(oidAddressSpace)
     }
 
     override fun read(reads: List<VariableBinding>): List<OidReadResult> {

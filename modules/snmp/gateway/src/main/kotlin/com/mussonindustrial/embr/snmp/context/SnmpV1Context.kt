@@ -1,10 +1,10 @@
-package com.mussonindustrial.embr.snmp.devices
+package com.mussonindustrial.embr.snmp.context
 
 import com.inductiveautomation.ignition.common.util.LoggerEx
 import com.inductiveautomation.ignition.gateway.opcua.server.api.DeviceContext
 import com.inductiveautomation.ignition.gateway.opcua.server.api.DeviceProfileConfig
 import com.mussonindustrial.embr.common.logging.getLoggerEx
-import com.mussonindustrial.embr.snmp.configuration.extensions.SnmpV2cExtensionPoint.Config
+import com.mussonindustrial.embr.snmp.configuration.extensions.SnmpV1ExtensionPoint.Config
 import org.snmp4j.CommunityTarget
 import org.snmp4j.Snmp
 import org.snmp4j.Target
@@ -16,7 +16,7 @@ import org.snmp4j.transport.DefaultTcpTransportMapping
 import org.snmp4j.transport.DefaultUdpTransportMapping
 import org.snmp4j.util.DefaultPDUFactory
 
-class SnmpV2cContext(
+class SnmpV1Context(
     override val deviceContext: DeviceContext,
     override val deviceConfig: DeviceProfileConfig,
     override val snmpConfig: Config,
@@ -49,13 +49,13 @@ class SnmpV2cContext(
 
         readTarget =
             CommunityTarget(address, OctetString(snmpConfig.community.read)).apply {
-                version = SnmpConstants.version2c
+                version = SnmpConstants.version1
                 timeout = snmpConfig.connectivity.timeout.toLong()
             }
         writeTarget =
             snmpConfig.community.write?.let {
                 CommunityTarget(address, OctetString(snmpConfig.community.write)).apply {
-                    version = SnmpConstants.version2c
+                    version = SnmpConstants.version1
                     timeout = snmpConfig.connectivity.timeout.toLong()
                 }
             }

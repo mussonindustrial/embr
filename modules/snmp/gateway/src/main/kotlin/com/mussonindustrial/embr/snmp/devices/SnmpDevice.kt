@@ -1,6 +1,7 @@
 package com.mussonindustrial.embr.snmp.devices
 
 import com.inductiveautomation.ignition.gateway.opcua.server.api.Device
+import com.mussonindustrial.embr.snmp.context.SnmpContext
 import com.mussonindustrial.embr.snmp.requests.OidReadResult
 import com.mussonindustrial.embr.snmp.requests.OidWriteResult
 import org.eclipse.milo.opcua.sdk.server.AddressSpaceFragment
@@ -10,6 +11,7 @@ import org.snmp4j.smi.VariableBinding
 interface SnmpDevice : AddressSpaceFragment, Device {
 
     val context: SnmpContext<*>
+    val status: Status
 
     fun read(reads: List<VariableBinding>): List<OidReadResult>
 

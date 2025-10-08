@@ -1,15 +1,16 @@
 package com.mussonindustrial.embr.snmp.opc
 
-import com.mussonindustrial.embr.snmp.devices.SnmpDeviceImpl
+import com.mussonindustrial.embr.snmp.devices.SnmpDevice
 import com.mussonindustrial.embr.snmp.utils.removeAllNodes
 import org.eclipse.milo.opcua.sdk.core.Reference
+import org.eclipse.milo.opcua.sdk.server.AddressSpaceComposite
 import org.eclipse.milo.opcua.sdk.server.Lifecycle
 import org.eclipse.milo.opcua.sdk.server.nodes.UaFolderNode
 import org.eclipse.milo.opcua.stack.core.NodeIds
 import org.eclipse.milo.opcua.stack.core.types.builtin.LocalizedText
 
-class DeviceAddressSpace(device: SnmpDeviceImpl<*>) :
-    SnmpDeviceManagedAddressSpaceFragment(device) {
+class DeviceAddressSpace(device: SnmpDevice, composite: AddressSpaceComposite) :
+    DeviceContextManagedAddressSpaceFragment(device.context.deviceContext, composite) {
 
     private val deviceFolderNode =
         UaFolderNode(

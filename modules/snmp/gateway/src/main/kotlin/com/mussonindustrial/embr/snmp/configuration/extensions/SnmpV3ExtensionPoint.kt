@@ -11,8 +11,8 @@ import com.inductiveautomation.ignition.gateway.opcua.server.api.DeviceProfileCo
 import com.inductiveautomation.ignition.gateway.opcua.server.api.DeviceSettingsRecord
 import com.inductiveautomation.ignition.gateway.web.nav.ExtensionPointResourceForm
 import com.inductiveautomation.ignition.gateway.web.nav.WebUiComponent
+import com.mussonindustrial.embr.snmp.context.SnmpV3Context
 import com.mussonindustrial.embr.snmp.devices.SnmpDeviceImpl
-import com.mussonindustrial.embr.snmp.devices.SnmpV3Context
 import java.util.*
 
 @Suppress("DEPRECATION")

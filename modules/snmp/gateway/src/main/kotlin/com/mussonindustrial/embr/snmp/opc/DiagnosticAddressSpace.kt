@@ -1,9 +1,9 @@
 package com.mussonindustrial.embr.snmp.opc
 
 import com.mussonindustrial.embr.snmp.devices.SnmpDevice
-import com.mussonindustrial.embr.snmp.devices.SnmpDeviceImpl
 import com.mussonindustrial.embr.snmp.utils.removeAllNodes
 import org.eclipse.milo.opcua.sdk.core.Reference
+import org.eclipse.milo.opcua.sdk.server.AddressSpaceComposite
 import org.eclipse.milo.opcua.sdk.server.Lifecycle
 import org.eclipse.milo.opcua.sdk.server.nodes.UaFolderNode
 import org.eclipse.milo.opcua.sdk.server.nodes.UaVariableNode
@@ -15,8 +15,8 @@ import org.eclipse.milo.opcua.stack.core.types.builtin.LocalizedText
 import org.eclipse.milo.opcua.stack.core.types.builtin.NodeId
 import org.eclipse.milo.opcua.stack.core.types.builtin.Variant
 
-class DiagnosticAddressSpace(device: SnmpDeviceImpl<*>) :
-    SnmpDeviceManagedAddressSpaceFragment(device) {
+class DiagnosticAddressSpace(val device: SnmpDevice, composite: AddressSpaceComposite) :
+    DeviceContextManagedAddressSpaceFragment(device.context.deviceContext, composite) {
 
     private val root = "[Diagnostics]"
 

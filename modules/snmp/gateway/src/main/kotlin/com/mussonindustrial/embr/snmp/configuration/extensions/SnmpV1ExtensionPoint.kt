@@ -7,8 +7,8 @@ import com.inductiveautomation.ignition.gateway.dataroutes.openapi.SchemaUtil
 import com.inductiveautomation.ignition.gateway.dataroutes.openapi.annotations.*
 import com.inductiveautomation.ignition.gateway.opcua.server.api.*
 import com.inductiveautomation.ignition.gateway.web.nav.*
+import com.mussonindustrial.embr.snmp.context.SnmpV1Context
 import com.mussonindustrial.embr.snmp.devices.SnmpDeviceImpl
-import com.mussonindustrial.embr.snmp.devices.SnmpV1Context
 import java.util.*
 
 @Suppress("DEPRECATION")

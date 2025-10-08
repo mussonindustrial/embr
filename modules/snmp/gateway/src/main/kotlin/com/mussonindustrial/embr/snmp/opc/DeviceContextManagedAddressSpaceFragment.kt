@@ -1,7 +1,7 @@
 package com.mussonindustrial.embr.snmp.opc
 
 import com.inductiveautomation.ignition.gateway.opcua.server.api.DeviceContext
-import com.mussonindustrial.embr.snmp.devices.SnmpDeviceImpl
+import org.eclipse.milo.opcua.sdk.server.AddressSpaceComposite
 import org.eclipse.milo.opcua.sdk.server.AddressSpaceFilter
 import org.eclipse.milo.opcua.sdk.server.Lifecycle
 import org.eclipse.milo.opcua.sdk.server.ManagedAddressSpaceFragmentWithLifecycle
@@ -13,13 +13,16 @@ import org.eclipse.milo.opcua.sdk.server.util.SubscriptionModel
 import org.eclipse.milo.opcua.stack.core.types.builtin.NodeId
 import org.eclipse.milo.opcua.stack.core.types.builtin.QualifiedName
 
-open class SnmpDeviceManagedAddressSpaceFragment(val device: SnmpDeviceImpl<*>) :
-    ManagedAddressSpaceFragmentWithLifecycle(device.context.deviceContext.server, device),
+open class DeviceContextManagedAddressSpaceFragment(
+    val deviceContext: DeviceContext,
+    composite: AddressSpaceComposite,
+) :
+    ManagedAddressSpaceFragmentWithLifecycle(deviceContext.server, composite),
     Lifecycle,
-    DeviceContext by device.context.deviceContext {
+    DeviceContext by deviceContext {
 
     private val filter = SimpleAddressSpaceFilter.create { nodeManager.containsNode(it) }
-    private val subscriptionModel = SubscriptionModel(device.context.deviceContext.server, this)
+    private val subscriptionModel = SubscriptionModel(deviceContext.server, this)
 
     init {
         lifecycleManager.addLifecycle(subscriptionModel)
