@@ -2,7 +2,7 @@ import com.github.gradle.node.npm.task.NpxTask
 
 plugins {
     base
-    id("com.github.node-gradle.node")
+    alias(libs.plugins.node.gradle)
 }
 
 repositories {

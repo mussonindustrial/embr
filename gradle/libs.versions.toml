@@ -1,44 +1,45 @@
 [versions]
-java = "21"
-kotlin = "2.1.21"
-kotest = "5.9.1"
-ignition = "8.3.0"
 ia-gson = "2.10.1"
-jetty = "12.0.7"
 if97 = "2.0.0"
+ignition-module = "0.5.0"
+ignition-sdk = "8.3.0"
+java = "21"
+jetty = "12.0.7"
+kotlin = "2.1.21"
+kotest = "6.0.0"
+node-gradle = "7.1.0"
 snmp4j = "3.9.3"
 spotless = "8.0.0"
 
 [plugins]
+ignition-module = { id = "io.ia.sdk.modl", version.ref = "ignition-module" }
+kotest = { id = "io.kotest", version.ref = "kotest"}
 kotlin = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
-modl = { id = "io.ia.sdk.modl", version = "0.5.0" }
+node-gradle = { id = "com.github.node-gradle.node", version.ref = "node-gradle" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 
 [libraries]
-kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
-kotlin-stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib", version.ref = "kotlin"}
+if97 = { group = "com.hummeling", name = "if97", version.ref = "if97"}
+ignition-common = { group = "com.inductiveautomation.ignitionsdk", name = "ignition-common", version.ref = "ignition-sdk" }
+ignition-gson = { group = "com.inductiveautomation.ignition", name = "ia-gson", version.ref = "ia-gson"}
+ignition-client-api = { group = "com.inductiveautomation.ignitionsdk", name = "client-api", version.ref = "ignition-sdk" }
+ignition-designer-api = { group = "com.inductiveautomation.ignitionsdk", name = "designer-api", version.ref = "ignition-sdk" }
+ignition-driver-api = { group = "com.inductiveautomation.ignitionsdk", name = "driver-api", version.ref = "ignition-sdk" }
+ignition-gateway-api = { group = "com.inductiveautomation.ignitionsdk", name = "gateway-api", version.ref = "ignition-sdk" }
+ignition-vision-client-api = { group = "com.inductiveautomation.ignitionsdk", name = "vision-client-api", version.ref = "ignition-sdk" }
+ignition-perspective-common = { group = "com.inductiveautomation.ignitionsdk", name = "perspective-common", version.ref = "ignition-sdk" }
+ignition-perspective-designer = { group = "com.inductiveautomation.ignitionsdk", name = "perspective-designer", version.ref = "ignition-sdk" }
+ignition-perspective-gateway = { group = "com.inductiveautomation.ignitionsdk", name = "perspective-gateway", version.ref = "ignition-sdk" }
 jetty-server = { group = "org.eclipse.jetty", name = "jetty-server", version.ref = "jetty" }
 jetty-servlet = { group = "org.eclipse.jetty.ee10", name = "jetty-ee10-servlet", version.ref = "jetty" }
 jetty-servlets = { group = "org.eclipse.jetty.ee10", name = "jetty-ee10-servlets", version.ref = "jetty" }
-ignition-common = { group = "com.inductiveautomation.ignitionsdk", name = "ignition-common", version.ref = "ignition" }
-ignition-gson = { group = "com.inductiveautomation.ignition", name = "ia-gson", version.ref = "ia-gson"}
-ignition-gateway-api = { group = "com.inductiveautomation.ignitionsdk", name = "gateway-api", version.ref = "ignition" }
-ignition-designer-api = { group = "com.inductiveautomation.ignitionsdk", name = "designer-api", version.ref = "ignition" }
-ignition-client-api = { group = "com.inductiveautomation.ignitionsdk", name = "client-api", version.ref = "ignition" }
-ignition-vision-client-api = { group = "com.inductiveautomation.ignitionsdk", name = "vision-client-api", version.ref = "ignition" }
-ignition-driver-api = { group = "com.inductiveautomation.ignitionsdk", name = "driver-api", version.ref = "ignition" }
-ignition-perspective-common = { group = "com.inductiveautomation.ignitionsdk", name = "perspective-common", version.ref = "ignition" }
-ignition-perspective-gateway = { group = "com.inductiveautomation.ignitionsdk", name = "perspective-gateway", version.ref = "ignition" }
-ignition-perspective-designer = { group = "com.inductiveautomation.ignitionsdk", name = "perspective-designer", version.ref = "ignition" }
-if97 = { group = "com.hummeling", name = "if97", version.ref = "if97"}
 snmp4j = { group = "org.snmp4j", name = "snmp4j", version.ref = "snmp4j"}
 
 # test framework
-kotest-junit = { group = "io.kotest", name = "kotest-runner-junit5", version.ref = "kotest" }
 kotest-assertions-core = { group = "io.kotest", name = "kotest-assertions-core", version.ref = "kotest" }
+kotest-junit = { group = "io.kotest", name = "kotest-runner-junit5", version.ref = "kotest" }
 kotest-property = { group = "io.kotest", name = "kotest-property", version.ref = "kotest" }
 kotest-data = { group = "io.kotest", name = "kotest-framework-datatest", version.ref = "kotest" }
-mockk = { group = "io.mockk", name = "mockk", version = "1.14.4" }
 
 [bundles]
 common = [

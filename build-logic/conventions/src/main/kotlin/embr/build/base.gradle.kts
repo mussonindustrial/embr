@@ -1,10 +1,10 @@
+package embr.build
+
 import org.jetbrains.kotlin.gradle.targets.js.npm.fromSrcPackageJson
 
 group = "com.mussonindustrial.embr"
 
-plugins {
-    base
-}
+plugins { base }
 
 repositories {
     mavenCentral()
@@ -14,9 +14,11 @@ repositories {
 }
 
 val packageJsonFile = file("./package.json")
-version = if (packageJsonFile.exists()) {
-    val packageJson = fromSrcPackageJson(file("./package.json"))
-    packageJson?.version ?: "0.0.0-SNAPSHOT"
-} else {
-    "0.0.0-SNAPSHOT"
-}
+
+version =
+    if (packageJsonFile.exists()) {
+        val packageJson = fromSrcPackageJson(file("./package.json"))
+        packageJson?.version ?: "0.0.0-SNAPSHOT"
+    } else {
+        "0.0.0-SNAPSHOT"
+    }
