@@ -48,6 +48,7 @@ class DelegatingSubscriptionModel(
         }
     }
 
+    @Suppress("UNUSED_PARAMETER")
     fun onDataItemsModified(items: List<DataItem>) {
         require(!isNotRunning) { "not running" }
 
@@ -63,6 +64,7 @@ class DelegatingSubscriptionModel(
         }
     }
 
+    @Suppress("UNUSED_PARAMETER")
     fun onMonitoringModeChanged(items: List<MonitoredItem>) {
         require(!isNotRunning) { "not running" }
 

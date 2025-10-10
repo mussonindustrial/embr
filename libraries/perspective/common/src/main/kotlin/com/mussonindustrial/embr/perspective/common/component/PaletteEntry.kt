@@ -38,6 +38,7 @@ fun ComponentBuilder.addPaletteEntry(entry: PaletteEntry): ComponentBuilder {
     return this
 }
 
+@Suppress("UNUSED_PARAMETER")
 fun getImage(clazz: Class<*>, path: String): BufferedImage? {
     val resource = PaletteEntry::class.java.getResource(path)
     resource?.let {
@@ -46,6 +47,7 @@ fun getImage(clazz: Class<*>, path: String): BufferedImage? {
     return null
 }
 
+@Suppress("UNUSED_PARAMETER")
 fun getJsonProps(clazz: Class<*>, path: String): JsonObject {
     return JsonParser.parseReader(
             PaletteEntry::class.java.getResourceAsStream(path)?.let { InputStreamReader(it) }
