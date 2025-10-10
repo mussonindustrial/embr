@@ -19,8 +19,8 @@ export type JavaScriptRunEvent = {
 }
 
 export class ComponentDelegateJavaScriptProxy<T extends object> {
-  private readonly delegate: ComponentStoreDelegate
-  private ref: T | undefined
+  readonly delegate: ComponentStoreDelegate
+  ref: T | undefined
 
   constructor(delegate: ComponentStoreDelegate, ref?: T) {
     this.delegate = delegate
