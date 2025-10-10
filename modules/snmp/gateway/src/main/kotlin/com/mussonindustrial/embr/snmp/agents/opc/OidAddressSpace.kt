@@ -1,7 +1,6 @@
 package com.mussonindustrial.embr.snmp.agents.opc
 
 import com.mussonindustrial.embr.snmp.agents.devices.SnmpAgentDevice
-import com.mussonindustrial.embr.snmp.opc.DelegatingSubscriptionModel
 import com.mussonindustrial.embr.snmp.requests.OidReadRequest
 import com.mussonindustrial.embr.snmp.requests.OidReadResult
 import com.mussonindustrial.embr.snmp.requests.OidWriteRequest

@@ -4,9 +4,9 @@ import com.inductiveautomation.ignition.common.util.LoggerEx
 import com.inductiveautomation.ignition.gateway.opcua.server.api.DeviceContext
 import com.inductiveautomation.ignition.gateway.opcua.server.api.DeviceSettingsRecord
 import com.mussonindustrial.embr.common.logging.getLoggerEx
-import com.mussonindustrial.embr.snmp.configuration.protocols.AuthenticationProtocol
-import com.mussonindustrial.embr.snmp.configuration.protocols.PrivacyProtocol
-import com.mussonindustrial.embr.snmp.configuration.settings.SnmpV3DeviceSettings
+import com.mussonindustrial.embr.snmp.agents.configuration.settings.SnmpAgentV3DeviceSettings
+import com.mussonindustrial.embr.snmp.protocols.AuthenticationProtocol
+import com.mussonindustrial.embr.snmp.protocols.PrivacyProtocol
 import org.snmp4j.DirectUserTarget
 import org.snmp4j.Snmp
 import org.snmp4j.Target
@@ -20,8 +20,8 @@ import org.snmp4j.util.DefaultPDUFactory
 class SnmpAgentV3Context(
     override val deviceContext: DeviceContext,
     override val deviceSettings: DeviceSettingsRecord,
-    override val snmpSettings: SnmpV3DeviceSettings,
-) : SnmpContext<SnmpV3DeviceSettings> {
+    override val snmpSettings: SnmpAgentV3DeviceSettings,
+) : SnmpAgentContext<SnmpAgentV3DeviceSettings> {
 
     override val logger: LoggerEx =
         this.getLoggerEx(

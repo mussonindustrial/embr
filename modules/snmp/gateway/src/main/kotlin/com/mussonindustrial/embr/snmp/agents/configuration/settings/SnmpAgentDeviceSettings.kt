@@ -1,6 +1,6 @@
-package com.mussonindustrial.embr.snmp.configuration.settings
+package com.mussonindustrial.embr.snmp.agents.configuration.settings
 
-interface SnmpDeviceSettings {
+interface SnmpAgentDeviceSettings {
     val address: String
     val timeout: Int
     val healthcheckFrequency: Int?

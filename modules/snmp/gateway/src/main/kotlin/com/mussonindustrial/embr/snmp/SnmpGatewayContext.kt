@@ -7,12 +7,12 @@ import com.inductiveautomation.ignition.gateway.model.TelemetryManager
 import com.mussonindustrial.embr.common.logging.getLoggerEx
 import com.mussonindustrial.embr.gateway.EmbrGatewayContext
 import com.mussonindustrial.embr.gateway.EmbrGatewayContextImpl
-import com.mussonindustrial.embr.snmp.configuration.records.SnmpV1DeviceRecord
-import com.mussonindustrial.embr.snmp.configuration.records.SnmpV2cDeviceRecord
-import com.mussonindustrial.embr.snmp.configuration.records.SnmpV3DeviceRecord
-import com.mussonindustrial.embr.snmp.configuration.types.SnmpV1DeviceType
-import com.mussonindustrial.embr.snmp.configuration.types.SnmpV2cDeviceType
-import com.mussonindustrial.embr.snmp.configuration.types.SnmpV3DeviceType
+import com.mussonindustrial.embr.snmp.agents.configuration.records.SnmpAgentV1DeviceRecord
+import com.mussonindustrial.embr.snmp.agents.configuration.records.SnmpAgentV2cDeviceRecord
+import com.mussonindustrial.embr.snmp.agents.configuration.records.SnmpAgentV3DeviceRecord
+import com.mussonindustrial.embr.snmp.agents.configuration.types.SnmpAgentV1DeviceType
+import com.mussonindustrial.embr.snmp.agents.configuration.types.SnmpAgentV2cDeviceType
+import com.mussonindustrial.embr.snmp.agents.configuration.types.SnmpAgentV3DeviceType
 import java.util.concurrent.ThreadFactory
 import java.util.concurrent.atomic.AtomicInteger
 import org.snmp4j.SNMP4JSettings
@@ -39,9 +39,13 @@ class SnmpGatewayContext(private val context: GatewayContext) :
         SNMP4JSettings.setEnterpriseID(PRIVATE_ENTERPRISE_NUMBER)
     }
 
-    val deviceTypes = listOf(SnmpV1DeviceType, SnmpV2cDeviceType, SnmpV3DeviceType)
+    val deviceTypes = listOf(SnmpAgentV1DeviceType, SnmpAgentV2cDeviceType, SnmpAgentV3DeviceType)
     private val records =
-        listOf(SnmpV1DeviceRecord.META, SnmpV2cDeviceRecord.META, SnmpV3DeviceRecord.META)
+        listOf(
+            SnmpAgentV1DeviceRecord.META,
+            SnmpAgentV2cDeviceRecord.META,
+            SnmpAgentV3DeviceRecord.META,
+        )
 
     val securityProtocols: SecurityProtocols =
         SecurityProtocols.getInstance().apply {

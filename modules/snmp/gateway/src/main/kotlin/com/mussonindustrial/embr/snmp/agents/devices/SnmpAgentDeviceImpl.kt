@@ -2,8 +2,10 @@ package com.mussonindustrial.embr.snmp.agents.devices
 
 import com.inductiveautomation.ignition.common.util.LoggerEx
 import com.mussonindustrial.embr.snmp.SnmpGatewayContext
-import com.mussonindustrial.embr.snmp.configuration.settings.SnmpDeviceSettings
-import com.mussonindustrial.embr.snmp.context.SnmpContext
+import com.mussonindustrial.embr.snmp.agents.configuration.settings.SnmpAgentDeviceSettings
+import com.mussonindustrial.embr.snmp.agents.context.SnmpAgentContext
+import com.mussonindustrial.embr.snmp.agents.opc.DiagnosticAddressSpace
+import com.mussonindustrial.embr.snmp.agents.opc.OidAddressSpace
 import com.mussonindustrial.embr.snmp.opc.DeviceAddressSpace
 import com.mussonindustrial.embr.snmp.requests.OidReadResult
 import com.mussonindustrial.embr.snmp.requests.OidWriteResult
@@ -22,8 +24,8 @@ import org.snmp4j.PDU
 import org.snmp4j.smi.OID
 import org.snmp4j.smi.VariableBinding
 
-class SnmpAgentDeviceImpl<T : SnmpAgentSettings>(override val context: SnmpAgentContext<T>) :
-    AddressSpaceComposite(context.deviceContext.server), SnmpAgentDevice {
+class SnmpAgentDeviceImpl<T : SnmpAgentDeviceSettings>(override val context: SnmpAgentContext<T>) :
+    AddressSpaceComposite(context.deviceContext.getServer()), SnmpAgentDevice {
 
     val lifecycleManager = LifecycleManager()
 
@@ -224,7 +226,7 @@ class SnmpAgentDeviceImpl<T : SnmpAgentSettings>(override val context: SnmpAgent
             logger.trace("Health check result: $isGood")
 
             status =
-                if (isGood) {
+                if (isGood == true) {
                     SnmpAgentDevice.Status.CONNECTED
                 } else {
                     SnmpAgentDevice.Status.DISCONNECTED

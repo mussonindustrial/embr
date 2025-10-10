@@ -3,12 +3,12 @@ package com.mussonindustrial.embr.snmp.agents.configuration.records
 import com.inductiveautomation.ignition.gateway.localdb.persistence.*
 import com.inductiveautomation.ignition.gateway.opcua.server.api.DeviceSettingsRecord
 import com.inductiveautomation.ignition.gateway.web.components.editors.PasswordEditorSource
-import com.mussonindustrial.embr.snmp.configuration.protocols.AuthenticationProtocol
-import com.mussonindustrial.embr.snmp.configuration.protocols.PrivacyProtocol
-import com.mussonindustrial.embr.snmp.configuration.settings.SnmpV3DeviceSettings
+import com.mussonindustrial.embr.snmp.agents.configuration.settings.SnmpAgentV3DeviceSettings
+import com.mussonindustrial.embr.snmp.protocols.AuthenticationProtocol
+import com.mussonindustrial.embr.snmp.protocols.PrivacyProtocol
 import simpleorm.dataset.SFieldFlags
 
-class SnmpAgentV3DeviceRecord : SnmpV3DeviceSettings, PersistentRecord() {
+class SnmpAgentV3DeviceRecord : SnmpAgentV3DeviceSettings, PersistentRecord() {
 
     companion object {
         val META = RecordMeta(SnmpAgentV3DeviceRecord::class.java, "EmbrSnmpAgentV3DeviceSettings")

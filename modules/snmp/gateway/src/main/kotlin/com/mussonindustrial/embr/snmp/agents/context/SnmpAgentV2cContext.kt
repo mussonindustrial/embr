@@ -4,7 +4,7 @@ import com.inductiveautomation.ignition.common.util.LoggerEx
 import com.inductiveautomation.ignition.gateway.opcua.server.api.DeviceContext
 import com.inductiveautomation.ignition.gateway.opcua.server.api.DeviceSettingsRecord
 import com.mussonindustrial.embr.common.logging.getLoggerEx
-import com.mussonindustrial.embr.snmp.configuration.settings.SnmpV2cDeviceSettings
+import com.mussonindustrial.embr.snmp.agents.configuration.settings.SnmpAgentV2CDeviceSettings
 import org.snmp4j.CommunityTarget
 import org.snmp4j.Snmp
 import org.snmp4j.Target
@@ -19,8 +19,8 @@ import org.snmp4j.util.DefaultPDUFactory
 class SnmpAgentV2cContext(
     override val deviceContext: DeviceContext,
     override val deviceSettings: DeviceSettingsRecord,
-    override val snmpSettings: SnmpV2cDeviceSettings,
-) : SnmpContext<SnmpV2cDeviceSettings> {
+    override val snmpSettings: SnmpAgentV2CDeviceSettings,
+) : SnmpAgentContext<SnmpAgentV2CDeviceSettings> {
 
     override val logger: LoggerEx =
         this.getLoggerEx(

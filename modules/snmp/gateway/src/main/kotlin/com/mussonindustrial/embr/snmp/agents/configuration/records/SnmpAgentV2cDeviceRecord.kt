@@ -2,10 +2,10 @@ package com.mussonindustrial.embr.snmp.agents.configuration.records
 
 import com.inductiveautomation.ignition.gateway.localdb.persistence.*
 import com.inductiveautomation.ignition.gateway.opcua.server.api.DeviceSettingsRecord
-import com.mussonindustrial.embr.snmp.configuration.settings.SnmpV2cDeviceSettings
+import com.mussonindustrial.embr.snmp.agents.configuration.settings.SnmpAgentV2CDeviceSettings
 import simpleorm.dataset.SFieldFlags
 
-class SnmpAgentV2cDeviceRecord : SnmpV2cDeviceSettings, PersistentRecord() {
+class SnmpAgentV2cDeviceRecord : SnmpAgentV2CDeviceSettings, PersistentRecord() {
 
     companion object {
         val META =
