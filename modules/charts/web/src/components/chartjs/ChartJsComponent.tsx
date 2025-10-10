@@ -6,6 +6,7 @@ import {
   ComponentStoreDelegate,
   JsObject,
   PComponent,
+  PlainObject,
   PropertyTree,
   SizeObject,
 } from '@inductiveautomation/perspective-client'
@@ -63,7 +64,7 @@ export function ChartJsComponent(props: ComponentProps<ChartComponentProps>) {
   // Register the chart with the component delegate
   useEffect(() => {
     const delegate = props.store.delegate as ChartJsComponentDelegate
-    delegate.setChart(chartRef.current)
+    delegate.setProxyRef(chartRef.current)
   }, [props.store.delegate, chartRef.current])
 
   // Apply transforms to the user supplied properties
@@ -111,16 +112,20 @@ export function ChartJsComponent(props: ComponentProps<ChartComponentProps>) {
 }
 
 class ChartJsComponentDelegate extends ComponentStoreDelegate {
-  private jsProxy = new ComponentDelegateJavaScriptProxy(this)
+  private proxy = new ComponentDelegateJavaScriptProxy(this)
 
-  setChart(chart?: Chart) {
-    this.jsProxy.setRef(chart)
+  setProxyRef(ref?: Chart) {
+    this.proxy.setRef(ref)
   }
 
   handleEvent(eventName: string, eventObject: JsObject) {
-    if (this.jsProxy.handles(eventName)) {
-      this.jsProxy.handleEvent(eventObject as JavaScriptRunEvent)
+    if (this.proxy.handles(eventName)) {
+      this.proxy.handleEvent(eventObject as JavaScriptRunEvent)
     }
+  }
+
+  mapStateToProps(): PlainObject {
+    return this
   }
 }
 
