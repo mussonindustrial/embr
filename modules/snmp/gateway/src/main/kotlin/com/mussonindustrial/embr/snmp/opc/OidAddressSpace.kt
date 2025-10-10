@@ -4,7 +4,6 @@ import com.mussonindustrial.embr.snmp.devices.SnmpDevice
 import com.mussonindustrial.embr.snmp.requests.*
 import com.mussonindustrial.embr.snmp.utils.isOid
 import com.mussonindustrial.embr.snmp.utils.toVariable
-import kotlin.jvm.optionals.getOrNull
 import org.eclipse.milo.opcua.sdk.core.AccessLevel
 import org.eclipse.milo.opcua.sdk.core.ValueRank
 import org.eclipse.milo.opcua.sdk.server.Lifecycle
@@ -77,7 +76,7 @@ class OidAddressSpace(val device: SnmpDevice) : AddressSpaceFragment, Lifecycle 
     fun readNonValueAttributes(results: List<ReadRequest>): List<OidReadResult> {
         return results.map {
             val nodeId = it.readValueId.nodeId
-            val attributeId = AttributeId.from(it.readValueId.attributeId).getOrNull()
+            val attributeId = AttributeId.from(it.readValueId.attributeId).orElse(null)
 
             try {
                 val result =
@@ -134,7 +133,7 @@ class OidAddressSpace(val device: SnmpDevice) : AddressSpaceFragment, Lifecycle 
             if (it.writeValue.indexRange != null && it.writeValue.indexRange.isNotEmpty()) {
                 it.result = StatusCode(StatusCodes.Bad_NotImplemented).toOidWriteResult()
             }
-            if (AttributeId.from(it.writeValue.attributeId).getOrNull() != AttributeId.Value) {
+            if (AttributeId.from(it.writeValue.attributeId).orElse(null) != AttributeId.Value) {
                 it.result = StatusCode(StatusCodes.Bad_WriteNotSupported).toOidWriteResult()
             }
         }

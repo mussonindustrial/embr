@@ -2,7 +2,6 @@ package com.mussonindustrial.embr.common.scripting
 
 import com.inductiveautomation.ignition.common.TypeUtilities
 import com.inductiveautomation.ignition.common.script.PyArgParser
-import kotlin.jvm.optionals.getOrNull
 import kotlin.reflect.javaType
 import org.python.core.Py
 import org.python.core.PyObject
@@ -38,7 +37,7 @@ class PyArgOverload(
                         { it.name },
                         {
                             val pyValue =
-                                argParser.getPyObject(it.name).getOrNull()
+                                argParser.getPyObject(it.name).orElse(null)
                                     ?: return@associateBy null
                             val jValue = TypeUtilities.pyToJava(pyValue)
                             return@associateBy TypeUtilities.coerce(
