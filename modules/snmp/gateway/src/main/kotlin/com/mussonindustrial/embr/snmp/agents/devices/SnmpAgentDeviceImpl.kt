@@ -38,7 +38,7 @@ class SnmpAgentDeviceImpl<T : SnmpAgentConfig>(override val context: SnmpAgentCo
 
     val deviceAddressSpace = DeviceAddressSpace(context.deviceContext, this)
     val diagnosticAddressSpace = DiagnosticAddressSpace(this, this)
-    val oidAddressSpace = OidAddressSpace(this)
+    val oidAddressSpace = OidAddressSpace(this, this)
 
     init {
         lifecycleManager.addLifecycle(context)
@@ -59,14 +59,21 @@ class SnmpAgentDeviceImpl<T : SnmpAgentConfig>(override val context: SnmpAgentCo
 
     override fun startup() {
         logger.debug("Starting up...")
-        lifecycleManager.startup()
-        register(oidAddressSpace)
+        try {
+            lifecycleManager.startup()
+        } catch (e: Throwable) {
+            status = SnmpAgentDevice.Status.FAULTED
+            logger.error("Failed to start device [${context.deviceContext.getName()}]", e)
+        }
     }
 
     override fun shutdown() {
         logger.debug("Shutting down...")
-        lifecycleManager.shutdown()
-        unregister(oidAddressSpace)
+        try {
+            lifecycleManager.shutdown()
+        } catch (e: Throwable) {
+            logger.error("Failed to shutdown device [${context.deviceContext.getName()}]", e)
+        }
     }
 
     override fun read(reads: List<VariableBinding>): List<OidReadResult> {

@@ -26,7 +26,8 @@ interface SnmpAgentDevice : AddressSpaceFragment, Device {
     enum class Status(private val value: String) {
         UNKNOWN("Unknown"),
         DISCONNECTED("Disconnected"),
-        CONNECTED("Connected");
+        CONNECTED("Connected"),
+        FAULTED("Faulted");
 
         override fun toString(): String {
             return value
