@@ -270,7 +270,14 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
         val treePath: JsonPath = JsonPath.parse("instances[$index]")
         var cachedViewModel: ViewModel?
             get() {
-                return instanceViews[key]?.get()
+                val reference = instanceViews[key] ?: return null
+                val view = reference.get()
+                return if (view?.isRunning == true) {
+                    view
+                } else {
+                    reference.clear()
+                    null
+                }
             }
             set(value) {
                 instanceViews[key] = WeakReference(value)
