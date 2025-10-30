@@ -434,7 +434,7 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
         }
 
         override operator fun iterator() = iterator {
-            for (index in 0..size) {
+            for (index in 0..size - 1) {
                 this.yield(InstancePropsHandler(tree, index))
             }
         }
