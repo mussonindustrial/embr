@@ -1,5 +1,18 @@
 # @mussonindustrial/embr-tag-stream
 
+## 0.6.0
+
+### Minor Changes
+
+- 3a45993: Modules no longer include `kotlin-stdlib`.
+  - All modules now rely on the Kotlin standard library provided with Ignition.
+
+### Patch Changes
+
+- Updated dependencies [59bafb8]
+  - @embr-jvm/core-common@0.7.1
+  - @embr-jvm/core-servlets@0.7.1
+
 ## 0.5.3
 
 ### Patch Changes

@@ -1,5 +1,13 @@
 # @mussonindustrial/embr-js-chart-js
 
+## 4.0.0
+
+### Minor Changes
+
+- 68ca6f4: Expose chart component's `ComponentDelegate`.
+  - Provide's access through `this.delegate` in all props callback functions.
+  - Importantly, this allows access to the underlying charting component through `this.delegate.proxy.ref`.
+
 ## 3.1.0
 
 ### Minor Changes
