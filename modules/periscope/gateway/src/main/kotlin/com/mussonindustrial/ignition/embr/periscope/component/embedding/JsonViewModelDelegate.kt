@@ -183,12 +183,12 @@ class JsonViewModelDelegate(component: Component) : ComponentModelDelegate(compo
 
         val resourcePath: String
             get() {
-                return "${component.view?.id?.resourcePath}.${component.componentAddressPath}"
+                return "${component.view.id?.resourcePath}.${component.componentAddressPath}"
             }
 
         val mountPath: String
             get() {
-                return "${component.view?.id?.mountPath}.${component.componentAddressPath}"
+                return "${component.view.id?.mountPath}.${component.componentAddressPath}"
             }
     }
 }

@@ -270,7 +270,14 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
         val treePath: JsonPath = JsonPath.parse("instances[$index]")
         var cachedViewModel: ViewModel?
             get() {
-                return instanceViews[key]?.get()
+                val reference = instanceViews[key] ?: return null
+                val view = reference.get()
+                return if (view?.isRunning == true) {
+                    view
+                } else {
+                    reference.clear()
+                    null
+                }
             }
             set(value) {
                 instanceViews[key] = WeakReference(value)
@@ -349,7 +356,7 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
 
         val mountPath: String
             get() {
-                return "${component.view?.id?.mountPath}$${component.componentAddressPath}.$key"
+                return "${component.view.id?.mountPath}$${component.componentAddressPath}.$key"
             }
 
         fun onView(block: (ViewModel) -> Unit) {
@@ -434,7 +441,7 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
         }
 
         override operator fun iterator() = iterator {
-            for (index in 0..size) {
+            for (index in 0..size - 1) {
                 this.yield(InstancePropsHandler(tree, index))
             }
         }

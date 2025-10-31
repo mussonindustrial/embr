@@ -47,7 +47,7 @@ fun Variable.toDataValue(): DataValue {
 }
 
 fun DataValue.toVariable(): Variable {
-    return OctetString(this.value.value.toString())
+    return OctetString(this.value.value?.toString())
 }
 
 fun LifecycleManager.addLifecycle(snmp: Snmp) {

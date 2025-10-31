@@ -6,6 +6,7 @@ import {
   ComponentStoreDelegate,
   JsObject,
   PComponent,
+  PlainObject,
   PropertyTree,
   SizeObject,
   StyleObject,
@@ -22,7 +23,7 @@ import {
 } from '@embr-js/perspective-client'
 import { transformProps } from '@embr-js/utils'
 import { ApexChartProps, Chart } from './react/ApexCharts'
-import { ApexOptions } from 'apexcharts'
+import ApexCharts, { ApexOptions } from 'apexcharts'
 
 export const COMPONENT_TYPE = 'embr.chart.apex-charts'
 
@@ -59,7 +60,7 @@ export function ApexChartsComponent(props: ComponentProps<ChartProps>) {
 
   useEffect(() => {
     const delegate = props.store.delegate as ApexChartsComponentDelegate
-    delegate.setChart(chartRef.current ?? undefined)
+    delegate.setProxyRef(chartRef.current ?? undefined)
   }, [props.store.delegate, chartRef.current])
 
   // Lifecycle Events
@@ -82,16 +83,20 @@ export function ApexChartsComponent(props: ComponentProps<ChartProps>) {
 }
 
 class ApexChartsComponentDelegate extends ComponentStoreDelegate {
-  private jsProxy = new ComponentDelegateJavaScriptProxy(this)
+  private proxy = new ComponentDelegateJavaScriptProxy(this)
 
-  setChart(chart?: ApexCharts) {
-    this.jsProxy.setRef(chart)
+  setProxyRef(ref?: ApexCharts) {
+    this.proxy.setRef(ref)
   }
 
   handleEvent(eventName: string, eventObject: JsObject): void {
-    if (this.jsProxy.handles(eventName)) {
-      this.jsProxy.handleEvent(eventObject as JavaScriptRunEvent)
+    if (this.proxy.handles(eventName)) {
+      this.proxy.handleEvent(eventObject as JavaScriptRunEvent)
     }
+  }
+
+  mapStateToProps(): PlainObject {
+    return this
   }
 }
 
