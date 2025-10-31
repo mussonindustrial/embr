@@ -1,6 +1,6 @@
 {
     "name": "@embr-modules/snmp",
-    "version": "0.2.1",
+    "version": "0.3.0",
     "private": false,
     "keywords": [
         "ignition",
@@ -13,7 +13,7 @@
         "!**/*.unsigned.modl"
     ],
     "dependencies": {
-        "@embr-jvm/core-common": "0.7.0",
-        "@embr-jvm/core-gateway": "0.7.0"
+        "@embr-jvm/core-common": "0.7.1",
+        "@embr-jvm/core-gateway": "0.7.1"
     }
 }
