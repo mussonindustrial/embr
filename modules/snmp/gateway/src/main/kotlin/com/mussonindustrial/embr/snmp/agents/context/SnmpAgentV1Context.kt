@@ -1,10 +1,10 @@
-package com.mussonindustrial.embr.snmp.context
+package com.mussonindustrial.embr.snmp.agents.context
 
 import com.inductiveautomation.ignition.common.util.LoggerEx
 import com.inductiveautomation.ignition.gateway.opcua.server.api.DeviceContext
 import com.inductiveautomation.ignition.gateway.opcua.server.api.DeviceProfileConfig
 import com.mussonindustrial.embr.common.logging.getLoggerEx
-import com.mussonindustrial.embr.snmp.configuration.extensions.SnmpV1ExtensionPoint.Config
+import com.mussonindustrial.embr.snmp.agents.configuration.extensions.SnmpAgentV1ExtensionPoint
 import org.snmp4j.CommunityTarget
 import org.snmp4j.Snmp
 import org.snmp4j.Target
@@ -16,11 +16,11 @@ import org.snmp4j.transport.DefaultTcpTransportMapping
 import org.snmp4j.transport.DefaultUdpTransportMapping
 import org.snmp4j.util.DefaultPDUFactory
 
-class SnmpV1Context(
+class SnmpAgentV1Context(
     override val deviceContext: DeviceContext,
     override val deviceConfig: DeviceProfileConfig,
-    override val snmpConfig: Config,
-) : SnmpContext<Config> {
+    override val snmpConfig: SnmpAgentV1ExtensionPoint.Config,
+) : SnmpAgentContext<SnmpAgentV1ExtensionPoint.Config> {
 
     override val logger: LoggerEx =
         this.getLoggerEx(

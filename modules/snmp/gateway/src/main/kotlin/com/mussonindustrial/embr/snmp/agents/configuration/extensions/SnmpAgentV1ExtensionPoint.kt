@@ -1,29 +1,29 @@
-package com.mussonindustrial.embr.snmp.configuration.extensions
+package com.mussonindustrial.embr.snmp.agents.configuration.extensions
 
 import com.inductiveautomation.ignition.gateway.config.ExtensionPoint
 import com.inductiveautomation.ignition.gateway.config.ValidationErrors
 import com.inductiveautomation.ignition.gateway.config.migration.ExtensionPointRecordMigrationStrategy
 import com.inductiveautomation.ignition.gateway.dataroutes.openapi.SchemaUtil
-import com.inductiveautomation.ignition.gateway.opcua.server.api.Device
-import com.inductiveautomation.ignition.gateway.opcua.server.api.DeviceContext
-import com.inductiveautomation.ignition.gateway.opcua.server.api.DeviceExtensionPoint
-import com.inductiveautomation.ignition.gateway.opcua.server.api.DeviceProfileConfig
-import com.inductiveautomation.ignition.gateway.opcua.server.api.DeviceSettingsRecord
-import com.inductiveautomation.ignition.gateway.web.nav.ExtensionPointResourceForm
-import com.inductiveautomation.ignition.gateway.web.nav.WebUiComponent
-import com.mussonindustrial.embr.snmp.context.SnmpV2cContext
-import com.mussonindustrial.embr.snmp.devices.SnmpDeviceImpl
+import com.inductiveautomation.ignition.gateway.dataroutes.openapi.annotations.*
+import com.inductiveautomation.ignition.gateway.opcua.server.api.*
+import com.inductiveautomation.ignition.gateway.web.nav.*
+import com.mussonindustrial.embr.snmp.agents.configuration.SnmpAgentConfig
+import com.mussonindustrial.embr.snmp.agents.configuration.SnmpCommunityConfig
+import com.mussonindustrial.embr.snmp.agents.configuration.SnmpConnectivityConfig
+import com.mussonindustrial.embr.snmp.agents.configuration.SnmpHealthcheckConfig
+import com.mussonindustrial.embr.snmp.agents.context.SnmpAgentV1Context
+import com.mussonindustrial.embr.snmp.agents.devices.SnmpAgentDeviceImpl
 import java.util.*
 
 @Suppress("DEPRECATION")
-private typealias SnmpV2CDeviceRecord =
-    com.mussonindustrial.embr.snmp.configuration.records.SnmpV2cDeviceRecord
+private typealias SnmpAgentV1DeviceRecord =
+    com.mussonindustrial.embr.snmp.agents.configuration.records.SnmpAgentV1DeviceRecord
 
-object SnmpV2cExtensionPoint :
-    DeviceExtensionPoint<SnmpV2cExtensionPoint.Config>(
-        "embr-snmp-v2c",
-        "Snmp.device.SnmpV2cDevice.DisplayName",
-        "Snmp.device.SnmpV2cDevice.Description",
+object SnmpAgentV1ExtensionPoint :
+    DeviceExtensionPoint<SnmpAgentV1ExtensionPoint.Config>(
+        "embr-snmp-agent-v1",
+        "Snmp.device.SnmpAgentV1.DisplayName",
+        "Snmp.device.SnmpAgentV1.Description",
         Config::class.java,
     ) {
 
@@ -32,10 +32,10 @@ object SnmpV2cExtensionPoint :
         ExtensionPointRecordMigrationStrategy.newBuilder(typeId)
             .resourceType(DEVICE_RESOURCE_TYPE)
             .profileMeta(DeviceSettingsRecord.META)
-            .settingsRecordForeignKey(SnmpV2CDeviceRecord.DEVICE_SETTINGS)
-            .settingsMeta(SnmpV2CDeviceRecord.META)
+            .settingsRecordForeignKey(SnmpAgentV1DeviceRecord.DEVICE_SETTINGS)
+            .settingsMeta(SnmpAgentV1DeviceRecord.META)
             .settingsEncoder { builder ->
-                SnmpV2CDeviceRecord.apply {
+                SnmpAgentV1DeviceRecord.apply {
                     builder.withCustomFieldName(ADDRESS, "connectivity.address")
                     builder.withCustomFieldName(TIMEOUT, "connectivity.timeout")
                     builder.withCustomFieldName(HEALTHCHECK_FREQUENCY, "healthcheck.frequency")
@@ -51,8 +51,8 @@ object SnmpV2cExtensionPoint :
         deviceConfig: DeviceProfileConfig,
         snmpConfig: Config,
     ): Device {
-        val snmpContext = SnmpV2cContext(context, deviceConfig, snmpConfig)
-        return SnmpDeviceImpl(snmpContext)
+        val snmpContext = SnmpAgentV1Context(context, deviceConfig, snmpConfig)
+        return SnmpAgentDeviceImpl(snmpContext)
     }
 
     override fun getWebUiComponent(type: ExtensionPoint.ComponentType): Optional<WebUiComponent> {
@@ -81,5 +81,5 @@ object SnmpV2cExtensionPoint :
         override val connectivity: SnmpConnectivityConfig,
         val community: SnmpCommunityConfig,
         override val healthcheck: SnmpHealthcheckConfig,
-    ) : SnmpDeviceConfig
+    ) : SnmpAgentConfig
 }

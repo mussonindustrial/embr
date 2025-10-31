@@ -1,4 +1,4 @@
-package com.mussonindustrial.embr.snmp.configuration.protocols
+package com.mussonindustrial.embr.snmp.protocols
 
 import org.snmp4j.security.Priv3DES
 import org.snmp4j.security.PrivAES128

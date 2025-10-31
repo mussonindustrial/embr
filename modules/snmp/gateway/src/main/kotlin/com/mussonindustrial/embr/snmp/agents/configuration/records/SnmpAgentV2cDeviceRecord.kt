@@ -1,18 +1,17 @@
-package com.mussonindustrial.embr.snmp.configuration.records
+package com.mussonindustrial.embr.snmp.agents.configuration.records
 
 import com.inductiveautomation.ignition.gateway.localdb.persistence.*
 import com.inductiveautomation.ignition.gateway.opcua.server.api.DeviceSettingsRecord
-import com.mussonindustrial.embr.snmp.configuration.protocols.AuthenticationProtocol
-import com.mussonindustrial.embr.snmp.configuration.protocols.PrivacyProtocol
 import simpleorm.dataset.SFieldFlags
 
 @Deprecated("since 8.3")
 @SuppressWarnings("unused")
-class SnmpV3DeviceRecord : PersistentRecord() {
+class SnmpAgentV2cDeviceRecord : PersistentRecord() {
 
     @Suppress("DEPRECATION")
     companion object {
-        val META = RecordMeta(SnmpV3DeviceRecord::class.java, "EmbrSnmpV3DeviceSettings")
+        val META =
+            RecordMeta(SnmpAgentV2cDeviceRecord::class.java, "EmbrSnmpAgentV2cDeviceSettings")
 
         val DEVICE_SETTINGS_ID = LongField(META, "DeviceSettingsId", SFieldFlags.SPRIMARY_KEY)
         val DEVICE_SETTINGS =
@@ -21,12 +20,8 @@ class SnmpV3DeviceRecord : PersistentRecord() {
         val ADDRESS = StringField(META, "Address")
         val TIMEOUT = IntField(META, "Timeout")
 
-        val AUTH_USERNAME = StringField(META, "AuthUsername")
-        val AUTH_PROTOCOL = EnumField(META, "AuthProtocol", AuthenticationProtocol::class.java)
-        val AUTH_PASSWORD = EncodedStringField(META, "AuthPassword")
-
-        val PRIVACY_PROTOCOL = EnumField(META, "PrivacyProtocol", PrivacyProtocol::class.java)
-        val PRIVACY_PASSWORD = EncodedStringField(META, "PrivacyPassword")
+        val COMMUNITY_READ = StringField(META, "CommunityRead")
+        val COMMUNITY_WRITE = StringField(META, "CommunityWrite")
 
         val HEALTHCHECK_FREQUENCY = IntField(META, "HealthcheckFrequency")
         val HEALTHCHECK_OID = StringField(META, "HealthcheckOid")

@@ -1,4 +1,4 @@
-package com.mussonindustrial.embr.snmp.configuration.extensions
+package com.mussonindustrial.embr.snmp.agents.configuration.extensions
 
 import com.inductiveautomation.ignition.gateway.config.ExtensionPoint
 import com.inductiveautomation.ignition.gateway.config.ValidationErrors
@@ -11,19 +11,24 @@ import com.inductiveautomation.ignition.gateway.opcua.server.api.DeviceProfileCo
 import com.inductiveautomation.ignition.gateway.opcua.server.api.DeviceSettingsRecord
 import com.inductiveautomation.ignition.gateway.web.nav.ExtensionPointResourceForm
 import com.inductiveautomation.ignition.gateway.web.nav.WebUiComponent
-import com.mussonindustrial.embr.snmp.context.SnmpV3Context
-import com.mussonindustrial.embr.snmp.devices.SnmpDeviceImpl
+import com.mussonindustrial.embr.snmp.agents.configuration.SnmpAgentConfig
+import com.mussonindustrial.embr.snmp.agents.configuration.SnmpConnectivityConfig
+import com.mussonindustrial.embr.snmp.agents.configuration.SnmpHealthcheckConfig
+import com.mussonindustrial.embr.snmp.agents.configuration.SnmpV3AuthenticationConfig
+import com.mussonindustrial.embr.snmp.agents.configuration.SnmpV3PrivacyConfig
+import com.mussonindustrial.embr.snmp.agents.context.SnmpAgentV3Context
+import com.mussonindustrial.embr.snmp.agents.devices.SnmpAgentDeviceImpl
 import java.util.*
 
 @Suppress("DEPRECATION")
-private typealias SnmpV3DeviceRecord =
-    com.mussonindustrial.embr.snmp.configuration.records.SnmpV3DeviceRecord
+private typealias SnmpAgentV3DeviceRecord =
+    com.mussonindustrial.embr.snmp.agents.configuration.records.SnmpAgentV3DeviceRecord
 
-object SnmpV3ExtensionPoint :
-    DeviceExtensionPoint<SnmpV3ExtensionPoint.Config>(
-        "embr-snmp-v3",
-        "Snmp.device.SnmpV3Device.DisplayName",
-        "Snmp.device.SnmpV3Device.Description",
+object SnmpAgentV3ExtensionPoint :
+    DeviceExtensionPoint<SnmpAgentV3ExtensionPoint.Config>(
+        "embr-snmp-agent-v3",
+        "Snmp.device.SnmpAgentV3.DisplayName",
+        "Snmp.device.SnmpAgentV3.Description",
         Config::class.java,
     ) {
 
@@ -32,10 +37,10 @@ object SnmpV3ExtensionPoint :
         ExtensionPointRecordMigrationStrategy.newBuilder(typeId)
             .resourceType(DEVICE_RESOURCE_TYPE)
             .profileMeta(DeviceSettingsRecord.META)
-            .settingsRecordForeignKey(SnmpV3DeviceRecord.DEVICE_SETTINGS)
-            .settingsMeta(SnmpV3DeviceRecord.META)
+            .settingsRecordForeignKey(SnmpAgentV3DeviceRecord.DEVICE_SETTINGS)
+            .settingsMeta(SnmpAgentV3DeviceRecord.META)
             .settingsEncoder { builder ->
-                SnmpV3DeviceRecord.apply {
+                SnmpAgentV3DeviceRecord.apply {
                     builder.withCustomFieldName(ADDRESS, "connectivity.address")
                     builder.withCustomFieldName(TIMEOUT, "connectivity.timeout")
                     builder.withCustomFieldName(HEALTHCHECK_FREQUENCY, "healthcheck.frequency")
@@ -54,8 +59,8 @@ object SnmpV3ExtensionPoint :
         deviceConfig: DeviceProfileConfig,
         snmpConfig: Config,
     ): Device {
-        val snmpContext = SnmpV3Context(context, deviceConfig, snmpConfig)
-        return SnmpDeviceImpl(snmpContext)
+        val snmpContext = SnmpAgentV3Context(context, deviceConfig, snmpConfig)
+        return SnmpAgentDeviceImpl(snmpContext)
     }
 
     override fun getWebUiComponent(type: ExtensionPoint.ComponentType): Optional<WebUiComponent> {
@@ -84,5 +89,5 @@ object SnmpV3ExtensionPoint :
         val authentication: SnmpV3AuthenticationConfig,
         val privacy: SnmpV3PrivacyConfig,
         override val healthcheck: SnmpHealthcheckConfig,
-    ) : SnmpDeviceConfig
+    ) : SnmpAgentConfig
 }

@@ -1,4 +1,4 @@
-package com.mussonindustrial.embr.snmp.configuration.records
+package com.mussonindustrial.embr.snmp.agents.configuration.records
 
 import com.inductiveautomation.ignition.gateway.localdb.persistence.*
 import com.inductiveautomation.ignition.gateway.opcua.server.api.DeviceSettingsRecord
@@ -6,11 +6,11 @@ import simpleorm.dataset.SFieldFlags
 
 @Deprecated("since 8.3")
 @SuppressWarnings("unused")
-class SnmpV2cDeviceRecord : PersistentRecord() {
+class SnmpAgentV1DeviceRecord : PersistentRecord() {
 
     @Suppress("DEPRECATION")
     companion object {
-        val META = RecordMeta(SnmpV2cDeviceRecord::class.java, "EmbrSnmpV2cDeviceSettings")
+        val META = RecordMeta(SnmpAgentV1DeviceRecord::class.java, "EmbrSnmpAgentV1DeviceSettings")
 
         val DEVICE_SETTINGS_ID = LongField(META, "DeviceSettingsId", SFieldFlags.SPRIMARY_KEY)
         val DEVICE_SETTINGS =

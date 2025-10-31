@@ -1,4 +1,4 @@
-package com.mussonindustrial.embr.snmp.configuration.protocols
+package com.mussonindustrial.embr.snmp.protocols
 
 import org.snmp4j.security.AuthGeneric
 import org.snmp4j.security.AuthHMAC128SHA224
