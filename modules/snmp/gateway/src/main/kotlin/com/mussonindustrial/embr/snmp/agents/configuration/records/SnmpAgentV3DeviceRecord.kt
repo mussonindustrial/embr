@@ -1,17 +1,17 @@
-package com.mussonindustrial.embr.snmp.configuration.records
+package com.mussonindustrial.embr.snmp.agents.configuration.records
 
 import com.inductiveautomation.ignition.gateway.localdb.persistence.*
 import com.inductiveautomation.ignition.gateway.opcua.server.api.DeviceSettingsRecord
 import com.inductiveautomation.ignition.gateway.web.components.editors.PasswordEditorSource
-import com.mussonindustrial.embr.snmp.configuration.protocols.AuthenticationProtocol
-import com.mussonindustrial.embr.snmp.configuration.protocols.PrivacyProtocol
-import com.mussonindustrial.embr.snmp.configuration.settings.SnmpV3DeviceSettings
+import com.mussonindustrial.embr.snmp.agents.configuration.settings.SnmpAgentV3DeviceSettings
+import com.mussonindustrial.embr.snmp.protocols.AuthenticationProtocol
+import com.mussonindustrial.embr.snmp.protocols.PrivacyProtocol
 import simpleorm.dataset.SFieldFlags
 
-class SnmpV3DeviceRecord : SnmpV3DeviceSettings, PersistentRecord() {
+class SnmpAgentV3DeviceRecord : SnmpAgentV3DeviceSettings, PersistentRecord() {
 
     companion object {
-        val META = RecordMeta(SnmpV3DeviceRecord::class.java, "EmbrSnmpV3DeviceSettings")
+        val META = RecordMeta(SnmpAgentV3DeviceRecord::class.java, "EmbrSnmpAgentV3DeviceSettings")
 
         val DEVICE_SETTINGS_ID = LongField(META, "DeviceSettingsId", SFieldFlags.SPRIMARY_KEY)
         val DEVICE_SETTINGS =
@@ -21,7 +21,7 @@ class SnmpV3DeviceRecord : SnmpV3DeviceSettings, PersistentRecord() {
         val ADDRESS = StringField(META, "Address", SFieldFlags.SMANDATORY)
         val TIMEOUT = IntField(META, "Timeout", SFieldFlags.SMANDATORY).apply { default = 1000 }
         val CATEGORY_CONNECTIVITY =
-            Category("SnmpV3DeviceRecord.Connectivity", 1001).apply {
+            Category("SnmpAgentV3DeviceRecord.Connectivity", 1001).apply {
                 include(ADDRESS)
                 include(TIMEOUT)
             }
@@ -39,7 +39,7 @@ class SnmpV3DeviceRecord : SnmpV3DeviceSettings, PersistentRecord() {
                 formMeta.editorSource = PasswordEditorSource.getSharedInstance()
             }
         val CATEGORY_AUTH =
-            Category("SnmpV3DeviceRecord.Authentication", 1002).apply {
+            Category("SnmpAgentV3DeviceRecord.Authentication", 1002).apply {
                 include(AUTH_USERNAME)
                 include(AUTH_PROTOCOL)
                 include(AUTH_PASSWORD)
@@ -52,7 +52,7 @@ class SnmpV3DeviceRecord : SnmpV3DeviceSettings, PersistentRecord() {
                 formMeta.editorSource = PasswordEditorSource.getSharedInstance()
             }
         val CATEGORY_PRIVACY =
-            Category("SnmpV3DeviceRecord.Privacy", 1003).apply {
+            Category("SnmpAgentV3DeviceRecord.Privacy", 1003).apply {
                 include(PRIVACY_PROTOCOL)
                 include(PRIVACY_PASSWORD)
             }

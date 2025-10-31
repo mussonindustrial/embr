@@ -1,12 +1,12 @@
-package com.mussonindustrial.embr.snmp.devices
+package com.mussonindustrial.embr.snmp.agents.devices
 
 import com.inductiveautomation.ignition.common.util.LoggerEx
 import com.mussonindustrial.embr.snmp.SnmpGatewayContext
-import com.mussonindustrial.embr.snmp.configuration.settings.SnmpDeviceSettings
-import com.mussonindustrial.embr.snmp.context.SnmpContext
+import com.mussonindustrial.embr.snmp.agents.configuration.settings.SnmpAgentDeviceSettings
+import com.mussonindustrial.embr.snmp.agents.context.SnmpAgentContext
+import com.mussonindustrial.embr.snmp.agents.opc.DiagnosticAddressSpace
+import com.mussonindustrial.embr.snmp.agents.opc.OidAddressSpace
 import com.mussonindustrial.embr.snmp.opc.DeviceAddressSpace
-import com.mussonindustrial.embr.snmp.opc.DiagnosticAddressSpace
-import com.mussonindustrial.embr.snmp.opc.OidAddressSpace
 import com.mussonindustrial.embr.snmp.requests.OidReadResult
 import com.mussonindustrial.embr.snmp.requests.OidWriteResult
 import com.mussonindustrial.embr.snmp.requests.toOidReadResult
@@ -24,21 +24,21 @@ import org.snmp4j.PDU
 import org.snmp4j.smi.OID
 import org.snmp4j.smi.VariableBinding
 
-class SnmpDeviceImpl<T : SnmpDeviceSettings>(override val context: SnmpContext<T>) :
-    AddressSpaceComposite(context.deviceContext.getServer()), SnmpDevice {
+class SnmpAgentDeviceImpl<T : SnmpAgentDeviceSettings>(override val context: SnmpAgentContext<T>) :
+    AddressSpaceComposite(context.deviceContext.getServer()), SnmpAgentDevice {
 
     val lifecycleManager = LifecycleManager()
 
     val logger: LoggerEx = context.logger.createSubLogger(this::class.java)
 
-    override var status: SnmpDevice.Status = SnmpDevice.Status.DISCONNECTED
+    override var status: SnmpAgentDevice.Status = SnmpAgentDevice.Status.DISCONNECTED
         private set
 
     val healthcheck = Healthcheck()
 
-    val deviceAddressSpace = DeviceAddressSpace(this, this)
+    val deviceAddressSpace = DeviceAddressSpace(context.deviceContext, this)
     val diagnosticAddressSpace = DiagnosticAddressSpace(this, this)
-    val oidAddressSpace = OidAddressSpace(this)
+    val oidAddressSpace = OidAddressSpace(this, this)
 
     init {
         lifecycleManager.addLifecycle(context)
@@ -65,14 +65,21 @@ class SnmpDeviceImpl<T : SnmpDeviceSettings>(override val context: SnmpContext<T
 
     override fun startup() {
         logger.debug("Starting up...")
-        lifecycleManager.startup()
-        register(oidAddressSpace)
+        try {
+            lifecycleManager.startup()
+        } catch (e: Throwable) {
+            status = SnmpAgentDevice.Status.FAULTED
+            logger.error("Failed to start device [${context.deviceContext.getName()}]", e)
+        }
     }
 
     override fun shutdown() {
         logger.debug("Shutting down...")
-        lifecycleManager.shutdown()
-        unregister(oidAddressSpace)
+        try {
+            lifecycleManager.shutdown()
+        } catch (e: Throwable) {
+            logger.error("Failed to shutdown device [${context.deviceContext.getName()}]", e)
+        }
     }
 
     override fun read(reads: List<VariableBinding>): List<OidReadResult> {
@@ -179,7 +186,7 @@ class SnmpDeviceImpl<T : SnmpDeviceSettings>(override val context: SnmpContext<T
         override fun startup() {
             if (!canDoHealthCheck()) {
                 logger.debug("Health check disabled, skipping scheduling...")
-                status = SnmpDevice.Status.UNKNOWN
+                status = SnmpAgentDevice.Status.UNKNOWN
                 return
             }
 
@@ -217,7 +224,7 @@ class SnmpDeviceImpl<T : SnmpDeviceSettings>(override val context: SnmpContext<T
         private fun doHealthcheck() {
             logger.trace("Starting health check.")
             if (!canDoHealthCheck()) {
-                status = SnmpDevice.Status.UNKNOWN
+                status = SnmpAgentDevice.Status.UNKNOWN
                 return
             }
 
@@ -227,9 +234,9 @@ class SnmpDeviceImpl<T : SnmpDeviceSettings>(override val context: SnmpContext<T
 
             status =
                 if (isGood == true) {
-                    SnmpDevice.Status.CONNECTED
+                    SnmpAgentDevice.Status.CONNECTED
                 } else {
-                    SnmpDevice.Status.DISCONNECTED
+                    SnmpAgentDevice.Status.DISCONNECTED
                 }
         }
     }

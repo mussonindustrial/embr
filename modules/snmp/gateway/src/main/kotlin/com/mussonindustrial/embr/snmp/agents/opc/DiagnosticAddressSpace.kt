@@ -1,6 +1,7 @@
-package com.mussonindustrial.embr.snmp.opc
+package com.mussonindustrial.embr.snmp.agents.opc
 
-import com.mussonindustrial.embr.snmp.devices.SnmpDevice
+import com.mussonindustrial.embr.snmp.agents.devices.SnmpAgentDevice
+import com.mussonindustrial.embr.snmp.opc.DeviceContextManagedAddressSpaceFragment
 import com.mussonindustrial.embr.snmp.utils.removeAllNodes
 import org.eclipse.milo.opcua.sdk.core.Reference
 import org.eclipse.milo.opcua.sdk.server.Lifecycle
@@ -15,7 +16,7 @@ import org.eclipse.milo.opcua.stack.core.types.builtin.LocalizedText
 import org.eclipse.milo.opcua.stack.core.types.builtin.NodeId
 import org.eclipse.milo.opcua.stack.core.types.builtin.Variant
 
-class DiagnosticAddressSpace(val device: SnmpDevice, composite: AddressSpaceComposite) :
+class DiagnosticAddressSpace(val device: SnmpAgentDevice, composite: AddressSpaceComposite) :
     DeviceContextManagedAddressSpaceFragment(device.context.deviceContext, composite) {
 
     private val root = "[Diagnostics]"
@@ -70,7 +71,7 @@ class DiagnosticAddressSpace(val device: SnmpDevice, composite: AddressSpaceComp
             "Connected",
             Identifiers.Boolean,
             AttributeFilters.getValue {
-                DataValue(Variant(device.status == SnmpDevice.Status.CONNECTED))
+                DataValue(Variant(device.status == SnmpAgentDevice.Status.CONNECTED))
             },
         )
     }
