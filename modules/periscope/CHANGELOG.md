@@ -1,5 +1,21 @@
 # @embr-modules/periscope
 
+## 0.10.0
+
+### Minor Changes
+
+- fc47d7e: Modules no longer include `kotlin-stdlib`.
+  - All modules now rely on the Kotlin standard library provided with Ignition.
+- 7def5bd: (`Flex Repeater +`): Clear non-running `ViewModel` instances from cache on access.
+
+### Patch Changes
+
+- c2ecc40: (`Flex Repeater +`): Fix a bug causing the creation of extra ViewModels for non-existent view instances.
+- Updated dependencies [f36eaee]
+  - @embr-jvm/core-common@0.7.1
+  - @embr-jvm/core-designer@0.7.1
+  - @embr-modules/periscope-web@0.10.0
+
 ## 0.9.0
 
 ### Minor Changes
