@@ -1,5 +1,26 @@
 # @mussonindustrial/embr-charts
 
+## 4.0.0
+
+### Major Changes
+
+- fc47d7e: Modules no longer include `kotlin-stdlib`.
+  - All modules now rely on the Kotlin standard library provided with Ignition.
+
+### Minor Changes
+
+- 6e2cb4c: Expose chart component's `ComponentDelegate`.
+  - Provide's access through `this.delegate` in all props callback functions.
+  - Importantly, this allows access to the underlying charting component through `this.delegate.proxy.ref`.
+
+### Patch Changes
+
+- Updated dependencies [f36eaee]
+- Updated dependencies [6e2cb4c]
+  - @embr-jvm/core-common@0.7.1
+  - @embr-modules/charts-web@4.0.0
+  - @embr-jvm/core-designer@0.7.1
+
 ## 3.1.0
 
 ### Minor Changes

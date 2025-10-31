@@ -1,5 +1,11 @@
 # @mussonindustrial/embr-jvm-core-common
 
+## 0.7.1
+
+### Patch Changes
+
+- f36eaee: Added `class.getLoggerEx` extension function.
+
 ## 0.7.0
 
 ### Minor Changes
