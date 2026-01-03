@@ -2,14 +2,18 @@ package com.mussonindustrial.embr.snmp
 
 import com.inductiveautomation.ignition.common.BundleUtil
 import com.inductiveautomation.ignition.common.licensing.LicenseState
+import com.inductiveautomation.ignition.common.script.ScriptManager
+import com.inductiveautomation.ignition.common.script.hints.PropertiesFileDocProvider
 import com.inductiveautomation.ignition.gateway.config.migration.IdbMigrationStrategy
 import com.inductiveautomation.ignition.gateway.model.GatewayContext
 import com.inductiveautomation.ignition.gateway.opcua.server.api.AbstractDeviceModuleHook
 import com.inductiveautomation.ignition.gateway.opcua.server.api.DeviceExtensionPoint
+import com.inductiveautomation.ignition.gateway.rpc.GatewayRpcImplementation
 import com.mussonindustrial.embr.common.Embr
 import com.mussonindustrial.embr.snmp.configuration.extensions.SnmpV1ExtensionPoint
 import com.mussonindustrial.embr.snmp.configuration.extensions.SnmpV2cExtensionPoint
 import com.mussonindustrial.embr.snmp.configuration.extensions.SnmpV3ExtensionPoint
+import java.util.*
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -58,5 +62,21 @@ class SnmpGatewayHook : AbstractDeviceModuleHook() {
 
     override fun isMakerEditionCompatible(): Boolean {
         return true
+    }
+
+    override fun initializeScriptManager(manager: ScriptManager) {
+        super.initializeScriptManager(manager)
+
+        manager.addScriptModule(
+            "system.embr.snmp",
+            GatewayScriptModule(),
+            PropertiesFileDocProvider(),
+        )
+    }
+
+    override fun getRpcImplementation(): Optional<GatewayRpcImplementation> {
+        return Optional.of(
+            GatewayRpcImplementation.of(RpcFunctions.SERIALIZER, RpcFunctionsImpl(context))
+        )
     }
 }

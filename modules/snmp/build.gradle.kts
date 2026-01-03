@@ -15,6 +15,8 @@ ignitionModule {
         mapOf(
             ":modules:snmp:common" to "CGD",
             ":modules:snmp:gateway" to "G",
+            ":modules:snmp:designer" to "DC",
+            ":modules:snmp:client" to "C",
         ),
     )
 
@@ -28,6 +30,8 @@ ignitionModule {
     hooks.putAll(
         mapOf(
             "com.mussonindustrial.embr.snmp.SnmpGatewayHook" to "G",
+            "com.mussonindustrial.embr.snmp.SnmpClientHook" to "C",
+            "com.mussonindustrial.embr.snmp.SnmpDesignerHook" to "DC",
         ),
     )
 }
