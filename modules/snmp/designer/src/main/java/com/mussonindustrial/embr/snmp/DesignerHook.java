@@ -3,7 +3,6 @@ package com.mussonindustrial.embr.snmp;
 import com.inductiveautomation.ignition.common.script.ScriptManager;
 import com.inductiveautomation.ignition.common.script.hints.PropertiesFileDocProvider;
 import com.inductiveautomation.ignition.designer.model.AbstractDesignerModuleHook;
-import com.mussonindustrial.embr.snmp.ClientScriptModule;
 
 public class DesignerHook extends AbstractDesignerModuleHook {
 
