@@ -7,6 +7,8 @@ import com.inductiveautomation.ignition.common.rpc.proto.ProtoRpcSerializer;
 @RpcInterface(packageId = "snmp")
 public interface RpcFunctions {
     String getV1(SnmpRequest request);
+    String getV2c(SnmpRequest request);
+    String getV3(SnmpRequest request);
 
     /**
      * <b>If</b> you have custom classes that aren't explicitly or implicitly serializable and need to have custom

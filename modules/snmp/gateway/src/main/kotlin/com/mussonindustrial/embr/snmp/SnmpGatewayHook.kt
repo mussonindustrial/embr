@@ -8,6 +8,7 @@ import com.inductiveautomation.ignition.gateway.config.migration.IdbMigrationStr
 import com.inductiveautomation.ignition.gateway.model.GatewayContext
 import com.inductiveautomation.ignition.gateway.opcua.server.api.AbstractDeviceModuleHook
 import com.inductiveautomation.ignition.gateway.opcua.server.api.DeviceExtensionPoint
+import com.inductiveautomation.ignition.gateway.opcua.server.api.DeviceProfileConfig
 import com.inductiveautomation.ignition.gateway.rpc.GatewayRpcImplementation
 import com.mussonindustrial.embr.common.Embr
 import com.mussonindustrial.embr.snmp.configuration.extensions.SnmpV1ExtensionPoint

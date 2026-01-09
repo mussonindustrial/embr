@@ -7,6 +7,16 @@ public class GatewayScriptModule extends AbstractScriptModule {
 
     @Override
     protected String getV1(SnmpRequest request) {
-        return "TestGateway String";
+        return "TestGateway1 String";
+    }
+
+    @Override
+    protected String getV2c(SnmpRequest request) {
+        return "TestGateway2 String";
+    }
+
+    @Override
+    protected String getV3(SnmpRequest request) {
+        return "TestGateway3 String";
     }
 }

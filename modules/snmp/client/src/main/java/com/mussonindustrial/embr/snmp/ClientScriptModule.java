@@ -16,4 +16,14 @@ public class ClientScriptModule extends AbstractScriptModule {
     protected String getV1(SnmpRequest request) {
         return RPC.getV1(request);
     }
+
+    @Override
+    protected String getV2c(SnmpRequest request) {
+        return RPC.getV2c(request);
+    }
+
+    @Override
+    protected String getV3(SnmpRequest request) {
+        return RPC.getV3(request);
+    }
 }

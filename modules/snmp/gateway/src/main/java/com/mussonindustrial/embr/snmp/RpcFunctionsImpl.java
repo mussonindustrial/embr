@@ -23,4 +23,14 @@ public class RpcFunctionsImpl implements RpcFunctions {
     public String getV1(SnmpRequest request) {
         return "Testing String V1";
     }
+
+    @Override
+    public String getV2c(SnmpRequest request){
+        return "Testing String V2";
+    }
+
+    @Override
+    public String getV3(SnmpRequest request){
+        return "Testing String V3";
+    }
 }
