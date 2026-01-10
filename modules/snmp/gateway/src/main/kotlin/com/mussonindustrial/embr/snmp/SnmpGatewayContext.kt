@@ -13,6 +13,7 @@ import com.mussonindustrial.embr.snmp.agents.configuration.records.SnmpAgentV3De
 import com.mussonindustrial.embr.snmp.agents.configuration.types.SnmpAgentV1DeviceType
 import com.mussonindustrial.embr.snmp.agents.configuration.types.SnmpAgentV2cDeviceType
 import com.mussonindustrial.embr.snmp.agents.configuration.types.SnmpAgentV3DeviceType
+import com.mussonindustrial.embr.snmp.agents.SnmpAgentRegistry
 import java.util.concurrent.ThreadFactory
 import java.util.concurrent.atomic.AtomicInteger
 import org.snmp4j.SNMP4JSettings
@@ -33,6 +34,7 @@ class SnmpGatewayContext(private val context: GatewayContext) :
     }
 
     val logger = this.getLoggerEx()
+    val agentRegistry = SnmpAgentRegistry()
 
     init {
         instance = this

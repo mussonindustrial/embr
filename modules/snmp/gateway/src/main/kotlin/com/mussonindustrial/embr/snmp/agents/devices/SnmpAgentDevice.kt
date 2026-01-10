@@ -6,6 +6,7 @@ import com.mussonindustrial.embr.snmp.requests.OidReadResult
 import com.mussonindustrial.embr.snmp.requests.OidWriteResult
 import org.eclipse.milo.opcua.sdk.server.api.AddressSpaceFragment
 import org.eclipse.milo.opcua.stack.core.types.builtin.NodeId
+import org.snmp4j.smi.OID
 import org.snmp4j.smi.VariableBinding
 
 interface SnmpAgentDevice : AddressSpaceFragment, Device {
@@ -16,6 +17,8 @@ interface SnmpAgentDevice : AddressSpaceFragment, Device {
     fun read(reads: List<VariableBinding>): List<OidReadResult>
 
     fun write(writes: List<VariableBinding>): List<OidWriteResult>
+
+    fun walk(roots: List<OID>): Map<OID, OidReadResult>
 
     fun stripDeviceName(nodeId: NodeId): String {
         val id = nodeId.identifier.toString()

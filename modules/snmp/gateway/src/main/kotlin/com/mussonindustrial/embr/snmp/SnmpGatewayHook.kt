@@ -6,6 +6,23 @@ import com.inductiveautomation.ignition.gateway.model.GatewayContext
 import com.inductiveautomation.ignition.gateway.opcua.server.api.AbstractDeviceModuleHook
 import com.inductiveautomation.ignition.gateway.opcua.server.api.DeviceType
 import com.mussonindustrial.embr.common.Embr
+import com.inductiveautomation.ignition.common.rpc.proto.ProtoRpcSerializer
+import com.inductiveautomation.ignition.common.script.ScriptManager
+import com.inductiveautomation.ignition.common.script.hints.PropertiesFileDocProvider
+import com.inductiveautomation.ignition.gateway.config.migration.IdbMigrationStrategy
+import com.inductiveautomation.ignition.gateway.model.GatewayContext
+import com.inductiveautomation.ignition.gateway.opcua.server.api.AbstractDeviceModuleHook
+import com.inductiveautomation.ignition.gateway.opcua.server.api.DeviceExtensionPoint
+import com.inductiveautomation.ignition.gateway.rpc.GatewayRpcImplementation
+import com.mussonindustrial.embr.common.Embr
+import com.mussonindustrial.embr.snmp.agents.configuration.extensions.SnmpAgentV1ExtensionPoint
+import com.mussonindustrial.embr.snmp.agents.configuration.extensions.SnmpAgentV2cExtensionPoint
+import com.mussonindustrial.embr.snmp.agents.configuration.extensions.SnmpAgentV3ExtensionPoint
+import com.mussonindustrial.embr.snmp.agents.rpc.SnmpAgentRpc
+import com.mussonindustrial.embr.snmp.agents.rpc.SnmpAgentRpcImpl
+import com.mussonindustrial.embr.snmp.agents.scripting.SnmpAgentGatewayScriptModule
+import com.mussonindustrial.embr.snmp.agents.scripting.SnmpAgentScriptModule
+import java.util.Optional
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -40,6 +57,22 @@ class SnmpGatewayHook : AbstractDeviceModuleHook() {
 
     override fun getDeviceTypes(): List<DeviceType> {
         return snmpContext.deviceTypes
+    }
+
+    override fun getRpcImplementation(): Optional<GatewayRpcImplementation> {
+        return Optional.of(
+            GatewayRpcImplementation.newBuilder(ProtoRpcSerializer.DEFAULT_INSTANCE)
+                .addInterface(SnmpAgentRpcImpl(snmpContext), SnmpAgentRpc.SERIALIZER)
+                .build()
+        )
+    }
+
+    override fun initializeScriptManager(manager: ScriptManager) {
+        manager.addScriptModule(
+            SnmpAgentScriptModule.PATH,
+            SnmpAgentGatewayScriptModule(snmpContext),
+            PropertiesFileDocProvider(),
+        )
     }
 
     override fun isFreeModule(): Boolean {

@@ -36,6 +36,8 @@ include(
     ":modules:sse:gateway",
 
     ":modules:snmp:common",
+    ":modules:snmp:client",
+    ":modules:snmp:designer",
     ":modules:snmp:gateway",
 
     ":modules:periscope:common",
