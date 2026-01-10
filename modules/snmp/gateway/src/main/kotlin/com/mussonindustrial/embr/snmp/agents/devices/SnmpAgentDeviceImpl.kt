@@ -23,6 +23,7 @@ import org.eclipse.milo.opcua.stack.core.types.builtin.StatusCode
 import org.snmp4j.PDU
 import org.snmp4j.smi.OID
 import org.snmp4j.smi.VariableBinding
+import org.snmp4j.util.TreeUtils
 
 class SnmpAgentDeviceImpl<T : SnmpAgentConfig>(override val context: SnmpAgentContext<T>) :
     AddressSpaceComposite(context.deviceContext.server), SnmpAgentDevice {
@@ -61,6 +62,7 @@ class SnmpAgentDeviceImpl<T : SnmpAgentConfig>(override val context: SnmpAgentCo
         logger.debug("Starting up...")
         try {
             lifecycleManager.startup()
+            SnmpGatewayContext.instance.agentRegistry.register(this)
         } catch (e: Throwable) {
             status = SnmpAgentDevice.Status.FAULTED
             logger.error("Failed to start device [${context.deviceContext.getName()}]", e)
@@ -71,6 +73,7 @@ class SnmpAgentDeviceImpl<T : SnmpAgentConfig>(override val context: SnmpAgentCo
         logger.debug("Shutting down...")
         try {
             lifecycleManager.shutdown()
+            SnmpGatewayContext.instance.agentRegistry.unregister(this)
         } catch (e: Throwable) {
             logger.error("Failed to shutdown device [${context.deviceContext.getName()}]", e)
         }
@@ -170,6 +173,18 @@ class SnmpAgentDeviceImpl<T : SnmpAgentConfig>(override val context: SnmpAgentCo
                 return@map StatusCode(StatusCodes.Bad_CommunicationError).toOidWriteResult()
             }
         }
+    }
+
+    override fun walk(roots: List<OID>): Map<OID, OidReadResult> {
+        val treeUtils = TreeUtils(context.snmp, context.pduFactory)
+        val results = treeUtils.walk(context.readTarget, roots.toTypedArray())
+        return results
+            .flatMap {
+                it.variableBindings.map { binding ->
+                    binding.oid to binding.variable.toDataValue().toOidReadResult()
+                }
+            }
+            .toMap()
     }
 
     inner class Healthcheck : Lifecycle {
