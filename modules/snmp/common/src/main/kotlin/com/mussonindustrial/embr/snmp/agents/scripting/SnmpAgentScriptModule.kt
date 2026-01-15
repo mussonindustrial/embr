@@ -2,6 +2,7 @@ package com.mussonindustrial.embr.snmp.agents.scripting
 
 import com.inductiveautomation.ignition.common.model.values.QualifiedValue
 import com.inductiveautomation.ignition.common.model.values.QualityCode
+import com.mussonindustrial.embr.snmp.model.QualifiedOidValue
 
 interface SnmpAgentScriptModule {
 
@@ -13,5 +14,5 @@ interface SnmpAgentScriptModule {
 
     fun write(agent: String, oids: List<String>, values: List<String>): List<QualityCode>
 
-    fun walk(agent: String, oids: List<String>): List<Any?>
+    fun walk(agent: String, oids: List<String>): List<QualifiedOidValue>
 }

@@ -71,7 +71,7 @@ class SnmpAgentDeviceImpl<T : SnmpAgentDeviceSettings>(override val context: Snm
             SnmpGatewayContext.instance.agentRegistry.register(this)
         } catch (e: Throwable) {
             status = SnmpAgentDevice.Status.FAULTED
-            logger.error("Failed to start device [${context.deviceContext.getName()}]", e)
+            logger.error("Failed to start device [${context.deviceContext.name}]", e)
         }
     }
 
@@ -81,7 +81,7 @@ class SnmpAgentDeviceImpl<T : SnmpAgentDeviceSettings>(override val context: Snm
             lifecycleManager.shutdown()
             SnmpGatewayContext.instance.agentRegistry.unregister(this)
         } catch (e: Throwable) {
-            logger.error("Failed to shutdown device [${context.deviceContext.getName()}]", e)
+            logger.error("Failed to shutdown device [${context.deviceContext.name}]", e)
         }
     }
 
@@ -186,9 +186,9 @@ class SnmpAgentDeviceImpl<T : SnmpAgentDeviceSettings>(override val context: Snm
         val results = treeUtils.walk(context.readTarget, roots.toTypedArray())
         return results
             .flatMap {
-                it.variableBindings.map { binding ->
+                it.variableBindings?.map { binding ->
                     binding.oid to binding.variable.toDataValue().toOidReadResult()
-                }
+                } ?: listOf()
             }
             .toMap()
     }
