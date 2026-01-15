@@ -18,7 +18,7 @@ interface SnmpAgentDevice : AddressSpaceFragment, Device {
 
     fun write(writes: List<VariableBinding>): List<OidWriteResult>
 
-    fun walk(roots: List<OID>): Map<OID, OidReadResult>
+    fun walk(roots: List<OID>): List<OidReadResult>
 
     fun stripDeviceName(nodeId: NodeId): String {
         val id = nodeId.identifier.toString()

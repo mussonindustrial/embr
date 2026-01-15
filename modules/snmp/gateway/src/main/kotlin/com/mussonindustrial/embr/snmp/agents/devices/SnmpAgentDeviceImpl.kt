@@ -12,7 +12,6 @@ import com.mussonindustrial.embr.snmp.requests.OidWriteResult
 import com.mussonindustrial.embr.snmp.requests.toOidReadResult
 import com.mussonindustrial.embr.snmp.requests.toOidWriteResult
 import com.mussonindustrial.embr.snmp.utils.createSizeBoundedPDUs
-import com.mussonindustrial.embr.snmp.utils.toDataValue
 import java.util.concurrent.TimeUnit
 import org.eclipse.milo.opcua.sdk.server.AddressSpaceComposite
 import org.eclipse.milo.opcua.sdk.server.Lifecycle
@@ -23,6 +22,7 @@ import org.eclipse.milo.opcua.stack.core.types.builtin.StatusCode
 import org.snmp4j.PDU
 import org.snmp4j.smi.OID
 import org.snmp4j.smi.VariableBinding
+import org.snmp4j.util.TableUtils
 import org.snmp4j.util.TreeUtils
 
 class SnmpAgentDeviceImpl<T : SnmpAgentConfig>(override val context: SnmpAgentContext<T>) :
@@ -53,6 +53,9 @@ class SnmpAgentDeviceImpl<T : SnmpAgentConfig>(override val context: SnmpAgentCo
             )
         }
     }
+
+    val treeUtils = TreeUtils(context.snmp, context.pduFactory)
+    val tableUtils = TableUtils(context.snmp, context.pduFactory)
 
     override fun getStatus(): String {
         return status.toString()
@@ -99,7 +102,7 @@ class SnmpAgentDeviceImpl<T : SnmpAgentConfig>(override val context: SnmpAgentCo
                     if (response == null) {
                         logger.warn("GET failed: no response.")
                         return reads.map {
-                            DataValue(StatusCodes.Bad_CommunicationError).toOidReadResult()
+                            it.oid.toOidReadResult(DataValue(StatusCodes.Bad_CommunicationError))
                         }
                     }
 
@@ -107,7 +110,7 @@ class SnmpAgentDeviceImpl<T : SnmpAgentConfig>(override val context: SnmpAgentCo
                         logger.trace("GET successful: ${response.variableBindings}")
                         response.variableBindings.forEach { binding ->
                             remaining[binding.oid]?.forEach {
-                                results[it] = binding.variable.toDataValue().toOidReadResult()
+                                results[it] = binding.toOidReadResult()
                             }
                             remaining.remove(binding.oid)
                         }
@@ -121,21 +124,25 @@ class SnmpAgentDeviceImpl<T : SnmpAgentConfig>(override val context: SnmpAgentCo
                             val failedResults = remaining.remove(badOid)
                             failedResults?.forEach {
                                 results[it] =
-                                    DataValue(StatusCodes.Bad_NodeIdUnknown).toOidReadResult()
+                                    it.oid.toOidReadResult(
+                                        DataValue(StatusCodes.Bad_CommunicationError)
+                                    )
                             }
                         } else {
                             logger.warn(
                                 "GET failed with errorStatusText: ${response.errorStatusText}"
                             )
                             return reads.map {
-                                DataValue(StatusCodes.Bad_CommunicationError).toOidReadResult()
+                                it.oid.toOidReadResult(
+                                    DataValue(StatusCodes.Bad_CommunicationError)
+                                )
                             }
                         }
                     }
                 } catch (e: Exception) {
                     logger.warn("GET failed with exception", e)
                     return reads.map {
-                        DataValue(StatusCodes.Bad_CommunicationError).toOidReadResult()
+                        it.oid.toOidReadResult(DataValue(StatusCodes.Bad_CommunicationError))
                     }
                 }
             }
@@ -147,7 +154,7 @@ class SnmpAgentDeviceImpl<T : SnmpAgentConfig>(override val context: SnmpAgentCo
     override fun write(writes: List<VariableBinding>): List<OidWriteResult> {
         return writes.map {
             if (context.writeTarget == null) {
-                return@map StatusCode(StatusCodes.Bad_WriteNotSupported).toOidWriteResult()
+                return@map it.oid.toOidWriteResult(StatusCode(StatusCodes.Bad_WriteNotSupported))
             }
 
             val pdu =
@@ -160,31 +167,43 @@ class SnmpAgentDeviceImpl<T : SnmpAgentConfig>(override val context: SnmpAgentCo
                 val response = context.snmp.send(pdu, context.writeTarget).response
                 if (response == null) {
                     logger.warn("SET failed: no response.")
-                    return@map StatusCode(StatusCodes.Bad_CommunicationError).toOidWriteResult()
+                    return@map it.oid.toOidWriteResult(
+                        StatusCode(StatusCodes.Bad_CommunicationError)
+                    )
                 }
 
                 if (response.errorStatus == 0) {
-                    return@map StatusCode.GOOD.toOidWriteResult()
+                    return@map it.oid.toOidWriteResult(StatusCode.GOOD)
                 } else {
-                    return@map StatusCode.BAD.toOidWriteResult()
+                    return@map it.oid.toOidWriteResult(StatusCode.BAD)
                 }
             } catch (e: Exception) {
                 logger.warn("SET failed with exception", e)
-                return@map StatusCode(StatusCodes.Bad_CommunicationError).toOidWriteResult()
+                return@map it.oid.toOidWriteResult(StatusCode(StatusCodes.Bad_CommunicationError))
             }
         }
     }
 
-    override fun walk(roots: List<OID>): Map<OID, OidReadResult> {
-        val treeUtils = TreeUtils(context.snmp, context.pduFactory)
+    override fun walk(roots: List<OID>): List<OidReadResult> {
         val results = treeUtils.walk(context.readTarget, roots.toTypedArray())
-        return results
-            .flatMap {
-                it.variableBindings?.map { binding ->
-                    binding.oid to binding.variable.toDataValue().toOidReadResult()
-                } ?: listOf()
-            }
-            .toMap()
+        return results.flatMap {
+            it.variableBindings?.map { binding -> binding.toOidReadResult() } ?: listOf()
+        }
+    }
+
+    fun readTable(
+        columnOids: List<OID>,
+        lowerBoundIndex: OID?,
+        upperBoundIndex: OID?,
+    ): List<List<OidReadResult>> {
+        val results =
+            tableUtils.getTable(
+                context.readTarget,
+                columnOids.toTypedArray(),
+                lowerBoundIndex,
+                upperBoundIndex,
+            )
+        return results.map { it.columns.map { binding -> binding.toOidReadResult() } }
     }
 
     inner class Healthcheck : Lifecycle {

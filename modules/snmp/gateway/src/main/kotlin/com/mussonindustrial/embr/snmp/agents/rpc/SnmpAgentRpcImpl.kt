@@ -1,6 +1,5 @@
 package com.mussonindustrial.embr.snmp.agents.rpc
 
-import com.inductiveautomation.ignition.common.model.values.QualifiedValue
 import com.inductiveautomation.ignition.common.model.values.QualityCode
 import com.inductiveautomation.ignition.common.project.ClientPermissionsConstants
 import com.inductiveautomation.ignition.gateway.clientcomm.MutabilityMode
@@ -15,7 +14,7 @@ class SnmpAgentRpcImpl(val context: SnmpGatewayContext) : SnmpAgentRpc {
     val scriptModule = SnmpAgentGatewayScriptModule(context)
 
     @RpcDelegate.RequiredMutabilityMode(value = MutabilityMode.READ_ONLY)
-    override fun read(agent: String, oids: List<String>): List<QualifiedValue> {
+    override fun read(agent: String, oids: List<String>): List<QualifiedOidValue> {
         return scriptModule.read(agent, oids)
     }
 

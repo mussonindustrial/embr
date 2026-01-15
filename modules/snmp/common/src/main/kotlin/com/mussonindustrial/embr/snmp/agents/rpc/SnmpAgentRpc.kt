@@ -1,6 +1,5 @@
 package com.mussonindustrial.embr.snmp.agents.rpc
 
-import com.inductiveautomation.ignition.common.model.values.QualifiedValue
 import com.inductiveautomation.ignition.common.model.values.QualityCode
 import com.inductiveautomation.ignition.common.rpc.RpcInterface
 import com.inductiveautomation.ignition.common.rpc.proto.ProtoRpcSerializer
@@ -20,7 +19,7 @@ interface SnmpAgentRpc {
                 .build()
     }
 
-    fun read(agent: String, oids: List<String>): List<QualifiedValue>
+    fun read(agent: String, oids: List<String>): List<QualifiedOidValue>
 
     fun write(agent: String, oids: List<String>, values: List<String>): List<QualityCode>
 

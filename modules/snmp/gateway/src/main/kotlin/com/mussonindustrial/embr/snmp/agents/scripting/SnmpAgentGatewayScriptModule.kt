@@ -1,6 +1,5 @@
 package com.mussonindustrial.embr.snmp.agents.scripting
 
-import com.inductiveautomation.ignition.common.model.values.QualifiedValue
 import com.inductiveautomation.ignition.common.model.values.QualityCode
 import com.mussonindustrial.embr.snmp.SnmpGatewayContext
 import com.mussonindustrial.embr.snmp.agents.devices.SnmpAgentDevice
@@ -19,7 +18,7 @@ class SnmpAgentGatewayScriptModule(private val context: SnmpGatewayContext) :
             ?: throw IllegalArgumentException("SNMP agent '$name' not found.")
     }
 
-    override fun read(agent: String, oids: List<String>): List<QualifiedValue> {
+    override fun read(agent: String, oids: List<String>): List<QualifiedOidValue> {
         val snmpAgent = requireAgent(agent)
         return snmpAgent.read(oids.map { VariableBinding(OID(it)) }).map { it.toQualifiedValue() }
     }
@@ -42,6 +41,6 @@ class SnmpAgentGatewayScriptModule(private val context: SnmpGatewayContext) :
 
     override fun walk(agent: String, oids: List<String>): List<QualifiedOidValue> {
         val snmpAgent = requireAgent(agent)
-        return snmpAgent.walk(oids.map { OID(it) }).map { it.value.toQualifiedOidValue(it.key) }
+        return snmpAgent.walk(oids.map { OID(it) }).map { it.toQualifiedValue() }
     }
 }
