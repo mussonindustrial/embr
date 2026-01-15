@@ -108,9 +108,9 @@ class OidAddressSpace(val device: SnmpAgentDevice, composite: AddressSpaceCompos
                             )
                     }!!
 
-                OidReadResult(DataValue(Variant(result)))
+                OidReadResult(it.oid, DataValue(Variant(result)))
             } catch (e: UaException) {
-                OidReadResult(DataValue(e.statusCode))
+                OidReadResult(it.oid, DataValue(e.statusCode))
             }
         }
     }
@@ -120,13 +120,13 @@ class OidAddressSpace(val device: SnmpAgentDevice, composite: AddressSpaceCompos
 
         results.forEach {
             if (it.writeValue.attributeId == null) {
-                it.result = StatusCode(StatusCodes.Bad_AttributeIdInvalid).toOidWriteResult()
+                it.result = it.oid.toOidWriteResult(StatusCode(StatusCodes.Bad_AttributeIdInvalid))
             }
             if (it.writeValue.indexRange != null && it.writeValue.indexRange.isNotEmpty()) {
-                it.result = StatusCode(StatusCodes.Bad_NotImplemented).toOidWriteResult()
+                it.result = it.oid.toOidWriteResult(StatusCode(StatusCodes.Bad_NotImplemented))
             }
-            if (AttributeId.from(it.writeValue.attributeId).orElse(null) != AttributeId.Value) {
-                it.result = StatusCode(StatusCodes.Bad_WriteNotSupported).toOidWriteResult()
+            if (AttributeId.from(it.writeValue.attributeId).getOrNull() != AttributeId.Value) {
+                it.result = it.oid.toOidWriteResult(StatusCode(StatusCodes.Bad_NotImplemented))
             }
         }
 
