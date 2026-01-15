@@ -4,6 +4,7 @@ import com.inductiveautomation.ignition.common.model.values.QualifiedValue
 import com.inductiveautomation.ignition.common.model.values.QualityCode
 import com.mussonindustrial.embr.snmp.SnmpGatewayContext
 import com.mussonindustrial.embr.snmp.agents.devices.SnmpAgentDevice
+import com.mussonindustrial.embr.snmp.model.QualifiedOidValue
 import com.mussonindustrial.embr.snmp.utils.toQualityCode
 import org.python.core.Py.ValueError
 import org.snmp4j.smi.OID
@@ -39,8 +40,8 @@ class SnmpAgentGatewayScriptModule(private val context: SnmpGatewayContext) :
             .map { it.statusCode.toQualityCode() }
     }
 
-    override fun walk(agent: String, oids: List<String>): List<Any?> {
+    override fun walk(agent: String, oids: List<String>): List<QualifiedOidValue> {
         val snmpAgent = requireAgent(agent)
-        return snmpAgent.walk(oids.map { OID(it) }).map { it.value.value.value().value }
+        return snmpAgent.walk(oids.map { OID(it) }).map { it.value.toQualifiedOidValue(it.key) }
     }
 }

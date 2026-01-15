@@ -5,4 +5,5 @@ plugins {
 dependencies {
     compileOnly(libs.bundles.common)
     modlImplementation(projects.libraries.core.common)
+    modlImplementation(libs.snmp4j)
 }

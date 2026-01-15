@@ -4,6 +4,7 @@ import com.inductiveautomation.ignition.client.util.gui.ReadWriteOptionDialog
 import com.inductiveautomation.ignition.common.model.values.QualifiedValue
 import com.inductiveautomation.ignition.common.model.values.QualityCode
 import com.mussonindustrial.embr.snmp.agents.rpc.SnmpAgentRpc
+import com.mussonindustrial.embr.snmp.model.QualifiedOidValue
 
 class SnmpAgentClientScriptModule(private val rpc: SnmpAgentRpc) : SnmpAgentScriptModule {
     override fun read(agent: String, oids: List<String>): List<QualifiedValue> {
@@ -18,9 +19,10 @@ class SnmpAgentClientScriptModule(private val rpc: SnmpAgentRpc) : SnmpAgentScri
         }
     }
 
-    override fun walk(agent: String, oids: List<String>): List<Any?> {
-        return ReadWriteOptionDialog.runReadProtectedAction<List<Any?>, Exception> {
-            rpc.walk(agent, oids)
-        }
+    override fun walk(agent: String, oids: List<String>): List<QualifiedOidValue> {
+        return ReadWriteOptionDialog.runReadProtectedAction<
+            List<QualifiedOidValue>,
+            Exception,
+        > @Throws() { rpc.walk(agent, oids) }
     }
 }

@@ -7,6 +7,7 @@ import com.inductiveautomation.ignition.gateway.clientcomm.MutabilityMode
 import com.inductiveautomation.ignition.gateway.rpc.RpcDelegate
 import com.mussonindustrial.embr.snmp.SnmpGatewayContext
 import com.mussonindustrial.embr.snmp.agents.scripting.SnmpAgentGatewayScriptModule
+import com.mussonindustrial.embr.snmp.model.QualifiedOidValue
 
 @RpcDelegate.RunsOnClient(clientPermissionId = ClientPermissionsConstants.UNRESTRICTED)
 class SnmpAgentRpcImpl(val context: SnmpGatewayContext) : SnmpAgentRpc {
@@ -24,7 +25,7 @@ class SnmpAgentRpcImpl(val context: SnmpGatewayContext) : SnmpAgentRpc {
     }
 
     @RpcDelegate.RequiredMutabilityMode(value = MutabilityMode.READ_ONLY)
-    override fun walk(agent: String, oids: List<String>): List<Any?> {
+    override fun walk(agent: String, oids: List<String>): List<QualifiedOidValue> {
         return scriptModule.walk(agent, oids)
     }
 }
