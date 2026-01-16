@@ -8,4 +8,5 @@ dependencies {
     modlImplementation(projects.libraries.core.designer)
     compileOnly(projects.modules.snmp.common)
     compileOnly(projects.modules.snmp.client)
+    compileOnly(libs.snmp4j)
 }

@@ -7,4 +7,5 @@ dependencies {
     compileOnly(projects.libraries.core.common)
     modlImplementation(projects.libraries.core.client)
     compileOnly(projects.modules.snmp.common)
+    compileOnly(libs.snmp4j)
 }
