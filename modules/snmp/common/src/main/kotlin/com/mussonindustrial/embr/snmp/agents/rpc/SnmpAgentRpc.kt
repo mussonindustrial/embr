@@ -24,4 +24,11 @@ interface SnmpAgentRpc {
     fun write(agent: String, oids: List<String>, values: List<String>): List<QualityCode>
 
     fun walk(agent: String, oids: List<String>): List<QualifiedOidValue>
+
+    fun readTable(
+        agent: String,
+        columns: List<String>,
+        lowerBoundIndex: String?,
+        upperBoundIndex: String?,
+    ): List<List<QualifiedOidValue>>
 }

@@ -20,6 +20,12 @@ interface SnmpAgentDevice : AddressSpaceFragment, Device {
 
     fun walk(roots: List<OID>): List<OidReadResult>
 
+    fun readTable(
+        columns: List<OID>,
+        lowerBoundIndex: OID?,
+        upperBoundIndex: OID?,
+    ): List<List<OidReadResult>>
+
     fun stripDeviceName(nodeId: NodeId): String {
         val id = nodeId.identifier.toString()
         val name = "[${getName()}]"

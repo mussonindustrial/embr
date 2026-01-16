@@ -196,19 +196,21 @@ class SnmpAgentDeviceImpl<T : SnmpAgentDeviceSettings>(override val context: Snm
         }
     }
 
-    fun readTable(
-        columnOids: List<OID>,
+    override fun readTable(
+        columns: List<OID>,
         lowerBoundIndex: OID?,
         upperBoundIndex: OID?,
     ): List<List<OidReadResult>> {
         val results =
             tableUtils.getTable(
                 context.readTarget,
-                columnOids.toTypedArray(),
+                columns.toTypedArray(),
                 lowerBoundIndex,
                 upperBoundIndex,
             )
-        return results.map { it.columns.map { binding -> binding.toOidReadResult() } }
+        return results.mapNotNull {
+            it.columns?.mapNotNull { binding -> binding?.toOidReadResult() }
+        }
     }
 
     inner class Healthcheck : Lifecycle {
