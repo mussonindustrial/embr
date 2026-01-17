@@ -26,10 +26,10 @@ class SnmpDesignerHook : AbstractDesignerModuleHook() {
         logger.debug("Embr-Snmp module shutdown.")
     }
 
-    override fun initializeScriptManager(manager: ScriptManager) {
-        manager.addScriptModule(
+    override fun initializeScriptManager(scriptManager: ScriptManager) {
+        scriptManager.addScriptModule(
             SnmpAgentScriptModule.PATH,
-            SnmpAgentClientScriptModule(context.agentRpc),
+            SnmpAgentClientScriptModule(context.agentRpc, scriptManager),
             PropertiesFileDocProvider(),
         )
     }
