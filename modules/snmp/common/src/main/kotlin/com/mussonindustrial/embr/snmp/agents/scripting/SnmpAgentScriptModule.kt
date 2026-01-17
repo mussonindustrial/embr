@@ -2,6 +2,7 @@ package com.mussonindustrial.embr.snmp.agents.scripting
 
 import com.inductiveautomation.ignition.common.Dataset
 import com.inductiveautomation.ignition.common.model.values.QualityCode
+import com.mussonindustrial.embr.common.scripting.PyCompletableFuture
 import com.mussonindustrial.embr.snmp.model.QualifiedOidValue
 import org.python.core.PyObject
 
@@ -11,11 +12,28 @@ interface SnmpAgentScriptModule {
         const val PATH = "system.snmp.agent"
     }
 
-    fun read(args: Array<PyObject>, keywords: Array<String>): List<QualifiedOidValue>
+    fun readAsync(
+        args: Array<PyObject>,
+        keywords: Array<String>,
+    ): PyCompletableFuture<List<QualifiedOidValue>>
 
-    fun write(args: Array<PyObject>, keywords: Array<String>): List<QualityCode>
+    fun readBlocking(args: Array<PyObject>, keywords: Array<String>): List<QualifiedOidValue>
 
-    fun walk(args: Array<PyObject>, keywords: Array<String>): List<QualifiedOidValue>
+    fun writeAsync(
+        args: Array<PyObject>,
+        keywords: Array<String>,
+    ): PyCompletableFuture<List<QualityCode>>
 
-    fun readTable(args: Array<PyObject>, keywords: Array<String>): Dataset
+    fun writeBlocking(args: Array<PyObject>, keywords: Array<String>): List<QualityCode>
+
+    fun walkAsync(
+        args: Array<PyObject>,
+        keywords: Array<String>,
+    ): PyCompletableFuture<List<QualifiedOidValue>>
+
+    fun walkBlocking(args: Array<PyObject>, keywords: Array<String>): List<QualifiedOidValue>
+
+    fun readTableAsync(args: Array<PyObject>, keywords: Array<String>): PyCompletableFuture<Dataset>
+
+    fun readTableBlocking(args: Array<PyObject>, keywords: Array<String>): Dataset
 }

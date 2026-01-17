@@ -67,10 +67,10 @@ class SnmpGatewayHook : AbstractDeviceModuleHook() {
         )
     }
 
-    override fun initializeScriptManager(manager: ScriptManager) {
-        manager.addScriptModule(
+    override fun initializeScriptManager(scriptManager: ScriptManager) {
+        scriptManager.addScriptModule(
             SnmpAgentScriptModule.PATH,
-            SnmpAgentGatewayScriptModule(snmpContext),
+            SnmpAgentGatewayScriptModule(snmpContext, scriptManager),
             PropertiesFileDocProvider(),
         )
     }
