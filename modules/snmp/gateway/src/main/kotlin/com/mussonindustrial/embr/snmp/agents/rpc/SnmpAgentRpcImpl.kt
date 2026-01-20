@@ -24,8 +24,8 @@ class SnmpAgentRpcImpl(val context: SnmpGatewayContext) : SnmpAgentRpc {
     @RpcDelegate.RequiredMutabilityMode(value = MutabilityMode.READ_ONLY)
     override fun read(agent: String, oids: List<String>): List<QualifiedOidValue> {
         val snmpAgent = requireAgent(agent)
-        return snmpAgent.read(oids.map { oid -> VariableBinding(OID(oid)) }).map { result ->
-            result.toQualifiedValue()
+        return snmpAgent.read(oids.map { oid -> VariableBinding(OID(oid)) }).map {
+            it.toQualifiedValue()
         }
     }
 
