@@ -3,7 +3,7 @@ package com.mussonindustrial.embr.snmp.scripting
 import com.mussonindustrial.embr.common.scripting.PyCompletableFuture
 import org.python.core.PyObject
 
-interface SnmpScriptExecutor {
+interface SnmpScriptMethodExecutor {
 
     fun <T> executeAsync(
         method: SnmpScriptMethod<T>,

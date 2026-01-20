@@ -8,14 +8,14 @@ import com.inductiveautomation.ignition.common.script.hints.NoHint
 import com.mussonindustrial.embr.snmp.agents.rpc.SnmpAgentRpc
 import com.mussonindustrial.embr.snmp.model.QualifiedOidValue
 import com.mussonindustrial.embr.snmp.model.toDataset
-import com.mussonindustrial.embr.snmp.scripting.SnmpScriptExecutor
+import com.mussonindustrial.embr.snmp.scripting.SnmpScriptMethodExecutor
 import com.mussonindustrial.embr.snmp.scripting.SnmpScriptMethod
 import kotlin.reflect.typeOf
 import org.python.core.PyObject
 
 open class SnmpAgentScriptModule(
     private val methods: Methods,
-    private val executor: SnmpScriptExecutor,
+    private val executor: SnmpScriptMethodExecutor,
 ) {
 
     companion object {

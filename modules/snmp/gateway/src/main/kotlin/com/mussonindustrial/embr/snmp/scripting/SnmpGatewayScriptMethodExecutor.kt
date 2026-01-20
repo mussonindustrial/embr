@@ -6,8 +6,8 @@ import com.mussonindustrial.embr.common.scripting.asPyCompletableFuture
 import java.util.concurrent.CompletableFuture
 import org.python.core.PyObject
 
-class SnmpGatewayScriptExecutor(private val pyScriptExecutor: PyScriptExecutor) :
-    SnmpScriptExecutor {
+class SnmpGatewayScriptMethodExecutor(private val pyScriptExecutor: PyScriptExecutor) :
+    SnmpScriptMethodExecutor {
 
     override fun <T> executeBlocking(
         method: SnmpScriptMethod<T>,

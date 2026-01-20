@@ -4,12 +4,12 @@ import com.inductiveautomation.ignition.common.BundleUtil
 import com.inductiveautomation.ignition.common.script.ScriptManager
 import com.mussonindustrial.embr.common.scripting.asPyScriptExecutor
 import com.mussonindustrial.embr.snmp.agents.rpc.SnmpAgentRpc
-import com.mussonindustrial.embr.snmp.scripting.SnmpClientScriptExecutor
+import com.mussonindustrial.embr.snmp.scripting.SnmpClientScriptMethodExecutor
 
 class SnmpAgentClientScriptModule(rpc: SnmpAgentRpc, scriptManager: ScriptManager) :
     SnmpAgentScriptModule(
         RpcDelegateMethods(rpc),
-        SnmpClientScriptExecutor(scriptManager.asPyScriptExecutor()),
+        SnmpClientScriptMethodExecutor(scriptManager.asPyScriptExecutor()),
     ) {
 
     companion object {

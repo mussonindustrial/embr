@@ -9,8 +9,8 @@ import com.mussonindustrial.embr.snmp.agents.scripting.SnmpAgentScriptModule
 import java.util.concurrent.CompletableFuture
 import org.python.core.PyObject
 
-class SnmpClientScriptExecutor(private val pyScriptExecutor: PyScriptExecutor) :
-    SnmpScriptExecutor {
+class SnmpClientScriptMethodExecutor(private val pyScriptExecutor: PyScriptExecutor) :
+    SnmpScriptMethodExecutor {
 
     companion object {
         const val TIMEOUT = 120L
