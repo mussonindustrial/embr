@@ -4,6 +4,7 @@ import com.inductiveautomation.ignition.common.Dataset
 import com.inductiveautomation.ignition.common.model.values.QualityCode
 import com.inductiveautomation.ignition.common.script.builtin.KeywordArgs
 import com.inductiveautomation.ignition.common.script.hints.JythonElement
+import com.inductiveautomation.ignition.common.script.hints.NoHint
 import com.mussonindustrial.embr.snmp.model.QualifiedOidValue
 import com.mussonindustrial.embr.snmp.scripting.ScriptMethod
 import org.python.core.PyObject
@@ -23,6 +24,11 @@ open class SnmpAgentScriptModule(private val methods: Methods) {
     )
 
     @Suppress("UNUSED")
+    @NoHint()
+    fun read(args: Array<PyObject>, keywords: Array<String>) =
+        methods.read.blocking.call(args, keywords)
+
+    @Suppress("UNUSED")
     @JythonElement(docBundlePrefix = BUNDLE_PREFIX)
     @KeywordArgs(names = ["agent", "oids"], types = [String::class, List::class])
     fun readAsync(args: Array<PyObject>, keywords: Array<String>) =
@@ -33,6 +39,11 @@ open class SnmpAgentScriptModule(private val methods: Methods) {
     @KeywordArgs(names = ["agent", "oids"], types = [String::class, List::class])
     fun readBlocking(args: Array<PyObject>, keywords: Array<String>) =
         methods.read.blocking.call(args, keywords)
+
+    @Suppress("UNUSED")
+    @NoHint()
+    fun write(args: Array<PyObject>, keywords: Array<String>) =
+        methods.write.blocking.call(args, keywords)
 
     @Suppress("UNUSED")
     @JythonElement(docBundlePrefix = BUNDLE_PREFIX)
@@ -53,6 +64,11 @@ open class SnmpAgentScriptModule(private val methods: Methods) {
         methods.write.blocking.call(args, keywords)
 
     @Suppress("UNUSED")
+    @NoHint()
+    fun walk(args: Array<PyObject>, keywords: Array<String>) =
+        methods.walk.blocking.call(args, keywords)
+
+    @Suppress("UNUSED")
     @JythonElement(docBundlePrefix = BUNDLE_PREFIX)
     @KeywordArgs(names = ["agent", "oids"], types = [String::class, List::class])
     fun walkAsync(args: Array<PyObject>, keywords: Array<String>) =
@@ -63,6 +79,11 @@ open class SnmpAgentScriptModule(private val methods: Methods) {
     @KeywordArgs(names = ["agent", "oids"], types = [String::class, List::class])
     fun walkBlocking(args: Array<PyObject>, keywords: Array<String>) =
         methods.walk.blocking.call(args, keywords)
+
+    @Suppress("UNUSED")
+    @NoHint()
+    fun readTable(args: Array<PyObject>, keywords: Array<String>) =
+        methods.readTable.blocking.call(args, keywords)
 
     @Suppress("UNUSED")
     @JythonElement(docBundlePrefix = BUNDLE_PREFIX)
