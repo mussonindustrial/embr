@@ -4,4 +4,4 @@
 '@embr-modules/thermo': patch
 ---
 
-- `PyArgOverloads`: Enforce strong return typing.
+`PyArgOverload`: Enforce strong return typing.
