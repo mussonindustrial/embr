@@ -8,8 +8,8 @@ import com.inductiveautomation.ignition.common.script.hints.NoHint
 import com.mussonindustrial.embr.snmp.agents.rpc.SnmpAgentRpc
 import com.mussonindustrial.embr.snmp.model.QualifiedOidValue
 import com.mussonindustrial.embr.snmp.model.toDataset
-import com.mussonindustrial.embr.snmp.scripting.SnmpScriptMethodExecutor
 import com.mussonindustrial.embr.snmp.scripting.SnmpScriptMethod
+import com.mussonindustrial.embr.snmp.scripting.SnmpScriptMethodExecutor
 import kotlin.reflect.typeOf
 import org.python.core.PyObject
 
