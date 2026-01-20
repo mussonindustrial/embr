@@ -12,12 +12,12 @@ import kotlin.reflect.javaType
 import org.python.core.Py
 import org.python.core.PyObject
 
-class PyArgOverload(
+class PyArgOverload<T>(
     val name: String,
-    private val functions: Map<FunctionSignature, (args: Map<String, Any?>) -> Any?>,
+    private val functions: Map<FunctionSignature, (args: Map<String, Any?>) -> T>,
 ) {
 
-    fun call(args: Array<PyObject>, keywords: Array<String>): Any? {
+    fun call(args: Array<PyObject>, keywords: Array<String>): T {
         val signatures = functions.keys.flatMap { signature -> signature.parameters }.toSet()
 
         val argParser =
