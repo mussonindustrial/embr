@@ -489,7 +489,7 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
 
     inner class MethodOverloads {
         val popInstance =
-            PyArgOverloadBuilder()
+            PyArgOverloadBuilder<Unit>()
                 .setName("popInstance")
                 .addOverload(
                     {
@@ -509,7 +509,7 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
                 .build()
 
         val pushInstance =
-            PyArgOverloadBuilder()
+            PyArgOverloadBuilder<Unit>()
                 .setName("pushInstance")
                 .addOverload(
                     {
@@ -533,7 +533,7 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
                 .build()
 
         val insertInstance =
-            PyArgOverloadBuilder()
+            PyArgOverloadBuilder<Unit>()
                 .setName("insertInstance")
                 .addOverload(
                     {
