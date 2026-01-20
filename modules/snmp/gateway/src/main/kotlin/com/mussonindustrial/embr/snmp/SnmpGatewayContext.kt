@@ -7,13 +7,13 @@ import com.inductiveautomation.ignition.gateway.model.TelemetryManager
 import com.mussonindustrial.embr.common.logging.getLoggerEx
 import com.mussonindustrial.embr.gateway.EmbrGatewayContext
 import com.mussonindustrial.embr.gateway.EmbrGatewayContextImpl
+import com.mussonindustrial.embr.snmp.agents.SnmpAgentRegistry
 import com.mussonindustrial.embr.snmp.agents.configuration.records.SnmpAgentV1DeviceRecord
 import com.mussonindustrial.embr.snmp.agents.configuration.records.SnmpAgentV2cDeviceRecord
 import com.mussonindustrial.embr.snmp.agents.configuration.records.SnmpAgentV3DeviceRecord
 import com.mussonindustrial.embr.snmp.agents.configuration.types.SnmpAgentV1DeviceType
 import com.mussonindustrial.embr.snmp.agents.configuration.types.SnmpAgentV2cDeviceType
 import com.mussonindustrial.embr.snmp.agents.configuration.types.SnmpAgentV3DeviceType
-import com.mussonindustrial.embr.snmp.agents.SnmpAgentRegistry
 import java.util.concurrent.ThreadFactory
 import java.util.concurrent.atomic.AtomicInteger
 import org.snmp4j.SNMP4JSettings

@@ -2,9 +2,10 @@ package com.mussonindustrial.embr.snmp.model
 
 import com.inductiveautomation.ignition.common.TypeUtilities
 import com.inductiveautomation.ignition.common.model.values.QualityCode
-import com.inductiveautomation.ignition.common.rpc.proto.DeserializationContext
-import com.inductiveautomation.ignition.common.rpc.proto.SerializationContext
-import com.inductiveautomation.ignition.common.rpc.proto.gen.Value
+import java.io.InvalidObjectException
+import java.io.ObjectInputStream
+import java.io.ObjectOutputStream
+import java.io.Serializable
 import java.util.*
 
 data class BasicQualifiedOidValue(
@@ -12,44 +13,41 @@ data class BasicQualifiedOidValue(
     private var value: Any?,
     private var quality: QualityCode = QualityCode.Bad_Stale,
     private var timeStamp: Date = Date(),
-) : QualifiedOidValue {
+) : QualifiedOidValue, Serializable {
 
     companion object {
-
         private const val VERSION = 1
+        private const val serialVersionUID: Long = 1L
+    }
 
-        fun encode(value: BasicQualifiedOidValue, context: SerializationContext): ByteArray {
-            return context
-                .protoEncode(
-                    mapOf(
-                        "version" to VERSION,
-                        "value" to value.value,
-                        "oid" to value.oid.numeric,
-                        "quality" to value.quality.code,
-                        "timestamp" to value.timestamp.time,
-                    )
-                )
-                .toByteArray()
-        }
+    private fun writeObject(out: ObjectOutputStream) {
+        val payload =
+            mapOf(
+                "version" to VERSION,
+                "value" to value,
+                "oid" to oid.numeric,
+                "quality" to quality.code,
+                "timestamp" to timeStamp.time,
+            )
 
-        fun decode(serialized: ByteArray, context: DeserializationContext): BasicQualifiedOidValue {
-            val payload = context.protoDecode(Value.parseFrom(serialized), Map::class.java)
+        out.writeObject(payload)
+    }
 
-            val version = (payload["version"] as? Number)?.toInt() ?: -1
+    @Suppress("UNCHECKED_CAST")
+    private fun readObject(input: ObjectInputStream) {
+        val payload = input.readObject() as Map<String, Any?>
 
-            return when (version) {
-                1 ->
-                    BasicQualifiedOidValue(
-                        value = payload["value"],
-                        oid = Oid.fromNumeric(payload["oid"] as String),
-                        quality = QualityCode((payload["quality"] as Number).toInt()),
-                        timeStamp = Date((payload["timestamp"] as Number).toLong()),
-                    )
-                else ->
-                    throw IllegalArgumentException(
-                        "Unsupported BasicQualifiedOidValue version: $version"
-                    )
+        val version = (payload["version"] as? Number)?.toInt() ?: -1
+
+        when (version) {
+            1 -> {
+                value = payload["value"]
+                oid = Oid.fromNumeric(payload["oid"] as String)
+                quality = QualityCode((payload["quality"] as Number).toInt())
+                timeStamp = Date((payload["timestamp"] as Number).toLong())
             }
+            else ->
+                throw InvalidObjectException("Unsupported BasicQualifiedOidValue version: $version")
         }
     }
 

@@ -1,6 +1,6 @@
 package com.mussonindustrial.embr.snmp
 
-import com.inductiveautomation.ignition.client.gateway_interface.GatewayConnection
+import com.inductiveautomation.ignition.client.gateway_interface.ModuleRPCFactory
 import com.inductiveautomation.ignition.designer.model.DesignerContext
 import com.mussonindustrial.embr.common.Embr
 import com.mussonindustrial.embr.designer.EmbrDesignerContext
@@ -13,12 +13,7 @@ data class SnmpDesignerContext(val context: DesignerContext) :
         lateinit var instance: SnmpDesignerContext
     }
 
-    val agentRpc: SnmpAgentRpc =
-        GatewayConnection.getRpcInterface(
-            SnmpAgentRpc.SERIALIZER,
-            Embr.SNMP.id,
-            SnmpAgentRpc::class.java,
-        )
+    val rpc: SnmpAgentRpc = ModuleRPCFactory.create(Embr.SNMP.id, SnmpAgentRpc::class.java)
 
     init {
         instance = this

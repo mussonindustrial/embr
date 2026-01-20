@@ -6,7 +6,6 @@ import java.lang.reflect.GenericArrayType
 import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type
 import java.lang.reflect.WildcardType
-import kotlin.jvm.optionals.getOrNull
 import kotlin.reflect.KType
 import kotlin.reflect.javaType
 import org.python.core.Py

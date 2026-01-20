@@ -3,13 +3,13 @@ package com.mussonindustrial.embr.snmp.agents.scripting
 import com.inductiveautomation.ignition.common.Dataset
 import com.inductiveautomation.ignition.common.model.values.QualityCode
 import com.inductiveautomation.ignition.common.script.builtin.KeywordArgs
-import com.inductiveautomation.ignition.common.script.hints.JythonElement
 import com.inductiveautomation.ignition.common.script.hints.NoHint
+import com.inductiveautomation.ignition.common.script.hints.ScriptFunction
 import com.mussonindustrial.embr.snmp.agents.rpc.SnmpAgentRpc
 import com.mussonindustrial.embr.snmp.model.QualifiedOidValue
 import com.mussonindustrial.embr.snmp.model.toDataset
-import com.mussonindustrial.embr.snmp.scripting.SnmpScriptMethodExecutor
 import com.mussonindustrial.embr.snmp.scripting.SnmpScriptMethod
+import com.mussonindustrial.embr.snmp.scripting.SnmpScriptMethodExecutor
 import kotlin.reflect.typeOf
 import org.python.core.PyObject
 
@@ -19,8 +19,8 @@ open class SnmpAgentScriptModule(
 ) {
 
     companion object {
-        @NoHint() const val PATH = "system.snmp.agent"
-        @NoHint() const val BUNDLE_PREFIX = "SnmpAgentClientScriptModule"
+        const val PATH = "system.snmp.agent"
+        const val BUNDLE_PREFIX = "SnmpAgentClientScriptModule"
     }
 
     interface Methods {
@@ -98,13 +98,13 @@ open class SnmpAgentScriptModule(
         executor.executeBlocking(methods.read, args, keywords)
 
     @Suppress("UNUSED")
-    @JythonElement(docBundlePrefix = BUNDLE_PREFIX)
+    @ScriptFunction(docBundlePrefix = BUNDLE_PREFIX)
     @KeywordArgs(names = ["agent", "oids"], types = [String::class, List::class])
     fun readAsync(args: Array<PyObject>, keywords: Array<String>) =
         executor.executeAsync(methods.read, args, keywords)
 
     @Suppress("UNUSED")
-    @JythonElement(docBundlePrefix = BUNDLE_PREFIX)
+    @ScriptFunction(docBundlePrefix = BUNDLE_PREFIX)
     @KeywordArgs(names = ["agent", "oids"], types = [String::class, List::class])
     fun readBlocking(args: Array<PyObject>, keywords: Array<String>) =
         executor.executeBlocking(methods.read, args, keywords)
@@ -115,7 +115,7 @@ open class SnmpAgentScriptModule(
         executor.executeBlocking(methods.write, args, keywords)
 
     @Suppress("UNUSED")
-    @JythonElement(docBundlePrefix = BUNDLE_PREFIX)
+    @ScriptFunction(docBundlePrefix = BUNDLE_PREFIX)
     @KeywordArgs(
         names = ["agent", "oids", "values"],
         types = [String::class, List::class, List::class],
@@ -124,7 +124,7 @@ open class SnmpAgentScriptModule(
         executor.executeAsync(methods.write, args, keywords)
 
     @Suppress("UNUSED")
-    @JythonElement(docBundlePrefix = BUNDLE_PREFIX)
+    @ScriptFunction(docBundlePrefix = BUNDLE_PREFIX)
     @KeywordArgs(
         names = ["agent", "oids", "values"],
         types = [String::class, List::class, List::class],
@@ -138,13 +138,13 @@ open class SnmpAgentScriptModule(
         executor.executeBlocking(methods.walk, args, keywords)
 
     @Suppress("UNUSED")
-    @JythonElement(docBundlePrefix = BUNDLE_PREFIX)
+    @ScriptFunction(docBundlePrefix = BUNDLE_PREFIX)
     @KeywordArgs(names = ["agent", "oids"], types = [String::class, List::class])
     fun walkAsync(args: Array<PyObject>, keywords: Array<String>) =
         executor.executeAsync(methods.walk, args, keywords)
 
     @Suppress("UNUSED")
-    @JythonElement(docBundlePrefix = BUNDLE_PREFIX)
+    @ScriptFunction(docBundlePrefix = BUNDLE_PREFIX)
     @KeywordArgs(names = ["agent", "oids"], types = [String::class, List::class])
     fun walkBlocking(args: Array<PyObject>, keywords: Array<String>) =
         executor.executeBlocking(methods.walk, args, keywords)
@@ -155,7 +155,7 @@ open class SnmpAgentScriptModule(
         executor.executeBlocking(methods.readTable, args, keywords)
 
     @Suppress("UNUSED")
-    @JythonElement(docBundlePrefix = BUNDLE_PREFIX)
+    @ScriptFunction(docBundlePrefix = BUNDLE_PREFIX)
     @KeywordArgs(
         names = ["agent", "columns", "lowerBoundIndex", "upperBoundIndex"],
         types = [String::class, List::class, String::class, String::class],
@@ -164,7 +164,7 @@ open class SnmpAgentScriptModule(
         executor.executeAsync(methods.readTable, args, keywords)
 
     @Suppress("UNUSED")
-    @JythonElement(docBundlePrefix = BUNDLE_PREFIX)
+    @ScriptFunction(docBundlePrefix = BUNDLE_PREFIX)
     @KeywordArgs(
         names = ["agent", "columns", "lowerBoundIndex", "upperBoundIndex"],
         types = [String::class, List::class, String::class, String::class],

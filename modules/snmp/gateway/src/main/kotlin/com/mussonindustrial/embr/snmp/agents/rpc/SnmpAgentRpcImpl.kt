@@ -1,9 +1,6 @@
 package com.mussonindustrial.embr.snmp.agents.rpc
 
 import com.inductiveautomation.ignition.common.model.values.QualityCode
-import com.inductiveautomation.ignition.common.project.ClientPermissionsConstants
-import com.inductiveautomation.ignition.gateway.clientcomm.MutabilityMode
-import com.inductiveautomation.ignition.gateway.rpc.RpcDelegate
 import com.mussonindustrial.embr.snmp.SnmpGatewayContext
 import com.mussonindustrial.embr.snmp.agents.devices.SnmpAgentDevice
 import com.mussonindustrial.embr.snmp.model.QualifiedOidValue
@@ -13,7 +10,6 @@ import org.snmp4j.smi.OID
 import org.snmp4j.smi.OctetString
 import org.snmp4j.smi.VariableBinding
 
-@RpcDelegate.RunsOnClient(clientPermissionId = ClientPermissionsConstants.UNRESTRICTED)
 class SnmpAgentRpcImpl(val context: SnmpGatewayContext) : SnmpAgentRpc {
 
     private fun requireAgent(name: String): SnmpAgentDevice {
@@ -21,15 +17,13 @@ class SnmpAgentRpcImpl(val context: SnmpGatewayContext) : SnmpAgentRpc {
             ?: throw IllegalArgumentException("SNMP agent '$name' not found.")
     }
 
-    @RpcDelegate.RequiredMutabilityMode(value = MutabilityMode.READ_ONLY)
     override fun read(agent: String, oids: List<String>): List<QualifiedOidValue> {
         val snmpAgent = requireAgent(agent)
-        return snmpAgent.read(oids.map { oid -> VariableBinding(OID(oid)) }).map { result ->
-            result.toQualifiedValue()
+        return snmpAgent.read(oids.map { oid -> VariableBinding(OID(oid)) }).map {
+            it.toQualifiedValue()
         }
     }
 
-    @RpcDelegate.RequiredMutabilityMode(value = MutabilityMode.READ_WRITE)
     override fun write(agent: String, oids: List<String>, values: List<String>): List<QualityCode> {
         val snmpAgent = requireAgent(agent)
 
@@ -46,13 +40,11 @@ class SnmpAgentRpcImpl(val context: SnmpGatewayContext) : SnmpAgentRpc {
             .map { it.statusCode.toQualityCode() }
     }
 
-    @RpcDelegate.RequiredMutabilityMode(value = MutabilityMode.READ_ONLY)
     override fun walk(agent: String, oids: List<String>): List<QualifiedOidValue> {
         val snmpAgent = requireAgent(agent)
         return snmpAgent.walk(oids.map { OID(it) }).map { it.toQualifiedValue() }
     }
 
-    @RpcDelegate.RequiredMutabilityMode(value = MutabilityMode.READ_ONLY)
     override fun readTable(
         agent: String,
         columns: List<String>,

@@ -29,7 +29,7 @@ class SnmpDesignerHook : AbstractDesignerModuleHook() {
     override fun initializeScriptManager(scriptManager: ScriptManager) {
         scriptManager.addScriptModule(
             SnmpAgentScriptModule.PATH,
-            SnmpAgentClientScriptModule(context.agentRpc, scriptManager),
+            SnmpAgentClientScriptModule(context.rpc, scriptManager),
             PropertiesFileDocProvider(),
         )
     }

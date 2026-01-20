@@ -126,7 +126,9 @@ class OidAddressSpace(val device: SnmpAgentDevice, composite: AddressSpaceCompos
             if (it.writeValue.indexRange != null && it.writeValue.indexRange.isNotEmpty()) {
                 it.result = it.oid.toOidWriteResult(StatusCode(StatusCodes.Bad_NotImplemented))
             }
-            if (AttributeId.from(it.writeValue.attributeId).getOrNull() != AttributeId.Value) {
+            if (
+                AttributeId.from(it.writeValue.attributeId).orElseGet { null } != AttributeId.Value
+            ) {
                 it.result = it.oid.toOidWriteResult(StatusCode(StatusCodes.Bad_NotImplemented))
             }
         }

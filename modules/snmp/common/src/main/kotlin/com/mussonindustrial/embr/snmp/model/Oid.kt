@@ -1,8 +1,9 @@
 package com.mussonindustrial.embr.snmp.model
 
+import java.io.Serializable
 import org.snmp4j.smi.OID
 
-class Oid private constructor(private val oid: OID) {
+class Oid private constructor(private val oid: OID) : Serializable {
 
     companion object {
         fun fromNumeric(dotted: String): Oid = Oid(oid = OID(dotted))

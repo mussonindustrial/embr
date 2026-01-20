@@ -7,11 +7,11 @@ class SnmpAgentRegistry {
     val agents = ConcurrentHashMap<String, SnmpAgentDevice>()
 
     fun register(agent: SnmpAgentDevice) {
-        agents[agent.context.deviceContext.name] = agent
+        agents[agent.context.deviceContext.getName()] = agent
     }
 
     fun unregister(agent: SnmpAgentDevice) {
-        agents.remove(agent.context.deviceContext.name)
+        agents.remove(agent.context.deviceContext.getName())
     }
 
     fun get(name: String): SnmpAgentDevice? {

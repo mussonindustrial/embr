@@ -1,12 +1,13 @@
 package com.mussonindustrial.embr.snmp.scripting
 
-import com.inductiveautomation.ignition.client.util.gui.ReadWriteOptionDialog
-import com.inductiveautomation.ignition.client.util.gui.progress.Task
+import com.inductiveautomation.factorypmi.application.runtime.ClientGatewayConnection
+import com.inductiveautomation.ignition.client.gateway_interface.GatewayConnectionManager
 import com.mussonindustrial.embr.common.scripting.PyCompletableFuture
 import com.mussonindustrial.embr.common.scripting.PyScriptExecutor
 import com.mussonindustrial.embr.common.scripting.asPyCompletableFuture
-import com.mussonindustrial.embr.snmp.agents.scripting.SnmpAgentScriptModule
 import java.util.concurrent.CompletableFuture
+import java.util.concurrent.TimeUnit
+import javax.swing.SwingWorker
 import org.python.core.PyObject
 
 class SnmpClientScriptMethodExecutor(private val pyScriptExecutor: PyScriptExecutor) :
@@ -24,9 +25,24 @@ class SnmpClientScriptMethodExecutor(private val pyScriptExecutor: PyScriptExecu
         val action = { method.overload.call(args, keywords) }
 
         return if (method.isWrite) {
-            ReadWriteOptionDialog.runWriteProtectedAction<T, Exception>(action)
+            runWriteProtectedAction<T>(action)
         } else {
-            ReadWriteOptionDialog.runReadProtectedAction<T, Exception>(action)
+            runReadProtectedAction<T>(action)
+        }
+    }
+
+    class AsyncWorker<T>(
+        val future: CompletableFuture<T>,
+        val method: SnmpScriptMethod<T>,
+        val args: Array<PyObject>,
+        val keywords: Array<String>,
+    ) : SwingWorker<T, Unit>() {
+        override fun doInBackground(): T {
+            return method.overload.call(args, keywords)
+        }
+
+        override fun done() {
+            future.complete(get())
         }
     }
 
@@ -38,26 +54,36 @@ class SnmpClientScriptMethodExecutor(private val pyScriptExecutor: PyScriptExecu
 
         val action = {
             val future = CompletableFuture<T>()
-
-            Task.create("${SnmpAgentScriptModule.PATH}.${method.name}") {
-                    method.overload.call(args, keywords)
-                }
-                .runAsync(TIMEOUT.toInt())
-                .whenComplete { result, exception ->
-                    if (exception != null) {
-                        future.completeExceptionally(exception)
-                    } else {
-                        future.complete(result)
-                    }
-                }
-
+            future.orTimeout(TIMEOUT, TimeUnit.SECONDS)
+            val worker = AsyncWorker(future, method, args, keywords)
+            worker.execute()
             future.asPyCompletableFuture(pyScriptExecutor)
         }
 
         return if (method.isWrite) {
-            ReadWriteOptionDialog.runWriteProtectedAction<PyCompletableFuture<T>, Exception>(action)
+            runWriteProtectedAction<PyCompletableFuture<T>>(action)
         } else {
-            ReadWriteOptionDialog.runReadProtectedAction<PyCompletableFuture<T>, Exception>(action)
+            runReadProtectedAction<PyCompletableFuture<T>>(action)
         }
+    }
+
+    fun <T> runWriteProtectedAction(block: () -> T): T {
+        if (
+            GatewayConnectionManager.getInstance().connectionMode !=
+                ClientGatewayConnection.MODE_FULL
+        ) {
+            throw Exception("Gateway mode is not read/write.")
+        }
+        return block()
+    }
+
+    fun <T> runReadProtectedAction(block: () -> T): T {
+        if (
+            GatewayConnectionManager.getInstance().connectionMode ==
+                ClientGatewayConnection.MODE_DISCONNECTED
+        ) {
+            throw Exception("Gateway mode is not read.")
+        }
+        return block()
     }
 }

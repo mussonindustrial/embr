@@ -14,8 +14,8 @@ data class OidReadResult(val oid: Oid, val value: DataValue) {
     fun toQualifiedValue(): QualifiedOidValue {
         return BasicQualifiedOidValue(
             this.oid,
-            this.value.value.value(),
-            this.value.statusCode.toQualityCode(),
+            this.value.value.value,
+            this.value.statusCode!!.toQualityCode(),
             this.value.serverTime?.javaDate ?: Date(),
         )
     }
