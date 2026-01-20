@@ -6,6 +6,7 @@ import com.mussonindustrial.embr.snmp.requests.OidReadRequest
 import com.mussonindustrial.embr.snmp.requests.OidReadResult
 import com.mussonindustrial.embr.snmp.requests.OidWriteRequest
 import com.mussonindustrial.embr.snmp.requests.OidWriteResult
+import com.mussonindustrial.embr.snmp.requests.toOidReadResult
 import com.mussonindustrial.embr.snmp.requests.toOidWriteResult
 import com.mussonindustrial.embr.snmp.utils.isOid
 import com.mussonindustrial.embr.snmp.utils.toVariable
@@ -108,9 +109,9 @@ class OidAddressSpace(val device: SnmpAgentDevice, composite: AddressSpaceCompos
                             )
                     }!!
 
-                OidReadResult(it.oid, DataValue(Variant(result)))
+                it.oid.toOidReadResult(DataValue(Variant(result)))
             } catch (e: UaException) {
-                OidReadResult(it.oid, DataValue(e.statusCode))
+                it.oid.toOidReadResult(DataValue(e.statusCode))
             }
         }
     }
