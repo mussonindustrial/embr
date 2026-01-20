@@ -1,7 +1,8 @@
 package com.mussonindustrial.embr.snmp.scripting
 
-import com.inductiveautomation.factorypmi.application.runtime.ClientGatewayConnection
-import com.inductiveautomation.ignition.client.gateway_interface.GatewayConnectionManager
+import com.inductiveautomation.ignition.client.sqltags.impl.db.ReadWriteOptionDialog
+import com.mussonindustrial.embr.client.gui.runReadProtectedAction
+import com.mussonindustrial.embr.client.gui.runWriteProtectedAction
 import com.mussonindustrial.embr.common.scripting.PyCompletableFuture
 import com.mussonindustrial.embr.common.scripting.PyScriptExecutor
 import com.mussonindustrial.embr.common.scripting.asPyCompletableFuture
@@ -25,9 +26,9 @@ class SnmpClientScriptMethodExecutor(private val pyScriptExecutor: PyScriptExecu
         val action = { method.overload.call(args, keywords) }
 
         return if (method.isWrite) {
-            runWriteProtectedAction<T>(action)
+            ReadWriteOptionDialog.getInstance().runWriteProtectedAction(action)
         } else {
-            runReadProtectedAction<T>(action)
+            ReadWriteOptionDialog.getInstance().runReadProtectedAction(action)
         }
     }
 
@@ -61,29 +62,11 @@ class SnmpClientScriptMethodExecutor(private val pyScriptExecutor: PyScriptExecu
         }
 
         return if (method.isWrite) {
-            runWriteProtectedAction<PyCompletableFuture<T>>(action)
+            ReadWriteOptionDialog.getInstance()
+                .runWriteProtectedAction<PyCompletableFuture<T>>(action)
         } else {
-            runReadProtectedAction<PyCompletableFuture<T>>(action)
+            ReadWriteOptionDialog.getInstance()
+                .runReadProtectedAction<PyCompletableFuture<T>>(action)
         }
-    }
-
-    fun <T> runWriteProtectedAction(block: () -> T): T {
-        if (
-            GatewayConnectionManager.getInstance().connectionMode !=
-                ClientGatewayConnection.MODE_FULL
-        ) {
-            throw Exception("Gateway mode is not read/write.")
-        }
-        return block()
-    }
-
-    fun <T> runReadProtectedAction(block: () -> T): T {
-        if (
-            GatewayConnectionManager.getInstance().connectionMode ==
-                ClientGatewayConnection.MODE_DISCONNECTED
-        ) {
-            throw Exception("Gateway mode is not read.")
-        }
-        return block()
     }
 }
