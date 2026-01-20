@@ -6,10 +6,9 @@ import com.inductiveautomation.ignition.common.rpc.proto.DeserializationContext
 import com.inductiveautomation.ignition.common.rpc.proto.SerializationContext
 import com.inductiveautomation.ignition.common.rpc.proto.gen.Value
 import java.util.*
-import org.snmp4j.smi.OID
 
 data class BasicQualifiedOidValue(
-    private var oid: OID,
+    private var oid: Oid,
     private var value: Any?,
     private var quality: QualityCode = QualityCode.Bad_Stale,
     private var timeStamp: Date = Date(),
@@ -25,7 +24,7 @@ data class BasicQualifiedOidValue(
                     mapOf(
                         "version" to VERSION,
                         "value" to value.value,
-                        "oid" to value.getOid().toDottedString(),
+                        "oid" to value.oid.numeric,
                         "quality" to value.quality.code,
                         "timestamp" to value.timestamp.time,
                     )
@@ -42,7 +41,7 @@ data class BasicQualifiedOidValue(
                 1 ->
                     BasicQualifiedOidValue(
                         value = payload["value"],
-                        oid = OID(payload["oid"] as String),
+                        oid = Oid.fromNumeric(payload["oid"] as String),
                         quality = QualityCode((payload["quality"] as Number).toInt()),
                         timeStamp = Date((payload["timestamp"] as Number).toLong()),
                     )
@@ -54,7 +53,7 @@ data class BasicQualifiedOidValue(
         }
     }
 
-    override fun getOid(): OID {
+    override fun getOid(): Oid {
         return oid
     }
 
