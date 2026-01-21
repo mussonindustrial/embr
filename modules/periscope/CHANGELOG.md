@@ -1,5 +1,17 @@
 # @embr-modules/periscope
 
+## 0.10.1
+
+### Patch Changes
+
+- 6dd3999: `PyArgOverload`: Enforce strong return typing.
+- Updated dependencies [424d5ce]
+- Updated dependencies [6dd3999]
+- Updated dependencies [0a98ae5]
+  - @embr-jvm/core-common@0.8.0
+  - @embr-jvm/core-designer@0.8.0
+  - @embr-modules/periscope-web@0.10.1
+
 ## 0.10.0
 
 ### Minor Changes

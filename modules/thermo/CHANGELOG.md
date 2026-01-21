@@ -1,5 +1,16 @@
 # @embr-modules/thermo
 
+## 2.0.1
+
+### Patch Changes
+
+- 6dd3999: `PyArgOverload`: Enforce strong return typing.
+- Updated dependencies [424d5ce]
+- Updated dependencies [6dd3999]
+- Updated dependencies [0a98ae5]
+  - @embr-jvm/core-common@0.8.0
+  - @embr-jvm/core-gateway@0.8.0
+
 ## 2.0.0
 
 ### Major Changes
