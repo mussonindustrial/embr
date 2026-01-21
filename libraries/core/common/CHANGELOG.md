@@ -1,5 +1,14 @@
 # @mussonindustrial/embr-jvm-core-common
 
+## 0.8.0
+
+### Minor Changes
+
+- 2d6a1ad: Introduce `PyCompletableFuture`.
+- 35bf7c2: `PyArgOverload`: Enforce strong return typing.
+- e619625: `PyArgOverload`: Add support for parameterized types (`List`, `Map`, etc.).
+  - Recursively up-check parameterized/generic/wildcard types until a base class is found.
+
 ## 0.7.1
 
 ### Patch Changes

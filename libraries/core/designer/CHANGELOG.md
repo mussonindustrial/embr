@@ -1,5 +1,14 @@
 # @mussonindustrial/embr-jvm-core-designer
 
+## 0.8.0
+
+### Patch Changes
+
+- Updated dependencies [2d6a1ad]
+- Updated dependencies [35bf7c2]
+- Updated dependencies [e619625]
+  - @embr-jvm/core-common@0.8.0
+
 ## 0.7.1
 
 ### Patch Changes
