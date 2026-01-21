@@ -145,7 +145,7 @@ open class JavaScriptProxyableComponentModelDelegate(component: Component) :
 
         inner class ScriptOverloads {
             val runAsync =
-                PyArgOverloadBuilder()
+                PyArgOverloadBuilder<Unit>()
                     .setName("runJavaScriptAsync")
                     .addOverload(
                         {
@@ -162,7 +162,7 @@ open class JavaScriptProxyableComponentModelDelegate(component: Component) :
                     .build()
 
             val runBlocking =
-                PyArgOverloadBuilder()
+                PyArgOverloadBuilder<PyObject?>()
                     .setName("runJavaScriptBlocking")
                     .addOverload(
                         {

@@ -127,7 +127,7 @@ class JavaScriptFunctions(private val context: PeriscopeGatewayContext) :
 
     inner class ScriptOverloads {
         val runJavaScriptAsync =
-            PyArgOverloadBuilder()
+            PyArgOverloadBuilder<Unit>()
                 .setName("runJavaScriptAsync")
                 .addOverload(
                     {
@@ -148,7 +148,7 @@ class JavaScriptFunctions(private val context: PeriscopeGatewayContext) :
                 .build()
 
         val runJavaScriptBlocking =
-            PyArgOverloadBuilder()
+            PyArgOverloadBuilder<PyObject?>()
                 .setName("runJavaScriptBlocking")
                 .addOverload(
                     {

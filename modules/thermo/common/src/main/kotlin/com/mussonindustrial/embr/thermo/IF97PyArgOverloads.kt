@@ -9,15 +9,16 @@ object IF97PyArgOverloads {
 
     private val if97 = IF97(IF97.UnitSystem.SI)
 
-    fun getFunction(property: String): PyArgOverload {
+    fun <T> getFunction(property: String): PyArgOverload<T> {
         val name = property.lowercase()
-        val function = functions.find { it.name.lowercase() == name }
+        @Suppress("UNCHECKED_CAST")
+        val function = functions.find { it.name.lowercase() == name } as PyArgOverload<T>?
         return function
             ?: throw IllegalArgumentException("if97 property '$property' does not exist")
     }
 
     val compressibility =
-        PyArgOverloadBuilder()
+        PyArgOverloadBuilder<Double>()
             .setName("compressibility")
             .addOverload(
                 { if97.compressibilityHS(it["h"] as Double, it["s"] as Double) },
@@ -42,7 +43,7 @@ object IF97PyArgOverloads {
             .build()
 
     val compressionFactor =
-        PyArgOverloadBuilder()
+        PyArgOverloadBuilder<Double>()
             .setName("compressionFactor")
             .addOverload(
                 { if97.compressionFactorPT(it["p"] as Double, it["t"] as Double) },
@@ -52,7 +53,7 @@ object IF97PyArgOverloads {
             .build()
 
     val density =
-        PyArgOverloadBuilder()
+        PyArgOverloadBuilder<Double>()
             .setName("density")
             .addOverload(
                 { if97.densityHS(it["h"] as Double, it["s"] as Double) },
@@ -87,7 +88,7 @@ object IF97PyArgOverloads {
             .build()
 
     val dielectricConstant =
-        PyArgOverloadBuilder()
+        PyArgOverloadBuilder<Double>()
             .setName("dielectricConstant")
             .addOverload(
                 { if97.dielectricConstantHS(it["h"] as Double, it["s"] as Double) },
@@ -117,7 +118,7 @@ object IF97PyArgOverloads {
             .build()
 
     val heatCapacityRatio =
-        PyArgOverloadBuilder()
+        PyArgOverloadBuilder<Double>()
             .setName("heatCapacityRatio")
             .addOverload(
                 { if97.heatCapacityRatioHS(it["h"] as Double, it["s"] as Double) },
@@ -142,7 +143,7 @@ object IF97PyArgOverloads {
             .build()
 
     val isentropicExponent =
-        PyArgOverloadBuilder()
+        PyArgOverloadBuilder<Double>()
             .setName("isentropicExponent")
             .addOverload(
                 { if97.isentropicExponentHS(it["h"] as Double, it["s"] as Double) },
@@ -167,7 +168,7 @@ object IF97PyArgOverloads {
             .build()
 
     val isobaricCubicExpansionCoefficient =
-        PyArgOverloadBuilder()
+        PyArgOverloadBuilder<Double>()
             .setName("isobaricCubicExpansionCoefficient")
             .addOverload(
                 { if97.isobaricCubicExpansionCoefficientHS(it["h"] as Double, it["s"] as Double) },
@@ -202,7 +203,7 @@ object IF97PyArgOverloads {
             .build()
 
     val isobaricHeatCapacity =
-        PyArgOverloadBuilder()
+        PyArgOverloadBuilder<Double>()
             .setName("isobaricHeatCapacity")
             .addOverload(
                 { if97.isobaricHeatCapacityHS(it["h"] as Double, it["s"] as Double) },
@@ -227,7 +228,7 @@ object IF97PyArgOverloads {
             .build()
 
     val isochoricHeatCapacity =
-        PyArgOverloadBuilder()
+        PyArgOverloadBuilder<Double>()
             .setName("isochoricHeatCapacity")
             .addOverload(
                 { if97.isochoricHeatCapacityHS(it["h"] as Double, it["s"] as Double) },
@@ -252,7 +253,7 @@ object IF97PyArgOverloads {
             .build()
 
     val kinematicViscosity =
-        PyArgOverloadBuilder()
+        PyArgOverloadBuilder<Double>()
             .setName("kinematicViscosity")
             .addOverload(
                 { if97.kinematicViscosityHS(it["h"] as Double, it["s"] as Double) },
@@ -282,7 +283,7 @@ object IF97PyArgOverloads {
             .build()
 
     val prandtl =
-        PyArgOverloadBuilder()
+        PyArgOverloadBuilder<Double>()
             .setName("prandtl")
             .addOverload(
                 { if97.PrandtlHS(it["h"] as Double, it["s"] as Double) },
@@ -307,7 +308,7 @@ object IF97PyArgOverloads {
             .build()
 
     val pressure =
-        PyArgOverloadBuilder()
+        PyArgOverloadBuilder<Double>()
             .setName("pressure")
             .addOverload(
                 { if97.pressureHS(it["h"] as Double, it["s"] as Double) },
@@ -317,7 +318,7 @@ object IF97PyArgOverloads {
             .build()
 
     val refractiveIndex =
-        PyArgOverloadBuilder()
+        PyArgOverloadBuilder<Double>()
             .setName("refractiveIndex")
             .addOverload(
                 {
@@ -382,7 +383,7 @@ object IF97PyArgOverloads {
             .build()
 
     val saturationPressure =
-        PyArgOverloadBuilder()
+        PyArgOverloadBuilder<Double>()
             .setName("saturationPressure")
             .addOverload({ if97.saturationPressureT(it["t"] as Double) }, "t" to typeOf<Double>())
             .addOverload(
@@ -393,7 +394,7 @@ object IF97PyArgOverloads {
             .build()
 
     val saturationTemperature =
-        PyArgOverloadBuilder()
+        PyArgOverloadBuilder<Double>()
             .setName("saturationTemperature")
             .addOverload(
                 { if97.saturationTemperatureP(it["p"] as Double) },
@@ -407,7 +408,7 @@ object IF97PyArgOverloads {
             .build()
 
     val specificEnthalpy =
-        PyArgOverloadBuilder()
+        PyArgOverloadBuilder<Double>()
             .setName("specificEnthalpy")
             .addOverload(
                 { if97.specificEnthalpyPS(it["p"] as Double, it["s"] as Double) },
@@ -432,7 +433,7 @@ object IF97PyArgOverloads {
             .build()
 
     val specificEnthalpySaturatedLiquid =
-        PyArgOverloadBuilder()
+        PyArgOverloadBuilder<Double>()
             .setName("specificEnthalpySaturatedLiquid")
             .addOverload(
                 { if97.specificEnthalpySaturatedLiquidP(it["p"] as Double) },
@@ -445,7 +446,7 @@ object IF97PyArgOverloads {
             .build()
 
     val specificEnthalpySaturatedVapor =
-        PyArgOverloadBuilder()
+        PyArgOverloadBuilder<Double>()
             .setName("specificEnthalpySaturatedVapor")
             .addOverload(
                 { if97.specificEnthalpySaturatedVapourP(it["p"] as Double) },
@@ -458,7 +459,7 @@ object IF97PyArgOverloads {
             .build()
 
     val specificEntropy =
-        PyArgOverloadBuilder()
+        PyArgOverloadBuilder<Double>()
             .setName("specificEntropy")
             .addOverload(
                 { if97.specificEntropyPH(it["p"] as Double, it["h"] as Double) },
@@ -483,7 +484,7 @@ object IF97PyArgOverloads {
             .build()
 
     val specificEntropySaturatedLiquid =
-        PyArgOverloadBuilder()
+        PyArgOverloadBuilder<Double>()
             .setName("specificEntropySaturatedLiquid")
             .addOverload(
                 { if97.specificEntropySaturatedLiquidP(it["p"] as Double) },
@@ -496,7 +497,7 @@ object IF97PyArgOverloads {
             .build()
 
     val specificEntropySaturatedVapor =
-        PyArgOverloadBuilder()
+        PyArgOverloadBuilder<Double>()
             .setName("specificEntropySaturatedVapor")
             .addOverload(
                 { if97.specificEntropySaturatedVapourP(it["p"] as Double) },
@@ -509,7 +510,7 @@ object IF97PyArgOverloads {
             .build()
 
     val specificGibbsFreeEnergy =
-        PyArgOverloadBuilder()
+        PyArgOverloadBuilder<Double>()
             .setName("specificGibbsFreeEnergy")
             .addOverload(
                 { if97.specificGibbsFreeEnergyPT(it["p"] as Double, it["t"] as Double) },
@@ -519,7 +520,7 @@ object IF97PyArgOverloads {
             .build()
 
     val specificInternalEnergy =
-        PyArgOverloadBuilder()
+        PyArgOverloadBuilder<Double>()
             .setName("specificInternalEnergy")
             .addOverload(
                 { if97.specificInternalEnergyPH(it["p"] as Double, it["h"] as Double) },
@@ -549,7 +550,7 @@ object IF97PyArgOverloads {
             .build()
 
     val specificInternalEnergySaturatedLiquid =
-        PyArgOverloadBuilder()
+        PyArgOverloadBuilder<Double>()
             .setName("specificInternalEnergySaturatedLiquid")
             .addOverload(
                 { if97.specificInternalEnergySaturatedLiquidP(it["p"] as Double) },
@@ -562,7 +563,7 @@ object IF97PyArgOverloads {
             .build()
 
     val specificInternalEnergySaturatedVapor =
-        PyArgOverloadBuilder()
+        PyArgOverloadBuilder<Double>()
             .setName("specificInternalEnergySaturatedVapor")
             .addOverload(
                 { if97.specificInternalEnergySaturatedVapourP(it["p"] as Double) },
@@ -575,7 +576,7 @@ object IF97PyArgOverloads {
             .build()
 
     val specificVolume =
-        PyArgOverloadBuilder()
+        PyArgOverloadBuilder<Double>()
             .setName("specificVolume")
             .addOverload(
                 { if97.specificVolumeHS(it["h"] as Double, it["s"] as Double) },
@@ -610,7 +611,7 @@ object IF97PyArgOverloads {
             .build()
 
     val specificVolumeSaturatedLiquid =
-        PyArgOverloadBuilder()
+        PyArgOverloadBuilder<Double>()
             .setName("specificVolumeSaturatedLiquid")
             .addOverload(
                 { if97.specificVolumeSaturatedLiquidP(it["p"] as Double) },
@@ -623,7 +624,7 @@ object IF97PyArgOverloads {
             .build()
 
     val specificVolumeSaturatedVapor =
-        PyArgOverloadBuilder()
+        PyArgOverloadBuilder<Double>()
             .setName("specificVolumeSaturatedVapor")
             .addOverload(
                 { if97.specificVolumeSaturatedVapourP(it["p"] as Double) },
@@ -636,7 +637,7 @@ object IF97PyArgOverloads {
             .build()
 
     val speedOfSound =
-        PyArgOverloadBuilder()
+        PyArgOverloadBuilder<Double>()
             .setName("speedOfSound")
             .addOverload(
                 { if97.speedOfSoundHS(it["h"] as Double, it["s"] as Double) },
@@ -661,14 +662,14 @@ object IF97PyArgOverloads {
             .build()
 
     val surfaceTension =
-        PyArgOverloadBuilder()
+        PyArgOverloadBuilder<Double>()
             .setName("surfaceTension")
             .addOverload({ if97.surfaceTensionP(it["p"] as Double) }, "p" to typeOf<Double>())
             .addOverload({ if97.surfaceTensionT(it["t"] as Double) }, "t" to typeOf<Double>())
             .build()
 
     val temperature =
-        PyArgOverloadBuilder()
+        PyArgOverloadBuilder<Double>()
             .setName("temperature")
             .addOverload(
                 { if97.temperatureHS(it["h"] as Double, it["s"] as Double) },
@@ -688,7 +689,7 @@ object IF97PyArgOverloads {
             .build()
 
     val thermalConductivity =
-        PyArgOverloadBuilder()
+        PyArgOverloadBuilder<Double>()
             .setName("thermalConductivity")
             .addOverload(
                 { if97.thermalConductivityHS(it["h"] as Double, it["s"] as Double) },
@@ -718,7 +719,7 @@ object IF97PyArgOverloads {
             .build()
 
     val thermalDiffusivity =
-        PyArgOverloadBuilder()
+        PyArgOverloadBuilder<Double>()
             .setName("thermalDiffusivity")
             .addOverload(
                 { if97.thermalDiffusivityHS(it["h"] as Double, it["s"] as Double) },
@@ -743,7 +744,7 @@ object IF97PyArgOverloads {
             .build()
 
     val vaporFraction =
-        PyArgOverloadBuilder()
+        PyArgOverloadBuilder<Double>()
             .setName("vaporFraction")
             .addOverload(
                 { if97.vapourFractionHS(it["h"] as Double, it["s"] as Double) },
@@ -768,7 +769,7 @@ object IF97PyArgOverloads {
             .build()
 
     private val functions =
-        listOf(
+        listOf<PyArgOverload<*>>(
             compressibility,
             compressionFactor,
             density,
