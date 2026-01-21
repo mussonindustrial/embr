@@ -8,6 +8,7 @@ import com.mussonindustrial.embr.snmp.scripting.SnmpClientScriptMethodExecutor
 
 class SnmpAgentClientScriptModule(rpc: SnmpAgentRpc, scriptManager: ScriptManager) :
     SnmpAgentScriptModule(
+        rpc,
         RpcDelegateMethods(rpc),
         SnmpClientScriptMethodExecutor(scriptManager.asPyScriptExecutor()),
     ) {

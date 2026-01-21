@@ -1,6 +1,7 @@
 package com.mussonindustrial.embr.snmp
 
 import com.inductiveautomation.ignition.common.BundleUtil
+import com.inductiveautomation.ignition.common.expressions.ExpressionFunctionManager
 import com.inductiveautomation.ignition.common.licensing.LicenseState
 import com.inductiveautomation.ignition.common.rpc.proto.ProtoRpcSerializer
 import com.inductiveautomation.ignition.common.script.ScriptManager
@@ -11,13 +12,16 @@ import com.inductiveautomation.ignition.gateway.opcua.server.api.AbstractDeviceM
 import com.inductiveautomation.ignition.gateway.opcua.server.api.DeviceExtensionPoint
 import com.inductiveautomation.ignition.gateway.rpc.GatewayRpcImplementation
 import com.mussonindustrial.embr.common.Embr
+import com.mussonindustrial.embr.common.scripting.asPyScriptExecutor
 import com.mussonindustrial.embr.snmp.agents.configuration.extensions.SnmpAgentV1ExtensionPoint
 import com.mussonindustrial.embr.snmp.agents.configuration.extensions.SnmpAgentV2cExtensionPoint
 import com.mussonindustrial.embr.snmp.agents.configuration.extensions.SnmpAgentV3ExtensionPoint
+import com.mussonindustrial.embr.snmp.agents.expressions.SnmpAgentExpressionFunctions
 import com.mussonindustrial.embr.snmp.agents.rpc.SnmpAgentRpc
-import com.mussonindustrial.embr.snmp.agents.rpc.SnmpAgentRpcImpl
 import com.mussonindustrial.embr.snmp.agents.scripting.SnmpAgentGatewayScriptModule
 import com.mussonindustrial.embr.snmp.agents.scripting.SnmpAgentScriptModule
+import com.mussonindustrial.embr.snmp.agents.scripting.SnmpAgentScriptModule.RpcDelegateMethods
+import com.mussonindustrial.embr.snmp.scripting.SnmpGatewayScriptMethodExecutor
 import java.util.Optional
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -68,7 +72,7 @@ class SnmpGatewayHook : AbstractDeviceModuleHook() {
     override fun getRpcImplementation(): Optional<GatewayRpcImplementation> {
         return Optional.of(
             GatewayRpcImplementation.newBuilder(ProtoRpcSerializer.DEFAULT_INSTANCE)
-                .addInterface(SnmpAgentRpcImpl(snmpContext), SnmpAgentRpc.SERIALIZER)
+                .addInterface(snmpContext.agentRpc, SnmpAgentRpc.SERIALIZER)
                 .build()
         )
     }
@@ -76,9 +80,18 @@ class SnmpGatewayHook : AbstractDeviceModuleHook() {
     override fun initializeScriptManager(scriptManager: ScriptManager) {
         scriptManager.addScriptModule(
             SnmpAgentScriptModule.PATH,
-            SnmpAgentGatewayScriptModule(snmpContext, scriptManager),
+            SnmpAgentGatewayScriptModule(snmpContext.agentRpc, scriptManager),
             PropertiesFileDocProvider(),
         )
+    }
+
+    override fun configureFunctionFactory(factory: ExpressionFunctionManager) {
+        SnmpAgentExpressionFunctions(
+                RpcDelegateMethods(snmpContext.agentRpc),
+                SnmpGatewayScriptMethodExecutor(snmpContext.scriptManager.asPyScriptExecutor()),
+            )
+            .configureFactory(factory)
+        super.configureFunctionFactory(factory)
     }
 
     override fun isFreeModule(): Boolean {

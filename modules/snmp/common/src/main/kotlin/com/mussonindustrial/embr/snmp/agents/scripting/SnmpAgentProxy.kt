@@ -6,6 +6,7 @@ import com.inductiveautomation.ignition.common.script.builtin.KeywordArgs
 import com.inductiveautomation.ignition.common.script.hints.JythonElement
 import com.inductiveautomation.ignition.common.script.hints.NoHint
 import com.mussonindustrial.embr.snmp.agents.rpc.SnmpAgentRpc
+import com.mussonindustrial.embr.snmp.agents.scripting.SnmpAgentScriptModule.Companion.BUNDLE_PREFIX
 import com.mussonindustrial.embr.snmp.model.QualifiedOidValue
 import com.mussonindustrial.embr.snmp.model.toDataset
 import com.mussonindustrial.embr.snmp.scripting.SnmpScriptMethod
@@ -13,16 +14,7 @@ import com.mussonindustrial.embr.snmp.scripting.SnmpScriptMethodExecutor
 import kotlin.reflect.typeOf
 import org.python.core.PyObject
 
-open class SnmpAgentScriptModule(
-    private val rpc: SnmpAgentRpc,
-    private val methods: Methods,
-    private val executor: SnmpScriptMethodExecutor,
-) {
-
-    companion object {
-        @NoHint() const val PATH = "system.snmp.agent"
-        @NoHint() const val BUNDLE_PREFIX = "SnmpAgentClientScriptModule"
-    }
+class SnmpAgentProxy(val methods: Methods, val executor: SnmpScriptMethodExecutor) {
 
     interface Methods {
         val read: SnmpScriptMethod<List<QualifiedOidValue>>
@@ -31,17 +23,14 @@ open class SnmpAgentScriptModule(
         val readTable: SnmpScriptMethod<Dataset>
     }
 
-    class RpcDelegateMethods(val rpc: SnmpAgentRpc) : Methods {
-
+    class RpcDelegateMethods(val agent: String, val rpc: SnmpAgentRpc) : Methods {
         override val read =
             SnmpScriptMethod.of(name = "read", isWrite = false) {
                 addOverload(
                     @Suppress("UNCHECKED_CAST") {
-                        val agent = it["agent"] as String
                         val oids = it["oids"] as List<String>
                         rpc.read(agent, oids)
                     },
-                    "agent" to typeOf<String>(),
                     "oids" to typeOf<List<String>>(),
                 )
             }
@@ -50,12 +39,10 @@ open class SnmpAgentScriptModule(
             SnmpScriptMethod.of(name = "write", isWrite = true) {
                 addOverload(
                     @Suppress("UNCHECKED_CAST") {
-                        val agent = it["agent"] as String
                         val oids = it["oids"] as List<String>
                         val values = it["values"] as List<String>
                         rpc.write(agent, oids, values)
                     },
-                    "agent" to typeOf<String>(),
                     "oids" to typeOf<List<String>>(),
                     "values" to typeOf<List<String>>(),
                 )
@@ -65,11 +52,9 @@ open class SnmpAgentScriptModule(
             SnmpScriptMethod.of(name = "walk", isWrite = false) {
                 addOverload(
                     @Suppress("UNCHECKED_CAST") {
-                        val agent = it["agent"] as String
                         val oids = it["oids"] as List<String>
                         rpc.walk(agent, oids)
                     },
-                    "agent" to typeOf<String>(),
                     "oids" to typeOf<List<String>>(),
                 )
             }
@@ -78,37 +63,18 @@ open class SnmpAgentScriptModule(
             SnmpScriptMethod.of(name = "readTable", isWrite = false) {
                 addOverload(
                     @Suppress("UNCHECKED_CAST") {
-                        val agent = it["agent"] as String
                         val columns = it["columns"] as List<String>
                         val lowerBoundIndex = it["lowerBoundIndex"] as? String?
                         val upperBoundIndex = it["upperBoundIndex"] as? String?
                         val result = rpc.readTable(agent, columns, lowerBoundIndex, upperBoundIndex)
                         result.toDataset()
                     },
-                    "agent" to typeOf<String>(),
                     "columns" to typeOf<List<String>>(),
                     "lowerBoundIndex" to typeOf<String?>(),
                     "upperBoundIndex" to typeOf<String?>(),
                 )
             }
     }
-
-    private val methodGetAgent =
-        SnmpScriptMethod.of(name = "getAgent", isWrite = false) {
-            addOverload(
-                @Suppress("UNCHECKED_CAST") {
-                    val agent = it["agent"] as String
-                    SnmpAgentProxy(SnmpAgentProxy.RpcDelegateMethods(agent, rpc), executor)
-                },
-                "agent" to typeOf<String>(),
-            )
-        }
-
-    @Suppress("UNUSED")
-    @JythonElement(docBundlePrefix = BUNDLE_PREFIX)
-    @KeywordArgs(names = ["agent"], types = [String::class])
-    fun getAgent(args: Array<PyObject>, keywords: Array<String>) =
-        executor.executeBlocking(methodGetAgent, args, keywords)
 
     @Suppress("UNUSED")
     @NoHint()
@@ -117,13 +83,13 @@ open class SnmpAgentScriptModule(
 
     @Suppress("UNUSED")
     @JythonElement(docBundlePrefix = BUNDLE_PREFIX)
-    @KeywordArgs(names = ["agent", "oids"], types = [String::class, List::class])
+    @KeywordArgs(names = ["oids"], types = [List::class])
     fun readAsync(args: Array<PyObject>, keywords: Array<String>) =
         executor.executeAsync(methods.read, args, keywords)
 
     @Suppress("UNUSED")
     @JythonElement(docBundlePrefix = BUNDLE_PREFIX)
-    @KeywordArgs(names = ["agent", "oids"], types = [String::class, List::class])
+    @KeywordArgs(names = ["oids"], types = [List::class])
     fun readBlocking(args: Array<PyObject>, keywords: Array<String>) =
         executor.executeBlocking(methods.read, args, keywords)
 
@@ -134,19 +100,13 @@ open class SnmpAgentScriptModule(
 
     @Suppress("UNUSED")
     @JythonElement(docBundlePrefix = BUNDLE_PREFIX)
-    @KeywordArgs(
-        names = ["agent", "oids", "values"],
-        types = [String::class, List::class, List::class],
-    )
+    @KeywordArgs(names = ["oids", "values"], types = [List::class, List::class])
     fun writeAsync(args: Array<PyObject>, keywords: Array<String>) =
         executor.executeAsync(methods.write, args, keywords)
 
     @Suppress("UNUSED")
     @JythonElement(docBundlePrefix = BUNDLE_PREFIX)
-    @KeywordArgs(
-        names = ["agent", "oids", "values"],
-        types = [String::class, List::class, List::class],
-    )
+    @KeywordArgs(names = ["oids", "values"], types = [List::class, List::class])
     fun writeBlocking(args: Array<PyObject>, keywords: Array<String>) =
         executor.executeBlocking(methods.write, args, keywords)
 
@@ -157,13 +117,13 @@ open class SnmpAgentScriptModule(
 
     @Suppress("UNUSED")
     @JythonElement(docBundlePrefix = BUNDLE_PREFIX)
-    @KeywordArgs(names = ["agent", "oids"], types = [String::class, List::class])
+    @KeywordArgs(names = ["oids"], types = [List::class])
     fun walkAsync(args: Array<PyObject>, keywords: Array<String>) =
         executor.executeAsync(methods.walk, args, keywords)
 
     @Suppress("UNUSED")
     @JythonElement(docBundlePrefix = BUNDLE_PREFIX)
-    @KeywordArgs(names = ["agent", "oids"], types = [String::class, List::class])
+    @KeywordArgs(names = ["oids"], types = [List::class])
     fun walkBlocking(args: Array<PyObject>, keywords: Array<String>) =
         executor.executeBlocking(methods.walk, args, keywords)
 
@@ -175,8 +135,8 @@ open class SnmpAgentScriptModule(
     @Suppress("UNUSED")
     @JythonElement(docBundlePrefix = BUNDLE_PREFIX)
     @KeywordArgs(
-        names = ["agent", "columns", "lowerBoundIndex", "upperBoundIndex"],
-        types = [String::class, List::class, String::class, String::class],
+        names = ["columns", "lowerBoundIndex", "upperBoundIndex"],
+        types = [List::class, String::class, String::class],
     )
     fun readTableAsync(args: Array<PyObject>, keywords: Array<String>) =
         executor.executeAsync(methods.readTable, args, keywords)
@@ -184,8 +144,8 @@ open class SnmpAgentScriptModule(
     @Suppress("UNUSED")
     @JythonElement(docBundlePrefix = BUNDLE_PREFIX)
     @KeywordArgs(
-        names = ["agent", "columns", "lowerBoundIndex", "upperBoundIndex"],
-        types = [String::class, List::class, String::class, String::class],
+        names = ["columns", "lowerBoundIndex", "upperBoundIndex"],
+        types = [List::class, String::class, String::class],
     )
     fun readTableBlocking(args: Array<PyObject>, keywords: Array<String>) =
         executor.executeBlocking(methods.readTable, args, keywords)
