@@ -39,7 +39,7 @@ class IF97ExpressionFunction : AbstractFunction() {
         val keywords = parameters.map { TypeUtilities.toString(it.first)!! }.toTypedArray()
         val args = parameters.map { Py.java2py(it.second) }.toTypedArray()
 
-        val f = IF97PyArgOverloads.getFunction(property)
+        val f = IF97PyArgOverloads.getFunction<Any?>(property)
         val result = f.call(args, keywords)
 
         return BasicQualifiedValue(result)

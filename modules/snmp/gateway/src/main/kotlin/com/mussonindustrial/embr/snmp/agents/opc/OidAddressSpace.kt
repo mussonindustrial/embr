@@ -6,6 +6,7 @@ import com.mussonindustrial.embr.snmp.requests.OidReadRequest
 import com.mussonindustrial.embr.snmp.requests.OidReadResult
 import com.mussonindustrial.embr.snmp.requests.OidWriteRequest
 import com.mussonindustrial.embr.snmp.requests.OidWriteResult
+import com.mussonindustrial.embr.snmp.requests.toOidReadResult
 import com.mussonindustrial.embr.snmp.requests.toOidWriteResult
 import com.mussonindustrial.embr.snmp.utils.isOid
 import com.mussonindustrial.embr.snmp.utils.toVariable
@@ -108,9 +109,9 @@ class OidAddressSpace(val device: SnmpAgentDevice, composite: AddressSpaceCompos
                             )
                     }!!
 
-                OidReadResult(DataValue(Variant(result)))
+                it.oid.toOidReadResult(DataValue(Variant(result)))
             } catch (e: UaException) {
-                OidReadResult(DataValue(e.statusCode))
+                it.oid.toOidReadResult(DataValue(e.statusCode))
             }
         }
     }
@@ -120,13 +121,15 @@ class OidAddressSpace(val device: SnmpAgentDevice, composite: AddressSpaceCompos
 
         results.forEach {
             if (it.writeValue.attributeId == null) {
-                it.result = StatusCode(StatusCodes.Bad_AttributeIdInvalid).toOidWriteResult()
+                it.result = it.oid.toOidWriteResult(StatusCode(StatusCodes.Bad_AttributeIdInvalid))
             }
             if (it.writeValue.indexRange != null && it.writeValue.indexRange.isNotEmpty()) {
-                it.result = StatusCode(StatusCodes.Bad_NotImplemented).toOidWriteResult()
+                it.result = it.oid.toOidWriteResult(StatusCode(StatusCodes.Bad_NotImplemented))
             }
-            if (AttributeId.from(it.writeValue.attributeId).orElse(null) != AttributeId.Value) {
-                it.result = StatusCode(StatusCodes.Bad_WriteNotSupported).toOidWriteResult()
+            if (
+                AttributeId.from(it.writeValue.attributeId).orElseGet { null } != AttributeId.Value
+            ) {
+                it.result = it.oid.toOidWriteResult(StatusCode(StatusCodes.Bad_NotImplemented))
             }
         }
 

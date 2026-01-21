@@ -1,0 +1,152 @@
+package com.mussonindustrial.embr.snmp.agents.scripting
+
+import com.inductiveautomation.ignition.common.Dataset
+import com.inductiveautomation.ignition.common.model.values.QualityCode
+import com.inductiveautomation.ignition.common.script.builtin.KeywordArgs
+import com.inductiveautomation.ignition.common.script.hints.NoHint
+import com.inductiveautomation.ignition.common.script.hints.ScriptFunction
+import com.mussonindustrial.embr.snmp.agents.rpc.SnmpAgentRpc
+import com.mussonindustrial.embr.snmp.agents.scripting.SnmpAgentScriptModule.Companion.BUNDLE_PREFIX
+import com.mussonindustrial.embr.snmp.model.QualifiedOidValue
+import com.mussonindustrial.embr.snmp.model.toDataset
+import com.mussonindustrial.embr.snmp.scripting.SnmpScriptMethod
+import com.mussonindustrial.embr.snmp.scripting.SnmpScriptMethodExecutor
+import kotlin.reflect.typeOf
+import org.python.core.PyObject
+
+class SnmpAgentProxy(val methods: Methods, val executor: SnmpScriptMethodExecutor) {
+
+    interface Methods {
+        val read: SnmpScriptMethod<List<QualifiedOidValue>>
+        val write: SnmpScriptMethod<List<QualityCode>>
+        val walk: SnmpScriptMethod<List<QualifiedOidValue>>
+        val readTable: SnmpScriptMethod<Dataset>
+    }
+
+    class RpcDelegateMethods(val agent: String, val rpc: SnmpAgentRpc) : Methods {
+        override val read =
+            SnmpScriptMethod.of(name = "read", isWrite = false) {
+                addOverload(
+                    @Suppress("UNCHECKED_CAST") {
+                        val oids = it["oids"] as List<String>
+                        rpc.read(agent, oids)
+                    },
+                    "oids" to typeOf<List<String>>(),
+                )
+            }
+
+        override val write =
+            SnmpScriptMethod.of(name = "write", isWrite = true) {
+                addOverload(
+                    @Suppress("UNCHECKED_CAST") {
+                        val oids = it["oids"] as List<String>
+                        val values = it["values"] as List<String>
+                        rpc.write(agent, oids, values)
+                    },
+                    "oids" to typeOf<List<String>>(),
+                    "values" to typeOf<List<String>>(),
+                )
+            }
+
+        override val walk =
+            SnmpScriptMethod.of(name = "walk", isWrite = false) {
+                addOverload(
+                    @Suppress("UNCHECKED_CAST") {
+                        val oids = it["oids"] as List<String>
+                        rpc.walk(agent, oids)
+                    },
+                    "oids" to typeOf<List<String>>(),
+                )
+            }
+
+        override val readTable =
+            SnmpScriptMethod.of(name = "readTable", isWrite = false) {
+                addOverload(
+                    @Suppress("UNCHECKED_CAST") {
+                        val columns = it["columns"] as List<String>
+                        val lowerBoundIndex = it["lowerBoundIndex"] as? String?
+                        val upperBoundIndex = it["upperBoundIndex"] as? String?
+                        val result = rpc.readTable(agent, columns, lowerBoundIndex, upperBoundIndex)
+                        result.toDataset()
+                    },
+                    "columns" to typeOf<List<String>>(),
+                    "lowerBoundIndex" to typeOf<String?>(),
+                    "upperBoundIndex" to typeOf<String?>(),
+                )
+            }
+    }
+
+    @Suppress("UNUSED")
+    @NoHint()
+    fun read(args: Array<PyObject>, keywords: Array<String>) =
+        executor.executeBlocking(methods.read, args, keywords)
+
+    @Suppress("UNUSED")
+    @ScriptFunction(docBundlePrefix = BUNDLE_PREFIX)
+    @KeywordArgs(names = ["oids"], types = [List::class])
+    fun readAsync(args: Array<PyObject>, keywords: Array<String>) =
+        executor.executeAsync(methods.read, args, keywords)
+
+    @Suppress("UNUSED")
+    @ScriptFunction(docBundlePrefix = BUNDLE_PREFIX)
+    @KeywordArgs(names = ["oids"], types = [List::class])
+    fun readBlocking(args: Array<PyObject>, keywords: Array<String>) =
+        executor.executeBlocking(methods.read, args, keywords)
+
+    @Suppress("UNUSED")
+    @NoHint()
+    fun write(args: Array<PyObject>, keywords: Array<String>) =
+        executor.executeBlocking(methods.write, args, keywords)
+
+    @Suppress("UNUSED")
+    @ScriptFunction(docBundlePrefix = BUNDLE_PREFIX)
+    @KeywordArgs(names = ["oids", "values"], types = [List::class, List::class])
+    fun writeAsync(args: Array<PyObject>, keywords: Array<String>) =
+        executor.executeAsync(methods.write, args, keywords)
+
+    @Suppress("UNUSED")
+    @ScriptFunction(docBundlePrefix = BUNDLE_PREFIX)
+    @KeywordArgs(names = ["oids", "values"], types = [List::class, List::class])
+    fun writeBlocking(args: Array<PyObject>, keywords: Array<String>) =
+        executor.executeBlocking(methods.write, args, keywords)
+
+    @Suppress("UNUSED")
+    @NoHint()
+    fun walk(args: Array<PyObject>, keywords: Array<String>) =
+        executor.executeBlocking(methods.walk, args, keywords)
+
+    @Suppress("UNUSED")
+    @ScriptFunction(docBundlePrefix = BUNDLE_PREFIX)
+    @KeywordArgs(names = ["oids"], types = [List::class])
+    fun walkAsync(args: Array<PyObject>, keywords: Array<String>) =
+        executor.executeAsync(methods.walk, args, keywords)
+
+    @Suppress("UNUSED")
+    @ScriptFunction(docBundlePrefix = BUNDLE_PREFIX)
+    @KeywordArgs(names = ["oids"], types = [List::class])
+    fun walkBlocking(args: Array<PyObject>, keywords: Array<String>) =
+        executor.executeBlocking(methods.walk, args, keywords)
+
+    @Suppress("UNUSED")
+    @NoHint()
+    fun readTable(args: Array<PyObject>, keywords: Array<String>) =
+        executor.executeBlocking(methods.readTable, args, keywords)
+
+    @Suppress("UNUSED")
+    @ScriptFunction(docBundlePrefix = BUNDLE_PREFIX)
+    @KeywordArgs(
+        names = ["columns", "lowerBoundIndex", "upperBoundIndex"],
+        types = [List::class, String::class, String::class],
+    )
+    fun readTableAsync(args: Array<PyObject>, keywords: Array<String>) =
+        executor.executeAsync(methods.readTable, args, keywords)
+
+    @Suppress("UNUSED")
+    @ScriptFunction(docBundlePrefix = BUNDLE_PREFIX)
+    @KeywordArgs(
+        names = ["columns", "lowerBoundIndex", "upperBoundIndex"],
+        types = [List::class, String::class, String::class],
+    )
+    fun readTableBlocking(args: Array<PyObject>, keywords: Array<String>) =
+        executor.executeBlocking(methods.readTable, args, keywords)
+}
