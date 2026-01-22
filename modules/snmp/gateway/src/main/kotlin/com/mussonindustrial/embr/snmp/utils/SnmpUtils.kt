@@ -1,31 +1,17 @@
 package com.mussonindustrial.embr.snmp.utils
 
+import com.mussonindustrial.embr.snmp.model.BasicQualifiedOidValue
+import com.mussonindustrial.embr.snmp.model.OidValue
+import com.mussonindustrial.embr.snmp.model.QualifiedOidValue
 import java.text.ParseException
-import org.eclipse.milo.opcua.sdk.server.Lifecycle
-import org.eclipse.milo.opcua.sdk.server.LifecycleManager
-import org.eclipse.milo.opcua.stack.core.StatusCodes
+import java.util.Date
 import org.eclipse.milo.opcua.stack.core.types.builtin.DataValue
-import org.eclipse.milo.opcua.stack.core.types.builtin.Variant
 import org.snmp4j.PDU
 import org.snmp4j.SNMP4JSettings
-import org.snmp4j.Snmp
 import org.snmp4j.Target
 import org.snmp4j.smi.Address
-import org.snmp4j.smi.Null
-import org.snmp4j.smi.OID
-import org.snmp4j.smi.OctetString
-import org.snmp4j.smi.Variable
 import org.snmp4j.smi.VariableBinding
 import org.snmp4j.util.PDUFactory
-
-fun String.toVariableBinding(): VariableBinding {
-    return VariableBinding(OID(this))
-}
-
-fun PDU.addOID(oid: String) {
-    val binding = VariableBinding(OID(oid))
-    this.add(binding)
-}
 
 fun String.isOid(): Boolean {
     try {
@@ -36,34 +22,6 @@ fun String.isOid(): Boolean {
     }
 }
 
-fun Variable.toDataValue(): DataValue {
-    return when (this) {
-        Null.endOfMibView -> DataValue(StatusCodes.Bad_NotFound)
-        Null.noSuchObject -> DataValue(StatusCodes.Bad_NotFound)
-        Null.noSuchInstance -> DataValue(StatusCodes.Bad_NotFound)
-        Null.instance -> DataValue(Variant.NULL_VALUE)
-        else -> DataValue(Variant(this.toString()))
-    }
-}
-
-fun DataValue.toVariable(): Variable {
-    return OctetString(this.value.value?.toString())
-}
-
-fun LifecycleManager.addLifecycle(snmp: Snmp) {
-    this.addLifecycle(
-        object : Lifecycle {
-            override fun startup() {
-                snmp.listen()
-            }
-
-            override fun shutdown() {
-                snmp.close()
-            }
-        }
-    )
-}
-
 fun <A : Address> Target<A>.createSizeBoundedPDUs(
     pduFactory: PDUFactory,
     bindings: List<VariableBinding>,
@@ -72,14 +30,18 @@ fun <A : Address> Target<A>.createSizeBoundedPDUs(
 
     val pdus = mutableListOf<PDU>()
     var pdu = pduFactory.createPDU(this).apply { configure(this) }
+    var count = 0
 
     bindings.forEach { binding ->
         pdu.add(binding)
+        count++
 
-        if (pdu.berLength > maxSizeRequestPDU) {
+        if (pdu.berLength > maxSizeRequestPDU || count > 100) {
             pdu.trim()
             pdus.add(pdu)
             pdu = pduFactory.createPDU(this).apply { configure(this) }
+            pdu.add(binding)
+            count = 1
         }
     }
     if (pdu.size() > 0) {
@@ -88,3 +50,11 @@ fun <A : Address> Target<A>.createSizeBoundedPDUs(
 
     return pdus
 }
+
+fun OidValue<DataValue>.toQualifiedValue(): QualifiedOidValue =
+    BasicQualifiedOidValue(
+        oid,
+        this.value.value.value,
+        this.value.statusCode.toQualityCode(),
+        this.value.serverTime?.javaDate ?: Date(),
+    )

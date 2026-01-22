@@ -6,12 +6,12 @@ import com.inductiveautomation.ignition.gateway.clientcomm.MutabilityMode
 import com.inductiveautomation.ignition.gateway.rpc.RpcDelegate
 import com.mussonindustrial.embr.snmp.SnmpGatewayContext
 import com.mussonindustrial.embr.snmp.agents.devices.SnmpAgentDevice
+import com.mussonindustrial.embr.snmp.model.Oid
 import com.mussonindustrial.embr.snmp.model.QualifiedOidValue
+import com.mussonindustrial.embr.snmp.model.Snmp4jOid
+import com.mussonindustrial.embr.snmp.utils.toQualifiedValue
 import com.mussonindustrial.embr.snmp.utils.toQualityCode
 import org.python.core.Py.ValueError
-import org.snmp4j.smi.OID
-import org.snmp4j.smi.OctetString
-import org.snmp4j.smi.VariableBinding
 
 @RpcDelegate.RunsOnClient(clientPermissionId = ClientPermissionsConstants.UNRESTRICTED)
 class SnmpAgentRpcImpl(val context: SnmpGatewayContext) : SnmpAgentRpc {
@@ -24,32 +24,26 @@ class SnmpAgentRpcImpl(val context: SnmpGatewayContext) : SnmpAgentRpc {
     @RpcDelegate.RequiredMutabilityMode(value = MutabilityMode.READ_ONLY)
     override fun read(agent: String, oids: List<String>): List<QualifiedOidValue> {
         val snmpAgent = requireAgent(agent)
-        return snmpAgent.read(oids.map { oid -> VariableBinding(OID(oid)) }).map {
-            it.toQualifiedValue()
-        }
+        return snmpAgent.model.read(oids.map { Snmp4jOid(it) }).map { it.toQualifiedValue() }
     }
 
     @RpcDelegate.RequiredMutabilityMode(value = MutabilityMode.READ_WRITE)
-    override fun write(agent: String, oids: List<String>, values: List<String>): List<QualityCode> {
+    override fun write(agent: String, oids: List<String>, values: List<Any?>): List<QualityCode> {
         val snmpAgent = requireAgent(agent)
 
         if (oids.size != values.size) {
             throw ValueError("Length of values does not match length of OIDs.")
         }
 
-        return snmpAgent
-            .write(
-                oids.zip(values).map { (oid, value) ->
-                    VariableBinding(OID(oid), OctetString(value))
-                }
-            )
-            .map { it.statusCode.toQualityCode() }
+        return snmpAgent.model
+            .write(oids.zip(values).map { (oid, value) -> Snmp4jOid(oid) to value })
+            .map { it.value.toQualityCode() }
     }
 
     @RpcDelegate.RequiredMutabilityMode(value = MutabilityMode.READ_ONLY)
     override fun walk(agent: String, oids: List<String>): List<QualifiedOidValue> {
         val snmpAgent = requireAgent(agent)
-        return snmpAgent.walk(oids.map { OID(it) }).map { it.toQualifiedValue() }
+        return snmpAgent.model.walk(oids.map { Snmp4jOid(it) }).map { it.toQualifiedValue() }
     }
 
     @RpcDelegate.RequiredMutabilityMode(value = MutabilityMode.READ_ONLY)
@@ -60,18 +54,18 @@ class SnmpAgentRpcImpl(val context: SnmpGatewayContext) : SnmpAgentRpc {
         upperBoundIndex: String?,
     ): List<List<QualifiedOidValue>> {
         val snmpAgent = requireAgent(agent)
-        return snmpAgent
+        return snmpAgent.model
             .readTable(
-                columns.map { OID(it) },
+                columns.map { Snmp4jOid(it) },
                 lowerBoundIndex.nullOrOid(),
                 upperBoundIndex.nullOrOid(),
             )
-            .map { it.map { binding -> binding.toQualifiedValue() } }
+            .map { results -> results.map { it.toQualifiedValue() } }
     }
 
-    private fun String?.nullOrOid(): OID? {
+    private fun String?.nullOrOid(): Oid? {
         this?.let {
-            return OID(it)
+            return Snmp4jOid(it)
         }
         return null
     }

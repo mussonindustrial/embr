@@ -1,15 +1,11 @@
 package com.mussonindustrial.embr.snmp.agents.opc
 
+import com.mussonindustrial.embr.snmp.agents.context.OidModel
 import com.mussonindustrial.embr.snmp.agents.devices.SnmpAgentDevice
+import com.mussonindustrial.embr.snmp.model.OidValue
+import com.mussonindustrial.embr.snmp.model.Snmp4jOid
 import com.mussonindustrial.embr.snmp.opc.DeviceContextManagedAddressSpaceFragment
-import com.mussonindustrial.embr.snmp.requests.OidReadRequest
-import com.mussonindustrial.embr.snmp.requests.OidReadResult
-import com.mussonindustrial.embr.snmp.requests.OidWriteRequest
-import com.mussonindustrial.embr.snmp.requests.OidWriteResult
-import com.mussonindustrial.embr.snmp.requests.toOidReadResult
-import com.mussonindustrial.embr.snmp.requests.toOidWriteResult
 import com.mussonindustrial.embr.snmp.utils.isOid
-import com.mussonindustrial.embr.snmp.utils.toVariable
 import kotlin.jvm.optionals.getOrNull
 import org.eclipse.milo.opcua.sdk.core.AccessLevel
 import org.eclipse.milo.opcua.sdk.core.ValueRank
@@ -17,28 +13,19 @@ import org.eclipse.milo.opcua.sdk.server.AddressSpace
 import org.eclipse.milo.opcua.sdk.server.AddressSpaceComposite
 import org.eclipse.milo.opcua.sdk.server.AddressSpaceFilter
 import org.eclipse.milo.opcua.sdk.server.SimpleAddressSpaceFilter
-import org.eclipse.milo.opcua.stack.core.AttributeId
-import org.eclipse.milo.opcua.stack.core.OpcUaDataType
-import org.eclipse.milo.opcua.stack.core.StatusCodes
-import org.eclipse.milo.opcua.stack.core.UaException
-import org.eclipse.milo.opcua.stack.core.types.builtin.DataValue
-import org.eclipse.milo.opcua.stack.core.types.builtin.LocalizedText
-import org.eclipse.milo.opcua.stack.core.types.builtin.NodeId
-import org.eclipse.milo.opcua.stack.core.types.builtin.StatusCode
-import org.eclipse.milo.opcua.stack.core.types.builtin.Variant
+import org.eclipse.milo.opcua.stack.core.*
+import org.eclipse.milo.opcua.stack.core.types.builtin.*
 import org.eclipse.milo.opcua.stack.core.types.builtin.unsigned.UInteger
 import org.eclipse.milo.opcua.stack.core.types.enumerated.NodeClass
 import org.eclipse.milo.opcua.stack.core.types.enumerated.TimestampsToReturn
 import org.eclipse.milo.opcua.stack.core.types.structured.ReadValueId
-import org.eclipse.milo.opcua.stack.core.types.structured.ViewDescription
 import org.eclipse.milo.opcua.stack.core.types.structured.WriteValue
-import org.snmp4j.smi.OID
-import org.snmp4j.smi.VariableBinding
 
 class OidAddressSpace(val device: SnmpAgentDevice, composite: AddressSpaceComposite) :
     DeviceContextManagedAddressSpaceFragment(device.context.deviceContext, composite) {
 
     private val filter = SimpleAddressSpaceFilter.create { it.getPath().isOid() }
+    private val model = device.model
 
     override fun read(
         context: AddressSpace.ReadContext,
@@ -46,73 +33,92 @@ class OidAddressSpace(val device: SnmpAgentDevice, composite: AddressSpaceCompos
         timestamps: TimestampsToReturn,
         readValueIds: List<ReadValueId>,
     ): List<DataValue> {
-        val results = readValueIds.map { ReadRequest(it) }
-        val toProcess = results.filter { it.result == null }
+        val requests = readValueIds.map { ReadRequest(it) }
 
         val valueReads =
-            toProcess.filter {
+            requests.filter {
                 AttributeId.from(it.readValueId.attributeId).get() == AttributeId.Value
             }
-        val valueReadResults = device.read(valueReads.map { VariableBinding(it.oid) })
-        valueReadResults.zip(valueReads).forEach { (value, result) -> result.result = value }
+        readValueAttributes(valueReads).zip(valueReads).forEach { (value, result) ->
+            result.value = value
+        }
 
         val nonValueReads =
-            toProcess.filter {
+            requests.filter {
                 AttributeId.from(it.readValueId.attributeId).get() != AttributeId.Value
             }
-        val nonValueReadResults = readNonValueAttributes(nonValueReads)
-        nonValueReadResults.zip(nonValueReads).forEach { (value, result) -> result.result = value }
+        readNonValueAttributes(nonValueReads).zip(nonValueReads).forEach { (value, result) ->
+            result.value = value
+        }
 
-        return results.map { it.result!!.value }
+        return requests.map { it.value ?: DataValue(Variant.of(null)) }
     }
 
-    fun readNonValueAttributes(results: List<ReadRequest>): List<OidReadResult> {
-        return results.map {
-            val nodeId = it.readValueId.nodeId
-            val attributeId = AttributeId.from(it.readValueId.attributeId).getOrNull()
+    fun readValueAttributes(requests: List<ReadRequest>): List<DataValue> {
+        return model.read(requests.map { it.oid }).map { it.value }
+    }
 
-            try {
-                val result =
-                    when (attributeId) {
-                        AttributeId.NodeId -> nodeId
+    fun readNonValueAttributes(requests: List<ReadRequest>): List<DataValue> {
+        val descriptors = model.getDescriptors(requests.map { it.oid })
 
-                        AttributeId.NodeClass -> NodeClass.Variable
+        return requests.zip(descriptors).map { (request, descriptor) ->
+            val nodeId = request.readValueId.nodeId
+            val attributeId = AttributeId.from(request.readValueId.attributeId).getOrNull()
 
-                        AttributeId.BrowseName ->
-                            device.context.deviceContext.qualifiedName(nodeId.getPath())
+            attributeId
+                .runCatching { resolveAttributeValue(attributeId, nodeId, descriptor) }
+                .fold(
+                    onSuccess = { DataValue(Variant(it)) },
+                    onFailure = { DataValue((it as UaException).statusCode) },
+                )
+        }
+    }
 
-                        AttributeId.DisplayName,
-                        AttributeId.Description -> LocalizedText.english(nodeId.getPath())
+    @Throws(UaException::class)
+    fun resolveAttributeValue(
+        attributeId: AttributeId?,
+        nodeId: NodeId,
+        descriptor: OidModel.Descriptor,
+    ): Any? {
+        return when (attributeId) {
+            AttributeId.NodeId -> nodeId
 
-                        AttributeId.WriteMask,
-                        AttributeId.UserWriteMask -> UInteger.valueOf(0)
+            AttributeId.NodeClass -> NodeClass.Variable
 
-                        AttributeId.DataType -> OpcUaDataType.String.nodeId
+            AttributeId.BrowseName -> device.context.deviceContext.qualifiedName(nodeId.getPath())
 
-                        AttributeId.ValueRank -> ValueRank.Scalar.value
+            AttributeId.DisplayName -> LocalizedText.english(descriptor.oid.numeric)
+            AttributeId.Description -> LocalizedText.english(descriptor.oid.numeric)
 
-                        AttributeId.ArrayDimensions -> intArrayOf()
+            AttributeId.WriteMask,
+            AttributeId.UserWriteMask -> UInteger.valueOf(0)
 
-                        AttributeId.AccessLevel,
-                        AttributeId.UserAccessLevel -> AccessLevel.toValue(AccessLevel.READ_WRITE)
+            AttributeId.DataType ->
+                when (descriptor) {
+                    is OidModel.ValueDescriptor -> descriptor.snmpType.uaDataType
+                    else -> OpcUaDataType.String.nodeId
+                }
+            AttributeId.ValueRank ->
+                when (descriptor) {
+                    is OidModel.ValueDescriptor -> ValueRank.Scalar.value
+                    else -> ValueRank.Scalar.value
+                }
+            AttributeId.ArrayDimensions ->
+                when (descriptor) {
+                    is OidModel.ValueDescriptor -> null
+                    else -> null
+                }
 
-                        AttributeId.Value ->
-                            throw UaException(
-                                StatusCodes.Bad_InternalError,
-                                "attributeId: $attributeId",
-                            )
+            AttributeId.AccessLevel,
+            AttributeId.UserAccessLevel -> AccessLevel.toValue(AccessLevel.READ_WRITE)
 
-                        else ->
-                            throw UaException(
-                                StatusCodes.Bad_AttributeIdInvalid,
-                                "attributeId: $attributeId",
-                            )
-                    }!!
+            AttributeId.Historizing -> false
 
-                it.oid.toOidReadResult(DataValue(Variant(result)))
-            } catch (e: UaException) {
-                it.oid.toOidReadResult(DataValue(e.statusCode))
-            }
+            AttributeId.Value ->
+                throw UaException(StatusCodes.Bad_InternalError, "attributeId: $attributeId")
+
+            else ->
+                throw UaException(StatusCodes.Bad_AttributeIdInvalid, "attributeId: $attributeId")
         }
     }
 
@@ -124,38 +130,23 @@ class OidAddressSpace(val device: SnmpAgentDevice, composite: AddressSpaceCompos
 
         results.forEach {
             if (it.writeValue.attributeId == null) {
-                it.result = it.oid.toOidWriteResult(StatusCode(StatusCodes.Bad_AttributeIdInvalid))
+                it.value = StatusCode(StatusCodes.Bad_AttributeIdInvalid)
             }
             if (it.writeValue.indexRange != null && it.writeValue.indexRange.isNotEmpty()) {
-                it.result = it.oid.toOidWriteResult(StatusCode(StatusCodes.Bad_NotImplemented))
+                it.value = StatusCode(StatusCodes.Bad_NotImplemented)
             }
             if (AttributeId.from(it.writeValue.attributeId).getOrNull() != AttributeId.Value) {
-                it.result = it.oid.toOidWriteResult(StatusCode(StatusCodes.Bad_NotImplemented))
+                it.value = StatusCode(StatusCodes.Bad_NotImplemented)
             }
         }
 
-        val valueWrites = results.filter { it.result == null }
-        val valueWriteResults =
-            device.write(valueWrites.map { VariableBinding(it.oid, it.value.toVariable()) })
-        valueWriteResults.zip(valueWrites).forEach { (value, result) -> result.result = value }
+        val valueWrites = results.filter { it.value == null }
+        model
+            .write(valueWrites.map { it.oid to it.writeValue.value.value.value })
+            .zip(valueWrites)
+            .forEach { (value, result) -> result.value = value.value }
 
-        return results.map { it.result?.statusCode }
-    }
-
-    override fun browse(
-        context: AddressSpace.BrowseContext,
-        view: ViewDescription,
-        nodeIds: List<NodeId>,
-    ): List<AddressSpace.ReferenceResult> {
-        return emptyList()
-    }
-
-    override fun gather(
-        context: AddressSpace.BrowseContext,
-        view: ViewDescription,
-        nodeId: NodeId,
-    ): AddressSpace.ReferenceResult.ReferenceList {
-        return AddressSpace.ReferenceResult.ReferenceList(emptyList())
+        return results.map { it.value }
     }
 
     override fun getFilter(): AddressSpaceFilter {
@@ -166,14 +157,13 @@ class OidAddressSpace(val device: SnmpAgentDevice, composite: AddressSpaceCompos
         return device.stripDeviceName(this)
     }
 
-    inner class ReadRequest(val readValueId: ReadValueId) : OidReadRequest {
-        override var result: OidReadResult? = null
-        override val oid = OID(readValueId.nodeId.getPath())
+    inner class ReadRequest(val readValueId: ReadValueId) : OidValue<DataValue?> {
+        override val oid = Snmp4jOid(readValueId.nodeId.getPath())
+        override var value: DataValue? = null
     }
 
-    inner class WriteRequest(val writeValue: WriteValue) : OidWriteRequest {
-        override var result: OidWriteResult? = null
-        override val value: DataValue = writeValue.value
-        override val oid = OID(writeValue.nodeId.getPath())
+    inner class WriteRequest(val writeValue: WriteValue) : OidValue<StatusCode?> {
+        override val oid = Snmp4jOid(writeValue.nodeId.getPath())
+        override var value: StatusCode? = null
     }
 }
