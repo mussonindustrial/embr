@@ -1,4 +1,4 @@
-package com.mussonindustrial.embr.snmp.agents.context
+package com.mussonindustrial.embr.snmp.agents.model
 
 import com.mussonindustrial.embr.snmp.model.BasicOidValue
 import com.mussonindustrial.embr.snmp.model.Oid
@@ -19,7 +19,7 @@ import org.snmp4j.smi.SMIAddress
 import org.snmp4j.smi.UnsignedInteger32
 import org.snmp4j.smi.Variable
 
-interface OidModel {
+interface ObjectModel {
 
     val oids: List<Oid>
 

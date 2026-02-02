@@ -19,7 +19,7 @@ import org.eclipse.milo.opcua.stack.core.types.builtin.Variant
 class DiagnosticAddressSpace(val device: SnmpAgentDevice, composite: AddressSpaceComposite) :
     DeviceContextManagedAddressSpaceFragment(device.context.deviceContext, composite) {
 
-    private val root = "[Diagnostics]"
+    private val root = "Diagnostics"
 
     init {
         lifecycleManager.addLifecycle(
@@ -76,6 +76,42 @@ class DiagnosticAddressSpace(val device: SnmpAgentDevice, composite: AddressSpac
                 DataValue(Variant(device.status == SnmpAgentDevice.Status.CONNECTED))
             },
         )
+        addDiagnosticNode(
+            diagnosticsFolder,
+            "PendingAsyncRequests",
+            NodeIds.UInt32,
+            AttributeFilters.getValue {
+                DataValue(Variant(device.context.snmp.pendingAsyncRequestCount))
+            },
+        )
+        addDiagnosticNode(
+            diagnosticsFolder,
+            "PendingSyncRequests",
+            NodeIds.UInt32,
+            AttributeFilters.getValue {
+                DataValue(Variant(device.context.snmp.pendingSyncRequestCount))
+            },
+        )
+        addDiagnosticNode(
+            diagnosticsFolder,
+            "MaxRequestPduSize",
+            NodeIds.UInt32,
+            AttributeFilters.getValue {
+                DataValue(Variant(device.context.readTarget.maxSizeRequestPDU))
+            },
+        )
+        addDiagnosticNode(
+            diagnosticsFolder,
+            "RetryCount",
+            NodeIds.UInt32,
+            AttributeFilters.getValue { DataValue(Variant(device.context.readTarget.retries)) },
+        )
+        addDiagnosticNode(
+            diagnosticsFolder,
+            "ObjectModeSize",
+            NodeIds.UInt32,
+            AttributeFilters.getValue { DataValue(Variant(device.model.oids.size)) },
+        )
     }
 
     fun addDiagnosticNode(
@@ -85,7 +121,7 @@ class DiagnosticAddressSpace(val device: SnmpAgentDevice, composite: AddressSpac
         attributeFilter: AttributeFilter,
     ) {
         UaVariableNode.UaVariableNodeBuilder(nodeContext).run {
-            setNodeId(nodeId("${root}${name}"))
+            setNodeId(nodeId("${root}/${name}"))
             setBrowseName(qualifiedName(name))
             setDisplayName(LocalizedText.english(name))
             setDataType(dataType)

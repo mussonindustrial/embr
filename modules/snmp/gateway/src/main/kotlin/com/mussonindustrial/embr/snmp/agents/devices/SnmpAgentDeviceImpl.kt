@@ -3,9 +3,9 @@ package com.mussonindustrial.embr.snmp.agents.devices
 import com.inductiveautomation.ignition.common.util.LoggerEx
 import com.mussonindustrial.embr.snmp.SnmpGatewayContext
 import com.mussonindustrial.embr.snmp.agents.configuration.SnmpAgentConfig
-import com.mussonindustrial.embr.snmp.agents.context.ConcurrentOidModel
 import com.mussonindustrial.embr.snmp.agents.context.SnmpAgentContext
-import com.mussonindustrial.embr.snmp.agents.opc.BrowsableOidModelAddressSpace
+import com.mussonindustrial.embr.snmp.agents.model.ConcurrentObjectModel
+import com.mussonindustrial.embr.snmp.agents.opc.BrowsableObjectModelAddressSpace
 import com.mussonindustrial.embr.snmp.agents.opc.DiagnosticAddressSpace
 import com.mussonindustrial.embr.snmp.agents.opc.OidAddressSpace
 import com.mussonindustrial.embr.snmp.model.BasicOidValue
@@ -27,6 +27,8 @@ import org.snmp4j.PDU
 import org.snmp4j.smi.Variable
 import org.snmp4j.smi.VariableBinding
 import org.snmp4j.util.TableUtils
+import org.snmp4j.util.TreeEvent
+import org.snmp4j.util.TreeListener
 import org.snmp4j.util.TreeUtils
 
 class SnmpAgentDeviceImpl<T : SnmpAgentConfig>(override val context: SnmpAgentContext<T>) :
@@ -39,14 +41,14 @@ class SnmpAgentDeviceImpl<T : SnmpAgentConfig>(override val context: SnmpAgentCo
     override var status: SnmpAgentDevice.Status = SnmpAgentDevice.Status.DISCONNECTED
         private set
 
-    override val model = ConcurrentOidModel(this)
+    override val model = ConcurrentObjectModel(this)
 
     val healthcheck = Healthcheck()
 
     val deviceAddressSpace = DeviceAddressSpace(context.deviceContext, this)
     val diagnosticAddressSpace = DiagnosticAddressSpace(this, this)
     val oidAddressSpace = OidAddressSpace(this, this)
-    val browsableOidModelAddressSpace = BrowsableOidModelAddressSpace(this, this)
+    val browsableObjectModelAddressSpace = BrowsableObjectModelAddressSpace(this, this)
 
     init {
         lifecycleManager.addLifecycle(context)
@@ -54,13 +56,13 @@ class SnmpAgentDeviceImpl<T : SnmpAgentConfig>(override val context: SnmpAgentCo
         lifecycleManager.addLifecycle(deviceAddressSpace)
         lifecycleManager.addLifecycle(diagnosticAddressSpace)
         lifecycleManager.addLifecycle(oidAddressSpace)
-        lifecycleManager.addLifecycle(browsableOidModelAddressSpace)
+        lifecycleManager.addLifecycle(browsableObjectModelAddressSpace)
         lifecycleManager.addStartupTask {
             onDataItemsCreated(
                 context.deviceContext.subscriptionModel.getDataItems(context.deviceContext.name)
             )
         }
-        lifecycleManager.addStartupTask { model.walk(listOf(Snmp4jOid("1"))) }
+        lifecycleManager.addStartupTask { buildModel() }
     }
 
     val treeUtils = TreeUtils(context.snmp, context.pduFactory)
@@ -194,6 +196,31 @@ class SnmpAgentDeviceImpl<T : SnmpAgentConfig>(override val context: SnmpAgentCo
         }
     }
 
+    fun walkAsync(roots: List<Oid>, listener: WalkListener) {
+        treeUtils.walk(
+            context.readTarget,
+            roots.map { it.toSnmp4j() }.toTypedArray(),
+            context,
+            object : TreeListener {
+
+                override fun next(event: TreeEvent): Boolean {
+                    event.variableBindings?.forEach { binding ->
+                        listener.receiveEvent(BasicOidValue(binding.oid.toOid(), binding.variable))
+                    }
+                    return true
+                }
+
+                override fun isFinished(): Boolean = false
+
+                override fun finished(event: TreeEvent) {}
+            },
+        )
+    }
+
+    fun buildModel() {
+        walkAsync(listOf(Snmp4jOid("1"))) { model.coerceCache(it) }
+    }
+
     override fun readTable(
         columns: List<Oid>,
         lowerBoundIndex: Oid?,
@@ -211,6 +238,10 @@ class SnmpAgentDeviceImpl<T : SnmpAgentConfig>(override val context: SnmpAgentCo
                 BasicOidValue(binding.oid.toOid(), binding.variable)
             }
         }
+    }
+
+    fun interface WalkListener {
+        fun receiveEvent(variable: OidValue<Variable>)
     }
 
     inner class Healthcheck : Lifecycle {

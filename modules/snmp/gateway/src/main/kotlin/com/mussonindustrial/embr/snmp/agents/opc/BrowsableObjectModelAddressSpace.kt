@@ -11,8 +11,10 @@ import org.eclipse.milo.opcua.stack.core.types.builtin.LocalizedText
 import org.eclipse.milo.opcua.stack.core.types.builtin.NodeId
 import org.eclipse.milo.opcua.stack.core.types.structured.ViewDescription
 
-class BrowsableOidModelAddressSpace(val device: SnmpAgentDevice, composite: AddressSpaceComposite) :
-    DeviceContextManagedAddressSpaceFragment(device.context.deviceContext, composite) {
+class BrowsableObjectModelAddressSpace(
+    val device: SnmpAgentDevice,
+    composite: AddressSpaceComposite,
+) : DeviceContextManagedAddressSpaceFragment(device.context.deviceContext, composite) {
 
     private val root = "Objects"
     private val model = device.model

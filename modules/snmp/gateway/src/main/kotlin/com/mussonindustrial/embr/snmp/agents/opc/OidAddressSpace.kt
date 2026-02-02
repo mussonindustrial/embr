@@ -1,13 +1,14 @@
 package com.mussonindustrial.embr.snmp.agents.opc
 
-import com.mussonindustrial.embr.snmp.agents.context.OidModel
 import com.mussonindustrial.embr.snmp.agents.devices.SnmpAgentDevice
+import com.mussonindustrial.embr.snmp.agents.model.ObjectModel
 import com.mussonindustrial.embr.snmp.model.OidValue
 import com.mussonindustrial.embr.snmp.model.Snmp4jOid
 import com.mussonindustrial.embr.snmp.opc.DeviceContextManagedAddressSpaceFragment
 import com.mussonindustrial.embr.snmp.utils.isOid
 import kotlin.jvm.optionals.getOrNull
 import org.eclipse.milo.opcua.sdk.core.AccessLevel
+import org.eclipse.milo.opcua.sdk.core.Reference
 import org.eclipse.milo.opcua.sdk.core.ValueRank
 import org.eclipse.milo.opcua.sdk.server.AddressSpace
 import org.eclipse.milo.opcua.sdk.server.AddressSpaceComposite
@@ -19,6 +20,7 @@ import org.eclipse.milo.opcua.stack.core.types.builtin.unsigned.UInteger
 import org.eclipse.milo.opcua.stack.core.types.enumerated.NodeClass
 import org.eclipse.milo.opcua.stack.core.types.enumerated.TimestampsToReturn
 import org.eclipse.milo.opcua.stack.core.types.structured.ReadValueId
+import org.eclipse.milo.opcua.stack.core.types.structured.ViewDescription
 import org.eclipse.milo.opcua.stack.core.types.structured.WriteValue
 
 class OidAddressSpace(val device: SnmpAgentDevice, composite: AddressSpaceComposite) :
@@ -78,7 +80,7 @@ class OidAddressSpace(val device: SnmpAgentDevice, composite: AddressSpaceCompos
     fun resolveAttributeValue(
         attributeId: AttributeId?,
         nodeId: NodeId,
-        descriptor: OidModel.Descriptor,
+        descriptor: ObjectModel.Descriptor,
     ): Any? {
         return when (attributeId) {
             AttributeId.NodeId -> nodeId
@@ -95,17 +97,17 @@ class OidAddressSpace(val device: SnmpAgentDevice, composite: AddressSpaceCompos
 
             AttributeId.DataType ->
                 when (descriptor) {
-                    is OidModel.ValueDescriptor -> descriptor.snmpType.uaDataType
+                    is ObjectModel.ValueDescriptor -> descriptor.snmpType.uaDataType
                     else -> OpcUaDataType.String.nodeId
                 }
             AttributeId.ValueRank ->
                 when (descriptor) {
-                    is OidModel.ValueDescriptor -> ValueRank.Scalar.value
+                    is ObjectModel.ValueDescriptor -> ValueRank.Scalar.value
                     else -> ValueRank.Scalar.value
                 }
             AttributeId.ArrayDimensions ->
                 when (descriptor) {
-                    is OidModel.ValueDescriptor -> null
+                    is ObjectModel.ValueDescriptor -> null
                     else -> null
                 }
 
@@ -147,6 +149,25 @@ class OidAddressSpace(val device: SnmpAgentDevice, composite: AddressSpaceCompos
             .forEach { (value, result) -> result.value = value.value }
 
         return results.map { it.value }
+    }
+
+    override fun browse(
+        context: AddressSpace.BrowseContext,
+        view: ViewDescription,
+        nodeIds: List<NodeId>,
+    ): List<AddressSpace.ReferenceResult> {
+        return nodeIds.map { nodeId ->
+            AddressSpace.ReferenceResult.of(
+                listOf(
+                    Reference(
+                        nodeId,
+                        NodeIds.Organizes,
+                        nodeId("Objects/Numeric").expanded(),
+                        Reference.Direction.INVERSE,
+                    )
+                )
+            )
+        }
     }
 
     override fun getFilter(): AddressSpaceFilter {
