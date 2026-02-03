@@ -11,10 +11,8 @@ import org.eclipse.milo.opcua.stack.core.types.builtin.LocalizedText
 import org.eclipse.milo.opcua.stack.core.types.builtin.NodeId
 import org.eclipse.milo.opcua.stack.core.types.structured.ViewDescription
 
-class BrowsableObjectModelAddressSpace(
-    val device: SnmpAgentDevice,
-    composite: AddressSpaceComposite,
-) : DeviceContextManagedAddressSpaceFragment(device.context.deviceContext, composite) {
+class ObjectModelAddressSpace(val device: SnmpAgentDevice, composite: AddressSpaceComposite) :
+    DeviceContextManagedAddressSpaceFragment(device.context.deviceContext, composite) {
 
     private val root = "Objects"
     private val model = device.model
@@ -34,26 +32,25 @@ class BrowsableObjectModelAddressSpace(
     }
 
     fun addNodes() {
-        val objectsFolder =
+        val folder =
             UaFolderNode(
                 nodeContext,
                 nodeId(root),
                 qualifiedName(root),
                 LocalizedText.english(root),
             )
-        nodeManager.addNode(objectsFolder)
+        nodeManager.addNode(folder)
 
-        objectsFolder.addReference(
+        folder.addReference(
             Reference(
-                objectsFolder.nodeId,
+                folder.nodeId,
                 NodeIds.Organizes,
                 deviceNodeId.expanded(),
                 Reference.Direction.INVERSE,
             )
         )
 
-        addObjectsFolder(objectsFolder, "Numeric")
-        addObjectsFolder(objectsFolder, "Symbolic")
+        addObjectsFolder(folder, "Numeric")
     }
 
     fun addObjectsFolder(folder: UaFolderNode, name: String) {
@@ -92,17 +89,6 @@ class BrowsableObjectModelAddressSpace(
                                 nodeId,
                                 NodeIds.Organizes,
                                 nodeId(descriptor.oid.numeric).expanded(),
-                                Reference.Direction.FORWARD,
-                            )
-                        )
-                    }
-                nodeId("Objects/Symbolic") ->
-                    model.getDescriptors(model.oids).forEach { descriptor ->
-                        references.add(
-                            Reference(
-                                nodeId,
-                                NodeIds.Organizes,
-                                nodeId(descriptor.oid.symbolicName).expanded(),
                                 Reference.Direction.FORWARD,
                             )
                         )

@@ -36,18 +36,18 @@ class DiagnosticAddressSpace(val device: SnmpAgentDevice, composite: AddressSpac
     }
 
     fun addNodes() {
-        val diagnosticsFolder =
+        val folder =
             UaFolderNode(
                 nodeContext,
                 nodeId(root),
                 qualifiedName(root),
                 LocalizedText.english(root),
             )
-        nodeManager.addNode(diagnosticsFolder)
+        nodeManager.addNode(folder)
 
-        diagnosticsFolder.addReference(
+        folder.addReference(
             Reference(
-                diagnosticsFolder.nodeId,
+                folder.nodeId,
                 NodeIds.Organizes,
                 deviceNodeId.expanded(),
                 Reference.Direction.INVERSE,
@@ -55,7 +55,7 @@ class DiagnosticAddressSpace(val device: SnmpAgentDevice, composite: AddressSpac
         )
 
         addDiagnosticNode(
-            diagnosticsFolder,
+            folder,
             "Address",
             NodeIds.String,
             AttributeFilters.getValue {
@@ -63,13 +63,13 @@ class DiagnosticAddressSpace(val device: SnmpAgentDevice, composite: AddressSpac
             },
         )
         addDiagnosticNode(
-            diagnosticsFolder,
+            folder,
             "Status",
             NodeIds.String,
             AttributeFilters.getValue { DataValue(Variant(device.status.toString())) },
         )
         addDiagnosticNode(
-            diagnosticsFolder,
+            folder,
             "Connected",
             NodeIds.Boolean,
             AttributeFilters.getValue {
@@ -77,7 +77,7 @@ class DiagnosticAddressSpace(val device: SnmpAgentDevice, composite: AddressSpac
             },
         )
         addDiagnosticNode(
-            diagnosticsFolder,
+            folder,
             "PendingAsyncRequests",
             NodeIds.UInt32,
             AttributeFilters.getValue {
@@ -85,7 +85,7 @@ class DiagnosticAddressSpace(val device: SnmpAgentDevice, composite: AddressSpac
             },
         )
         addDiagnosticNode(
-            diagnosticsFolder,
+            folder,
             "PendingSyncRequests",
             NodeIds.UInt32,
             AttributeFilters.getValue {
@@ -93,7 +93,7 @@ class DiagnosticAddressSpace(val device: SnmpAgentDevice, composite: AddressSpac
             },
         )
         addDiagnosticNode(
-            diagnosticsFolder,
+            folder,
             "MaxRequestPduSize",
             NodeIds.UInt32,
             AttributeFilters.getValue {
@@ -101,14 +101,14 @@ class DiagnosticAddressSpace(val device: SnmpAgentDevice, composite: AddressSpac
             },
         )
         addDiagnosticNode(
-            diagnosticsFolder,
+            folder,
             "RetryCount",
             NodeIds.UInt32,
             AttributeFilters.getValue { DataValue(Variant(device.context.readTarget.retries)) },
         )
         addDiagnosticNode(
-            diagnosticsFolder,
-            "ObjectModeSize",
+            folder,
+            "ObjectModelSize",
             NodeIds.UInt32,
             AttributeFilters.getValue { DataValue(Variant(device.model.oids.size)) },
         )

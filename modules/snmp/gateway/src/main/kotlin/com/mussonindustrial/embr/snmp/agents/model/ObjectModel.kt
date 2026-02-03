@@ -4,10 +4,9 @@ import com.mussonindustrial.embr.snmp.model.BasicOidValue
 import com.mussonindustrial.embr.snmp.model.Oid
 import com.mussonindustrial.embr.snmp.model.OidValue
 import com.mussonindustrial.embr.snmp.model.SnmpCommunicationError
-import com.mussonindustrial.embr.snmp.typing.SnmpType
+import com.mussonindustrial.embr.snmp.typing.SnmpDataType
 import org.eclipse.milo.opcua.stack.core.StatusCodes
 import org.eclipse.milo.opcua.stack.core.types.builtin.DataValue
-import org.eclipse.milo.opcua.stack.core.types.builtin.StatusCode
 import org.eclipse.milo.opcua.stack.core.types.builtin.Variant
 import org.eclipse.milo.opcua.stack.core.types.builtin.unsigned.ULong
 import org.snmp4j.smi.Counter64
@@ -23,17 +22,7 @@ interface ObjectModel {
 
     val oids: List<Oid>
 
-    fun read(reads: List<Oid>): List<OidValue<DataValue>>
-
-    fun write(writes: List<Pair<Oid, Any?>>): List<OidValue<StatusCode>>
-
-    fun walk(roots: List<Oid>): List<OidValue<DataValue>>
-
-    fun readTable(
-        columns: List<Oid>,
-        lowerBoundIndex: Oid?,
-        upperBoundIndex: Oid?,
-    ): List<List<OidValue<DataValue>>>
+    fun observe(value: OidValue<Variable>): OidValue<DataValue>
 
     fun getDescriptors(oids: List<Oid>): List<Descriptor>
 
@@ -42,7 +31,7 @@ interface ObjectModel {
 
         val snmpValue =
             when (descriptor) {
-                is ValueDescriptor -> descriptor.snmpType.variableOfType(value.value)
+                is ValueDescriptor -> descriptor.snmpDataType.variableOfType(value.value)
                 is InvalidDescriptor -> Null.instance
                 is TableColumnDescriptor -> Null.instance
                 is TableDescriptor -> Null.instance
@@ -79,9 +68,9 @@ interface ObjectModel {
 
     class UnknownDescriptor(oid: Oid) : Descriptor(oid)
 
-    open class ValueDescriptor(oid: Oid, val snmpType: SnmpType) : Descriptor(oid)
+    open class ValueDescriptor(oid: Oid, val snmpDataType: SnmpDataType) : Descriptor(oid)
 
-    class TableColumnDescriptor(oid: Oid, val snmpType: SnmpType) : Descriptor(oid)
+    class TableColumnDescriptor(oid: Oid, val snmpDataType: SnmpDataType) : Descriptor(oid)
 
     class TableDescriptor(oid: Oid, val columns: List<TableColumnDescriptor>) : Descriptor(oid)
 }

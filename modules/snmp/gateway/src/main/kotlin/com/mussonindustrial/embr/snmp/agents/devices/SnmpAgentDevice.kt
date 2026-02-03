@@ -6,9 +6,9 @@ import com.mussonindustrial.embr.snmp.agents.model.ObjectModel
 import com.mussonindustrial.embr.snmp.model.Oid
 import com.mussonindustrial.embr.snmp.model.OidValue
 import org.eclipse.milo.opcua.sdk.server.AddressSpaceFragment
+import org.eclipse.milo.opcua.stack.core.types.builtin.DataValue
 import org.eclipse.milo.opcua.stack.core.types.builtin.NodeId
 import org.eclipse.milo.opcua.stack.core.types.builtin.StatusCode
-import org.snmp4j.smi.Variable
 
 interface SnmpAgentDevice : AddressSpaceFragment, Device {
 
@@ -16,17 +16,17 @@ interface SnmpAgentDevice : AddressSpaceFragment, Device {
     val status: Status
     val model: ObjectModel
 
-    fun read(reads: List<Oid>): List<OidValue<Variable>>
+    fun read(reads: List<Oid>): List<OidValue<DataValue>>
 
-    fun write(writes: List<Pair<Oid, Variable>>): List<OidValue<StatusCode>>
+    fun write(writes: List<Pair<Oid, Any?>>): List<OidValue<StatusCode>>
 
-    fun walk(roots: List<Oid>): List<OidValue<Variable>>
+    fun walk(roots: List<Oid>): List<OidValue<DataValue>>
 
     fun readTable(
         columns: List<Oid>,
         lowerBoundIndex: Oid?,
         upperBoundIndex: Oid?,
-    ): List<List<OidValue<Variable>>>
+    ): List<List<OidValue<DataValue>>>
 
     fun stripDeviceName(nodeId: NodeId): String {
         val id = nodeId.identifier.toString()

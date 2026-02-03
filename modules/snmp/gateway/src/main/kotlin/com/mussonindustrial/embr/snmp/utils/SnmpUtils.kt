@@ -36,7 +36,7 @@ fun <A : Address> Target<A>.createSizeBoundedPDUs(
         pdu.add(binding)
         count++
 
-        if (pdu.berLength > maxSizeRequestPDU || count > 100) {
+        if (pdu.berLength > maxSizeRequestPDU || count > 50) {
             pdu.trim()
             pdus.add(pdu)
             pdu = pduFactory.createPDU(this).apply { configure(this) }

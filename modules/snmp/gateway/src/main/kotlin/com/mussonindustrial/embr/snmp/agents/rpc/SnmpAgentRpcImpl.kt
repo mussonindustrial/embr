@@ -24,7 +24,7 @@ class SnmpAgentRpcImpl(val context: SnmpGatewayContext) : SnmpAgentRpc {
     @RpcDelegate.RequiredMutabilityMode(value = MutabilityMode.READ_ONLY)
     override fun read(agent: String, oids: List<String>): List<QualifiedOidValue> {
         val snmpAgent = requireAgent(agent)
-        return snmpAgent.model.read(oids.map { Snmp4jOid(it) }).map { it.toQualifiedValue() }
+        return snmpAgent.read(oids.map { Snmp4jOid(it) }).map { it.toQualifiedValue() }
     }
 
     @RpcDelegate.RequiredMutabilityMode(value = MutabilityMode.READ_WRITE)
@@ -35,7 +35,7 @@ class SnmpAgentRpcImpl(val context: SnmpGatewayContext) : SnmpAgentRpc {
             throw ValueError("Length of values does not match length of OIDs.")
         }
 
-        return snmpAgent.model
+        return snmpAgent
             .write(oids.zip(values).map { (oid, value) -> Snmp4jOid(oid) to value })
             .map { it.value.toQualityCode() }
     }
@@ -43,7 +43,7 @@ class SnmpAgentRpcImpl(val context: SnmpGatewayContext) : SnmpAgentRpc {
     @RpcDelegate.RequiredMutabilityMode(value = MutabilityMode.READ_ONLY)
     override fun walk(agent: String, oids: List<String>): List<QualifiedOidValue> {
         val snmpAgent = requireAgent(agent)
-        return snmpAgent.model.walk(oids.map { Snmp4jOid(it) }).map { it.toQualifiedValue() }
+        return snmpAgent.walk(oids.map { Snmp4jOid(it) }).map { it.toQualifiedValue() }
     }
 
     @RpcDelegate.RequiredMutabilityMode(value = MutabilityMode.READ_ONLY)
@@ -54,7 +54,7 @@ class SnmpAgentRpcImpl(val context: SnmpGatewayContext) : SnmpAgentRpc {
         upperBoundIndex: String?,
     ): List<List<QualifiedOidValue>> {
         val snmpAgent = requireAgent(agent)
-        return snmpAgent.model
+        return snmpAgent
             .readTable(
                 columns.map { Snmp4jOid(it) },
                 lowerBoundIndex.nullOrOid(),

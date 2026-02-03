@@ -5,8 +5,9 @@ import com.mussonindustrial.embr.snmp.SnmpGatewayContext
 import com.mussonindustrial.embr.snmp.agents.configuration.SnmpAgentConfig
 import com.mussonindustrial.embr.snmp.agents.context.SnmpAgentContext
 import com.mussonindustrial.embr.snmp.agents.model.ConcurrentObjectModel
-import com.mussonindustrial.embr.snmp.agents.opc.BrowsableObjectModelAddressSpace
 import com.mussonindustrial.embr.snmp.agents.opc.DiagnosticAddressSpace
+import com.mussonindustrial.embr.snmp.agents.opc.MethodAddressSpace
+import com.mussonindustrial.embr.snmp.agents.opc.ObjectModelAddressSpace
 import com.mussonindustrial.embr.snmp.agents.opc.OidAddressSpace
 import com.mussonindustrial.embr.snmp.model.BasicOidValue
 import com.mussonindustrial.embr.snmp.model.Oid
@@ -18,10 +19,12 @@ import com.mussonindustrial.embr.snmp.model.toSnmp4j
 import com.mussonindustrial.embr.snmp.opc.DeviceAddressSpace
 import com.mussonindustrial.embr.snmp.utils.createSizeBoundedPDUs
 import java.util.concurrent.TimeUnit
+import kotlin.collections.map
 import org.eclipse.milo.opcua.sdk.server.AddressSpaceComposite
 import org.eclipse.milo.opcua.sdk.server.Lifecycle
 import org.eclipse.milo.opcua.sdk.server.LifecycleManager
 import org.eclipse.milo.opcua.stack.core.StatusCodes
+import org.eclipse.milo.opcua.stack.core.types.builtin.DataValue
 import org.eclipse.milo.opcua.stack.core.types.builtin.StatusCode
 import org.snmp4j.PDU
 import org.snmp4j.smi.Variable
@@ -48,21 +51,24 @@ class SnmpAgentDeviceImpl<T : SnmpAgentConfig>(override val context: SnmpAgentCo
     val deviceAddressSpace = DeviceAddressSpace(context.deviceContext, this)
     val diagnosticAddressSpace = DiagnosticAddressSpace(this, this)
     val oidAddressSpace = OidAddressSpace(this, this)
-    val browsableObjectModelAddressSpace = BrowsableObjectModelAddressSpace(this, this)
+    val objectModelAddressSpace = ObjectModelAddressSpace(this, this)
+    val methodAddressSpace = MethodAddressSpace(this, this)
 
     init {
+        lifecycleManager.addStartupTask { SnmpGatewayContext.instance.initOpcUaServer(server) }
         lifecycleManager.addLifecycle(context)
-        lifecycleManager.addLifecycle(healthcheck)
         lifecycleManager.addLifecycle(deviceAddressSpace)
         lifecycleManager.addLifecycle(diagnosticAddressSpace)
+        lifecycleManager.addLifecycle(methodAddressSpace)
+        lifecycleManager.addLifecycle(objectModelAddressSpace)
         lifecycleManager.addLifecycle(oidAddressSpace)
-        lifecycleManager.addLifecycle(browsableObjectModelAddressSpace)
+        lifecycleManager.addLifecycle(healthcheck)
         lifecycleManager.addStartupTask {
+            learnObjectModel()
             onDataItemsCreated(
                 context.deviceContext.subscriptionModel.getDataItems(context.deviceContext.name)
             )
         }
-        lifecycleManager.addStartupTask { buildModel() }
     }
 
     val treeUtils = TreeUtils(context.snmp, context.pduFactory)
@@ -93,7 +99,31 @@ class SnmpAgentDeviceImpl<T : SnmpAgentConfig>(override val context: SnmpAgentCo
         }
     }
 
-    override fun read(reads: List<Oid>): List<OidValue<Variable>> {
+    override fun read(reads: List<Oid>): List<OidValue<DataValue>> {
+        return readRaw(reads).map { model.observe(it) }
+    }
+
+    override fun write(writes: List<Pair<Oid, Any?>>): List<OidValue<StatusCode>> {
+        return writeRaw(
+            writes.map { (oid, value) -> oid to model.toSnmpValue(BasicOidValue(oid, value)).value }
+        )
+    }
+
+    override fun walk(roots: List<Oid>): List<OidValue<DataValue>> {
+        return walkRaw(roots).map { model.observe(it) }
+    }
+
+    override fun readTable(
+        columns: List<Oid>,
+        lowerBoundIndex: Oid?,
+        upperBoundIndex: Oid?,
+    ): List<List<OidValue<DataValue>>> {
+        return readTableRaw(columns, lowerBoundIndex, upperBoundIndex).map {
+            it.map { result -> model.observe(result) }
+        }
+    }
+
+    fun readRaw(reads: List<Oid>): List<OidValue<Variable>> {
         val results = mutableMapOf<Oid, OidValue<Variable>>()
         val remaining = reads.groupBy { it }.toMutableMap()
 
@@ -152,7 +182,7 @@ class SnmpAgentDeviceImpl<T : SnmpAgentConfig>(override val context: SnmpAgentCo
         return reads.map { results[it]!! }
     }
 
-    override fun write(writes: List<Pair<Oid, Variable>>): List<OidValue<StatusCode>> {
+    fun writeRaw(writes: List<Pair<Oid, Variable>>): List<OidValue<StatusCode>> {
         return writes.map { (oid, value) ->
             if (context.writeTarget == null) {
                 return@map BasicOidValue(oid, StatusCode(StatusCodes.Bad_CommunicationError))
@@ -187,7 +217,7 @@ class SnmpAgentDeviceImpl<T : SnmpAgentConfig>(override val context: SnmpAgentCo
         }
     }
 
-    override fun walk(roots: List<Oid>): List<OidValue<Variable>> {
+    fun walkRaw(roots: List<Oid>): List<OidValue<Variable>> {
         val results = treeUtils.walk(context.readTarget, roots.map { it.toSnmp4j() }.toTypedArray())
         return results.flatMap {
             it.variableBindings?.map { binding ->
@@ -217,11 +247,7 @@ class SnmpAgentDeviceImpl<T : SnmpAgentConfig>(override val context: SnmpAgentCo
         )
     }
 
-    fun buildModel() {
-        walkAsync(listOf(Snmp4jOid("1"))) { model.coerceCache(it) }
-    }
-
-    override fun readTable(
+    fun readTableRaw(
         columns: List<Oid>,
         lowerBoundIndex: Oid?,
         upperBoundIndex: Oid?,
@@ -242,6 +268,10 @@ class SnmpAgentDeviceImpl<T : SnmpAgentConfig>(override val context: SnmpAgentCo
 
     fun interface WalkListener {
         fun receiveEvent(variable: OidValue<Variable>)
+    }
+
+    fun learnObjectModel() {
+        walkAsync(listOf(Snmp4jOid("1"))) { model.observe(it) }
     }
 
     inner class Healthcheck : Lifecycle {
@@ -295,7 +325,7 @@ class SnmpAgentDeviceImpl<T : SnmpAgentConfig>(override val context: SnmpAgentCo
             }
 
             val response = read(listOf(Snmp4jOid(context.snmpConfig.healthcheck.oid!!))).first()
-            val isGood = response.value != SnmpCommunicationError
+            val isGood = response.value.statusCode.isGood
             logger.trace("Health check result: $isGood")
 
             status =

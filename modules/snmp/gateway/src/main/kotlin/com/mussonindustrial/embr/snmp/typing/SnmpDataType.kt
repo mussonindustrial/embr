@@ -14,7 +14,7 @@ import org.snmp4j.smi.OctetString
 import org.snmp4j.smi.UnsignedInteger32
 import org.snmp4j.smi.Variable
 
-enum class SnmpType(val uaDataType: NodeId, val variableOfType: (Any?) -> Variable) {
+enum class SnmpDataType(val uaDataType: NodeId, val variableOfType: (Any?) -> Variable) {
     Int32(OpcUaDataType.Int32.nodeId, { Integer32(TypeUtilities.toInteger(it)) }),
     UInt32(OpcUaDataType.UInt32.nodeId, { UnsignedInteger32(TypeUtilities.toLong(it)) }),
     Gauge32(OpcUaDataType.UInt32.nodeId, { Gauge32(TypeUtilities.toLong(it)) }),
@@ -25,16 +25,16 @@ enum class SnmpType(val uaDataType: NodeId, val variableOfType: (Any?) -> Variab
     IpAddress(OpcUaDataType.String.nodeId, { IpAddress(TypeUtilities.toString(it)) }),
 }
 
-val Variable.snmpType: SnmpType
+val Variable.snmpDataType: SnmpDataType
     get() =
         when (this) {
-            is OID -> SnmpType.Oid
-            is Gauge32 -> SnmpType.Gauge32
-            is Counter32 -> SnmpType.Counter32
-            is Counter64 -> SnmpType.Counter64
-            is Integer32 -> SnmpType.Int32
-            is UnsignedInteger32 -> SnmpType.UInt32
-            is Address -> SnmpType.IpAddress
-            is OctetString -> SnmpType.OctetString
-            else -> SnmpType.OctetString
+            is OID -> SnmpDataType.Oid
+            is Gauge32 -> SnmpDataType.Gauge32
+            is Counter32 -> SnmpDataType.Counter32
+            is Counter64 -> SnmpDataType.Counter64
+            is Integer32 -> SnmpDataType.Int32
+            is UnsignedInteger32 -> SnmpDataType.UInt32
+            is Address -> SnmpDataType.IpAddress
+            is OctetString -> SnmpDataType.OctetString
+            else -> SnmpDataType.OctetString
         }
