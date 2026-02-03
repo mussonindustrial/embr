@@ -3,24 +3,13 @@ package com.mussonindustrial.embr.snmp.utils
 import com.mussonindustrial.embr.snmp.model.BasicQualifiedOidValue
 import com.mussonindustrial.embr.snmp.model.OidValue
 import com.mussonindustrial.embr.snmp.model.QualifiedOidValue
-import java.text.ParseException
 import java.util.Date
 import org.eclipse.milo.opcua.stack.core.types.builtin.DataValue
 import org.snmp4j.PDU
-import org.snmp4j.SNMP4JSettings
 import org.snmp4j.Target
 import org.snmp4j.smi.Address
 import org.snmp4j.smi.VariableBinding
 import org.snmp4j.util.PDUFactory
-
-fun String.isOid(): Boolean {
-    try {
-        SNMP4JSettings.getOIDTextFormat().parse(this)
-        return true
-    } catch (_: ParseException) {
-        return false
-    }
-}
 
 fun <A : Address> Target<A>.createSizeBoundedPDUs(
     pduFactory: PDUFactory,

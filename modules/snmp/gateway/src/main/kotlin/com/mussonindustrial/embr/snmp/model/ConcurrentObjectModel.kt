@@ -1,8 +1,6 @@
-package com.mussonindustrial.embr.snmp.agents.model
+package com.mussonindustrial.embr.snmp.model
 
 import com.mussonindustrial.embr.snmp.agents.devices.SnmpAgentDevice
-import com.mussonindustrial.embr.snmp.model.Oid
-import com.mussonindustrial.embr.snmp.model.OidValue
 import com.mussonindustrial.embr.snmp.typing.snmpDataType
 import java.util.concurrent.ConcurrentHashMap
 import org.eclipse.milo.opcua.stack.core.types.builtin.DataValue

@@ -5,8 +5,8 @@ import com.mussonindustrial.embr.snmp.opc.DeviceContextManagedAddressSpaceFragme
 import com.mussonindustrial.embr.snmp.utils.removeAllNodes
 import org.eclipse.milo.opcua.sdk.core.Reference
 import org.eclipse.milo.opcua.sdk.server.AddressSpaceComposite
-import org.eclipse.milo.opcua.sdk.server.Lifecycle
-import org.eclipse.milo.opcua.sdk.server.nodes.UaFolderNode
+import org.eclipse.milo.opcua.sdk.server.nodes.UaNode
+import org.eclipse.milo.opcua.sdk.server.nodes.UaObjectNode
 import org.eclipse.milo.opcua.sdk.server.nodes.UaVariableNode
 import org.eclipse.milo.opcua.sdk.server.nodes.filters.AttributeFilter
 import org.eclipse.milo.opcua.sdk.server.nodes.filters.AttributeFilters
@@ -15,6 +15,7 @@ import org.eclipse.milo.opcua.stack.core.types.builtin.DataValue
 import org.eclipse.milo.opcua.stack.core.types.builtin.LocalizedText
 import org.eclipse.milo.opcua.stack.core.types.builtin.NodeId
 import org.eclipse.milo.opcua.stack.core.types.builtin.Variant
+import org.eclipse.milo.opcua.stack.core.types.builtin.unsigned.UInteger
 
 class DiagnosticAddressSpace(val device: SnmpAgentDevice, composite: AddressSpaceComposite) :
     DeviceContextManagedAddressSpaceFragment(device.context.deviceContext, composite) {
@@ -22,33 +23,27 @@ class DiagnosticAddressSpace(val device: SnmpAgentDevice, composite: AddressSpac
     private val root = "Diagnostics"
 
     init {
-        lifecycleManager.addLifecycle(
-            object : Lifecycle {
-                override fun startup() {
-                    addNodes()
-                }
-
-                override fun shutdown() {
-                    nodeManager.removeAllNodes()
-                }
-            }
-        )
+        lifecycleManager.addStartupTask { addNodes() }
+        lifecycleManager.addShutdownTask { nodeManager.removeAllNodes() }
     }
 
     fun addNodes() {
         val folder =
-            UaFolderNode(
+            UaObjectNode(
                 nodeContext,
                 nodeId(root),
                 qualifiedName(root),
                 LocalizedText.english(root),
+                LocalizedText.NULL_VALUE,
+                UInteger.MIN,
+                UInteger.MIN,
             )
-        nodeManager.addNode(folder)
 
+        nodeManager.addNode(folder)
         folder.addReference(
             Reference(
                 folder.nodeId,
-                NodeIds.Organizes,
+                NodeIds.HasComponent,
                 deviceNodeId.expanded(),
                 Reference.Direction.INVERSE,
             )
@@ -115,7 +110,7 @@ class DiagnosticAddressSpace(val device: SnmpAgentDevice, composite: AddressSpac
     }
 
     fun addDiagnosticNode(
-        folder: UaFolderNode,
+        parent: UaNode,
         name: String,
         dataType: NodeId,
         attributeFilter: AttributeFilter,
@@ -125,11 +120,12 @@ class DiagnosticAddressSpace(val device: SnmpAgentDevice, composite: AddressSpac
             setBrowseName(qualifiedName(name))
             setDisplayName(LocalizedText.english(name))
             setDataType(dataType)
+            setTypeDefinition(NodeIds.PropertyType)
             addReference(
                 Reference(
                     nodeId,
-                    NodeIds.HasComponent,
-                    folder.nodeId.expanded(),
+                    NodeIds.HasProperty,
+                    parent.nodeId.expanded(),
                     Reference.Direction.INVERSE,
                 )
             )

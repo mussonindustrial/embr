@@ -6,9 +6,9 @@ import com.inductiveautomation.ignition.gateway.clientcomm.MutabilityMode
 import com.inductiveautomation.ignition.gateway.rpc.RpcDelegate
 import com.mussonindustrial.embr.snmp.SnmpGatewayContext
 import com.mussonindustrial.embr.snmp.agents.devices.SnmpAgentDevice
-import com.mussonindustrial.embr.snmp.model.Oid
 import com.mussonindustrial.embr.snmp.model.QualifiedOidValue
 import com.mussonindustrial.embr.snmp.model.Snmp4jOid
+import com.mussonindustrial.embr.snmp.model.nullOrExtendedOid
 import com.mussonindustrial.embr.snmp.utils.toQualifiedValue
 import com.mussonindustrial.embr.snmp.utils.toQualityCode
 import org.python.core.Py.ValueError
@@ -57,16 +57,9 @@ class SnmpAgentRpcImpl(val context: SnmpGatewayContext) : SnmpAgentRpc {
         return snmpAgent
             .readTable(
                 columns.map { Snmp4jOid(it) },
-                lowerBoundIndex.nullOrOid(),
-                upperBoundIndex.nullOrOid(),
+                lowerBoundIndex.nullOrExtendedOid(),
+                upperBoundIndex.nullOrExtendedOid(),
             )
             .map { results -> results.map { it.toQualifiedValue() } }
-    }
-
-    private fun String?.nullOrOid(): Oid? {
-        this?.let {
-            return Snmp4jOid(it)
-        }
-        return null
     }
 }

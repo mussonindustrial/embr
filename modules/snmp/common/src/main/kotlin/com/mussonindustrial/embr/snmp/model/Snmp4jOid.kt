@@ -2,7 +2,7 @@ package com.mussonindustrial.embr.snmp.model
 
 import org.snmp4j.smi.OID
 
-class Snmp4jOid(val oid: OID) : OID(oid), Oid {
+open class Snmp4jOid(val oid: OID) : OID(oid), Oid {
 
     constructor(numeric: String) : this(OID(numeric))
 

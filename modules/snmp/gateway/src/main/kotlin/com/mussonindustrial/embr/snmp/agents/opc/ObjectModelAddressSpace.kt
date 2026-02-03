@@ -18,17 +18,8 @@ class ObjectModelAddressSpace(val device: SnmpAgentDevice, composite: AddressSpa
     private val model = device.model
 
     init {
-        lifecycleManager.addLifecycle(
-            object : Lifecycle {
-                override fun startup() {
-                    addNodes()
-                }
-
-                override fun shutdown() {
-                    nodeManager.removeAllNodes()
-                }
-            }
-        )
+        lifecycleManager.addStartupTask { addNodes() }
+        lifecycleManager.addShutdownTask { nodeManager.removeAllNodes() }
     }
 
     fun addNodes() {
@@ -44,7 +35,7 @@ class ObjectModelAddressSpace(val device: SnmpAgentDevice, composite: AddressSpa
         folder.addReference(
             Reference(
                 folder.nodeId,
-                NodeIds.Organizes,
+                NodeIds.HasComponent,
                 deviceNodeId.expanded(),
                 Reference.Direction.INVERSE,
             )
@@ -57,20 +48,12 @@ class ObjectModelAddressSpace(val device: SnmpAgentDevice, composite: AddressSpa
         val node =
             UaFolderNode(
                 nodeContext,
-                nodeId("Objects/${name}"),
+                nodeId("${root}/${name}"),
                 qualifiedName(name),
                 LocalizedText.english(name),
             )
         nodeManager.addNode(node)
-
-        folder.addReference(
-            Reference(
-                node.nodeId,
-                NodeIds.Organizes,
-                folder.nodeId.expanded(),
-                Reference.Direction.INVERSE,
-            )
-        )
+        folder.addOrganizes(node)
     }
 
     override fun browse(

@@ -2,7 +2,7 @@ package com.mussonindustrial.embr.snmp.agents.devices
 
 import com.inductiveautomation.ignition.gateway.opcua.server.api.Device
 import com.mussonindustrial.embr.snmp.agents.context.SnmpAgentContext
-import com.mussonindustrial.embr.snmp.agents.model.ObjectModel
+import com.mussonindustrial.embr.snmp.model.ObjectModel
 import com.mussonindustrial.embr.snmp.model.Oid
 import com.mussonindustrial.embr.snmp.model.OidValue
 import org.eclipse.milo.opcua.sdk.server.AddressSpaceFragment

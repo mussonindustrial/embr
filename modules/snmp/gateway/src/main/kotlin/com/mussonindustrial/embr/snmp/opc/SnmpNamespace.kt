@@ -1,6 +1,7 @@
 package com.mussonindustrial.embr.snmp.opc
 
-import com.mussonindustrial.embr.snmp.agents.opc.types.OidValueType
+import com.mussonindustrial.embr.snmp.opc.types.OidValueType
+import com.mussonindustrial.embr.snmp.opc.types.SnmpAgentDeviceType
 import org.eclipse.milo.opcua.sdk.server.ManagedNamespaceWithLifecycle
 import org.eclipse.milo.opcua.sdk.server.OpcUaServer
 import org.eclipse.milo.opcua.sdk.server.items.DataItem
@@ -21,7 +22,10 @@ class SnmpNamespace(server: OpcUaServer) : ManagedNamespaceWithLifecycle(server,
     init {
         instance = this
         lifecycleManager.addLifecycle(subscriptionModel)
-        lifecycleManager.addStartupTask { OidValueType.register(this) }
+        lifecycleManager.addStartupTask {
+            SnmpAgentDeviceType.register(this)
+            OidValueType.register(this)
+        }
     }
 
     fun nodeId(id: Any): NodeId {

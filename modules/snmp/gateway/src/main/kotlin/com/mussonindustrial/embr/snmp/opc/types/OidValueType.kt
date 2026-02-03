@@ -1,7 +1,8 @@
-package com.mussonindustrial.embr.snmp.agents.opc.types
+package com.mussonindustrial.embr.snmp.opc.types
 
 import com.google.common.base.MoreObjects
 import com.google.common.base.Objects
+import com.mussonindustrial.embr.snmp.model.OidValue
 import com.mussonindustrial.embr.snmp.opc.SnmpNamespace
 import org.eclipse.milo.opcua.sdk.core.Reference
 import org.eclipse.milo.opcua.sdk.core.ValueRanks
@@ -27,6 +28,8 @@ import org.eclipse.milo.opcua.stack.core.types.structured.StructureField
 class OidValueType(val oid: String, val value: Variant) : UaStructuredType {
 
     constructor(oid: String, value: Any?) : this(oid, Variant(value))
+
+    constructor(oidValue: OidValue<*>) : this(oidValue.oid.numeric, oidValue.value)
 
     override fun getTypeId(): ExpandedNodeId {
         return TYPE_ID
@@ -68,7 +71,6 @@ class OidValueType(val oid: String, val value: Variant) : UaStructuredType {
         override fun decodeType(context: EncodingContext, decoder: UaDecoder): OidValueType {
             val oid = decoder.decodeString("Oid")
             val value = decoder.decodeVariant("Value")
-
             return OidValueType(oid, value)
         }
 
@@ -107,8 +109,8 @@ class OidValueType(val oid: String, val value: Variant) : UaStructuredType {
                 UaDataTypeNode(
                         namespace.nodeContext,
                         dataTypeId,
-                        QualifiedName(namespace.namespaceIndex, "OidValueStructType"),
-                        LocalizedText.english("OidValueStructType"),
+                        QualifiedName(namespace.namespaceIndex, "OidValueType"),
+                        LocalizedText.english("OidValueType"),
                         LocalizedText.NULL_VALUE,
                         Unsigned.uint(0),
                         Unsigned.uint(0),

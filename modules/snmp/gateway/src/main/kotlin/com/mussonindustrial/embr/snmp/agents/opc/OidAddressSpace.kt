@@ -1,13 +1,13 @@
 package com.mussonindustrial.embr.snmp.agents.opc
 
 import com.mussonindustrial.embr.snmp.agents.devices.SnmpAgentDevice
-import com.mussonindustrial.embr.snmp.agents.model.ObjectModel
+import com.mussonindustrial.embr.snmp.agents.opc.nodes.DynamicObjectSuffixNode
+import com.mussonindustrial.embr.snmp.model.ExtendedOid
+import com.mussonindustrial.embr.snmp.model.ObjectModel
 import com.mussonindustrial.embr.snmp.model.OidValue
-import com.mussonindustrial.embr.snmp.model.Snmp4jOid
+import com.mussonindustrial.embr.snmp.model.asExtendedOid
+import com.mussonindustrial.embr.snmp.model.isOid
 import com.mussonindustrial.embr.snmp.opc.DeviceContextManagedAddressSpaceFragment
-import com.mussonindustrial.embr.snmp.utils.OidPath
-import com.mussonindustrial.embr.snmp.utils.OidSuffix
-import com.mussonindustrial.embr.snmp.utils.parseOidPath
 import kotlin.jvm.optionals.getOrNull
 import org.eclipse.milo.opcua.sdk.core.AccessLevel
 import org.eclipse.milo.opcua.sdk.core.Reference
@@ -28,7 +28,7 @@ import org.eclipse.milo.opcua.stack.core.types.structured.WriteValue
 class OidAddressSpace(val device: SnmpAgentDevice, composite: AddressSpaceComposite) :
     DeviceContextManagedAddressSpaceFragment(device.context.deviceContext, composite) {
 
-    private val filter = SimpleAddressSpaceFilter.create { it.getPath().parseOidPath() != null }
+    private val filter = SimpleAddressSpaceFilter.create { it.getPath().isOid() }
 
     override fun read(
         context: AddressSpace.ReadContext,
@@ -38,7 +38,7 @@ class OidAddressSpace(val device: SnmpAgentDevice, composite: AddressSpaceCompos
     ): List<DataValue> {
         val requests = readValueIds.map { ReadRequest(it) }
 
-        val directReads = requests.filter { it.path.suffix == null }
+        val directReads = requests.filter { !it.oid.hasSuffix }
         val valueReads =
             directReads.filter {
                 AttributeId.from(it.readValueId.attributeId).get() == AttributeId.Value
@@ -55,7 +55,7 @@ class OidAddressSpace(val device: SnmpAgentDevice, composite: AddressSpaceCompos
             result.value = value
         }
 
-        val suffixReads = requests.filter { it.path.suffix != null }
+        val suffixReads = requests.filter { it.oid.hasSuffix }
         readSuffixAttributes(suffixReads).zip(suffixReads).forEach { (value, result) ->
             result.value = value
         }
@@ -135,10 +135,11 @@ class OidAddressSpace(val device: SnmpAgentDevice, composite: AddressSpaceCompos
         return requests.zip(descriptors).map { (request, descriptor) ->
             val nodeId = request.readValueId.nodeId
             val attributeId = AttributeId.from(request.readValueId.attributeId).getOrNull()
-            val path = request.path
 
             attributeId
-                .runCatching { resolveSuffixAttribute(attributeId, nodeId, descriptor, path) }
+                .runCatching {
+                    resolveSuffixAttribute(attributeId, nodeId, descriptor, request.oid.suffix!!)
+                }
                 .fold(
                     onSuccess = { DataValue(Variant(it)) },
                     onFailure = { DataValue((it as UaException).statusCode) },
@@ -150,28 +151,28 @@ class OidAddressSpace(val device: SnmpAgentDevice, composite: AddressSpaceCompos
         attributeId: AttributeId?,
         nodeId: NodeId,
         descriptor: ObjectModel.Descriptor,
-        path: OidPath,
+        suffix: String,
     ): Any? {
-        val suffix =
-            OidSuffix.from(path.suffix!!) ?: throw UaException(StatusCodes.Bad_NodeIdUnknown)
-        val context = OidSuffix.Context(device, descriptor)
+        val suffixNode =
+            DynamicObjectSuffixNode.from(suffix) ?: throw UaException(StatusCodes.Bad_NodeIdUnknown)
+        val context = DynamicObjectSuffixNode.Context(device, descriptor)
 
         return when (attributeId) {
             AttributeId.NodeId -> nodeId
             AttributeId.NodeClass -> NodeClass.Variable
-            AttributeId.BrowseName -> suffix.browseName(context)
-            AttributeId.DisplayName -> suffix.displayName(context)
-            AttributeId.Description -> suffix.description(context)
+            AttributeId.BrowseName -> suffixNode.browseName(context)
+            AttributeId.DisplayName -> suffixNode.displayName(context)
+            AttributeId.Description -> suffixNode.description(context)
 
-            AttributeId.DataType -> suffix.dataType(context)
-            AttributeId.ValueRank -> suffix.valueRank(context)
+            AttributeId.DataType -> suffixNode.dataType(context)
+            AttributeId.ValueRank -> suffixNode.valueRank(context)
             AttributeId.ArrayDimensions -> null
 
             AttributeId.AccessLevel,
-            AttributeId.UserAccessLevel -> suffix.accessLevel(context)
+            AttributeId.UserAccessLevel -> suffixNode.accessLevel(context)
 
             AttributeId.Historizing -> false
-            AttributeId.Value -> suffix.value(context)
+            AttributeId.Value -> suffixNode.value(context)
 
             AttributeId.WriteMask,
             AttributeId.UserWriteMask -> UInteger.valueOf(0)
@@ -215,7 +216,7 @@ class OidAddressSpace(val device: SnmpAgentDevice, composite: AddressSpaceCompos
     ): List<AddressSpace.ReferenceResult> {
         return nodeIds.map { nodeId ->
             val references = mutableListOf<Reference>()
-            val oidPath = nodeId.getPath().parseOidPath()!!
+            val oidPath = nodeId.getPath().asExtendedOid()
             references +=
                 if (oidPath.suffix == null) {
                     browseDirect(oidPath, nodeId)
@@ -226,7 +227,7 @@ class OidAddressSpace(val device: SnmpAgentDevice, composite: AddressSpaceCompos
         }
     }
 
-    fun browseDirect(oidPath: OidPath, nodeId: NodeId): List<Reference> {
+    fun browseDirect(oid: ExtendedOid, nodeId: NodeId): List<Reference> {
         val references = mutableListOf<Reference>()
         references +=
             Reference(
@@ -235,19 +236,19 @@ class OidAddressSpace(val device: SnmpAgentDevice, composite: AddressSpaceCompos
                 nodeId("Objects/Numeric").expanded(),
                 Reference.Direction.INVERSE,
             )
-        OidSuffix.ALL.forEach { suffix ->
+        DynamicObjectSuffixNode.ALL.forEach { suffix ->
             references +=
                 Reference(
                     nodeId,
                     NodeIds.HasProperty,
-                    nodeId("${oidPath.oid}::${suffix.name}").expanded(),
+                    nodeId("${oid.numeric}::${suffix.name}").expanded(),
                     Reference.Direction.FORWARD,
                 )
         }
         return references
     }
 
-    fun browseSuffix(oidPath: OidPath, nodeId: NodeId): List<Reference> {
+    fun browseSuffix(oid: ExtendedOid, nodeId: NodeId): List<Reference> {
         val references = mutableListOf<Reference>()
         references +=
             Reference(
@@ -260,7 +261,7 @@ class OidAddressSpace(val device: SnmpAgentDevice, composite: AddressSpaceCompos
             Reference(
                 nodeId,
                 NodeIds.HasProperty,
-                nodeId(oidPath.oid).expanded(),
+                nodeId(oid.numeric).expanded(),
                 Reference.Direction.INVERSE,
             )
         return references
@@ -275,13 +276,12 @@ class OidAddressSpace(val device: SnmpAgentDevice, composite: AddressSpaceCompos
     }
 
     inner class ReadRequest(val readValueId: ReadValueId) : OidValue<DataValue?> {
-        val path = readValueId.nodeId.getPath().parseOidPath()!!
-        override val oid = Snmp4jOid(path.oid)
+        override val oid = readValueId.nodeId.getPath().asExtendedOid()
         override var value: DataValue? = null
     }
 
     inner class WriteRequest(val writeValue: WriteValue) : OidValue<StatusCode?> {
-        override val oid = Snmp4jOid(writeValue.nodeId.getPath())
+        override val oid = writeValue.nodeId.getPath().asExtendedOid()
         override var value: StatusCode? = null
     }
 }

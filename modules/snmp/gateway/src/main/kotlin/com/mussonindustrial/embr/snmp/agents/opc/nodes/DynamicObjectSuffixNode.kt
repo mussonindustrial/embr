@@ -1,7 +1,7 @@
-package com.mussonindustrial.embr.snmp.utils
+package com.mussonindustrial.embr.snmp.agents.opc.nodes
 
 import com.mussonindustrial.embr.snmp.agents.devices.SnmpAgentDevice
-import com.mussonindustrial.embr.snmp.agents.model.ObjectModel
+import com.mussonindustrial.embr.snmp.model.ObjectModel
 import org.eclipse.milo.opcua.sdk.core.AccessLevel
 import org.eclipse.milo.opcua.sdk.core.ValueRank
 import org.eclipse.milo.opcua.stack.core.OpcUaDataType
@@ -10,7 +10,7 @@ import org.eclipse.milo.opcua.stack.core.types.builtin.NodeId
 import org.eclipse.milo.opcua.stack.core.types.builtin.QualifiedName
 import org.eclipse.milo.opcua.stack.core.types.builtin.unsigned.UByte
 
-sealed class OidSuffix(val name: String) {
+sealed class DynamicObjectSuffixNode(val name: String) {
 
     data class Context(val device: SnmpAgentDevice, val descriptor: ObjectModel.Descriptor)
 
@@ -28,7 +28,7 @@ sealed class OidSuffix(val name: String) {
 
     abstract fun value(context: Context): Any?
 
-    object DataType : OidSuffix("DataType") {
+    object DataType : DynamicObjectSuffixNode("DataType") {
         override fun dataType(context: Context): NodeId = OpcUaDataType.String.nodeId
 
         override fun valueRank(context: Context) = ValueRank.Scalar.value
@@ -41,6 +41,6 @@ sealed class OidSuffix(val name: String) {
         val ALL = listOf(DataType)
         private val byName = ALL.associateBy { it.name }
 
-        fun from(name: String): OidSuffix? = byName[name]
+        fun from(name: String): DynamicObjectSuffixNode? = byName[name]
     }
 }
