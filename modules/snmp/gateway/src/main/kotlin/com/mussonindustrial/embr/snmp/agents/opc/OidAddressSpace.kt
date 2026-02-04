@@ -103,7 +103,7 @@ class OidAddressSpace(val device: SnmpAgentDevice, composite: AddressSpaceCompos
 
             AttributeId.DataType ->
                 when (descriptor) {
-                    is ObjectModel.ValueDescriptor -> descriptor.snmpDataType.uaDataType
+                    is ObjectModel.ValueDescriptor -> descriptor.snmpDataType.nodeId
                     else -> OpcUaDataType.String.nodeId
                 }
             AttributeId.ValueRank ->

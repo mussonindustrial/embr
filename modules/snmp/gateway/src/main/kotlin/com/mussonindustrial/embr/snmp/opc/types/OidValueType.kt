@@ -6,8 +6,8 @@ import com.mussonindustrial.embr.snmp.model.OidValue
 import com.mussonindustrial.embr.snmp.opc.SnmpNamespace
 import org.eclipse.milo.opcua.sdk.core.Reference
 import org.eclipse.milo.opcua.sdk.core.ValueRanks
-import org.eclipse.milo.opcua.sdk.server.ManagedNamespace
 import org.eclipse.milo.opcua.sdk.server.nodes.UaDataTypeNode
+import org.eclipse.milo.opcua.sdk.server.nodes.UaObjectNode
 import org.eclipse.milo.opcua.stack.core.NodeIds
 import org.eclipse.milo.opcua.stack.core.UaSerializationException
 import org.eclipse.milo.opcua.stack.core.encoding.EncodingContext
@@ -18,10 +18,10 @@ import org.eclipse.milo.opcua.stack.core.types.UaStructuredType
 import org.eclipse.milo.opcua.stack.core.types.builtin.ExpandedNodeId
 import org.eclipse.milo.opcua.stack.core.types.builtin.LocalizedText
 import org.eclipse.milo.opcua.stack.core.types.builtin.NodeId
-import org.eclipse.milo.opcua.stack.core.types.builtin.QualifiedName
 import org.eclipse.milo.opcua.stack.core.types.builtin.Variant
 import org.eclipse.milo.opcua.stack.core.types.builtin.unsigned.Unsigned
 import org.eclipse.milo.opcua.stack.core.types.enumerated.StructureType
+import org.eclipse.milo.opcua.stack.core.types.structured.AccessRestrictionType
 import org.eclipse.milo.opcua.stack.core.types.structured.StructureDefinition
 import org.eclipse.milo.opcua.stack.core.types.structured.StructureField
 
@@ -32,11 +32,11 @@ class OidValueType(val oid: String, val value: Variant) : UaStructuredType {
     constructor(oidValue: OidValue<*>) : this(oidValue.oid.numeric, oidValue.value)
 
     override fun getTypeId(): ExpandedNodeId {
-        return TYPE_ID
+        return typeNodeId.expanded()
     }
 
     override fun getBinaryEncodingId(): ExpandedNodeId {
-        return BINARY_ENCODING_ID
+        return binaryEncodingNodeId.expanded()
     }
 
     override fun getXmlEncodingId(): ExpandedNodeId {
@@ -82,86 +82,100 @@ class OidValueType(val oid: String, val value: Variant) : UaStructuredType {
     }
 
     companion object {
-        val TYPE_ID: ExpandedNodeId =
-            ExpandedNodeId.parse(
-                String.format(
-                    "nsu=%s;s=%s",
-                    SnmpNamespace.NAMESPACE_URI,
-                    "DataType.OidValueStructType",
+        const val BROWSE_NAME = "OidValue"
+
+        private val typeNodeId: NodeId by lazy { SnmpNamespace.NodesIds.OidValue }
+        private val binaryEncodingNodeId: NodeId by lazy {
+            SnmpNamespace.NodesIds.OidValue_Encoding_DefaultBinary
+        }
+
+        fun register() {
+            UaObjectNode(
+                    SnmpNamespace.nodeContext,
+                    binaryEncodingNodeId,
+                    SnmpNamespace.qualifiedName("Default Binary"),
+                    LocalizedText.english("Default Binary"),
+                    LocalizedText.NULL_VALUE,
+                    Unsigned.uint(0),
+                    Unsigned.uint(0),
                 )
-            )
-
-        val BINARY_ENCODING_ID: ExpandedNodeId =
-            ExpandedNodeId.parse(
-                String.format(
-                    "nsu=%s;s=%s",
-                    SnmpNamespace.NAMESPACE_URI,
-                    "DataType.OidValueStructType.BinaryEncoding",
-                )
-            )
-
-        fun register(namespace: ManagedNamespace) {
-            val dataTypeId: NodeId = TYPE_ID.toNodeIdOrThrow(namespace.nodeContext.namespaceTable)
-            val binaryEncodingId: NodeId =
-                BINARY_ENCODING_ID.toNodeIdOrThrow(namespace.nodeContext.namespaceTable)
-
-            val dataTypeNode =
-                UaDataTypeNode(
-                        namespace.nodeContext,
-                        dataTypeId,
-                        QualifiedName(namespace.namespaceIndex, "OidValueType"),
-                        LocalizedText.english("OidValueType"),
-                        LocalizedText.NULL_VALUE,
-                        Unsigned.uint(0),
-                        Unsigned.uint(0),
-                        false,
-                    )
-                    .apply {
-                        addReference(
-                            Reference(
-                                dataTypeId,
-                                NodeIds.HasSubtype,
-                                NodeIds.Structure.expanded(),
-                                Reference.Direction.INVERSE,
-                            )
+                .apply {
+                    addReference(
+                        Reference(
+                            nodeId,
+                            NodeIds.HasTypeDefinition,
+                            NodeIds.DataTypeEncodingType.expanded(),
+                            Reference.Direction.FORWARD,
                         )
-                        dataTypeDefinition =
-                            StructureDefinition(
-                                binaryEncodingId,
-                                NodeIds.Structure,
-                                StructureType.Structure,
-                                arrayOf(
-                                    StructureField(
-                                        "oid",
-                                        LocalizedText.NULL_VALUE,
-                                        NodeIds.String,
-                                        ValueRanks.Scalar,
-                                        null,
-                                        namespace.nodeContext.server.config.limits.maxStringLength,
-                                        false,
-                                    ),
-                                    StructureField(
-                                        "value",
-                                        LocalizedText.NULL_VALUE,
-                                        NodeIds.BaseDataType,
-                                        ValueRanks.Scalar,
-                                        null,
-                                        Unsigned.uint(0),
-                                        false,
-                                    ),
+                    )
+                    accessRestrictions = AccessRestrictionType.of()
+                    SnmpNamespace.nodeManager.addNode(this)
+                }
+
+            UaDataTypeNode(
+                    SnmpNamespace.nodeContext,
+                    typeNodeId,
+                    SnmpNamespace.qualifiedName(BROWSE_NAME),
+                    LocalizedText.english(BROWSE_NAME),
+                    LocalizedText.NULL_VALUE,
+                    Unsigned.uint(0),
+                    Unsigned.uint(0),
+                    false,
+                )
+                .apply {
+                    addReference(
+                        Reference(
+                            nodeId,
+                            NodeIds.HasSubtype,
+                            NodeIds.Structure.expanded(),
+                            Reference.Direction.INVERSE,
+                        )
+                    )
+                    addReference(
+                        Reference(
+                            nodeId,
+                            NodeIds.HasEncoding,
+                            binaryEncodingNodeId.expanded(),
+                            Reference.Direction.FORWARD,
+                        )
+                    )
+                    accessRestrictions = AccessRestrictionType.of()
+                    dataTypeDefinition =
+                        StructureDefinition(
+                            binaryEncodingNodeId,
+                            NodeIds.Structure,
+                            StructureType.Structure,
+                            arrayOf(
+                                StructureField(
+                                    "oid",
+                                    LocalizedText.NULL_VALUE,
+                                    NodeIds.String,
+                                    ValueRanks.Scalar,
+                                    null,
+                                    SnmpNamespace.nodeContext.server.config.limits.maxStringLength,
+                                    false,
                                 ),
-                            )
-                    }
+                                StructureField(
+                                    "value",
+                                    LocalizedText.NULL_VALUE,
+                                    NodeIds.BaseDataType,
+                                    ValueRanks.Scalar,
+                                    null,
+                                    Unsigned.uint(0),
+                                    false,
+                                ),
+                            ),
+                        )
 
-            namespace.nodeManager.addNode(dataTypeNode)
-
-            namespace.nodeContext.server.staticDataTypeManager.registerType(
-                dataTypeId,
-                Codec(),
-                binaryEncodingId,
-                null,
-                null,
-            )
+                    SnmpNamespace.nodeManager.addNode(this)
+                    SnmpNamespace.nodeContext.server.staticDataTypeManager.registerType(
+                        nodeId,
+                        Codec(),
+                        binaryEncodingNodeId,
+                        null,
+                        null,
+                    )
+                }
         }
     }
 }

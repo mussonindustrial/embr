@@ -1,6 +1,6 @@
 package com.mussonindustrial.embr.snmp.model
 
-import com.mussonindustrial.embr.snmp.typing.SnmpDataType
+import com.mussonindustrial.embr.snmp.opc.types.SnmpDataType
 import org.eclipse.milo.opcua.stack.core.StatusCodes
 import org.eclipse.milo.opcua.stack.core.types.builtin.DataValue
 import org.eclipse.milo.opcua.stack.core.types.builtin.Variant
@@ -27,7 +27,8 @@ interface ObjectModel {
 
         val snmpValue =
             when (descriptor) {
-                is ValueDescriptor -> descriptor.snmpDataType.variableOfType(value.value)
+                is ValueDescriptor ->
+                    SnmpDataType.variableOfType(descriptor.snmpDataType, value.value)
                 is InvalidDescriptor -> Null.instance
                 is TableColumnDescriptor -> Null.instance
                 is TableDescriptor -> Null.instance

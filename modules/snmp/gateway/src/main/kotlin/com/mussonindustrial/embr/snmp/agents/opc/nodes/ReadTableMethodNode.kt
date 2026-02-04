@@ -3,6 +3,7 @@ package com.mussonindustrial.embr.snmp.agents.opc.nodes
 import com.mussonindustrial.embr.snmp.agents.devices.SnmpAgentDevice
 import com.mussonindustrial.embr.snmp.model.asExtendedOid
 import com.mussonindustrial.embr.snmp.model.nullOrExtendedOid
+import com.mussonindustrial.embr.snmp.opc.SnmpNamespace
 import com.mussonindustrial.embr.snmp.opc.types.OidValueType
 import kotlin.collections.toTypedArray
 import org.eclipse.milo.opcua.sdk.core.ValueRank
@@ -66,7 +67,7 @@ class ReadTableMethodNode(context: UaNodeContext, nodeId: NodeId, val device: Sn
             arrayOf(
                 Argument(
                     "Result",
-                    OidValueType.TYPE_ID.toNodeId(nodeContext.namespaceTable).get(),
+                    SnmpNamespace.NodesIds.OidValue,
                     2,
                     arrayOf(UInteger.valueOf(0), UInteger.valueOf(0)),
                     LocalizedText.english(

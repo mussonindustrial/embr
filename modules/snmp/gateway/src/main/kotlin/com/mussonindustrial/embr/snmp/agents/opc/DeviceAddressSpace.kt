@@ -1,9 +1,9 @@
 package com.mussonindustrial.embr.snmp.agents.opc
 
 import com.inductiveautomation.ignition.gateway.opcua.server.api.DeviceContext
+import com.mussonindustrial.embr.snmp.agents.opc.types.SnmpAgentDeviceType
 import com.mussonindustrial.embr.snmp.opc.DeviceContextManagedAddressSpaceFragment
 import com.mussonindustrial.embr.snmp.opc.SnmpNamespace
-import com.mussonindustrial.embr.snmp.opc.types.SnmpAgentDeviceType
 import com.mussonindustrial.embr.snmp.utils.removeAllNodes
 import org.eclipse.milo.opcua.sdk.core.Reference
 import org.eclipse.milo.opcua.sdk.server.AddressSpaceComposite
@@ -36,7 +36,7 @@ class DeviceAddressSpace(deviceContext: DeviceContext, composite: AddressSpaceCo
                     Reference(
                         this.nodeId,
                         NodeIds.HasTypeDefinition,
-                        SnmpAgentDeviceType.nodeId(SnmpNamespace.instance).expanded(),
+                        SnmpNamespace.NodesIds.SnmpAgentDeviceType.expanded(),
                         Reference.Direction.FORWARD,
                     )
                 )

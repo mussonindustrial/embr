@@ -1,7 +1,7 @@
 package com.mussonindustrial.embr.snmp.model
 
 import com.mussonindustrial.embr.snmp.agents.devices.SnmpAgentDevice
-import com.mussonindustrial.embr.snmp.typing.snmpDataType
+import com.mussonindustrial.embr.snmp.opc.types.SnmpDataType
 import java.util.concurrent.ConcurrentHashMap
 import org.eclipse.milo.opcua.stack.core.types.builtin.DataValue
 import org.snmp4j.smi.Variable
@@ -15,12 +15,12 @@ class ConcurrentObjectModel(val device: SnmpAgentDevice) : ObjectModel {
         get() = descriptors.map { it.key }
 
     override fun observe(value: OidValue<Variable>): OidValue<DataValue> {
-        val descriptor = ObjectModel.ValueDescriptor(value.oid, value.value.snmpDataType)
         val result = toOpcUaValue(value)
-
-        descriptors[result.oid] = descriptor
         knownValues[result.oid] = result
 
+        descriptors.getOrPut(result.oid) {
+            ObjectModel.ValueDescriptor(value.oid, SnmpDataType.of(value.value))
+        }
         return result
     }
 

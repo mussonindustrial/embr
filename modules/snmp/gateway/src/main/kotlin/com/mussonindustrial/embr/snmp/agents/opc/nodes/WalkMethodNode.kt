@@ -2,6 +2,7 @@ package com.mussonindustrial.embr.snmp.agents.opc.nodes
 
 import com.mussonindustrial.embr.snmp.agents.devices.SnmpAgentDevice
 import com.mussonindustrial.embr.snmp.model.asExtendedOid
+import com.mussonindustrial.embr.snmp.opc.SnmpNamespace
 import com.mussonindustrial.embr.snmp.opc.types.OidValueType
 import kotlin.collections.toTypedArray
 import org.eclipse.milo.opcua.sdk.server.methods.MethodInvocationHandler
@@ -49,7 +50,7 @@ class WalkMethodNode(context: UaNodeContext, nodeId: NodeId, val device: SnmpAge
             arrayOf(
                 Argument(
                     "Result",
-                    OidValueType.TYPE_ID.toNodeId(nodeContext.namespaceTable).get(),
+                    SnmpNamespace.NodesIds.OidValue,
                     1,
                     arrayOf(UInteger.valueOf(0)),
                     LocalizedText.english("A list of values discovered during the walk operation."),
