@@ -15,6 +15,7 @@ interface SnmpAgentDevice : AddressSpaceFragment, Device {
     val context: SnmpAgentContext<*>
     val status: Status
     val model: ObjectModel
+    val profile: SnmpAgentProfile
 
     fun read(reads: List<Oid>): List<OidValue<DataValue>>
 

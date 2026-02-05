@@ -10,7 +10,7 @@ import org.eclipse.milo.opcua.stack.core.types.builtin.NodeId
 import org.eclipse.milo.opcua.stack.core.types.builtin.QualifiedName
 import org.eclipse.milo.opcua.stack.core.types.builtin.unsigned.UByte
 
-sealed class DynamicObjectSuffixNode(val name: String) {
+sealed class DescriptorSuffixNode(val name: String) {
 
     data class Context(val device: SnmpAgentDevice, val descriptor: ObjectModel.Descriptor)
 
@@ -28,7 +28,7 @@ sealed class DynamicObjectSuffixNode(val name: String) {
 
     abstract fun value(context: Context): Any?
 
-    object DataType : DynamicObjectSuffixNode("DataType") {
+    object DataType : DescriptorSuffixNode("DataType") {
         override fun dataType(context: Context): NodeId = OpcUaDataType.String.nodeId
 
         override fun valueRank(context: Context) = ValueRank.Scalar.value
@@ -37,10 +37,19 @@ sealed class DynamicObjectSuffixNode(val name: String) {
             (context.descriptor as? ObjectModel.ValueDescriptor)?.snmpDataType?.name
     }
 
+    object ExpectedSize : DescriptorSuffixNode("ExpectedSize") {
+        override fun dataType(context: Context): NodeId = OpcUaDataType.UInt32.nodeId
+
+        override fun valueRank(context: Context) = ValueRank.Scalar.value
+
+        override fun value(context: Context) =
+            (context.descriptor as? ObjectModel.ValueDescriptor)?.expectedSize
+    }
+
     companion object {
-        val ALL = listOf(DataType)
+        val ALL = listOf(DataType, ExpectedSize)
         private val byName = ALL.associateBy { it.name }
 
-        fun from(name: String): DynamicObjectSuffixNode? = byName[name]
+        fun from(name: String): DescriptorSuffixNode? = byName[name]
     }
 }

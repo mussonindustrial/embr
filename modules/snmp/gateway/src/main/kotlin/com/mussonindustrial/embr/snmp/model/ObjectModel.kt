@@ -65,7 +65,11 @@ interface ObjectModel {
 
     class UnknownDescriptor(oid: Oid) : Descriptor(oid)
 
-    open class ValueDescriptor(oid: Oid, val snmpDataType: SnmpDataType) : Descriptor(oid)
+    open class ValueDescriptor(
+        oid: Oid,
+        val snmpDataType: SnmpDataType,
+        var expectedSize: Int = 0,
+    ) : Descriptor(oid)
 
     class TableColumnDescriptor(oid: Oid, val snmpDataType: SnmpDataType) : Descriptor(oid)
 

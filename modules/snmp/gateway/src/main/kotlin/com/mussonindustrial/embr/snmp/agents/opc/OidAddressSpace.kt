@@ -1,7 +1,7 @@
 package com.mussonindustrial.embr.snmp.agents.opc
 
 import com.mussonindustrial.embr.snmp.agents.devices.SnmpAgentDevice
-import com.mussonindustrial.embr.snmp.agents.opc.nodes.DynamicObjectSuffixNode
+import com.mussonindustrial.embr.snmp.agents.opc.nodes.DescriptorSuffixNode
 import com.mussonindustrial.embr.snmp.model.ExtendedOid
 import com.mussonindustrial.embr.snmp.model.ObjectModel
 import com.mussonindustrial.embr.snmp.model.OidValue
@@ -159,8 +159,8 @@ class OidAddressSpace(val device: SnmpAgentDevice, composite: AddressSpaceCompos
         suffix: String,
     ): Any? {
         val suffixNode =
-            DynamicObjectSuffixNode.from(suffix) ?: throw UaException(StatusCodes.Bad_NodeIdUnknown)
-        val context = DynamicObjectSuffixNode.Context(device, descriptor)
+            DescriptorSuffixNode.from(suffix) ?: throw UaException(StatusCodes.Bad_NodeIdUnknown)
+        val context = DescriptorSuffixNode.Context(device, descriptor)
 
         return when (attributeId) {
             AttributeId.NodeId -> nodeId
@@ -236,7 +236,7 @@ class OidAddressSpace(val device: SnmpAgentDevice, composite: AddressSpaceCompos
         val references = mutableListOf<Reference>()
         references += nodeId.organizedBy(nodeId("Objects/Numeric").expanded())
 
-        DynamicObjectSuffixNode.ALL.forEach { suffix ->
+        DescriptorSuffixNode.ALL.forEach { suffix ->
             val extendedOid = Snmp4jExtendedOid(oid.numeric, suffix.name)
             references += nodeId.hasProperty(nodeId(extendedOid.toIdentifier()).expanded())
         }

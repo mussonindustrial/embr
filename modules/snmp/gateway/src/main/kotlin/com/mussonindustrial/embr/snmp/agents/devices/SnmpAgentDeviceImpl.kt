@@ -11,13 +11,13 @@ import com.mussonindustrial.embr.snmp.agents.opc.ObjectModelAddressSpace
 import com.mussonindustrial.embr.snmp.agents.opc.OidAddressSpace
 import com.mussonindustrial.embr.snmp.model.BasicOidValue
 import com.mussonindustrial.embr.snmp.model.ConcurrentObjectModel
+import com.mussonindustrial.embr.snmp.model.ObjectModel
 import com.mussonindustrial.embr.snmp.model.Oid
 import com.mussonindustrial.embr.snmp.model.OidValue
 import com.mussonindustrial.embr.snmp.model.Snmp4jOid
 import com.mussonindustrial.embr.snmp.model.SnmpCommunicationError
 import com.mussonindustrial.embr.snmp.model.toOid
 import com.mussonindustrial.embr.snmp.model.toSnmp4j
-import com.mussonindustrial.embr.snmp.utils.createSizeBoundedPDUs
 import java.util.concurrent.TimeUnit
 import kotlin.collections.map
 import org.eclipse.milo.opcua.sdk.server.AddressSpaceComposite
@@ -27,8 +27,10 @@ import org.eclipse.milo.opcua.stack.core.StatusCodes
 import org.eclipse.milo.opcua.stack.core.types.builtin.DataValue
 import org.eclipse.milo.opcua.stack.core.types.builtin.StatusCode
 import org.snmp4j.PDU
+import org.snmp4j.mp.SnmpConstants
 import org.snmp4j.smi.Variable
 import org.snmp4j.smi.VariableBinding
+import org.snmp4j.util.PDUFactory
 import org.snmp4j.util.TableUtils
 import org.snmp4j.util.TreeEvent
 import org.snmp4j.util.TreeListener
@@ -45,6 +47,7 @@ class SnmpAgentDeviceImpl<T : SnmpAgentConfig>(override val context: SnmpAgentCo
         private set
 
     override val model = ConcurrentObjectModel(this)
+    override val profile = SnmpAgentProfile()
 
     val healthcheck = Healthcheck()
 
@@ -68,6 +71,10 @@ class SnmpAgentDeviceImpl<T : SnmpAgentConfig>(override val context: SnmpAgentCo
             onDataItemsCreated(
                 context.deviceContext.subscriptionModel.getDataItems(context.deviceContext.name)
             )
+            discoverMaxPduSize().apply {
+                profile.maxResponsePduSize = this
+                profile.maxRequestPduSize = this
+            }
         }
     }
 
@@ -130,10 +137,7 @@ class SnmpAgentDeviceImpl<T : SnmpAgentConfig>(override val context: SnmpAgentCo
         while (remaining.isNotEmpty()) {
 
             val pdus =
-                context.readTarget.createSizeBoundedPDUs(
-                    context.pduFactory,
-                    remaining.flatMap { it.value.map { oid -> VariableBinding(oid.toSnmp4j()) } },
-                ) {
+                createSizeBoundedPDUs(context.pduFactory, remaining.keys.toList()) {
                     type = PDU.GET
                 }
 
@@ -173,7 +177,7 @@ class SnmpAgentDeviceImpl<T : SnmpAgentConfig>(override val context: SnmpAgentCo
                         }
                     }
                 } catch (e: Exception) {
-                    logger.warn("GET failed with exception", e)
+                    logger.warn("GET failed with exception: ${e.message}", e)
                     return reads.map { BasicOidValue(it, SnmpCommunicationError) }
                 }
             }
@@ -335,5 +339,87 @@ class SnmpAgentDeviceImpl<T : SnmpAgentConfig>(override val context: SnmpAgentCo
                     SnmpAgentDevice.Status.DISCONNECTED
                 }
         }
+    }
+
+    private fun sendTestPdu(targetSize: Int): PDU {
+        val pdu = PDU().apply { type = PDU.GET }
+
+        while (pdu.berLength < targetSize) {
+            pdu.add(VariableBinding(SnmpConstants.sysObjectID))
+        }
+
+        pdu.trim()
+
+        return context.snmp.send(pdu, context.readTarget).response
+    }
+
+    private fun discoverMaxPduSize(min: Int = 256, max: Int = 65535): Int {
+        var low = min
+        var high = max
+        var best = min
+
+        while (low <= high) {
+            val candidate = (low + high) / 2
+
+            val response =
+                try {
+                    sendTestPdu(candidate)
+                } catch (_: Exception) {
+                    high = candidate - 1
+                    continue
+                }
+
+            if (response.errorStatus == PDU.tooBig) {
+                high = candidate - 1
+                continue
+            }
+
+            best = candidate
+            low = candidate + 1
+        }
+
+        return best
+    }
+
+    private fun createSizeBoundedPDUs(
+        pduFactory: PDUFactory,
+        reads: List<Oid>,
+        configure: PDU.() -> Unit = {},
+    ): List<PDU> {
+
+        val descriptors = model.getDescriptors(reads)
+        val pdus = mutableListOf<PDU>()
+
+        var pdu = pduFactory.createPDU(context.readTarget).apply(configure)
+        var expectedResponseSize = 0
+
+        fun startNewPdu() {
+            pdu.trim()
+            pdus += pdu
+            pdu = pduFactory.createPDU(context.readTarget).apply(configure)
+            expectedResponseSize = 0
+        }
+
+        reads.zip(descriptors).forEach { (oid, descriptor) ->
+            val binding = VariableBinding(oid.toSnmp4j())
+            val valueSize = (descriptor as? ObjectModel.ValueDescriptor)?.expectedSize ?: 0
+
+            val wouldOverflow =
+                pdu.berLength > profile.maxRequestPduSize ||
+                    expectedResponseSize + valueSize > profile.maxResponsePduSize
+
+            if (wouldOverflow && pdu.size() > 0) {
+                startNewPdu()
+            }
+
+            pdu.add(binding)
+            expectedResponseSize += valueSize
+        }
+
+        if (pdu.size() > 0) {
+            pdus += pdu
+        }
+
+        return pdus
     }
 }

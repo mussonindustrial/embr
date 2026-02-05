@@ -7,7 +7,6 @@ import com.mussonindustrial.embr.snmp.utils.addNode
 import com.mussonindustrial.embr.snmp.utils.addPropertyOf
 import com.mussonindustrial.embr.snmp.utils.removeAllNodes
 import org.eclipse.milo.opcua.sdk.server.AddressSpaceComposite
-import org.eclipse.milo.opcua.sdk.server.nodes.UaNode
 import org.eclipse.milo.opcua.sdk.server.nodes.UaObjectNode
 import org.eclipse.milo.opcua.sdk.server.nodes.UaVariableNode
 import org.eclipse.milo.opcua.sdk.server.nodes.filters.AttributeFilter
@@ -46,7 +45,7 @@ class DiagnosticAddressSpace(val device: SnmpAgentDevice, composite: AddressSpac
                 }
 
         addDiagnosticNode(
-            folder,
+            folder.nodeId,
             "Address",
             NodeIds.String,
             AttributeFilters.getValue {
@@ -54,13 +53,13 @@ class DiagnosticAddressSpace(val device: SnmpAgentDevice, composite: AddressSpac
             },
         )
         addDiagnosticNode(
-            folder,
+            folder.nodeId,
             "Status",
             NodeIds.String,
             AttributeFilters.getValue { DataValue(Variant(device.status.toString())) },
         )
         addDiagnosticNode(
-            folder,
+            folder.nodeId,
             "Connected",
             NodeIds.Boolean,
             AttributeFilters.getValue {
@@ -68,7 +67,7 @@ class DiagnosticAddressSpace(val device: SnmpAgentDevice, composite: AddressSpac
             },
         )
         addDiagnosticNode(
-            folder,
+            folder.nodeId,
             "PendingAsyncRequests",
             NodeIds.UInt32,
             AttributeFilters.getValue {
@@ -76,7 +75,7 @@ class DiagnosticAddressSpace(val device: SnmpAgentDevice, composite: AddressSpac
             },
         )
         addDiagnosticNode(
-            folder,
+            folder.nodeId,
             "PendingSyncRequests",
             NodeIds.UInt32,
             AttributeFilters.getValue {
@@ -84,21 +83,25 @@ class DiagnosticAddressSpace(val device: SnmpAgentDevice, composite: AddressSpac
             },
         )
         addDiagnosticNode(
-            folder,
-            "MaxRequestPduSize",
+            folder.nodeId,
+            "MaxResponsePduSize",
             NodeIds.UInt32,
-            AttributeFilters.getValue {
-                DataValue(Variant(device.context.readTarget.maxSizeRequestPDU))
-            },
+            AttributeFilters.getValue { DataValue(Variant(device.profile.maxResponsePduSize)) },
         )
         addDiagnosticNode(
-            folder,
+            folder.nodeId,
+            "MaxRequestPduSize",
+            NodeIds.UInt32,
+            AttributeFilters.getValue { DataValue(Variant(device.profile.maxRequestPduSize)) },
+        )
+        addDiagnosticNode(
+            folder.nodeId,
             "RetryCount",
             NodeIds.UInt32,
             AttributeFilters.getValue { DataValue(Variant(device.context.readTarget.retries)) },
         )
         addDiagnosticNode(
-            folder,
+            folder.nodeId,
             "ObjectModelSize",
             NodeIds.UInt32,
             AttributeFilters.getValue { DataValue(Variant(device.model.oids.size)) },
@@ -106,7 +109,7 @@ class DiagnosticAddressSpace(val device: SnmpAgentDevice, composite: AddressSpac
     }
 
     fun addDiagnosticNode(
-        parent: UaNode,
+        parent: NodeId,
         name: String,
         dataType: NodeId,
         attributeFilter: AttributeFilter,
@@ -121,8 +124,9 @@ class DiagnosticAddressSpace(val device: SnmpAgentDevice, composite: AddressSpac
                 UInteger.MIN,
             )
             .apply {
+                addNode(nodeManager)
                 setDataType(dataType)
-                addPropertyOf(parent.nodeId.expanded())
+                addPropertyOf(parent.expanded())
                 filterChain.addLast(attributeFilter)
             }
     }
