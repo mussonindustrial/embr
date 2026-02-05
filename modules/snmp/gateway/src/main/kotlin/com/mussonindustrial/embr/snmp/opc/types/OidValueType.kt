@@ -133,7 +133,7 @@ class OidValueType(val oid: String, val value: Variant) : UaStructuredType {
                                 StructureField(
                                     "oid",
                                     LocalizedText.NULL_VALUE,
-                                    NodeIds.String,
+                                    SnmpNamespace.NodesIds.Oid,
                                     ValueRanks.Scalar,
                                     null,
                                     SnmpNamespace.nodeContext.server.config.limits.maxStringLength,
