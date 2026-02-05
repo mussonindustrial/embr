@@ -5,9 +5,14 @@ import com.mussonindustrial.embr.snmp.agents.opc.nodes.DynamicObjectSuffixNode
 import com.mussonindustrial.embr.snmp.model.ExtendedOid
 import com.mussonindustrial.embr.snmp.model.ObjectModel
 import com.mussonindustrial.embr.snmp.model.OidValue
+import com.mussonindustrial.embr.snmp.model.Snmp4jExtendedOid
 import com.mussonindustrial.embr.snmp.model.asExtendedOid
 import com.mussonindustrial.embr.snmp.model.isOid
 import com.mussonindustrial.embr.snmp.opc.DeviceContextManagedAddressSpaceFragment
+import com.mussonindustrial.embr.snmp.utils.hasProperty
+import com.mussonindustrial.embr.snmp.utils.hasTypeDefinition
+import com.mussonindustrial.embr.snmp.utils.organizedBy
+import com.mussonindustrial.embr.snmp.utils.propertyOf
 import kotlin.jvm.optionals.getOrNull
 import org.eclipse.milo.opcua.sdk.core.AccessLevel
 import org.eclipse.milo.opcua.sdk.core.Reference
@@ -229,41 +234,19 @@ class OidAddressSpace(val device: SnmpAgentDevice, composite: AddressSpaceCompos
 
     fun browseDirect(oid: ExtendedOid, nodeId: NodeId): List<Reference> {
         val references = mutableListOf<Reference>()
-        references +=
-            Reference(
-                nodeId,
-                NodeIds.Organizes,
-                nodeId("Objects/Numeric").expanded(),
-                Reference.Direction.INVERSE,
-            )
+        references += nodeId.organizedBy(nodeId("Objects/Numeric").expanded())
+
         DynamicObjectSuffixNode.ALL.forEach { suffix ->
-            references +=
-                Reference(
-                    nodeId,
-                    NodeIds.HasProperty,
-                    nodeId("${oid.numeric}::${suffix.name}").expanded(),
-                    Reference.Direction.FORWARD,
-                )
+            val extendedOid = Snmp4jExtendedOid(oid.numeric, suffix.name)
+            references += nodeId.hasProperty(nodeId(extendedOid.toIdentifier()).expanded())
         }
         return references
     }
 
     fun browseSuffix(oid: ExtendedOid, nodeId: NodeId): List<Reference> {
         val references = mutableListOf<Reference>()
-        references +=
-            Reference(
-                nodeId,
-                NodeIds.HasTypeDefinition,
-                NodeIds.PropertyType.expanded(),
-                Reference.Direction.FORWARD,
-            )
-        references +=
-            Reference(
-                nodeId,
-                NodeIds.HasProperty,
-                nodeId(oid.numeric).expanded(),
-                Reference.Direction.INVERSE,
-            )
+        references += nodeId.hasTypeDefinition(NodeIds.PropertyType.expanded())
+        references += nodeId.propertyOf(nodeId(oid.numeric).expanded())
         return references
     }
 

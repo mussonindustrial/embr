@@ -1,7 +1,12 @@
 package com.mussonindustrial.embr.snmp.agents.opc.types
 
 import com.mussonindustrial.embr.snmp.opc.SnmpNamespace
-import org.eclipse.milo.opcua.sdk.core.Reference
+import com.mussonindustrial.embr.snmp.utils.addComponentOf
+import com.mussonindustrial.embr.snmp.utils.addModellingRule
+import com.mussonindustrial.embr.snmp.utils.addNode
+import com.mussonindustrial.embr.snmp.utils.addOrganizedBy
+import com.mussonindustrial.embr.snmp.utils.addSubtypeOf
+import org.eclipse.milo.opcua.sdk.server.nodes.UaFolderNode
 import org.eclipse.milo.opcua.sdk.server.nodes.UaMethodNode
 import org.eclipse.milo.opcua.sdk.server.nodes.UaObjectTypeNode
 import org.eclipse.milo.opcua.stack.core.NodeIds
@@ -16,9 +21,9 @@ object SnmpAgentDeviceType {
 
     private fun method(nodeId: NodeId, browseName: String, parent: NodeId) =
         UaMethodNode(
-                SnmpNamespace.Companion.nodeContext,
+                SnmpNamespace.nodeContext,
                 nodeId,
-                SnmpNamespace.Companion.qualifiedName(browseName),
+                SnmpNamespace.qualifiedName(browseName),
                 LocalizedText.english(browseName),
                 LocalizedText.english(""),
                 Unsigned.uint(0),
@@ -27,32 +32,19 @@ object SnmpAgentDeviceType {
                 true,
             )
             .apply {
+                addNode(SnmpNamespace.nodeManager)
+                addComponentOf(parent.expanded())
+                addModellingRule(NodeIds.ModellingRule_Mandatory.expanded())
+
                 accessRestrictions = AccessRestrictionType.of()
-                SnmpNamespace.Companion.nodeManager.addNode(this)
-                addReference(
-                    Reference(
-                        nodeId,
-                        NodeIds.HasComponent,
-                        parent.expanded(),
-                        Reference.Direction.INVERSE,
-                    )
-                )
-                addReference(
-                    Reference(
-                        nodeId,
-                        NodeIds.HasModellingRule,
-                        NodeIds.ModellingRule_Mandatory.expanded(),
-                        Reference.Direction.FORWARD,
-                    )
-                )
             }
 
     fun register() {
         val type =
             UaObjectTypeNode(
-                    SnmpNamespace.Companion.nodeContext,
-                    SnmpNamespace.Companion.NodesIds.SnmpAgentDeviceType,
-                    SnmpNamespace.Companion.qualifiedName(BROWSE_NAME),
+                    SnmpNamespace.nodeContext,
+                    SnmpNamespace.NodesIds.SnmpAgentDeviceType,
+                    SnmpNamespace.qualifiedName(BROWSE_NAME),
                     LocalizedText.english(BROWSE_NAME),
                     LocalizedText.english(""),
                     Unsigned.uint(0),
@@ -60,17 +52,24 @@ object SnmpAgentDeviceType {
                     false,
                 )
                 .apply {
+                    addNode(SnmpNamespace.nodeManager)
+                    addSubtypeOf(NodeIds.BaseObjectType.expanded())
+
                     accessRestrictions = AccessRestrictionType.of()
-                    SnmpNamespace.Companion.nodeManager.addNode(this)
-                    addReference(
-                        Reference(
-                            nodeId,
-                            NodeIds.HasSubtype,
-                            NodeIds.BaseObjectType.expanded(),
-                            Reference.Direction.INVERSE,
-                        )
-                    )
                 }
+
+        UaFolderNode(
+                SnmpNamespace.nodeContext,
+                SnmpNamespace.nodeId("${BROWSE_NAME}.Objects"),
+                SnmpNamespace.qualifiedName("Objects"),
+                LocalizedText.english(""),
+            )
+            .apply {
+                addNode(SnmpNamespace.nodeManager)
+                addOrganizedBy(type.nodeId.expanded())
+
+                accessRestrictions = AccessRestrictionType.of()
+            }
 
         method(SnmpNamespace.Companion.NodesIds.SnmpAgentDeviceType_Walk, "Walk", type.nodeId)
         method(

@@ -2,7 +2,8 @@ package com.mussonindustrial.embr.snmp.opc.types
 
 import com.inductiveautomation.ignition.common.TypeUtilities
 import com.mussonindustrial.embr.snmp.opc.SnmpNamespace
-import org.eclipse.milo.opcua.sdk.core.Reference
+import com.mussonindustrial.embr.snmp.utils.addNode
+import com.mussonindustrial.embr.snmp.utils.addSubtypeOf
 import org.eclipse.milo.opcua.sdk.server.nodes.UaDataTypeNode
 import org.eclipse.milo.opcua.stack.core.NodeIds
 import org.eclipse.milo.opcua.stack.core.types.builtin.LocalizedText
@@ -40,7 +41,7 @@ enum class SnmpDataType(
         SnmpNamespace.NodesIds.OctetString,
         NodeIds.String,
         org.snmp4j.smi.OctetString::class.java,
-        { org.snmp4j.smi.OID(TypeUtilities.toString(it)) },
+        { org.snmp4j.smi.OctetString(TypeUtilities.toString(it)) },
     ),
     Oid(
         SnmpNamespace.NodesIds.Oid,
@@ -114,16 +115,10 @@ enum class SnmpDataType(
                 false,
             )
             .apply {
+                addNode(SnmpNamespace.nodeManager)
+                addSubtypeOf(parentType.expanded())
+
                 accessRestrictions = AccessRestrictionType.of()
-                SnmpNamespace.nodeManager.addNode(this)
-                addReference(
-                    Reference(
-                        nodeId,
-                        NodeIds.HasSubtype,
-                        parentType.expanded(),
-                        Reference.Direction.INVERSE,
-                    )
-                )
             }
     }
 }

@@ -4,7 +4,10 @@ import com.google.common.base.MoreObjects
 import com.google.common.base.Objects
 import com.mussonindustrial.embr.snmp.model.OidValue
 import com.mussonindustrial.embr.snmp.opc.SnmpNamespace
-import org.eclipse.milo.opcua.sdk.core.Reference
+import com.mussonindustrial.embr.snmp.utils.addHasEncoding
+import com.mussonindustrial.embr.snmp.utils.addHasTypeDefinition
+import com.mussonindustrial.embr.snmp.utils.addNode
+import com.mussonindustrial.embr.snmp.utils.addSubtypeOf
 import org.eclipse.milo.opcua.sdk.core.ValueRanks
 import org.eclipse.milo.opcua.sdk.server.nodes.UaDataTypeNode
 import org.eclipse.milo.opcua.sdk.server.nodes.UaObjectNode
@@ -100,14 +103,7 @@ class OidValueType(val oid: String, val value: Variant) : UaStructuredType {
                     Unsigned.uint(0),
                 )
                 .apply {
-                    addReference(
-                        Reference(
-                            nodeId,
-                            NodeIds.HasTypeDefinition,
-                            NodeIds.DataTypeEncodingType.expanded(),
-                            Reference.Direction.FORWARD,
-                        )
-                    )
+                    addHasTypeDefinition(NodeIds.DataTypeEncodingType.expanded())
                     accessRestrictions = AccessRestrictionType.of()
                     SnmpNamespace.nodeManager.addNode(this)
                 }
@@ -123,22 +119,10 @@ class OidValueType(val oid: String, val value: Variant) : UaStructuredType {
                     false,
                 )
                 .apply {
-                    addReference(
-                        Reference(
-                            nodeId,
-                            NodeIds.HasSubtype,
-                            NodeIds.Structure.expanded(),
-                            Reference.Direction.INVERSE,
-                        )
-                    )
-                    addReference(
-                        Reference(
-                            nodeId,
-                            NodeIds.HasEncoding,
-                            binaryEncodingNodeId.expanded(),
-                            Reference.Direction.FORWARD,
-                        )
-                    )
+                    addNode(SnmpNamespace.nodeManager)
+                    addSubtypeOf(NodeIds.Structure.expanded())
+                    addHasEncoding(binaryEncodingNodeId.expanded())
+
                     accessRestrictions = AccessRestrictionType.of()
                     dataTypeDefinition =
                         StructureDefinition(
@@ -167,7 +151,6 @@ class OidValueType(val oid: String, val value: Variant) : UaStructuredType {
                             ),
                         )
 
-                    SnmpNamespace.nodeManager.addNode(this)
                     SnmpNamespace.nodeContext.server.staticDataTypeManager.registerType(
                         nodeId,
                         Codec(),

@@ -2,8 +2,10 @@ package com.mussonindustrial.embr.snmp.agents.opc
 
 import com.mussonindustrial.embr.snmp.agents.devices.SnmpAgentDevice
 import com.mussonindustrial.embr.snmp.opc.DeviceContextManagedAddressSpaceFragment
+import com.mussonindustrial.embr.snmp.utils.addComponentOf
+import com.mussonindustrial.embr.snmp.utils.addNode
+import com.mussonindustrial.embr.snmp.utils.addPropertyOf
 import com.mussonindustrial.embr.snmp.utils.removeAllNodes
-import org.eclipse.milo.opcua.sdk.core.Reference
 import org.eclipse.milo.opcua.sdk.server.AddressSpaceComposite
 import org.eclipse.milo.opcua.sdk.server.nodes.UaNode
 import org.eclipse.milo.opcua.sdk.server.nodes.UaObjectNode
@@ -30,24 +32,18 @@ class DiagnosticAddressSpace(val device: SnmpAgentDevice, composite: AddressSpac
     fun addNodes() {
         val folder =
             UaObjectNode(
-                nodeContext,
-                nodeId(root),
-                qualifiedName(root),
-                LocalizedText.english(root),
-                LocalizedText.NULL_VALUE,
-                UInteger.MIN,
-                UInteger.MIN,
-            )
-
-        nodeManager.addNode(folder)
-        folder.addReference(
-            Reference(
-                folder.nodeId,
-                NodeIds.HasComponent,
-                deviceNodeId.expanded(),
-                Reference.Direction.INVERSE,
-            )
-        )
+                    nodeContext,
+                    nodeId(root),
+                    qualifiedName(root),
+                    LocalizedText.english(root),
+                    LocalizedText.NULL_VALUE,
+                    UInteger.MIN,
+                    UInteger.MIN,
+                )
+                .apply {
+                    addNode(nodeManager)
+                    addComponentOf(deviceNodeId.expanded())
+                }
 
         addDiagnosticNode(
             folder,
@@ -115,22 +111,19 @@ class DiagnosticAddressSpace(val device: SnmpAgentDevice, composite: AddressSpac
         dataType: NodeId,
         attributeFilter: AttributeFilter,
     ) {
-        UaVariableNode.UaVariableNodeBuilder(nodeContext).run {
-            setNodeId(nodeId("${root}/${name}"))
-            setBrowseName(qualifiedName(name))
-            setDisplayName(LocalizedText.english(name))
-            setDataType(dataType)
-            setTypeDefinition(NodeIds.PropertyType)
-            addReference(
-                Reference(
-                    nodeId,
-                    NodeIds.HasProperty,
-                    parent.nodeId.expanded(),
-                    Reference.Direction.INVERSE,
-                )
+        UaVariableNode(
+                nodeContext,
+                nodeId("${root}/${name}"),
+                qualifiedName(name),
+                LocalizedText.english(name),
+                LocalizedText.english(name),
+                UInteger.MIN,
+                UInteger.MIN,
             )
-            addAttributeFilter(attributeFilter)
-            buildAndAdd()
-        }
+            .apply {
+                setDataType(dataType)
+                addPropertyOf(parent.nodeId.expanded())
+                filterChain.addLast(attributeFilter)
+            }
     }
 }

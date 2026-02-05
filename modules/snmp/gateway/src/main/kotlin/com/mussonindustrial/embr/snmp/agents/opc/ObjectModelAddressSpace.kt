@@ -2,11 +2,13 @@ package com.mussonindustrial.embr.snmp.agents.opc
 
 import com.mussonindustrial.embr.snmp.agents.devices.SnmpAgentDevice
 import com.mussonindustrial.embr.snmp.opc.DeviceContextManagedAddressSpaceFragment
+import com.mussonindustrial.embr.snmp.utils.addComponentOf
+import com.mussonindustrial.embr.snmp.utils.addNode
+import com.mussonindustrial.embr.snmp.utils.addOrganizedBy
+import com.mussonindustrial.embr.snmp.utils.organizes
 import com.mussonindustrial.embr.snmp.utils.removeAllNodes
-import org.eclipse.milo.opcua.sdk.core.Reference
 import org.eclipse.milo.opcua.sdk.server.*
 import org.eclipse.milo.opcua.sdk.server.nodes.UaFolderNode
-import org.eclipse.milo.opcua.stack.core.NodeIds
 import org.eclipse.milo.opcua.stack.core.types.builtin.LocalizedText
 import org.eclipse.milo.opcua.stack.core.types.builtin.NodeId
 import org.eclipse.milo.opcua.stack.core.types.structured.ViewDescription
@@ -23,37 +25,25 @@ class ObjectModelAddressSpace(val device: SnmpAgentDevice, composite: AddressSpa
     }
 
     fun addNodes() {
-        val folder =
-            UaFolderNode(
-                nodeContext,
-                nodeId(root),
-                qualifiedName(root),
-                LocalizedText.english(root),
-            )
-        nodeManager.addNode(folder)
-
-        folder.addReference(
-            Reference(
-                folder.nodeId,
-                NodeIds.HasComponent,
-                deviceNodeId.expanded(),
-                Reference.Direction.INVERSE,
-            )
-        )
-
-        addObjectsFolder(folder, "Numeric")
+        UaFolderNode(nodeContext, nodeId(root), qualifiedName(root), LocalizedText.english(root))
+            .apply {
+                addNode(nodeManager)
+                addComponentOf(deviceNodeId.expanded())
+                addObjectsFolder(this, "Numeric")
+            }
     }
 
     fun addObjectsFolder(folder: UaFolderNode, name: String) {
-        val node =
-            UaFolderNode(
+        UaFolderNode(
                 nodeContext,
                 nodeId("${root}/${name}"),
                 qualifiedName(name),
                 LocalizedText.english(name),
             )
-        nodeManager.addNode(node)
-        folder.addOrganizes(node)
+            .apply {
+                addNode(nodeManager)
+                addOrganizedBy(folder.nodeId.expanded())
+            }
     }
 
     override fun browse(
@@ -67,14 +57,7 @@ class ObjectModelAddressSpace(val device: SnmpAgentDevice, composite: AddressSpa
             when (nodeId) {
                 nodeId("Objects/Numeric") ->
                     model.getDescriptors(model.oids).forEach { descriptor ->
-                        references.add(
-                            Reference(
-                                nodeId,
-                                NodeIds.Organizes,
-                                nodeId(descriptor.oid.numeric).expanded(),
-                                Reference.Direction.FORWARD,
-                            )
-                        )
+                        references += nodeId.organizes(nodeId(descriptor.oid.numeric).expanded())
                     }
             }
 

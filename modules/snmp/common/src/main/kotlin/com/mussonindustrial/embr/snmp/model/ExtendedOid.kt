@@ -9,6 +9,11 @@ interface ExtendedOid : Oid {
 
     val hasSuffix: Boolean
         get() = suffix != null
+
+    fun toIdentifier(): String {
+        if (!hasSuffix) return numeric
+        return "${numeric}/${suffix}"
+    }
 }
 
 fun String.isOid(): Boolean {
@@ -21,7 +26,7 @@ fun String.isOid(): Boolean {
 }
 
 fun String.asExtendedOid(): ExtendedOid {
-    val parts = this.split("::", limit = 2)
+    val parts = this.split("/", limit = 2)
     val maybeOid = parts[0]
     val suffix = parts.getOrNull(1)?.takeIf { it.isNotBlank() }
 
