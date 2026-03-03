@@ -1,5 +1,11 @@
 # @embr-modules/snmp
 
+## 0.4.1
+
+### Patch Changes
+
+- f268040: Update to Snmp4J `3.9.7`
+
 ## 0.4.0
 
 ### Minor Changes
