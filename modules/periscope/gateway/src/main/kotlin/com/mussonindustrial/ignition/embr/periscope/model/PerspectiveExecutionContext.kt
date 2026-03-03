@@ -10,7 +10,7 @@ import kotlin.jvm.optionals.getOrNull
 class PerspectiveExecutionContext(
     private val context: PerspectiveContext,
     private val pageId: String? = null,
-    private val sessionId: String? = null
+    private val sessionId: String? = null,
 ) {
 
     fun getView(): ViewModel? {

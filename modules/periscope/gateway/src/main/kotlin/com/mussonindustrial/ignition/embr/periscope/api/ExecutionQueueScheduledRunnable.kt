@@ -27,7 +27,7 @@ fun ExecutionQueue.schedule(
     executorService: ScheduledExecutorService,
     block: () -> Unit,
     delay: Long,
-    unit: TimeUnit
+    unit: TimeUnit,
 ): ExecutionQueueScheduledRunnable {
 
     val scheduled = ExecutionQueueScheduledRunnable(block)
@@ -42,7 +42,7 @@ fun ExecutionQueue.schedule(
                 }
             },
             delay,
-            unit
+            unit,
         )
     }
 
