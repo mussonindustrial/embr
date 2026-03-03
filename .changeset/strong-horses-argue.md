@@ -8,6 +8,5 @@ This function schedules a runnable for execution on the Perspective session’s 
 
 - The runnable must accept a single parameter representing the requested scope element.
   - This enables interaction across sessions.
-- If `delay` is `0`, the runnable is appended to the end of the queue.
 - The optional `scope` parameter ensures the specified scope remains available at execution time.
-  - For example, `scope='view'` ensures the originating view is still active when the runnable executes.
+  - For example, `scope='view'` ensures the runnable will only be executed if the originating view is still active.
