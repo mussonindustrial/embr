@@ -1,5 +1,6 @@
 package com.mussonindustrial.embr.perspective.gateway.model
 
+import com.inductiveautomation.perspective.gateway.api.PerspectiveElement
 import com.inductiveautomation.perspective.gateway.model.PageModel
 import com.inductiveautomation.perspective.gateway.model.ViewModel
 import com.inductiveautomation.perspective.gateway.session.InternalSession
@@ -38,3 +39,12 @@ fun withThreadContext(threadContext: ThreadContext, block: () -> Unit) {
         set(previous)
     }
 }
+
+val PerspectiveElement.threadContext: ThreadContext
+    get() {
+        return ThreadContext(
+            this.view as? ViewModel,
+            this.page as? PageModel,
+            this.session as? InternalSession,
+        )
+    }
