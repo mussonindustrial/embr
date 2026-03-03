@@ -92,15 +92,15 @@ class QueueFunctions(private val context: PeriscopeGatewayContext) : AbstractScr
                 .addOverload(
                     {
                         val function = it["function"] as PyFunction
-                        val scope = it["scope"] as? String ?: "view"
                         val delay = TypeUtilities.toLong(it["delay"] ?: 0)
+                        val scope = it["scope"] as? String ?: "view"
                         val sessionId = it["sessionId"] as? String
                         val pageId = it["pageId"] as? String
                         invokeLater(function, delay, scope, sessionId, pageId)
                     },
                     "function" to typeOf<PyFunction>(),
-                    "scope" to typeOf<String?>(),
                     "delay" to typeOf<Long?>(),
+                    "scope" to typeOf<String?>(),
                     "sessionId" to typeOf<String?>(),
                     "pageId" to typeOf<String?>(),
                 )
@@ -109,7 +109,7 @@ class QueueFunctions(private val context: PeriscopeGatewayContext) : AbstractScr
 
     @ScriptFunction(docBundlePrefix = "${Meta.BUNDLE_PREFIX}.script")
     @KeywordArgs(
-        names = ["function", "scope", "delay", "sessionId", "pageId"],
+        names = ["function", "delay", "scope", "sessionId", "pageId"],
         types = [PyFunction::class, Long::class, String::class, String::class, String::class],
     )
     @Suppress("unused")
