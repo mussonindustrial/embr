@@ -67,13 +67,15 @@ class SnmpAgentDeviceImpl<T : SnmpAgentConfig>(override val context: SnmpAgentCo
         lifecycleManager.addLifecycle(oidAddressSpace)
         lifecycleManager.addLifecycle(healthcheck)
         lifecycleManager.addStartupTask {
-            learnObjectModel()
-            onDataItemsCreated(
-                context.deviceContext.subscriptionModel.getDataItems(context.deviceContext.name)
-            )
-            discoverMaxPduSize().apply {
-                profile.maxResponsePduSize = this
-                profile.maxRequestPduSize = this
+            context.deviceContext.gatewayContext.executionManager.executeOnce {
+                discoverMaxPduSize().apply {
+                    profile.maxResponsePduSize = this
+                    profile.maxRequestPduSize = this
+                }
+                learnObjectModel()
+                onDataItemsCreated(
+                    context.deviceContext.subscriptionModel.getDataItems(context.deviceContext.name)
+                )
             }
         }
     }

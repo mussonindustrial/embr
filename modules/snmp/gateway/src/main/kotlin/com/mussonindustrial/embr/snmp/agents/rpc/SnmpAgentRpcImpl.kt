@@ -9,8 +9,8 @@ import com.mussonindustrial.embr.snmp.agents.devices.SnmpAgentDevice
 import com.mussonindustrial.embr.snmp.model.QualifiedOidValue
 import com.mussonindustrial.embr.snmp.model.Snmp4jOid
 import com.mussonindustrial.embr.snmp.model.nullOrExtendedOid
-import com.mussonindustrial.embr.snmp.utils.toQualifiedValue
-import com.mussonindustrial.embr.snmp.utils.toQualityCode
+import com.mussonindustrial.embr.snmp.model.toQualifiedValue
+import com.mussonindustrial.embr.snmp.opc.toQualityCode
 import org.python.core.Py.ValueError
 
 @RpcDelegate.RunsOnClient(clientPermissionId = ClientPermissionsConstants.UNRESTRICTED)

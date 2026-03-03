@@ -1,8 +1,6 @@
-package com.mussonindustrial.embr.snmp.utils
+package com.mussonindustrial.embr.snmp.model
 
-import com.mussonindustrial.embr.snmp.model.BasicQualifiedOidValue
-import com.mussonindustrial.embr.snmp.model.OidValue
-import com.mussonindustrial.embr.snmp.model.QualifiedOidValue
+import com.mussonindustrial.embr.snmp.opc.toQualityCode
 import java.util.Date
 import org.eclipse.milo.opcua.stack.core.types.builtin.DataValue
 

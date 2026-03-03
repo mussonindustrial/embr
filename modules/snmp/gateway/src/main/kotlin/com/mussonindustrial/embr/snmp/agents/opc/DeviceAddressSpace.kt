@@ -3,10 +3,10 @@ package com.mussonindustrial.embr.snmp.agents.opc
 import com.inductiveautomation.ignition.gateway.opcua.server.api.DeviceContext
 import com.mussonindustrial.embr.snmp.opc.DeviceContextManagedAddressSpaceFragment
 import com.mussonindustrial.embr.snmp.opc.SnmpNamespace
-import com.mussonindustrial.embr.snmp.utils.addHasTypeDefinition
-import com.mussonindustrial.embr.snmp.utils.addNode
-import com.mussonindustrial.embr.snmp.utils.addOrganizedBy
-import com.mussonindustrial.embr.snmp.utils.removeAllNodes
+import com.mussonindustrial.embr.snmp.opc.addHasTypeDefinition
+import com.mussonindustrial.embr.snmp.opc.addNode
+import com.mussonindustrial.embr.snmp.opc.addOrganizedBy
+import com.mussonindustrial.embr.snmp.opc.removeAllNodes
 import org.eclipse.milo.opcua.sdk.server.AddressSpaceComposite
 import org.eclipse.milo.opcua.sdk.server.nodes.UaObjectNode
 import org.eclipse.milo.opcua.stack.core.types.builtin.LocalizedText

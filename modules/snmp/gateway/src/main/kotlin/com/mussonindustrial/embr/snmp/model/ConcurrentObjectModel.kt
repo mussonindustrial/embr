@@ -19,22 +19,27 @@ class ConcurrentObjectModel(val device: SnmpAgentDevice) : ObjectModel {
         knownValues[result.oid] = result
 
         val variable = value.value
-        descriptors
-            .getOrPut(result.oid) {
-                ObjectModel.ValueDescriptor(
-                    value.oid,
-                    SnmpDataType.of(variable),
-                    variable.berLength,
-                )
-            }
-            .apply {
-                when (this) {
-                    is ObjectModel.ValueDescriptor -> {
-                        if (variable.berLength > expectedSize) expectedSize *= 2
-                    }
-                    else -> {}
+        if (variable == SnmpCommunicationError) {
+            descriptors.getOrPut(result.oid) { ObjectModel.InvalidDescriptor(result.oid) }
+        } else {
+            descriptors
+                .getOrPut(result.oid) {
+                    ObjectModel.ValueDescriptor(
+                        value.oid,
+                        SnmpDataType.of(variable),
+                        variable.berLength,
+                    )
                 }
-            }
+                .apply {
+                    when (this) {
+                        is ObjectModel.ValueDescriptor -> {
+                            if (variable.berLength > expectedSize) expectedSize *= 2
+                        }
+                        else -> {}
+                    }
+                }
+        }
+
         return result
     }
 

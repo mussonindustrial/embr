@@ -9,10 +9,10 @@ import com.mussonindustrial.embr.snmp.model.Snmp4jExtendedOid
 import com.mussonindustrial.embr.snmp.model.asExtendedOid
 import com.mussonindustrial.embr.snmp.model.isOid
 import com.mussonindustrial.embr.snmp.opc.DeviceContextManagedAddressSpaceFragment
-import com.mussonindustrial.embr.snmp.utils.hasProperty
-import com.mussonindustrial.embr.snmp.utils.hasTypeDefinition
-import com.mussonindustrial.embr.snmp.utils.organizedBy
-import com.mussonindustrial.embr.snmp.utils.propertyOf
+import com.mussonindustrial.embr.snmp.opc.hasProperty
+import com.mussonindustrial.embr.snmp.opc.hasTypeDefinition
+import com.mussonindustrial.embr.snmp.opc.organizedBy
+import com.mussonindustrial.embr.snmp.opc.propertyOf
 import kotlin.jvm.optionals.getOrNull
 import org.eclipse.milo.opcua.sdk.core.AccessLevel
 import org.eclipse.milo.opcua.sdk.core.Reference
@@ -160,31 +160,8 @@ class OidAddressSpace(val device: SnmpAgentDevice, composite: AddressSpaceCompos
     ): Any? {
         val suffixNode =
             DescriptorSuffixNode.from(suffix) ?: throw UaException(StatusCodes.Bad_NodeIdUnknown)
-        val context = DescriptorSuffixNode.Context(device, descriptor)
-
-        return when (attributeId) {
-            AttributeId.NodeId -> nodeId
-            AttributeId.NodeClass -> NodeClass.Variable
-            AttributeId.BrowseName -> suffixNode.browseName(context)
-            AttributeId.DisplayName -> suffixNode.displayName(context)
-            AttributeId.Description -> suffixNode.description(context)
-
-            AttributeId.DataType -> suffixNode.dataType(context)
-            AttributeId.ValueRank -> suffixNode.valueRank(context)
-            AttributeId.ArrayDimensions -> null
-
-            AttributeId.AccessLevel,
-            AttributeId.UserAccessLevel -> suffixNode.accessLevel(context)
-
-            AttributeId.Historizing -> false
-            AttributeId.Value -> suffixNode.value(context)
-
-            AttributeId.WriteMask,
-            AttributeId.UserWriteMask -> UInteger.valueOf(0)
-
-            else ->
-                throw UaException(StatusCodes.Bad_AttributeIdInvalid, "attributeId: $attributeId")
-        }
+        val context = DescriptorSuffixNode.Context(nodeId, device, descriptor)
+        return suffixNode.readAttribute(context, attributeId)
     }
 
     override fun write(

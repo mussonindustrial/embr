@@ -2,11 +2,11 @@ package com.mussonindustrial.embr.snmp.agents.opc
 
 import com.mussonindustrial.embr.snmp.agents.devices.SnmpAgentDevice
 import com.mussonindustrial.embr.snmp.opc.DeviceContextManagedAddressSpaceFragment
-import com.mussonindustrial.embr.snmp.utils.addComponentOf
-import com.mussonindustrial.embr.snmp.utils.addNode
-import com.mussonindustrial.embr.snmp.utils.addOrganizedBy
-import com.mussonindustrial.embr.snmp.utils.organizes
-import com.mussonindustrial.embr.snmp.utils.removeAllNodes
+import com.mussonindustrial.embr.snmp.opc.addComponentOf
+import com.mussonindustrial.embr.snmp.opc.addNode
+import com.mussonindustrial.embr.snmp.opc.addOrganizedBy
+import com.mussonindustrial.embr.snmp.opc.organizes
+import com.mussonindustrial.embr.snmp.opc.removeAllNodes
 import org.eclipse.milo.opcua.sdk.server.*
 import org.eclipse.milo.opcua.sdk.server.nodes.UaFolderNode
 import org.eclipse.milo.opcua.stack.core.types.builtin.LocalizedText

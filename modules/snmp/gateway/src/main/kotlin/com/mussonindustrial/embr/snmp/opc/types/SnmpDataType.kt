@@ -2,13 +2,13 @@ package com.mussonindustrial.embr.snmp.opc.types
 
 import com.inductiveautomation.ignition.common.TypeUtilities
 import com.mussonindustrial.embr.snmp.opc.SnmpNamespace
-import com.mussonindustrial.embr.snmp.utils.addNode
-import com.mussonindustrial.embr.snmp.utils.addSubtypeOf
+import com.mussonindustrial.embr.snmp.opc.addNode
+import com.mussonindustrial.embr.snmp.opc.addSubtypeOf
 import org.eclipse.milo.opcua.sdk.server.nodes.UaDataTypeNode
+import org.eclipse.milo.opcua.sdk.server.nodes.UaNodeContext
 import org.eclipse.milo.opcua.stack.core.NodeIds
 import org.eclipse.milo.opcua.stack.core.types.builtin.LocalizedText
 import org.eclipse.milo.opcua.stack.core.types.builtin.NodeId
-import org.eclipse.milo.opcua.stack.core.types.builtin.QualifiedName
 import org.eclipse.milo.opcua.stack.core.types.builtin.unsigned.Unsigned.uint
 import org.eclipse.milo.opcua.stack.core.types.structured.AccessRestrictionType
 import org.snmp4j.smi.Variable
@@ -84,8 +84,8 @@ enum class SnmpDataType(
         private val byClass: Map<Class<out Variable>, SnmpDataType> =
             entries.associateBy { it.backingVariableClass }
 
-        fun registerAll() {
-            entries.forEach { it.register() }
+        fun registerAll(nodeContext: UaNodeContext) {
+            entries.forEach { it.register(nodeContext) }
         }
 
         fun of(variable: Variable): SnmpDataType {
@@ -103,11 +103,11 @@ enum class SnmpDataType(
         fun variableOfType(dataType: SnmpDataType, value: Any?): Variable = dataType.factory(value)
     }
 
-    private fun register() {
+    private fun register(nodeContext: UaNodeContext) {
         UaDataTypeNode(
-                SnmpNamespace.nodeContext,
+                nodeContext,
                 nodeId,
-                QualifiedName(SnmpNamespace.namespaceIndex, name),
+                SnmpNamespace.qualifiedName(name),
                 LocalizedText.english(name),
                 LocalizedText.english(""),
                 uint(0),
@@ -115,7 +115,7 @@ enum class SnmpDataType(
                 false,
             )
             .apply {
-                addNode(SnmpNamespace.nodeManager)
+                addNode(nodeContext.nodeManager)
                 addSubtypeOf(parentType.expanded())
 
                 accessRestrictions = AccessRestrictionType.of()

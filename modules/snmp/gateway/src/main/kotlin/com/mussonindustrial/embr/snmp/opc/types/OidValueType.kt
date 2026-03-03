@@ -4,12 +4,13 @@ import com.google.common.base.MoreObjects
 import com.google.common.base.Objects
 import com.mussonindustrial.embr.snmp.model.OidValue
 import com.mussonindustrial.embr.snmp.opc.SnmpNamespace
-import com.mussonindustrial.embr.snmp.utils.addHasEncoding
-import com.mussonindustrial.embr.snmp.utils.addHasTypeDefinition
-import com.mussonindustrial.embr.snmp.utils.addNode
-import com.mussonindustrial.embr.snmp.utils.addSubtypeOf
+import com.mussonindustrial.embr.snmp.opc.addHasEncoding
+import com.mussonindustrial.embr.snmp.opc.addHasTypeDefinition
+import com.mussonindustrial.embr.snmp.opc.addNode
+import com.mussonindustrial.embr.snmp.opc.addSubtypeOf
 import org.eclipse.milo.opcua.sdk.core.ValueRanks
 import org.eclipse.milo.opcua.sdk.server.nodes.UaDataTypeNode
+import org.eclipse.milo.opcua.sdk.server.nodes.UaNodeContext
 import org.eclipse.milo.opcua.sdk.server.nodes.UaObjectNode
 import org.eclipse.milo.opcua.stack.core.NodeIds
 import org.eclipse.milo.opcua.stack.core.UaSerializationException
@@ -92,9 +93,9 @@ class OidValueType(val oid: String, val value: Variant) : UaStructuredType {
             SnmpNamespace.NodesIds.OidValue_Encoding_DefaultBinary
         }
 
-        fun register() {
+        fun register(nodeContext: UaNodeContext) {
             UaObjectNode(
-                    SnmpNamespace.nodeContext,
+                    nodeContext,
                     binaryEncodingNodeId,
                     SnmpNamespace.qualifiedName("Default Binary"),
                     LocalizedText.english("Default Binary"),
@@ -105,11 +106,11 @@ class OidValueType(val oid: String, val value: Variant) : UaStructuredType {
                 .apply {
                     addHasTypeDefinition(NodeIds.DataTypeEncodingType.expanded())
                     accessRestrictions = AccessRestrictionType.of()
-                    SnmpNamespace.nodeManager.addNode(this)
+                    nodeContext.nodeManager.addNode(this)
                 }
 
             UaDataTypeNode(
-                    SnmpNamespace.nodeContext,
+                    nodeContext,
                     typeNodeId,
                     SnmpNamespace.qualifiedName(BROWSE_NAME),
                     LocalizedText.english(BROWSE_NAME),
@@ -119,7 +120,7 @@ class OidValueType(val oid: String, val value: Variant) : UaStructuredType {
                     false,
                 )
                 .apply {
-                    addNode(SnmpNamespace.nodeManager)
+                    addNode(nodeManager)
                     addSubtypeOf(NodeIds.Structure.expanded())
                     addHasEncoding(binaryEncodingNodeId.expanded())
 
@@ -136,7 +137,7 @@ class OidValueType(val oid: String, val value: Variant) : UaStructuredType {
                                     SnmpNamespace.NodesIds.Oid,
                                     ValueRanks.Scalar,
                                     null,
-                                    SnmpNamespace.nodeContext.server.config.limits.maxStringLength,
+                                    nodeContext.server.config.limits.maxStringLength,
                                     false,
                                 ),
                                 StructureField(
@@ -151,7 +152,7 @@ class OidValueType(val oid: String, val value: Variant) : UaStructuredType {
                             ),
                         )
 
-                    SnmpNamespace.nodeContext.server.staticDataTypeManager.registerType(
+                    nodeContext.server.staticDataTypeManager.registerType(
                         nodeId,
                         Codec(),
                         binaryEncodingNodeId,

@@ -1,13 +1,14 @@
 package com.mussonindustrial.embr.snmp.agents.opc.types
 
 import com.mussonindustrial.embr.snmp.opc.SnmpNamespace
-import com.mussonindustrial.embr.snmp.utils.addComponentOf
-import com.mussonindustrial.embr.snmp.utils.addModellingRule
-import com.mussonindustrial.embr.snmp.utils.addNode
-import com.mussonindustrial.embr.snmp.utils.addOrganizedBy
-import com.mussonindustrial.embr.snmp.utils.addSubtypeOf
+import com.mussonindustrial.embr.snmp.opc.addComponentOf
+import com.mussonindustrial.embr.snmp.opc.addModellingRule
+import com.mussonindustrial.embr.snmp.opc.addNode
+import com.mussonindustrial.embr.snmp.opc.addOrganizedBy
+import com.mussonindustrial.embr.snmp.opc.addSubtypeOf
 import org.eclipse.milo.opcua.sdk.server.nodes.UaFolderNode
 import org.eclipse.milo.opcua.sdk.server.nodes.UaMethodNode
+import org.eclipse.milo.opcua.sdk.server.nodes.UaNodeContext
 import org.eclipse.milo.opcua.sdk.server.nodes.UaObjectTypeNode
 import org.eclipse.milo.opcua.stack.core.NodeIds
 import org.eclipse.milo.opcua.stack.core.types.builtin.LocalizedText
@@ -39,10 +40,10 @@ object SnmpAgentDeviceType {
                 accessRestrictions = AccessRestrictionType.of()
             }
 
-    fun register() {
+    fun register(nodeContext: UaNodeContext) {
         val type =
             UaObjectTypeNode(
-                    SnmpNamespace.nodeContext,
+                    nodeContext,
                     SnmpNamespace.NodesIds.SnmpAgentDeviceType,
                     SnmpNamespace.qualifiedName(BROWSE_NAME),
                     LocalizedText.english(BROWSE_NAME),
@@ -52,20 +53,20 @@ object SnmpAgentDeviceType {
                     false,
                 )
                 .apply {
-                    addNode(SnmpNamespace.nodeManager)
+                    addNode(nodeContext.nodeManager)
                     addSubtypeOf(NodeIds.BaseObjectType.expanded())
 
                     accessRestrictions = AccessRestrictionType.of()
                 }
 
         UaFolderNode(
-                SnmpNamespace.nodeContext,
+                nodeContext,
                 SnmpNamespace.nodeId("${BROWSE_NAME}.Objects"),
                 SnmpNamespace.qualifiedName("Objects"),
                 LocalizedText.english(""),
             )
             .apply {
-                addNode(SnmpNamespace.nodeManager)
+                addNode(nodeContext.nodeManager)
                 addOrganizedBy(type.nodeId.expanded())
 
                 accessRestrictions = AccessRestrictionType.of()

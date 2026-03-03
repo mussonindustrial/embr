@@ -10,7 +10,6 @@ import org.eclipse.milo.opcua.sdk.server.items.DataItem
 import org.eclipse.milo.opcua.sdk.server.items.MonitoredItem
 import org.eclipse.milo.opcua.sdk.server.nodes.UaNodeContext
 import org.eclipse.milo.opcua.sdk.server.util.SubscriptionModel
-import org.eclipse.milo.opcua.stack.core.types.builtin.ExpandedNodeId
 import org.eclipse.milo.opcua.stack.core.types.builtin.NodeId
 import org.eclipse.milo.opcua.stack.core.types.builtin.QualifiedName
 import org.eclipse.milo.opcua.stack.core.types.builtin.unsigned.UShort
@@ -21,13 +20,9 @@ class SnmpNamespace(server: OpcUaServer) : ManagedNamespaceWithLifecycle(server,
         const val NAMESPACE_URI = "urn:mussonindustrial:embr:snmp"
         lateinit var instance: SnmpNamespace
 
-        fun nodeId(id: Long): NodeId =
-            ExpandedNodeId.of(NAMESPACE_URI, id)
-                .toNodeIdOrThrow(instance.nodeContext.namespaceTable)
+        fun nodeId(id: Int) = NodeId(namespaceIndex, id)
 
-        fun nodeId(id: String): NodeId =
-            ExpandedNodeId.of(NAMESPACE_URI, id)
-                .toNodeIdOrThrow(instance.nodeContext.namespaceTable)
+        fun nodeId(id: String) = NodeId(namespaceIndex, id)
 
         fun qualifiedName(name: String): QualifiedName =
             QualifiedName(instance.namespaceIndex, name)
@@ -41,7 +36,15 @@ class SnmpNamespace(server: OpcUaServer) : ManagedNamespaceWithLifecycle(server,
         val namespaceIndex: UShort
             get() = instance.namespaceIndex
 
-        val NodesIds by lazy { SnmpNamespaceNodeIds() }
+        val NodesIds by lazy {
+            SnmpNodeIds {
+                when (it) {
+                    is Number -> nodeId(it.toInt())
+                    is String -> nodeId(it)
+                    else -> throw IllegalArgumentException("Invalid node ID: $it")
+                }
+            }
+        }
     }
 
     private val subscriptionModel = SubscriptionModel(server, this)
@@ -53,9 +56,9 @@ class SnmpNamespace(server: OpcUaServer) : ManagedNamespaceWithLifecycle(server,
     }
 
     fun registerTypes() {
-        SnmpDataType.registerAll()
-        SnmpAgentDeviceType.register()
-        OidValueType.register()
+        SnmpDataType.registerAll(nodeContext)
+        SnmpAgentDeviceType.register(nodeContext)
+        OidValueType.register(nodeContext)
     }
 
     override fun onDataItemsCreated(items: List<DataItem>) {

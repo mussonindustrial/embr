@@ -4,9 +4,9 @@ import com.mussonindustrial.embr.snmp.agents.devices.SnmpAgentDevice
 import com.mussonindustrial.embr.snmp.agents.opc.nodes.ReadTableMethodNode
 import com.mussonindustrial.embr.snmp.agents.opc.nodes.WalkMethodNode
 import com.mussonindustrial.embr.snmp.opc.DeviceContextManagedAddressSpaceFragment
-import com.mussonindustrial.embr.snmp.utils.addComponentOf
-import com.mussonindustrial.embr.snmp.utils.addNode
-import com.mussonindustrial.embr.snmp.utils.removeAllNodes
+import com.mussonindustrial.embr.snmp.opc.addComponentOf
+import com.mussonindustrial.embr.snmp.opc.addNode
+import com.mussonindustrial.embr.snmp.opc.removeAllNodes
 import org.eclipse.milo.opcua.sdk.server.AddressSpaceComposite
 import org.eclipse.milo.opcua.sdk.server.Lifecycle
 
