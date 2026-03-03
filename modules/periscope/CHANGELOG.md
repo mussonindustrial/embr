@@ -1,5 +1,25 @@
 # @embr-modules/periscope
 
+## 0.11.0
+
+### Minor Changes
+
+- 4789034: Introduce `system.perspective.invokeOnQueue`.
+
+  This function schedules a runnable for execution on the Perspective session’s execution queue.
+  - The runnable must accept a single parameter representing the requested scope element.
+    - This enables interaction across sessions.
+  - The optional `scope` parameter ensures the specified scope remains available at execution time.
+    - For example, `scope='view'` ensures the runnable will only be executed if the originating view is still active.
+
+### Patch Changes
+
+- Updated dependencies [4789034]
+  - @embr-jvm/perspective-gateway@0.9.1
+  - @embr-jvm/perspective-common@0.9.1
+  - @embr-jvm/perspective-designer@0.9.1
+  - @embr-modules/periscope-web@0.11.0
+
 ## 0.10.1
 
 ### Patch Changes

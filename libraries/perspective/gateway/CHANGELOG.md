@@ -1,5 +1,11 @@
 # @embr-jvm/perspective-gateway
 
+## 0.9.1
+
+### Patch Changes
+
+- 4789034: Add utility function for creating `PyArgumentMap` for use with `AbstractScriptingFunction`.
+
 ## 0.9.0
 
 ### Minor Changes
