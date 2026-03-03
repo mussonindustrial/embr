@@ -2,7 +2,6 @@ package com.mussonindustrial.ignition.embr.periscope.scripting
 
 import com.inductiveautomation.ignition.common.TypeUtilities
 import com.inductiveautomation.ignition.common.script.builtin.KeywordArgs
-import com.inductiveautomation.ignition.common.script.builtin.PyArgumentMap
 import com.inductiveautomation.ignition.common.script.hints.JythonElement
 import com.inductiveautomation.ignition.common.util.ExecutionQueue
 import com.inductiveautomation.ignition.common.util.LogUtil
@@ -12,6 +11,7 @@ import com.inductiveautomation.perspective.gateway.model.PageModel
 import com.inductiveautomation.perspective.gateway.script.AbstractScriptingFunctions
 import com.mussonindustrial.embr.common.scripting.PyArgOverloadBuilder
 import com.mussonindustrial.embr.perspective.gateway.model.ThreadContext
+import com.mussonindustrial.embr.perspective.gateway.model.getPerspectiveArgumentMap
 import com.mussonindustrial.embr.perspective.gateway.model.withThreadContext
 import com.mussonindustrial.embr.perspective.gateway.reflect.getHandlers
 import com.mussonindustrial.ignition.embr.periscope.Meta
@@ -27,7 +27,6 @@ import kotlin.reflect.typeOf
 import org.python.core.PyDictionary
 import org.python.core.PyFunction
 import org.python.core.PyObject
-import org.python.core.PyString
 
 class JavaScriptFunctions(private val context: PeriscopeGatewayContext) :
     AbstractScriptingFunctions() {
@@ -39,18 +38,6 @@ class JavaScriptFunctions(private val context: PeriscopeGatewayContext) :
 
     override fun getContext(): PerspectiveContext {
         return context.perspectiveContext
-    }
-
-    private fun getPerspectiveArgumentMap(pageId: String?, sessionId: String?): PyArgumentMap {
-
-        val args = mapOf("pageId" to pageId, "sessionId" to sessionId)
-
-        return PyArgumentMap.interpretPyArgs(
-            args.mapNotNull { arg -> arg.value?.let { PyString(it) } }.toTypedArray(),
-            args.mapNotNull { arg -> arg.value?.let { arg.key } }.toTypedArray(),
-            arrayOf("pageId", "sessionId"),
-            arrayOf(String::class.java, String::class.java),
-        )
     }
 
     @Suppress("UNUSED_PARAMETER")
