@@ -72,7 +72,7 @@ class PeriscopeGatewayHook : AbstractGatewayModuleHook() {
         manager.addScriptModule(
             "system.perspective",
             QueueFunctions(this.context),
-            PropertiesFileDocProvider()
+            PropertiesFileDocProvider(),
         )
     }
 }
