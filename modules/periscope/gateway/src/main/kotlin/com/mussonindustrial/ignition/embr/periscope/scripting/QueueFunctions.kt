@@ -5,9 +5,16 @@ import com.inductiveautomation.ignition.common.script.builtin.KeywordArgs
 import com.inductiveautomation.ignition.common.script.hints.ScriptFunction
 import com.inductiveautomation.ignition.common.util.ExecutionQueue
 import com.inductiveautomation.ignition.common.util.LogUtil
+import com.inductiveautomation.perspective.gateway.api.Page
 import com.inductiveautomation.perspective.gateway.api.PerspectiveContext
 import com.inductiveautomation.perspective.gateway.api.PerspectiveElement
+import com.inductiveautomation.perspective.gateway.api.Session
+import com.inductiveautomation.perspective.gateway.model.ViewModel
 import com.inductiveautomation.perspective.gateway.script.AbstractScriptingFunctions
+import com.inductiveautomation.perspective.gateway.script.PageScriptWrapper
+import com.inductiveautomation.perspective.gateway.script.PropertyTreeOwnerScriptWrapper
+import com.inductiveautomation.perspective.gateway.script.SessionScriptWrapper
+import com.inductiveautomation.perspective.gateway.script.ViewModelScriptWrapper
 import com.mussonindustrial.embr.common.scripting.PyArgOverloadBuilder
 import com.mussonindustrial.embr.perspective.gateway.model.ThreadContext
 import com.mussonindustrial.embr.perspective.gateway.model.getPerspectiveArgumentMap
@@ -35,15 +42,10 @@ class QueueFunctions(private val context: PeriscopeGatewayContext) : AbstractScr
         unit: TimeUnit,
         block: () -> Unit,
     ) {
-
-        if (delay == 0L) {
-            this.submit { block() }
-        } else {
-            executorService.schedule({ this.submit { block() } }, delay, unit)
-        }
+        executorService.schedule({ this.submit(block) }, delay, unit)
     }
 
-    private fun invokeLater(
+    private fun invokeOnQueue(
         function: PyFunction,
         delay: Long,
         scope: String,
@@ -60,12 +62,20 @@ class QueueFunctions(private val context: PeriscopeGatewayContext) : AbstractScr
             ) {
                 try {
                     if (!element.isRunning) {
-                        log.trace("Lifecycle object not running.")
+                        log.trace("Lifecycle object not running: ${element.name}")
                         return@schedule
                     }
 
+                    val wrappedElement =
+                        when (element) {
+                            is ViewModel -> ViewModelScriptWrapper(element)
+                            is Page -> PageScriptWrapper(element)
+                            is Session -> SessionScriptWrapper(element)
+                            else -> PropertyTreeOwnerScriptWrapper(element)
+                        }
+
                     withThreadContext(element.threadContext) {
-                        element.session.scriptManager.runFunction(function)
+                        element.session.scriptManager.runFunction(function, wrappedElement)
                     }
                 } catch (error: Exception) {
                     originalThreadContext.view.get()?.mdcSetup()
@@ -88,7 +98,7 @@ class QueueFunctions(private val context: PeriscopeGatewayContext) : AbstractScr
     inner class ScriptOverloads {
         val queueSubmit =
             PyArgOverloadBuilder<Unit>()
-                .setName("invokeLater")
+                .setName("invokeOnQueue")
                 .addOverload(
                     {
                         val function = it["function"] as PyFunction
@@ -96,7 +106,7 @@ class QueueFunctions(private val context: PeriscopeGatewayContext) : AbstractScr
                         val scope = it["scope"] as? String ?: "view"
                         val sessionId = it["sessionId"] as? String
                         val pageId = it["pageId"] as? String
-                        invokeLater(function, delay, scope, sessionId, pageId)
+                        invokeOnQueue(function, delay, scope, sessionId, pageId)
                     },
                     "function" to typeOf<PyFunction>(),
                     "delay" to typeOf<Long?>(),
@@ -113,6 +123,6 @@ class QueueFunctions(private val context: PeriscopeGatewayContext) : AbstractScr
         types = [PyFunction::class, Long::class, String::class, String::class, String::class],
     )
     @Suppress("unused")
-    fun invokeLater(args: Array<PyObject>, keywords: Array<String>) =
+    fun invokeOnQueue(args: Array<PyObject>, keywords: Array<String>) =
         overloads.queueSubmit.call(args, keywords)
 }
