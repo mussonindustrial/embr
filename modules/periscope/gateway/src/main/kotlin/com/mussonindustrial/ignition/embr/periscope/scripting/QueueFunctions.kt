@@ -37,9 +37,9 @@ class QueueFunctions(private val context: PeriscopeGatewayContext) : AbstractScr
     ) {
 
         if (delay == 0L) {
-            this.submit { block }
+            this.submit { block() }
         } else {
-            executorService.schedule({ this.submit { block } }, delay, unit)
+            executorService.schedule({ this.submit { block() } }, delay, unit)
         }
     }
 
@@ -52,25 +52,25 @@ class QueueFunctions(private val context: PeriscopeGatewayContext) : AbstractScr
     ) {
 
         val originalThreadContext = ThreadContext.get()
-        val operator: (PerspectiveElement) -> Unit = { scope ->
-            scope.session.queue().schedule(
-                scope.session.perspectiveContext.scheduler,
+        val operation: (PerspectiveElement) -> Unit = { element ->
+            element.session.queue().schedule(
+                element.session.perspectiveContext.scheduler,
                 delay,
                 TimeUnit.MILLISECONDS,
             ) {
                 try {
-                    if (!scope.isRunning) {
+                    if (!element.isRunning) {
                         log.trace("Lifecycle object not running.")
                         return@schedule
                     }
 
-                    withThreadContext(scope.threadContext) {
-                        scope.session.scriptManager.runFunction(function)
+                    withThreadContext(element.threadContext) {
+                        element.session.scriptManager.runFunction(function)
                     }
                 } catch (error: Exception) {
                     originalThreadContext.view.get()?.mdcSetup()
-                    scope.session.sendErrorToDesigner(error.message, error)
-                    scope.session.logger.error("Exception occurred on Perspective queue.", error)
+                    element.session.sendErrorToDesigner(error.message, error)
+                    element.session.logger.error("Exception occurred on Perspective queue.", error)
                     originalThreadContext.view.get()?.mdcTeardown()
                     throw error
                 }
@@ -78,9 +78,9 @@ class QueueFunctions(private val context: PeriscopeGatewayContext) : AbstractScr
         }
 
         when (scope) {
-            "view" -> operateOnView { operator }
-            "page" -> operateOnPage(getPerspectiveArgumentMap(pageId, sessionId)) { operator }
-            "session" -> operateOnSession(getPerspectiveArgumentMap(pageId, sessionId)) { operator }
+            "view" -> operateOnView(operation)
+            "page" -> operateOnPage(getPerspectiveArgumentMap(pageId, sessionId), operation)
+            "session" -> operateOnSession(getPerspectiveArgumentMap(pageId, sessionId), operation)
             else -> throw IllegalArgumentException("Invalid scope \"$scope\".")
         }
     }
