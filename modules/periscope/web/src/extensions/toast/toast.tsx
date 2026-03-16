@@ -8,6 +8,7 @@ import React from 'react'
 import { ClientStore } from '@inductiveautomation/perspective-client'
 import { observer } from 'mobx-react-lite'
 import { DockOffset } from '@inductiveautomation/perspective-client/build/dist/typedefs/stores/MountStore'
+import { useMediaQuery } from '../../util/useMediaQuery'
 
 type CenterToastContainerProps = {
   dockOffset: DockOffset
@@ -15,13 +16,15 @@ type CenterToastContainerProps = {
 
 const CenterToastContainer = observer(
   ({ dockOffset }: CenterToastContainerProps) => {
+    const isFullWidth = useMediaQuery('(max-width: 480px)')
+
     return (
       <ToastContainer
         style={{
-          paddingTop: dockOffset.top.pixels,
-          paddingLeft: dockOffset.left.pixels,
-          paddingBottom: dockOffset.bottom.pixels,
-          paddingRight: dockOffset.right.pixels,
+          paddingTop: isFullWidth ? 0 : dockOffset.top.pixels,
+          paddingLeft: isFullWidth ? 0 : dockOffset.left.pixels,
+          paddingBottom: isFullWidth ? 0 : dockOffset.bottom.pixels,
+          paddingRight: isFullWidth ? 0 : dockOffset.right.pixels,
           position: 'fixed',
           pointerEvents: 'none',
         }}
@@ -35,7 +38,6 @@ export function installToasts(clientStore: ClientStore) {
   if (!toastRoot) {
     toastRoot = document.createElement('div')
     toastRoot.id = 'toast-root'
-    toastRoot.className = 'view-parent'
 
     const appContainer = document.getElementById('app-container')
     if (appContainer == null) {
