@@ -18,13 +18,19 @@ const CenterToastContainer = observer(
   ({ dockOffset }: CenterToastContainerProps) => {
     const isFullWidth = useMediaQuery('(max-width: 480px)')
 
+    const padding = isFullWidth
+      ? undefined
+      : {
+          paddingTop: dockOffset.top.pixels,
+          paddingLeft: dockOffset.left.pixels,
+          paddingBottom: dockOffset.bottom.pixels,
+          paddingRight: dockOffset.right.pixels,
+        }
+
     return (
       <ToastContainer
         style={{
-          paddingTop: isFullWidth ? 0 : dockOffset.top.pixels,
-          paddingLeft: isFullWidth ? 0 : dockOffset.left.pixels,
-          paddingBottom: isFullWidth ? 0 : dockOffset.bottom.pixels,
-          paddingRight: isFullWidth ? 0 : dockOffset.right.pixels,
+          ...padding,
           position: 'fixed',
           pointerEvents: 'none',
         }}
