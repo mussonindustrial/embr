@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.mussonindustrial.embr.snmp.agents.configuration.extensions
 
 import com.inductiveautomation.ignition.gateway.config.ExtensionPoint
@@ -15,13 +17,10 @@ import com.mussonindustrial.embr.snmp.agents.configuration.SnmpAgentConfig
 import com.mussonindustrial.embr.snmp.agents.configuration.SnmpCommunityConfig
 import com.mussonindustrial.embr.snmp.agents.configuration.SnmpConnectivityConfig
 import com.mussonindustrial.embr.snmp.agents.configuration.SnmpHealthcheckConfig
+import com.mussonindustrial.embr.snmp.agents.configuration.records.SnmpAgentV2cDeviceRecord
 import com.mussonindustrial.embr.snmp.agents.context.SnmpAgentV2cContext
 import com.mussonindustrial.embr.snmp.agents.devices.SnmpAgentDeviceImpl
 import java.util.*
-
-@Suppress("DEPRECATION")
-private typealias SnmpAgentV2cDeviceRecord =
-    com.mussonindustrial.embr.snmp.agents.configuration.records.SnmpAgentV2cDeviceRecord
 
 object SnmpAgentV2cExtensionPoint :
     DeviceExtensionPoint<SnmpAgentV2cExtensionPoint.Config>(
@@ -31,7 +30,6 @@ object SnmpAgentV2cExtensionPoint :
         Config::class.java,
     ) {
 
-    @Suppress("DEPRECATION")
     val recordMigrationStrategy: ExtensionPointRecordMigrationStrategy =
         ExtensionPointRecordMigrationStrategy.newBuilder(typeId)
             .resourceType(DEVICE_RESOURCE_TYPE)
