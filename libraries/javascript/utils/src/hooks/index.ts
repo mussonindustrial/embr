@@ -1,1 +1,6 @@
+export * from './useDeepCompareCallback'
+export * from './useDeepCompareEffect'
+export * from './useDeepCompareLayoutEffect'
+export * from './useDeepCompareMemo'
+export * from './useDeepCompareMemoize'
 export * from './useMediaQuery'
