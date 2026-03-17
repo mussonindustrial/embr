@@ -15,11 +15,13 @@ type CenterToastContainerProps = {
   dockOffset: DockOffset
 }
 
+const toastElementId = 'toast-root'
+
 const CenterToastContainer = observer(
   ({ dockOffset }: CenterToastContainerProps) => {
-    const isFullWidth = useMediaQuery('(max-width: 480px)')
+    const isMobile = useMediaQuery('(max-width: 480px)')
 
-    const padding = isFullWidth
+    const padding = isMobile
       ? undefined
       : {
           paddingTop: dockOffset.top.pixels,
@@ -41,10 +43,10 @@ const CenterToastContainer = observer(
 )
 
 export function installToasts(clientStore: ClientStore) {
-  let toastRoot = document.getElementById('toast-root')
+  let toastRoot = document.getElementById(toastElementId)
   if (!toastRoot) {
     toastRoot = document.createElement('div')
-    toastRoot.id = 'toast-root'
+    toastRoot.id = toastElementId
 
     const appContainer = document.getElementById('app-container')
     if (appContainer == null) {
