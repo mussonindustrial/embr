@@ -51,10 +51,11 @@ import {
 } from 'swiper/modules'
 
 import { debounce } from 'lodash'
-import { transformProps } from '@embr-js/utils'
-import { emitStyles, formatStyleNames, mergeStyles, resolve } from '../../util'
+import { mergeStyles, resolve, transformProps } from '@embr-js/utils'
 import {
   ComponentDelegateJavaScriptProxy,
+  emitStyles,
+  formatStyleNames,
   getScriptTransform,
   JavaScriptRunEvent,
 } from '@embr-js/perspective-client'
@@ -118,7 +119,7 @@ type EmbeddedSlideViewProps = {
 
 function getChildMountPath(
   props: ComponentProps<PlainObject>,
-  childIndex: any
+  childIndex: number
 ) {
   return `${props.store.viewMountPath}$${props.store.addressPathString}[${childIndex}]`
 }
@@ -253,9 +254,10 @@ function applyClassTransforms(settings: SwiperProps): SwiperProps {
   transformProps.forEach(({ setting, keys }) => {
     if (typeof setting === 'object') {
       keys.forEach((key) => {
-        const property = (setting as any)[key]
+        const property = (setting as Record<string, unknown>)[key]
         if (typeof property === 'string' && !property.startsWith('psc-')) {
-          ;(setting as any)[key] = formatStyleNames(property)
+          ;(setting as Record<string, unknown>)[key] =
+            formatStyleNames(property)
         }
       })
     }
@@ -307,7 +309,7 @@ export function SwiperComponent(props: ComponentProps<SwiperComponentProps>) {
           const viewProps = resolveViewProps(props.props, index)
           const outputListener = (
             outputName: string,
-            outputValue: any
+            outputValue: unknown
           ): void => {
             props.store.props.write(
               `instances[${index}].viewParams.${outputName}`,

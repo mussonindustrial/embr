@@ -1,14 +1,9 @@
-import { useEffect, useLayoutEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 type UseMediaQueryOptions = {
   defaultValue?: boolean
   initializeWithValue?: boolean
 }
-
-const IS_SERVER = typeof window === 'undefined'
-
-export const useIsomorphicLayoutEffect =
-  typeof window !== 'undefined' ? useLayoutEffect : useEffect
 
 export function useMediaQuery(
   query: string,
@@ -18,9 +13,6 @@ export function useMediaQuery(
   }: UseMediaQueryOptions = {}
 ): boolean {
   const getMatches = (query: string): boolean => {
-    if (IS_SERVER) {
-      return defaultValue
-    }
     return window.matchMedia(query).matches
   }
 
@@ -36,10 +28,10 @@ export function useMediaQuery(
     setMatches(getMatches(query))
   }
 
-  useIsomorphicLayoutEffect(() => {
+  useEffect(() => {
     const matchMedia = window.matchMedia(query)
 
-    // Triggered at the first client-side load and if query changes
+    // Triggered at the first client-side load and if the query changes
     handleChange()
     matchMedia.addEventListener('change', handleChange)
 
