@@ -25,8 +25,6 @@ include(
     ":libraries:perspective:designer",
     ":libraries:perspective:gateway",
 
-    ":libraries:javascript:event-stream",
-
     ":modules:charts:common",
     ":modules:charts:designer",
     ":modules:charts:gateway",
