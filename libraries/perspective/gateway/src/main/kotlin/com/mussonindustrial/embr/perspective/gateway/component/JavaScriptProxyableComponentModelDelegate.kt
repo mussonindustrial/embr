@@ -153,7 +153,7 @@ open class JavaScriptProxyableComponentModelDelegate(component: Component) :
                             val args = it["args"] as? PyDictionary
                             val callback = it["callback"] as? PyFunction
                             runJavaScript(function, args, callback)
-                            null
+                            return@addOverload
                         },
                         "function" to typeOf<String>(),
                         "args" to typeOf<PyDictionary?>(),
