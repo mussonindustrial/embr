@@ -8,7 +8,7 @@ import React from 'react'
 import { ClientStore } from '@inductiveautomation/perspective-client'
 import { observer } from 'mobx-react-lite'
 import { DockOffset } from '@inductiveautomation/perspective-client/build/dist/typedefs/stores/MountStore'
-import { useMediaQuery } from '../../util/useMediaQuery'
+import { useMediaQuery } from '@embr-js/utils'
 
 type CenterToastContainerProps = {
   dockOffset: DockOffset
