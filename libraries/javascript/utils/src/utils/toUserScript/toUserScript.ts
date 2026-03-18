@@ -1,4 +1,4 @@
-import { isAsyncFunction } from '../index'
+import isAsyncFunction from '../isAsyncFunction'
 
 export type UserScriptParams = Record<string, unknown>
 export type NormalFunction = (...args: unknown[]) => unknown

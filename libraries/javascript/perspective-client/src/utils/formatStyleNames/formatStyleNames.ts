@@ -1,7 +1,7 @@
 /**
  * Convert class names to Perspective Style Class notation.
- * @param input
  * @returns
+ * @param classNames
  */
 export default function formatStyleNames(
   classNames: string | string[] | undefined
