@@ -1,3 +1,8 @@
+#toast-root {
+    position: absolute;
+    z-index: 11100;
+}
+
 .Toastify__toast-container {
     transition: padding .3s ease-in-out;
 }
