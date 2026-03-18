@@ -1,9 +1,9 @@
-.Toastify {
-    z-index: 12000;
+.Toastify__toast-container {
+    transition: padding .3s ease-in-out;
 }
 
 .Toastify__toast-container:focus,
-.Toastify__toast-container > *:focus{
+.Toastify__toast-container > *:focus {
     outline: none;
 }
 

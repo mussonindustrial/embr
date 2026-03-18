@@ -7,12 +7,12 @@ import { getClientStore } from '../index'
 export default function waitForClientStore(
   callback: (clientStore: ClientStore) => void
 ) {
-  setTimeout(function () {
+  requestAnimationFrame(function () {
     const clientStore = getClientStore()
     if (clientStore) {
       callback(clientStore)
     } else {
       waitForClientStore(callback)
     }
-  }, 100)
+  })
 }

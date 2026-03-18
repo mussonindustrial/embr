@@ -2,15 +2,18 @@ package com.mussonindustrial.ignition.embr.periscope.api
 
 import com.inductiveautomation.ignition.common.TypeUtilities
 import com.inductiveautomation.ignition.common.gson.JsonObject
-import com.mussonindustrial.embr.perspective.gateway.model.ThreadContext
+import com.inductiveautomation.perspective.gateway.model.ComponentModel
+import com.inductiveautomation.perspective.gateway.model.ViewModel
 import org.python.core.PyDictionary
 
 class JavaScriptRunMsg(
     val id: String,
     private val function: String,
     private val args: PyDictionary?,
-    private val threadContext: ThreadContext,
+    private val viewContext: ViewModel?,
+    private val componentContext: ComponentModel?,
 ) {
+
     companion object {
         const val PROTOCOL: String = "periscope-js-run"
     }
@@ -23,7 +26,7 @@ class JavaScriptRunMsg(
             add(
                 "context",
                 JsonObject().apply {
-                    threadContext.view.get()?.let {
+                    viewContext?.let {
                         add(
                             "view",
                             JsonObject().apply {
@@ -33,9 +36,13 @@ class JavaScriptRunMsg(
                             },
                         )
                     }
-
-                    threadContext.page.get()?.let {
-                        add("page", JsonObject().apply { addProperty("id", it.id) })
+                    componentContext?.let {
+                        add(
+                            "component",
+                            JsonObject().apply {
+                                addProperty("componentAddressPath", it.componentAddressPath)
+                            },
+                        )
                     }
                 },
             )

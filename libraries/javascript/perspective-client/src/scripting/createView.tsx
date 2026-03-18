@@ -5,9 +5,6 @@ import React from 'react'
 
 export type CreateView = (props: ViewProps) => void
 
-// let mountPath = 0
-// const getMountPath = () => `embr:${mountPath++}`
-
 export function createViewFunction(context: CallingContext) {
   const createView = (props: ViewProps) => {
     if (context.client === undefined) {
@@ -16,9 +13,6 @@ export function createViewFunction(context: CallingContext) {
       )
       return
     }
-
-    // const mountPath = useRef(getMountPath())
-    // console.log(mountPath.current)
 
     return (
       <View
