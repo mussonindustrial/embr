@@ -8,7 +8,7 @@ import com.mussonindustrial.embr.perspective.gateway.model.ThreadContext.Compani
 import com.mussonindustrial.embr.perspective.gateway.model.ThreadContext.Companion.set
 import java.lang.ref.WeakReference
 
-class ThreadContext(view: ViewModel?, page: PageModel?, session: InternalSession?) {
+class ThreadContext(session: InternalSession?, page: PageModel?, view: ViewModel?) {
     val view = WeakReference(view)
     val page = WeakReference(page)
     val session = WeakReference(session)
@@ -16,9 +16,9 @@ class ThreadContext(view: ViewModel?, page: PageModel?, session: InternalSession
     companion object {
         fun get(): ThreadContext {
             return ThreadContext(
-                ViewModel.VIEW.get(),
-                PageModel.PAGE.get(),
                 InternalSession.SESSION.get(),
+                PageModel.PAGE.get(),
+                ViewModel.VIEW.get(),
             )
         }
 
@@ -43,8 +43,8 @@ fun withThreadContext(threadContext: ThreadContext, block: () -> Unit) {
 val PerspectiveElement.threadContext: ThreadContext
     get() {
         return ThreadContext(
-            this.view as? ViewModel,
-            this.page as? PageModel,
             this.session as? InternalSession,
+            this.page as? PageModel,
+            this.view as? ViewModel,
         )
     }
