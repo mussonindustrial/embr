@@ -1,5 +1,8 @@
-import { createScriptingGlobals } from '@embr-js/perspective-client'
-import { toUserScript } from '@embr-js/utils'
+import {
+  createScriptingGlobals,
+  getChildStore,
+} from '@embr-js/perspective-client'
+import { toUserScript, UserScriptParams } from '@embr-js/utils'
 import { ClientStore } from '@inductiveautomation/perspective-client'
 
 export const PROTOCOL = {
@@ -8,11 +11,38 @@ export const PROTOCOL = {
   ERROR: 'periscope-js-error',
 }
 
+type RunJavaScriptPayload = {
+  function: string
+  args: UserScriptParams
+  id: string
+  context: RunJavaScriptContext
+}
+
+type RunJavaScriptContext = {
+  view?: {
+    id: string
+    mountPath: string
+    resourcePath: string
+  }
+  component?: {
+    componentAddressPath: string
+  }
+}
+
+function getChildPath(componentAddressPath?: string) {
+  return componentAddressPath?.split(':').map(Number) ?? []
+}
+
 export function installRunJavaScript(clientStore: ClientStore) {
   const thisArg = clientStore
 
   clientStore.connection.handlers.set(PROTOCOL.RUN, (payload) => {
-    const { function: functionLiteral, args, id } = payload
+    const {
+      function: functionLiteral,
+      args,
+      id,
+      context,
+    } = payload as RunJavaScriptPayload
 
     function resolveSuccess(data: unknown) {
       clientStore.connection.send(PROTOCOL.RESOLVE, {
@@ -42,7 +72,22 @@ export function installRunJavaScript(clientStore: ClientStore) {
     }
 
     new Promise((resolve) => {
-      const globals = createScriptingGlobals({})
+      const view = clientStore.page.findView(
+        context.view?.resourcePath ?? '',
+        context.view?.mountPath ?? ''
+      )
+
+      const componentPath = getChildPath(
+        context.component?.componentAddressPath
+      )
+      const component = getChildStore(view, componentPath)
+
+      const globals = createScriptingGlobals({
+        client: clientStore,
+        page: clientStore.page,
+        view,
+        component,
+      })
 
       const f = toUserScript(functionLiteral, thisArg, globals)
       resolve(f.runNamed(args))
