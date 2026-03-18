@@ -13,6 +13,8 @@ import com.mussonindustrial.embr.common.scripting.PyArgOverloadBuilder
 import com.mussonindustrial.embr.perspective.gateway.model.ThreadContext
 import com.mussonindustrial.embr.perspective.gateway.model.getPerspectiveArgumentMap
 import com.mussonindustrial.embr.perspective.gateway.model.withThreadContext
+import com.mussonindustrial.embr.perspective.gateway.reflect.getComponentModel
+import com.mussonindustrial.embr.perspective.gateway.reflect.getComponentModelScriptWrapper
 import com.mussonindustrial.embr.perspective.gateway.reflect.getHandlers
 import com.mussonindustrial.ignition.embr.periscope.Meta
 import com.mussonindustrial.ignition.embr.periscope.PeriscopeGatewayContext
@@ -24,6 +26,7 @@ import java.util.concurrent.CompletableFuture
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.TimeUnit
 import kotlin.reflect.typeOf
+import org.python.core.Py
 import org.python.core.PyDictionary
 import org.python.core.PyFunction
 import org.python.core.PyObject
@@ -73,24 +76,31 @@ class JavaScriptFunctions(private val context: PeriscopeGatewayContext) :
         pageId: String? = null,
     ): CompletableFuture<PyObject?> {
 
-        val future = CompletableFuture<PyObject?>()
-        future.orTimeout(this.timeout, TimeUnit.SECONDS)
+        val future = CompletableFuture<PyObject?>().apply { orTimeout(timeout, TimeUnit.SECONDS) }
+
+        val isTargetLocal = pageId == null
+
+        val componentContext =
+            if (!isTargetLocal) null
+            else Py.getFrame().getComponentModelScriptWrapper()?.getComponentModel()
 
         this.operateOnPage(getPerspectiveArgumentMap(pageId, sessionId)) { page ->
-            val originalThreadContext = ThreadContext.get()
+            val originalContext = ThreadContext.get()
             val queue: ExecutionQueue = page.session.queue()
 
             registerHandlers(page)
 
             val id = UUID.randomUUID().toString()
-            val message = JavaScriptRunMsg(id, function, args, originalThreadContext)
+            val viewContext = if (isTargetLocal) originalContext.view.get() else null
+            val message = JavaScriptRunMsg(id, function, args, viewContext, componentContext)
+
             requestsInProgress[id] = future
 
             future
                 .thenAcceptAsync(
                     { result ->
-                        if (callback != null) {
-                            withThreadContext(originalThreadContext) {
+                        callback?.let {
+                            withThreadContext(originalContext) {
                                 page.session.scriptManager.runFunction(callback, result)
                             }
                         }
@@ -98,10 +108,11 @@ class JavaScriptFunctions(private val context: PeriscopeGatewayContext) :
                     queue::submit,
                 )
                 .exceptionally { error ->
-                    originalThreadContext.view.get()?.mdcSetup()
+                    val originalView = originalContext.view.get()
+                    originalView?.mdcSetup()
                     page.session.sendErrorToDesigner(error.message, error)
                     page.log.error("Exception occurred executing client-side JavaScript.", error)
-                    originalThreadContext.view.get()?.mdcTeardown()
+                    originalView?.mdcTeardown()
                     throw error
                 }
                 .whenCompleteAsync({ _, _ -> requestsInProgress.remove(id) }, queue::submit)
@@ -124,7 +135,7 @@ class JavaScriptFunctions(private val context: PeriscopeGatewayContext) :
                         val sessionId = it["sessionId"] as? String
                         val pageId = it["pageId"] as? String
                         runJavaScript(function, args, callback, sessionId, pageId)
-                        null
+                        return@addOverload
                     },
                     "function" to typeOf<String>(),
                     "args" to typeOf<PyDictionary?>(),

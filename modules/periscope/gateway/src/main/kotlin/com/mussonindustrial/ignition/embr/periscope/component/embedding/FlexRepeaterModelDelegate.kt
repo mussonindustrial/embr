@@ -496,7 +496,7 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
                         val newInstances = props.instances.json
                         newInstances.remove(it["index"] as Int)
                         props.instances.json = newInstances
-                        null
+                        return@addOverload
                     },
                     "index" to typeOf<Int>(),
                 )
@@ -504,7 +504,7 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
                     val newInstances = props.instances.json
                     newInstances.remove(newInstances.size() - 1)
                     props.instances.json = newInstances
-                    null
+                    return@addOverload
                 })
                 .build()
 
@@ -526,7 +526,7 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
                             )
                         }
                         props.instances.json = newInstances
-                        null
+                        return@addOverload
                     },
                     "instance" to typeOf<PyObject>(),
                 )
@@ -561,7 +561,7 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
                         }
 
                         props.instances.json = newInstances
-                        null
+                        return@addOverload
                     },
                     "index" to typeOf<Int>(),
                     "instance" to typeOf<PyObject>(),
