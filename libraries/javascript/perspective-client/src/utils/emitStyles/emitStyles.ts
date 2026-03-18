@@ -1,7 +1,8 @@
-import { StyleObject } from '@inductiveautomation/perspective-client'
-import uniqueClasses from '../uniqueClasses'
-import formatStyleNames from '../formatStyleNames'
 import { CSSProperties } from 'react'
+import { uniqueClasses } from '@embr-js/utils'
+import { StyleObject } from '@inductiveautomation/perspective-client'
+
+import formatStyleNames from '../formatStyleNames'
 
 /**
  * Emit Perspective StyleObject styling

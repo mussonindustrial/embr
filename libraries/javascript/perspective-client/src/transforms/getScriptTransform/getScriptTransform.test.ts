@@ -1,6 +1,7 @@
 import { it, expect, describe } from 'vitest'
-import { default as getScriptTransform } from './index'
 import { ComponentStore } from '@inductiveautomation/perspective-client'
+
+import getScriptTransform from './getScriptTransform'
 
 describe('getScriptTransform', () => {
   it('transform a script string to a function', async () => {

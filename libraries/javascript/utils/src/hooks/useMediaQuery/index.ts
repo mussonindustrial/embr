@@ -31,7 +31,7 @@ export function useMediaQuery(
   useEffect(() => {
     const matchMedia = window.matchMedia(query)
 
-    // Triggered at the first client-side load and if query changes
+    // Triggered at the first client-side load and if the query changes
     handleChange()
     matchMedia.addEventListener('change', handleChange)
 
