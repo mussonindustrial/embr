@@ -1,5 +1,26 @@
 # @mussonindustrial/embr-js-chart-js
 
+## 0.12.0
+
+### Minor Changes
+
+- dd8a25b: `runJavaScript` functions now expose `perspective.context.component`. This is the client-side `ComponentModel` of the component that made the `runJavaScript` function call.
+  - This is `undefined` when targeting a specific `session`/`page`.
+- dd8a25b: `runJavaScript` functions now expose `perspective.context.view`, the client-side `ViewModel` of the view that made the `runJavaScript` call.
+  - This is `undefined` when targeting a specific `session`/`page`.
+
+### Patch Changes
+
+- 2aa9142: Toast container now smoothly transitions when docks are open/closed.
+- 06455f1: Remove dock padding when screen size suggests a mobile device. This allows the toast to span the full device width when docks are present on mobile.
+- afa89e6: Move z-index to the toast root container. Resolves #435.
+- cb55367: Refactor to properly distribute functions between `perspective-client` and `utils`. `utils` should be usable by any React project, and `perspective-client` should contain all helpers that are specific to Perspective.
+- Updated dependencies [dd8a25b]
+- Updated dependencies [ca09383]
+- Updated dependencies [cb55367]
+  - @embr-js/perspective-client@0.6.2
+  - @embr-js/utils@0.6.2
+
 ## 0.11.0
 
 ## 0.10.1
