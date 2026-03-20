@@ -1,5 +1,12 @@
 # @embr-js/perspective-client
 
+## 0.6.2
+
+### Patch Changes
+
+- dd8a25b: Added `getChildStore` helper function. Allows traversing an `ElementStore` by a list of path components.
+- cb55367: Refactor to properly distribute functions between `perspective-client` and `utils`. `utils` should be usable by any React project, and `perspective-client` should contain all helpers that are specific to Perspective.
+
 ## 0.6.1
 
 ### Patch Changes
