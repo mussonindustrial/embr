@@ -1,5 +1,16 @@
 # @mussonindustrial/embr-js-chart-js
 
+## 4.0.3
+
+### Patch Changes
+
+- 73c0810: Refactor to properly distribute functions between `perspective-client` and `utils`. `utils` should be usable by any React project, and `perspective-client` should contain all helpers that are specific to Perspective.
+- Updated dependencies [4bed2b3]
+- Updated dependencies [d60a939]
+- Updated dependencies [73c0810]
+  - @embr-js/perspective-client@0.6.2
+  - @embr-js/utils@0.6.2
+
 ## 4.0.2
 
 ## 4.0.1

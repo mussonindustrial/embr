@@ -1,7 +1,7 @@
 {
     "name": "@embr-modules/periscope-web",
     "private": true,
-    "version": "0.11.0",
+    "version": "0.12.0",
     "scripts": {
         "dev": "vite",
         "build": "tsc && nx vite:build && nx vite:test --run",
@@ -12,8 +12,8 @@
         "lint:prettier": "prettier -c . --cache --ignore-path=../../.prettierignore"
     },
     "dependencies": {
-        "@embr-js/utils": "0.6.1",
-        "@embr-js/perspective-client": "0.6.1",
+        "@embr-js/utils": "0.6.2",
+        "@embr-js/perspective-client": "0.6.2",
         "react-toastify": "11.0.5",
         "swiper": "11.2.10"
     }
