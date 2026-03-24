@@ -3,6 +3,7 @@ package com.mussonindustrial.embr.sse
 import com.inductiveautomation.ignition.common.licensing.LicenseState
 import com.inductiveautomation.ignition.gateway.model.AbstractGatewayModuleHook
 import com.inductiveautomation.ignition.gateway.model.GatewayContext
+import com.mussonindustrial.embr.common.Embr
 import com.mussonindustrial.embr.common.logging.getLogger
 import com.mussonindustrial.embr.sse.servlets.EventStreamServlet
 import com.mussonindustrial.embr.sse.servlets.EventStreamSessionServlet
