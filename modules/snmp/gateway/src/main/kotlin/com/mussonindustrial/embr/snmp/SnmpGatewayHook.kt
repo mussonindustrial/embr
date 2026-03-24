@@ -95,7 +95,7 @@ class SnmpGatewayHook : AbstractDeviceModuleHook() {
     }
 
     override fun isFreeModule(): Boolean {
-        return true
+        return !Embr.isLicenseRequested()
     }
 
     override fun isMakerEditionCompatible(): Boolean {

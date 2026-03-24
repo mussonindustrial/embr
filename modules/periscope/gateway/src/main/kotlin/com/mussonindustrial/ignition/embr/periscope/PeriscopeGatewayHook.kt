@@ -6,8 +6,8 @@ import com.inductiveautomation.ignition.common.script.ScriptManager
 import com.inductiveautomation.ignition.common.script.hints.PropertiesFileDocProvider
 import com.inductiveautomation.ignition.gateway.model.AbstractGatewayModuleHook
 import com.inductiveautomation.ignition.gateway.model.GatewayContext
+import com.mussonindustrial.embr.common.Embr
 import com.mussonindustrial.ignition.embr.periscope.Meta.SHORT_MODULE_ID
-import com.mussonindustrial.ignition.embr.periscope.component.embedding.*
 import com.mussonindustrial.ignition.embr.periscope.scripting.JavaScriptFunctions
 import com.mussonindustrial.ignition.embr.periscope.scripting.QueueFunctions
 import java.util.*
@@ -56,7 +56,7 @@ class PeriscopeGatewayHook : AbstractGatewayModuleHook() {
     }
 
     override fun isFreeModule(): Boolean {
-        return true
+        return !Embr.isLicenseRequested()
     }
 
     override fun isMakerEditionCompatible(): Boolean {

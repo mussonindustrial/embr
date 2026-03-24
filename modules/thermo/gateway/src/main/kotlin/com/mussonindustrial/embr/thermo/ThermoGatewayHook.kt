@@ -6,6 +6,7 @@ import com.inductiveautomation.ignition.common.script.ScriptManager
 import com.inductiveautomation.ignition.common.script.hints.PropertiesFileDocProvider
 import com.inductiveautomation.ignition.gateway.model.AbstractGatewayModuleHook
 import com.inductiveautomation.ignition.gateway.model.GatewayContext
+import com.mussonindustrial.embr.common.Embr
 import com.mussonindustrial.embr.common.logging.getLogger
 import com.mussonindustrial.embr.thermo.expressions.IF97ExpressionFunction
 import com.mussonindustrial.embr.thermo.scripting.IF97ScriptModuleImpl
@@ -55,7 +56,7 @@ class ThermoGatewayHook : AbstractGatewayModuleHook() {
     }
 
     override fun isFreeModule(): Boolean {
-        return true
+        return !Embr.isLicenseRequested()
     }
 
     override fun isMakerEditionCompatible(): Boolean {
