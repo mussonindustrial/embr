@@ -11,6 +11,9 @@ import javax.swing.SwingUtilities
 
 class EmbrStatusBarButton(private val context: EmbrDesignerContext) : JLabel() {
 
+    val colorRed = "#ff5c5c"
+    val colorGreen = "#5cff7c"
+
     init {
         icon = EmbrDesignerIcons.emblem
         text = if (context.unlicensedEmbrModules.isNotEmpty()) "Embr (UNLICENSED)" else ""
@@ -34,9 +37,9 @@ class EmbrStatusBarButton(private val context: EmbrDesignerContext) : JLabel() {
                 val isLicensed =
                     licenseMode == LicenseMode.Activated || licenseMode == LicenseMode.Free
                 if (isLicensed) {
-                    "<font color='green'>${module.name}</font> ✅"
+                    "<font color='$colorGreen'>${module.name}</font>"
                 } else {
-                    "<font color='red'>${module.name} <b>(<u>UNLICENSED</u>)</b></font>"
+                    "<font color='$colorRed'>${module.name} <b>(<u>UNLICENSED</u>)</b></font>"
                 }
             }
 
