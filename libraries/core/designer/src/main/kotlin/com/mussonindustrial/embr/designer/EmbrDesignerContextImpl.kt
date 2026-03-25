@@ -35,10 +35,9 @@ open class EmbrDesignerContextImpl(private val context: DesignerContext) :
 
         context.frame.onWindowOpenedOnce {
             helpMenu?.insert(EmbrHelpMenuItem(), 1)
-            statusBar.addDisplay(EmbrStatusBarButton(this), 1)
-
             if (unlicensedEmbrModules.isNotEmpty()) {
                 EmbrStartupModal()
+                statusBar.addDisplay(EmbrStatusBarButton(this), 1)
             }
         }
     }

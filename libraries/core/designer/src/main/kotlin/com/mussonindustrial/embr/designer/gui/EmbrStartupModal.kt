@@ -9,7 +9,7 @@ import javax.swing.Timer
 class EmbrStartupModal : JWindow() {
 
     private val executor = Executors.newSingleThreadScheduledExecutor()
-    private val autocloseDelay = 2000
+    private val autocloseDelay = 1000
     private val fadeDuration = 300L
 
     init {
