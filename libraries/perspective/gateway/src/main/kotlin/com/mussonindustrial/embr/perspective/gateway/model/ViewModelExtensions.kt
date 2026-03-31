@@ -37,7 +37,11 @@ fun ViewModel.writeToParams(params: JsonObject, origin: Origin, source: Any) {
 
 fun ViewModel.writeToParams(param: String, value: JsonElement, origin: Origin, source: Any) {
 
-    val paramType = this.config.paramDefinitions.toList().find { (key, _) -> key == param }?.value
+    val paramType =
+        this.config.paramDefinitions
+            .toList()
+            .find { (key, _) -> key == param || param.startsWith("$key.") }
+            ?.value
     if (paramType != ParamType.input && paramType != ParamType.inout) {
         return
     }
