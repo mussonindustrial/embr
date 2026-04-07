@@ -2,6 +2,7 @@ package embr.build
 
 import com.github.gradle.node.npm.task.NpxTask
 import libs
+import org.gradle.kotlin.dsl.register
 
 plugins {
     id("embr.build.kotlin-library")
@@ -41,7 +42,7 @@ val nxBuild =
     }
 
 val nxClean =
-    tasks.create<Delete>("nxClean") {
+    tasks.register<Delete>("nxClean") {
         group = "nx"
         delete = setOf("${projectDir}/dist")
     }
