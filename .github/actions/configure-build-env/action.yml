@@ -27,7 +27,7 @@ runs:
         distribution: 'zulu'
 
     - name: Setup Gradle
-      uses: gradle/actions/setup-gradle@v4
+      uses: gradle/actions/setup-gradle@v6
       with:
         cache-read-only: ${{ github.event_name == 'pull_request' }}
         build-scan-publish: true
@@ -39,10 +39,10 @@ runs:
       run: chmod +x ./gradlew
 
     - name: Validate Gradle wrapper
-      uses: gradle/actions/wrapper-validation@v4
+      uses: gradle/actions/wrapper-validation@v6
 
     - name: Set up Node
-      uses: actions/setup-node@v4
+      uses: actions/setup-node@v6
       with:
         node-version: '${{ inputs.node-version }}'
         cache: 'yarn'
