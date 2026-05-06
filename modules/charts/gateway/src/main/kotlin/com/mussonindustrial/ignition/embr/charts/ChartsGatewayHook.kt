@@ -48,7 +48,7 @@ class ChartsGatewayHook : AbstractGatewayModuleHook() {
     }
 
     override fun isFreeModule(): Boolean {
-        return true
+        return !Embr.isLicenseRequired()
     }
 
     override fun isMakerEditionCompatible(): Boolean {
