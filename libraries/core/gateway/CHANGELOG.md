@@ -1,5 +1,11 @@
 # @mussonindustrial/embr-jvm-core-gateway
 
+## 0.8.1
+
+### Patch Changes
+
+- @embr-jvm/core-common@0.8.1
+
 ## 0.8.0
 
 ### Patch Changes

@@ -1,5 +1,15 @@
 # @mussonindustrial/embr-jvm-core-designer
 
+## 0.8.1
+
+### Patch Changes
+
+- dd650fb: Add an Embr splash screen for unlicensed gateways.
+- dd650fb: Add an `Embr Help` button to the designer's Help menu.
+- dd650fb: Add a button to the Designer's status bar for unlicensed gateways. Clicking on this button will navigate the user to Embr's documentation.
+  - The button's tooltip displays the license status for each Embr module.
+  - @embr-jvm/core-common@0.8.1
+
 ## 0.8.0
 
 ### Patch Changes
