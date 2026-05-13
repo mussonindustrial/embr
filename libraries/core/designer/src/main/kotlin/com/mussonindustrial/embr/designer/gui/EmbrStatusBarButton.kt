@@ -16,7 +16,7 @@ class EmbrStatusBarButton(private val context: EmbrDesignerContext) : JLabel() {
 
     init {
         icon = EmbrDesignerIcons.emblem
-        text = if (context.unlicensedEmbrModules.isNotEmpty()) "Embr (UNLICENSED)" else ""
+        text = if (context.unlicensedEmbrModules.isNotEmpty()) "Embr (UNSUPPORTED)" else ""
         toolTipText = buildTooltipHtml()
 
         addMouseListener(
@@ -39,7 +39,7 @@ class EmbrStatusBarButton(private val context: EmbrDesignerContext) : JLabel() {
                 if (isLicensed) {
                     "<font color='$colorGreen'>${module.name}</font>"
                 } else {
-                    "<font color='$colorRed'>${module.name} <b>(<u>UNLICENSED</u>)</b></font>"
+                    "<font color='$colorRed'>${module.name} <b>(<u>UNSUPPORTED</u>)</b></font>"
                 }
             }
 
