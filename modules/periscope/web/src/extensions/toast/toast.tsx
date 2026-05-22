@@ -1,10 +1,8 @@
-import { merge } from 'lodash'
 import { observer } from 'mobx-react-lite'
 import React from 'react'
 import { createRoot } from 'react-dom/client'
 import { toast, ToastContainer } from 'react-toastify'
 
-import { getEmbrGlobals } from '@embr-js/perspective-client'
 import { useMediaQuery } from '@embr-js/utils'
 import { ClientStore } from '@inductiveautomation/perspective-client'
 import { DockOffset } from '@inductiveautomation/perspective-client/build/dist/typedefs/stores/MountStore'
@@ -60,10 +58,5 @@ export function installToasts(clientStore: ClientStore) {
     <CenterToastContainer dockOffset={clientStore.mounts.dockOffset} />
   )
 
-  const embrGlobals = getEmbrGlobals()
-  merge(embrGlobals.scripting.globals, {
-    periscope: {
-      toast,
-    },
-  })
+  Embr.scripting.add('periscope', 'toast', toast)
 }

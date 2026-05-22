@@ -1,5 +1,6 @@
 import { JsObject } from '@inductiveautomation/perspective-client'
-import { CallingContext } from './ScriptingGlobals'
+
+import { CallingContext } from '../stores'
 
 export const PROTOCOL = {
   SEND_MESSAGE: 'send-message',
