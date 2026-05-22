@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg version="1.1" viewBox="0 0 1600 1600" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="800" cy="800" r="137.03" fill="#b3b3b3" stroke-width="66.843"/>
+  <g transform="matrix(66.843 0 0 66.843 800 800)" fill="none" stroke="#808080" stroke-width="1.496">
+    <ellipse rx="11" ry="4.2"/>
+    <ellipse transform="rotate(60)" rx="11" ry="4.2"/>
+    <ellipse transform="rotate(120)" rx="11" ry="4.2"/>
+  </g>
+</svg>
