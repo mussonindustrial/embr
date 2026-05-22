@@ -10,4 +10,8 @@ dependencies {
     modlImplementation(projects.libraries.perspective.gateway)
     compileOnly(projects.modules.periscope.common)
     modlImplementation(projects.modules.periscope.web)
+    compileOnly(libs.jetty.server)
+    compileOnly(libs.jetty.servlet)
+    modlImplementation(libs.jetty.servlets)
+    modlImplementation(projects.libraries.core.servlets)
 }
