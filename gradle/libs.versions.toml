@@ -10,7 +10,7 @@ kotest = "6.0.0"
 node-gradle = "7.1.0"
 rhino = "1.7.15"
 snmp4j = "3.9.7"
-spotless = "8.4.0"
+spotless = "8.5.1"
 
 [plugins]
 ignition-module = { id = "io.ia.sdk.modl", version.ref = "ignition-module" }
