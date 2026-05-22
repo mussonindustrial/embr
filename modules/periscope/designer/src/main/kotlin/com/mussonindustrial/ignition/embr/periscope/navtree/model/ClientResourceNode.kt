@@ -1,6 +1,6 @@
 package com.mussonindustrial.ignition.embr.periscope.navtree.model
 
-import com.inductiveautomation.ignition.common.project.resource.ProjectResource
+import com.inductiveautomation.ignition.common.resourcecollection.Resource
 import com.inductiveautomation.ignition.designer.model.DesignerContext
 import com.inductiveautomation.ignition.designer.navtree.model.AbstractNavTreeNode
 import com.inductiveautomation.ignition.designer.tabbedworkspace.TabbedResourceWorkspace
@@ -17,10 +17,10 @@ import javax.swing.tree.TreePath
 abstract class ClientResourceNode<out T : ClientResource>(
     context: DesignerContext,
     workspace: TabbedResourceWorkspace,
-    val resource: ProjectResource,
+    val resource: Resource,
 ) : HiddenActionResourceNode(context, workspace, resource) {
 
-    abstract fun getClientResource(resource: ProjectResource): T
+    abstract fun getClientResource(resource: Resource): T
 
     override fun addShiftClickMenuItems(
         menu: JPopupMenu,

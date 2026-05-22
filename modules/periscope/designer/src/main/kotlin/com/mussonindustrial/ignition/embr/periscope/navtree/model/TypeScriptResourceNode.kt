@@ -1,6 +1,6 @@
 package com.mussonindustrial.ignition.embr.periscope.navtree.model
 
-import com.inductiveautomation.ignition.common.project.resource.ProjectResource
+import com.inductiveautomation.ignition.common.resourcecollection.Resource
 import com.inductiveautomation.ignition.designer.model.DesignerContext
 import com.inductiveautomation.ignition.designer.tabbedworkspace.TabbedResourceWorkspace
 import com.mussonindustrial.ignition.embr.periscope.icons.PeriscopeIcons
@@ -11,7 +11,7 @@ import javax.swing.Icon
 class TypeScriptResourceNode(
     context: DesignerContext,
     workspace: TabbedResourceWorkspace,
-    resource: ProjectResource,
+    resource: Resource,
 ) : ClientResourceNode<TypeScriptResource>(context, workspace, resource) {
 
     companion object {
@@ -20,7 +20,7 @@ class TypeScriptResourceNode(
                 override fun createNode(
                     context: DesignerContext,
                     workspace: TabbedResourceWorkspace,
-                    resource: ProjectResource,
+                    resource: Resource,
                 ): TypeScriptResourceNode {
                     return TypeScriptResourceNode(context, workspace, resource)
                 }
@@ -31,7 +31,7 @@ class TypeScriptResourceNode(
         return PeriscopeIcons.tsx
     }
 
-    override fun getClientResource(resource: ProjectResource): TypeScriptResource {
+    override fun getClientResource(resource: Resource): TypeScriptResource {
         return TypeScriptResource.fromResource(resource)
     }
 }

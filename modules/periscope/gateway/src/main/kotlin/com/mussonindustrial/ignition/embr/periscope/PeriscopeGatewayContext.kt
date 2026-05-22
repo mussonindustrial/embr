@@ -1,6 +1,7 @@
 package com.mussonindustrial.ignition.embr.periscope
 
-import com.inductiveautomation.ignition.gateway.dataroutes.RouteAccessControl
+import com.codahale.metrics.health.HealthCheckRegistry
+import com.inductiveautomation.ignition.gateway.dataroutes.AccessControlStrategy
 import com.inductiveautomation.ignition.gateway.model.DiagnosticsManager
 import com.inductiveautomation.ignition.gateway.model.GatewayContext
 import com.inductiveautomation.ignition.gateway.model.TelemetryManager
@@ -115,6 +116,10 @@ class PeriscopeGatewayContext(private val context: GatewayContext) :
         servletManager.removeAllServlets()
     }
 
+    override fun getHealthCheckRegistry(): HealthCheckRegistry? {
+        return super.getHealthCheckRegistry()
+    }
+
     override fun getTelemetryManager(): TelemetryManager? {
         return super.getTelemetryManager()
     }
@@ -123,8 +128,8 @@ class PeriscopeGatewayContext(private val context: GatewayContext) :
         return super.getDiagnosticsManager()
     }
 
-    fun requireSession(scopes: EnumSet<SessionScope>): RouteAccessControl {
+    fun requireSession(scopes: EnumSet<SessionScope>): AccessControlStrategy {
         val internal = Routes::class.java.getPrivateMethod("requireSession", EnumSet::class.java)
-        return internal.invoke(Routes::class.java, scopes) as RouteAccessControl
+        return internal.invoke(Routes::class.java, scopes) as AccessControlStrategy
     }
 }

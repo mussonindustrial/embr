@@ -1,7 +1,6 @@
 import { getChildStore } from '@embr-js/perspective-client'
 import { toUserScript, UserScriptParams } from '@embr-js/utils'
 import { ClientStore } from '@inductiveautomation/perspective-client'
-import { getChildStore } from '@embr-js/perspective-client'
 
 export const PROTOCOL = {
   RUN: 'periscope-js-run',

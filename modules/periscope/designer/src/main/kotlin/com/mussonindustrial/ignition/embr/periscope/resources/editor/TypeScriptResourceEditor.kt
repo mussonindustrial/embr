@@ -1,8 +1,8 @@
 package com.mussonindustrial.ignition.embr.periscope.resources.editor
 
-import com.inductiveautomation.ignition.common.project.resource.ProjectResource
-import com.inductiveautomation.ignition.common.project.resource.ProjectResourceBuilder
-import com.inductiveautomation.ignition.common.project.resource.ResourcePath
+import com.inductiveautomation.ignition.common.resourcecollection.Resource
+import com.inductiveautomation.ignition.common.resourcecollection.ResourceBuilder
+import com.inductiveautomation.ignition.common.resourcecollection.ResourcePath
 import com.inductiveautomation.ignition.designer.tabbedworkspace.ResourceEditor
 import com.inductiveautomation.ignition.designer.tabbedworkspace.TabbedResourceWorkspace
 import com.mussonindustrial.ignition.embr.periscope.PeriscopeDesignerContext
@@ -16,8 +16,7 @@ import org.json.JSONException
 class TypeScriptResourceEditor(workspace: TabbedResourceWorkspace, path: ResourcePath) :
     CompiledResourceEditor<TypeScriptResource>(workspace, path) {
 
-    private val context = PeriscopeDesignerContext.instance
-    override val compiler = TypeScriptCompiler(context.bridge)
+    override val compiler = TypeScriptCompiler(PeriscopeDesignerContext.instance.bridge)
 
     companion object {
         val factory =
@@ -58,12 +57,12 @@ class TypeScriptResourceEditor(workspace: TabbedResourceWorkspace, path: Resourc
         return TypeScriptResource(resource.fileLocations, fileContents, compilerMetadata)
     }
 
-    override fun deserialize(resource: ProjectResource): TypeScriptResource {
+    override fun deserialize(resource: Resource): TypeScriptResource {
         return TypeScriptResource.fromResource(resource)
     }
 
     @Throws(JSONException::class)
-    override fun serializeResource(builder: ProjectResourceBuilder, resource: TypeScriptResource) {
+    override fun serializeResource(builder: ResourceBuilder, resource: TypeScriptResource) {
         resource.applyToBuilder(builder)
     }
 }

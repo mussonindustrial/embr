@@ -2,7 +2,7 @@ package com.mussonindustrial.ignition.embr.periscope.resources
 
 import com.inductiveautomation.ignition.common.BundleUtil
 import com.inductiveautomation.ignition.common.model.ApplicationScope
-import com.inductiveautomation.ignition.common.project.resource.ResourcePath
+import com.inductiveautomation.ignition.common.resourcecollection.ResourcePath
 import com.inductiveautomation.ignition.designer.model.DesignerContext
 import com.inductiveautomation.ignition.designer.navtree.model.AbstractNavTreeNode
 import com.inductiveautomation.ignition.designer.navtree.model.MutableNavTreeNode
@@ -38,7 +38,7 @@ class ClientResourceWorkspace(
     private val logger = this.getLogger()
 
     override fun getKey(): String {
-        return ClientResource.type.typeId
+        return ClientResource.type.typeId!!
     }
 
     public override fun getNavTreeNodeParent(): MutableNavTreeNode {

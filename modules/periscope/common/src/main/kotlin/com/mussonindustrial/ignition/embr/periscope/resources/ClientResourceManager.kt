@@ -1,6 +1,6 @@
 package com.mussonindustrial.ignition.embr.periscope.resources
 
-import com.inductiveautomation.ignition.common.project.resource.ProjectResource
+import com.inductiveautomation.ignition.common.resourcecollection.Resource
 
 class ClientResourceManager {
 
@@ -17,13 +17,13 @@ class ClientResourceManager {
         descriptorsByType[definition.type] = definition
     }
 
-    fun fromResource(resource: ProjectResource): ClientResource? {
+    fun fromResource(resource: Resource): ClientResource? {
         val type = ClientResource.getType(resource) ?: return null
         val definition = descriptorsByType[type] ?: return null
         return definition.fromResource(resource)
     }
 
-    fun getDescriptor(resource: ProjectResource): ClientResourceDescriptor<out ClientResource>? {
+    fun getDescriptor(resource: Resource): ClientResourceDescriptor<out ClientResource>? {
         val type = ClientResource.getType(resource) ?: return null
         return descriptorsByType[type]
     }

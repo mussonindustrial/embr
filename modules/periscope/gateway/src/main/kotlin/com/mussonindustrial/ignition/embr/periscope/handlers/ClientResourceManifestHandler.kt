@@ -2,6 +2,8 @@ package com.mussonindustrial.ignition.embr.periscope.handlers
 
 import com.inductiveautomation.ignition.common.gson.JsonArray
 import com.inductiveautomation.ignition.common.gson.JsonObject
+import com.inductiveautomation.ignition.common.model.ApplicationScope
+import com.inductiveautomation.ignition.common.resourcecollection.ResourceFilter
 import com.inductiveautomation.ignition.gateway.dataroutes.HttpMethod
 import com.inductiveautomation.ignition.gateway.dataroutes.RequestContext
 import com.inductiveautomation.ignition.gateway.dataroutes.RouteGroup
@@ -13,8 +15,9 @@ import com.mussonindustrial.ignition.embr.periscope.PeriscopeGatewayContext
 import com.mussonindustrial.ignition.embr.periscope.resources.ClientResource
 import com.mussonindustrial.ignition.embr.periscope.utils.getClientResourceHash
 import com.mussonindustrial.ignition.embr.periscope.utils.getHashKey
+import jakarta.servlet.http.HttpServletResponse
 import java.util.EnumSet
-import javax.servlet.http.HttpServletResponse
+import kotlin.jvm.optionals.getOrNull
 
 class ClientResourceManifestHandler(val context: PeriscopeGatewayContext) : RouteHandler {
 
@@ -24,7 +27,7 @@ class ClientResourceManifestHandler(val context: PeriscopeGatewayContext) : Rout
         routeMounter
             .method(HttpMethod.GET)
             .type("application/json")
-            .restrict(context.requireSession(EnumSet.allOf(SessionScope::class.java)))
+            .accessControl(context.requireSession(EnumSet.allOf(SessionScope::class.java)))
             .handler(this)
             .mount()
     }
@@ -33,17 +36,31 @@ class ClientResourceManifestHandler(val context: PeriscopeGatewayContext) : Rout
         val projectName = request.getParameter("project_name")
         logger.trace("Manifest request for project: $projectName")
 
-        val project = context.projectManager.getProject(projectName).orElse(null)
-        if (project == null) {
-            response.sendError(HttpServletResponse.SC_NOT_FOUND, "Project not found: $projectName")
+        if (projectName == null) {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND, "No project name provided.")
             return
         }
 
         val librariesArray = JsonArray()
-        val resources = project.getResourcesOfType(ClientResource.type)
+        val collection =
+            context.projectManager
+                .find(
+                    projectName,
+                    ResourceFilter(ApplicationScope.ALL, listOf(ClientResource.type)),
+                )
+                .getOrNull()
+        if (collection == null) {
+            response.sendError(
+                HttpServletResponse.SC_NOT_FOUND,
+                "No resource collection found for project: $projectName.",
+            )
+            return
+        }
+
+        val resources = collection.getResourcesOfType(ClientResource.type)
         logger.trace("Found ${resources.size} Client resources")
 
-        val hash = project.getClientResourceHash()
+        val hash = collection.getClientResourceHash()
 
         val resourcesArray =
             JsonArray().apply {

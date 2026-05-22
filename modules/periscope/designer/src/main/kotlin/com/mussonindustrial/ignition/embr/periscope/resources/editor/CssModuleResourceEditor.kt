@@ -1,8 +1,8 @@
 package com.mussonindustrial.ignition.embr.periscope.resources.editor
 
-import com.inductiveautomation.ignition.common.project.resource.ProjectResource
-import com.inductiveautomation.ignition.common.project.resource.ProjectResourceBuilder
-import com.inductiveautomation.ignition.common.project.resource.ResourcePath
+import com.inductiveautomation.ignition.common.resourcecollection.Resource
+import com.inductiveautomation.ignition.common.resourcecollection.ResourceBuilder
+import com.inductiveautomation.ignition.common.resourcecollection.ResourcePath
 import com.inductiveautomation.ignition.designer.tabbedworkspace.ResourceEditor
 import com.inductiveautomation.ignition.designer.tabbedworkspace.TabbedResourceWorkspace
 import com.mussonindustrial.ignition.embr.periscope.PeriscopeDesignerContext
@@ -16,8 +16,7 @@ import org.json.JSONException
 class CssModuleResourceEditor(workspace: TabbedResourceWorkspace, path: ResourcePath) :
     CompiledResourceEditor<CssModuleResource>(workspace, path) {
 
-    private val context = PeriscopeDesignerContext.instance
-    override val compiler = CssModuleCompiler(context.bridge)
+    override val compiler = CssModuleCompiler(PeriscopeDesignerContext.instance.bridge)
 
     companion object {
         val factory =
@@ -58,12 +57,12 @@ class CssModuleResourceEditor(workspace: TabbedResourceWorkspace, path: Resource
         return CssModuleResource(resource.fileLocations, fileContents, compilerMetadata)
     }
 
-    override fun deserialize(resource: ProjectResource): CssModuleResource {
+    override fun deserialize(resource: Resource): CssModuleResource {
         return CssModuleResource.fromResource(resource)
     }
 
     @Throws(JSONException::class)
-    override fun serializeResource(builder: ProjectResourceBuilder, resource: CssModuleResource) {
+    override fun serializeResource(builder: ResourceBuilder, resource: CssModuleResource) {
         resource.applyToBuilder(builder)
     }
 }

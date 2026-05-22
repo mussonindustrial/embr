@@ -1,6 +1,6 @@
 package com.mussonindustrial.ignition.embr.periscope.navtree.model
 
-import com.inductiveautomation.ignition.common.project.resource.ProjectResource
+import com.inductiveautomation.ignition.common.resourcecollection.Resource
 import com.inductiveautomation.ignition.designer.model.DesignerContext
 import com.inductiveautomation.ignition.designer.navtree.model.AbstractNavTreeNode
 import com.inductiveautomation.ignition.designer.tabbedworkspace.ResourceFolderNode
@@ -17,10 +17,10 @@ open class ClientResourceFolder : ResourceFolderNode {
     constructor(
         context: DesignerContext,
         workspace: TabbedResourceWorkspace,
-        resource: ProjectResource,
+        resource: Resource,
     ) : super(context, workspace, resource)
 
-    override fun createChildNode(resource: ProjectResource): AbstractNavTreeNode? {
+    override fun createChildNode(resource: Resource): AbstractNavTreeNode? {
         if (resource.isFolder) {
             return ClientResourceFolder(context, workspace, resource)
         }

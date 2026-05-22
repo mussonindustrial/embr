@@ -2,7 +2,7 @@ package com.mussonindustrial.ignition.embr.periscope
 
 import com.inductiveautomation.ignition.common.BundleUtil
 import com.inductiveautomation.ignition.common.licensing.LicenseState
-import com.inductiveautomation.ignition.common.project.resource.ProjectResourceId
+import com.inductiveautomation.ignition.common.resourcecollection.ResourceId
 import com.inductiveautomation.ignition.designer.model.AbstractDesignerModuleHook
 import com.inductiveautomation.ignition.designer.model.DesignerContext
 import com.inductiveautomation.perspective.common.PerspectiveModule
@@ -62,7 +62,7 @@ class PeriscopeDesignerHook : AbstractDesignerModuleHook() {
         this.context.removeComponents()
     }
 
-    override fun getResourceIcon(id: ProjectResourceId): Icon? {
+    override fun getResourceIcon(id: ResourceId): Icon? {
         val resource = context.project?.getResource(id.resourcePath)?.orElse(null)
         if (resource == null) return null
 
@@ -72,7 +72,7 @@ class PeriscopeDesignerHook : AbstractDesignerModuleHook() {
         return descriptor.icon
     }
 
-    override fun getResourceCategoryKey(id: ProjectResourceId): String? {
+    override fun getResourceCategoryKey(id: ResourceId): String? {
         if (id.resourceType == ClientResource.type) return "periscope.client-resource.nouns-long"
         return null
     }

@@ -1,6 +1,6 @@
 package com.mussonindustrial.ignition.embr.periscope.handlers
 
-import com.inductiveautomation.ignition.common.project.resource.ResourcePath
+import com.inductiveautomation.ignition.common.resourcecollection.ResourcePath
 import com.inductiveautomation.ignition.gateway.dataroutes.HttpMethod
 import com.inductiveautomation.ignition.gateway.dataroutes.RequestContext
 import com.inductiveautomation.ignition.gateway.dataroutes.RouteGroup
@@ -10,9 +10,9 @@ import com.mussonindustrial.embr.common.logging.getLoggerEx
 import com.mussonindustrial.ignition.embr.periscope.PeriscopeGatewayContext
 import com.mussonindustrial.ignition.embr.periscope.js.ClientResourceImportRewriter
 import com.mussonindustrial.ignition.embr.periscope.resources.ClientResource
+import jakarta.servlet.http.HttpServletResponse
 import java.net.URLDecoder
 import java.util.EnumSet
-import javax.servlet.http.HttpServletResponse
 
 class ClientResourceHandler(val context: PeriscopeGatewayContext) : RouteHandler {
 
@@ -22,7 +22,7 @@ class ClientResourceHandler(val context: PeriscopeGatewayContext) : RouteHandler
         mounter
             .method(HttpMethod.GET)
             .type("text/javascript")
-            .restrict(context.requireSession(EnumSet.allOf(SessionScope::class.java)))
+            .accessControl(context.requireSession(EnumSet.allOf(SessionScope::class.java)))
             .handler(this)
             .mount()
     }
@@ -45,14 +45,10 @@ class ClientResourceHandler(val context: PeriscopeGatewayContext) : RouteHandler
         val resourceName = URLDecoder.decode(resourcePath, Charsets.UTF_8)
         logger.trace("Project: $projectName, Resource: $resourceName")
 
-        val project = context.projectManager.getProject(projectName).orElse(null)
-        if (project == null) {
-            response.sendError(HttpServletResponse.SC_NOT_FOUND, "Project not found: $projectName")
-            return
-        }
-
         val resource =
-            project.getResource(ResourcePath(ClientResource.type, resourceName)).orElse(null)
+            context.projectManager
+                .getResource(projectName, ResourcePath(ClientResource.type, resourceName))
+                .orElse(null)
         if (resource == null) {
             response.sendError(
                 HttpServletResponse.SC_NOT_FOUND,

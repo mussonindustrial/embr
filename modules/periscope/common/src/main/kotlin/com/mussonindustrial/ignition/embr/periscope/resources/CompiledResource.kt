@@ -1,9 +1,10 @@
 package com.mussonindustrial.ignition.embr.periscope.resources
 
-import com.inductiveautomation.ignition.common.project.resource.ProjectResource
-import com.inductiveautomation.ignition.common.project.resource.ProjectResourceBuilder
+import com.inductiveautomation.ignition.common.resourcecollection.Resource
+import com.inductiveautomation.ignition.common.resourcecollection.ResourceBuilder
 import com.inductiveautomation.ignition.common.util.fromJson
 import com.mussonindustrial.ignition.embr.periscope.resources.compiler.Compiler
+import kotlin.jvm.optionals.getOrNull
 
 sealed interface CompiledResource {
 
@@ -11,7 +12,7 @@ sealed interface CompiledResource {
     val fileLocations: FileLocations
     val compilerMetadata: CompilerMetadata
 
-    fun applyToBuilder(builder: ProjectResourceBuilder) {
+    fun applyToBuilder(builder: ResourceBuilder) {
         fileLocations.accept(builder)
         fileContents.accept(fileLocations, builder)
         compilerMetadata.accept(builder)
@@ -22,7 +23,7 @@ sealed interface CompiledResource {
             const val DATA_KEY = "files"
             val gson = Compiler.gson
 
-            fun fromResource(resource: ProjectResource): FileLocations {
+            fun fromResource(resource: Resource): FileLocations {
                 val json = resource.getAttribute(DATA_KEY).orElse(null)
                 if (json == null)
                     throw IllegalArgumentException("Malformed resource, no file locations found.")
@@ -30,7 +31,7 @@ sealed interface CompiledResource {
             }
         }
 
-        fun accept(builder: ProjectResourceBuilder) {
+        fun accept(builder: ResourceBuilder) {
             builder.putAttribute(DATA_KEY, gson.toJsonTree(this))
         }
     }
@@ -39,16 +40,16 @@ sealed interface CompiledResource {
         companion object {
             val EMPTY = FileContents("", "")
 
-            fun fromResource(resource: ProjectResource): FileContents {
+            fun fromResource(resource: Resource): FileContents {
                 val locations = FileLocations.fromResource(resource)
                 return FileContents(
-                    resource.getData(locations.source)?.decodeToString() ?: "",
-                    resource.getData(locations.compiled)?.decodeToString() ?: "",
+                    resource.getData(locations.source).getOrNull()?.bytesAsString ?: "",
+                    resource.getData(locations.compiled).getOrNull()?.bytesAsString ?: "",
                 )
             }
         }
 
-        fun accept(locations: FileLocations, builder: ProjectResourceBuilder) {
+        fun accept(locations: FileLocations, builder: ResourceBuilder) {
             builder.putData(locations.source, source.encodeToByteArray())
             builder.putData(locations.compiled, compiled.encodeToByteArray())
         }
@@ -60,11 +61,11 @@ sealed interface CompiledResource {
             val gson = Compiler.gson
             val EMPTY = CompilerMetadata("")
 
-            fun fromResource(resource: ProjectResource): CompilerMetadata =
+            fun fromResource(resource: Resource): CompilerMetadata =
                 gson.fromJson<CompilerMetadata>(resource.getAttribute(DATA_KEY).orElse(null))
         }
 
-        fun accept(builder: ProjectResourceBuilder) {
+        fun accept(builder: ResourceBuilder) {
             builder.putAttribute(DATA_KEY, gson.toJsonTree(this))
         }
     }

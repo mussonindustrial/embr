@@ -1,23 +1,23 @@
 package com.mussonindustrial.ignition.embr.periscope.utils
 
-import com.inductiveautomation.ignition.common.project.Project
-import com.inductiveautomation.ignition.common.project.resource.ProjectResource
+import com.inductiveautomation.ignition.common.resourcecollection.Resource
+import com.inductiveautomation.ignition.common.resourcecollection.ResourceCollection
 import com.mussonindustrial.ignition.embr.periscope.resources.ClientResource
 import java.security.MessageDigest
 import kotlin.sequences.forEach
 import org.apache.commons.codec.binary.Hex
 
-fun ProjectResource.getHashKey(): String {
-    return Hex.encodeHexString(resourceSignature.signature).substring(0, 20)
+fun Resource.getHashKey(): String {
+    return Hex.encodeHexString(resourceSignature.signature.bytes).substring(0, 20)
 }
 
-fun Project.getClientResourceHash(): String {
+fun ResourceCollection.getClientResourceHash(): String {
     val resources = this.getResourcesOfType(ClientResource.type)
     val digest = MessageDigest.getInstance("SHA-256")
 
     resources
         .asSequence()
-        .map { it.resourceSignature.signature }
+        .map { it.resourceSignature.signature.bytes }
         .sortedWith { a, b ->
             val len = minOf(a.size, b.size)
             for (i in 0 until len) {

@@ -1,6 +1,6 @@
 package com.mussonindustrial.embr.designer.navtree.model
 
-import com.inductiveautomation.ignition.common.project.resource.ProjectResource
+import com.inductiveautomation.ignition.common.resourcecollection.Resource
 import com.inductiveautomation.ignition.designer.model.DesignerContext
 import com.inductiveautomation.ignition.designer.navtree.model.AbstractNavTreeNode
 import com.inductiveautomation.ignition.designer.tabbedworkspace.ResourceNode
@@ -12,7 +12,7 @@ import javax.swing.tree.TreePath
 abstract class HiddenActionResourceNode(
     context: DesignerContext,
     workspace: TabbedResourceWorkspace,
-    resource: ProjectResource,
+    resource: Resource,
 ) : ResourceNode(context, workspace, resource) {
 
     fun JPopupMenu.item(text: String, action: (JMenuItem) -> Unit): JMenuItem {

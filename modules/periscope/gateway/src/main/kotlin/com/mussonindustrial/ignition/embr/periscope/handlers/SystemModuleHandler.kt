@@ -8,8 +8,8 @@ import com.inductiveautomation.perspective.gateway.api.SessionScope
 import com.mussonindustrial.embr.common.logging.getLoggerEx
 import com.mussonindustrial.ignition.embr.periscope.PeriscopeGatewayContext
 import com.mussonindustrial.ignition.embr.periscope.js.modules.SystemModule
+import jakarta.servlet.http.HttpServletResponse
 import java.util.EnumSet
-import javax.servlet.http.HttpServletResponse
 
 class SystemModuleHandler(val context: PeriscopeGatewayContext) : RouteHandler {
 
@@ -19,7 +19,7 @@ class SystemModuleHandler(val context: PeriscopeGatewayContext) : RouteHandler {
         mounter
             .method(HttpMethod.GET)
             .type("text/javascript")
-            .restrict(context.requireSession(EnumSet.allOf(SessionScope::class.java)))
+            .accessControl(context.requireSession(EnumSet.allOf(SessionScope::class.java)))
             .handler(this)
             .mount()
     }

@@ -1,6 +1,6 @@
 package com.mussonindustrial.ignition.embr.periscope.resources
 
-import com.inductiveautomation.ignition.common.project.resource.ProjectResource
+import com.inductiveautomation.ignition.common.resourcecollection.Resource
 import javax.swing.Icon
 
 interface ClientResourceDescriptor<T : ClientResource> {
@@ -38,7 +38,7 @@ interface ClientResourceDescriptor<T : ClientResource> {
         compilerMetadata: CompiledResource.CompilerMetadata,
     ): T
 
-    fun fromResource(resource: ProjectResource): T {
+    fun fromResource(resource: Resource): T {
         val locations = CompiledResource.FileLocations.fromResource(resource)
         val contents = CompiledResource.FileContents.fromResource(resource)
         val compilerMetadata = CompiledResource.CompilerMetadata.fromResource(resource)
