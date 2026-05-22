@@ -1,5 +1,4 @@
 export * from './components'
-export * from './globals'
 export * from './hooks'
 export * from './scripting'
 export * from './stores'

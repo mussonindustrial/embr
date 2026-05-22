@@ -24,10 +24,9 @@ import {
   getScriptTransform,
   JavaScriptRunEvent,
   useComponentEvents,
-  useDeepCompareMemo,
   useRefLifecycleEvents,
 } from '@embr-js/perspective-client'
-import { transformProps } from '@embr-js/utils'
+import { transformProps, useDeepCompareMemo } from '@embr-js/utils'
 
 import { ClientResourceComponent } from '@/extensions'
 

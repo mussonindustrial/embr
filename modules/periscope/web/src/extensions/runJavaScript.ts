@@ -1,5 +1,6 @@
 import { toUserScript, UserScriptParams } from '@embr-js/utils'
 import { ClientStore } from '@inductiveautomation/perspective-client'
+import { getChildStore } from '@embr-js/perspective-client'
 
 export const PROTOCOL = {
   RUN: 'periscope-js-run',
@@ -68,7 +69,22 @@ export function installRunJavaScript(clientStore: ClientStore) {
     }
 
     new Promise((resolve) => {
-      const globals = Embr.scripting.createGlobals({})
+      const view = clientStore.page.findView(
+        context.view?.resourcePath ?? '',
+        context.view?.mountPath ?? ''
+      )
+
+      const componentPath = getChildPath(
+        context.component?.componentAddressPath
+      )
+      const component = getChildStore(view, componentPath)
+
+      const globals = Embr.scripting.createGlobals({
+        client: clientStore,
+        page: clientStore.page,
+        view,
+        component,
+      })
 
       const f = toUserScript(functionLiteral, thisArg, globals)
       resolve(f.runNamed(args))
