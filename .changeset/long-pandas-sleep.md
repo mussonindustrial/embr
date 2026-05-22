@@ -1,5 +1,6 @@
 ---
-'@embr-module/charts': major
+'@embr-modules/charts': major
+'@embr-modules/periscope': minor
 '@embr-js/perspective-client': minor
 ---
 
