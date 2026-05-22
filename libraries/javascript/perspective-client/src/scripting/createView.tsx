@@ -1,10 +1,10 @@
 import { View } from '@inductiveautomation/perspective-client'
-import { CallingContext } from './ScriptingGlobals'
 import { ViewProps } from '@inductiveautomation/perspective-client/build/dist/typedefs/app/View'
 import React from 'react'
 
-export type CreateView = (props: ViewProps) => void
+import { CallingContext } from '../stores'
 
+export type CreateView = (props: ViewProps) => void
 export function createViewFunction(context: CallingContext) {
   const createView = (props: ViewProps) => {
     if (context.client === undefined) {
