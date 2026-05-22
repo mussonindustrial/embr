@@ -12,7 +12,7 @@
         "lint:prettier": "prettier -c . --cache --ignore-path=../../.prettierignore"
     },
     "dependencies": {
-        "@embr-js/utils": "0.6.1",
+        "@embr-js/utils": "0.6.2",
         "postcss": "8.5.14",
         "postcss-modules": "6.0.1"
     }
