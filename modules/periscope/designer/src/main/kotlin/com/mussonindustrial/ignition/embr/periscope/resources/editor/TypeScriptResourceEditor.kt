@@ -54,7 +54,7 @@ class TypeScriptResourceEditor(workspace: TabbedResourceWorkspace, path: Resourc
             }
 
         val fileContents = CompiledResource.FileContents(source, compiled)
-        val compilerMetadata = CompiledResource.CompilerMetadata.EMPTY
+        val compilerMetadata = CompiledResource.CompilerMetadata(compiler.version)
         return TypeScriptResource(resource.fileLocations, fileContents, compilerMetadata)
     }
 

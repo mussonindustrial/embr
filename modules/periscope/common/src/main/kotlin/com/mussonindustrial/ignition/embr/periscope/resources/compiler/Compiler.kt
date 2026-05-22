@@ -14,6 +14,8 @@ interface Compiler {
                 .create()
     }
 
+    val version: String
+
     fun compile(request: CompileRequest): CompileResult
 
     fun format(request: FormatRequest): FormatResult

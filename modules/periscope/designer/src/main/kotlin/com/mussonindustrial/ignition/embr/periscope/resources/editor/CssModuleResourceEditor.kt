@@ -54,7 +54,7 @@ class CssModuleResourceEditor(workspace: TabbedResourceWorkspace, path: Resource
             }
 
         val fileContents = CompiledResource.FileContents(source, compiled)
-        val compilerMetadata = CompiledResource.CompilerMetadata.EMPTY
+        val compilerMetadata = CompiledResource.CompilerMetadata(compiler.version)
         return CssModuleResource(resource.fileLocations, fileContents, compilerMetadata)
     }
 
