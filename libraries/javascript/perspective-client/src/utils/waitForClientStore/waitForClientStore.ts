@@ -1,18 +1,21 @@
 import { ClientStore } from '@inductiveautomation/perspective-client'
 import { getClientStore } from '../index'
 
-/**
- * Run a callback after the ClientStore is started.
- */
-export default function waitForClientStore(
-  callback: (clientStore: ClientStore) => void
-) {
-  requestAnimationFrame(function () {
-    const clientStore = getClientStore()
-    if (clientStore) {
-      callback(clientStore)
-    } else {
-      waitForClientStore(callback)
-    }
+export default async function waitForClientStore(): Promise<ClientStore> {
+  const existing = getClientStore()
+
+  if (existing) {
+    return existing
+  }
+
+  return new Promise((resolve) => {
+    const interval = setInterval(() => {
+      const store = getClientStore()
+
+      if (store) {
+        clearInterval(interval)
+        resolve(store)
+      }
+    }, 0)
   })
 }

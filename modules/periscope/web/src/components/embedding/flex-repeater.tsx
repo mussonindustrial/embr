@@ -15,9 +15,9 @@ import {
   ViewStateDisplay,
 } from '@inductiveautomation/perspective-client'
 
-import { JoinableView } from '../../util'
-import { formatStyleNames } from '@embr-js/perspective-client'
+import { JoinableView } from '@/extensions'
 import { mergeStyles, resolve } from '@embr-js/utils'
+import { formatStyleNames } from '@embr-js/perspective-client'
 
 const COMPONENT_TYPE = 'embr.periscope.embedding.flex-repeater'
 

@@ -3,7 +3,6 @@ import {
   JsObject,
 } from '@inductiveautomation/perspective-client'
 import { toUserScript } from '@embr-js/utils'
-import { createScriptingGlobals } from '../scripting'
 
 const MESSAGES = {
   JS_ERROR: 'js-error',
@@ -72,7 +71,7 @@ export class ComponentDelegateJavaScriptProxy<T extends object> {
 
   handleEvent(event: JavaScriptRunEvent) {
     this.run(event.id, () => {
-      const globals = createScriptingGlobals({
+      const globals = Embr.scripting.createGlobals({
         client: this.delegate.component.view.page.parent,
         page: this.delegate.component.view.page,
         view: this.delegate.component.view,
