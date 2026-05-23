@@ -6,6 +6,7 @@ import com.inductiveautomation.ignition.common.resourcecollection.RuntimeResourc
 import com.inductiveautomation.ignition.gateway.project.ProjectManager
 import com.inductiveautomation.ignition.gateway.resourcecollection.ResourceCollectionLifecycle
 import com.inductiveautomation.ignition.gateway.resourcecollection.ResourceCollectionLifecycleFactory
+import com.mussonindustrial.embr.perspective.gateway.session.PerspectiveSessionMonitor
 
 class ClientResourceChangeListener(
     val sessionMonitor: PerspectiveSessionMonitor,
@@ -21,6 +22,6 @@ class ClientResourceChangeListener(
     override fun createLifecycle(
         collection: RuntimeResourceCollection
     ): ResourceCollectionLifecycle {
-        return ClientResourceSessionNotifier(sessionMonitor, collection)
+        return ClientResourceChangeNotifier(sessionMonitor, collection)
     }
 }
