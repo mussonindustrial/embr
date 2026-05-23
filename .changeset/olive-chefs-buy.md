@@ -4,7 +4,7 @@
 '@embr-modules/periscope': minor
 ---
 
-### (Client Resource) Introduce Periscope Client Resource
+(Client Resource) Introduce Periscope Client Resource
 
 Client Resources are files compiled to JavaScript that are loaded by the Perspective client on launch.
 
@@ -12,7 +12,7 @@ There are currently two supported types:
 1. **TypeScript** (supports JavaScript, TypeScript, JSX, and TSX)
 2. **CSS Modules**
 
-All Client Resources run on page load/refresh, serving as a direct, robust alternative to Markdown Injection. They can also provide React components, which can be utilized via a new dedicated React Perspective component or anywhere you would normally use an `EmbeddedView`.
+All Client Resources run on page load/refresh, serving as a direct, robust alternative to Markdown Injection. They can also provide React components, which can be used via a new dedicated React Perspective component or anywhere you would normally use an `EmbeddedView`.
 
 #### Technical Details:
 * **ES Module Delivery:** Each Client Resource is served to the client as an ES Module.

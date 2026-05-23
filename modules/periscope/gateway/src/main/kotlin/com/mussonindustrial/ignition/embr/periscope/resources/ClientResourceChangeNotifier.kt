@@ -5,8 +5,9 @@ import com.inductiveautomation.ignition.common.resourcecollection.Resource
 import com.inductiveautomation.ignition.common.resourcecollection.ResourceId
 import com.inductiveautomation.ignition.common.resourcecollection.RuntimeResourceCollection
 import com.inductiveautomation.ignition.gateway.resourcecollection.ResourceCollectionLifecycle
+import com.mussonindustrial.embr.perspective.gateway.session.PerspectiveSessionMonitor
 
-class ClientResourceSessionNotifier(
+class ClientResourceChangeNotifier(
     val sessionMonitor: PerspectiveSessionMonitor,
     val collection: RuntimeResourceCollection,
 ) : ResourceCollectionLifecycle(collection) {

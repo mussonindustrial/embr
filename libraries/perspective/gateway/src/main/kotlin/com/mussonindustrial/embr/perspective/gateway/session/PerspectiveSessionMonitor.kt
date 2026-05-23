@@ -1,11 +1,12 @@
-package com.mussonindustrial.ignition.embr.periscope.resources
+package com.mussonindustrial.embr.perspective.gateway.session
 
 import com.google.common.eventbus.Subscribe
 import com.inductiveautomation.perspective.gateway.api.PerspectiveContext
 import com.inductiveautomation.perspective.gateway.event.SessionShutdownEvent
 import com.inductiveautomation.perspective.gateway.event.SessionStartupEvent
 import com.inductiveautomation.perspective.gateway.session.InternalSession
-import java.util.*
+import java.util.Objects
+import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
 import java.util.stream.Collectors
 
