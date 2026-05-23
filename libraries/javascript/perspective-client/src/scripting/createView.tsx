@@ -5,6 +5,7 @@ import React from 'react'
 import { CallingContext } from '../stores'
 
 export type CreateView = (props: ViewProps) => void
+
 export function createViewFunction(context: CallingContext) {
   const createView = (props: ViewProps) => {
     if (context.client === undefined) {
