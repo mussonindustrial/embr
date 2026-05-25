@@ -7,11 +7,6 @@ import com.inductiveautomation.ignition.designer.model.DesignerContext
 import com.inductiveautomation.ignition.designer.navtree.model.AbstractNavTreeNode
 import com.inductiveautomation.ignition.designer.navtree.model.MutableNavTreeNode
 import com.inductiveautomation.ignition.designer.tabbedworkspace.*
-import com.inductiveautomation.ignition.designer.workspacewelcome.RecentlyModifiedTablePanel
-import com.inductiveautomation.ignition.designer.workspacewelcome.ResourceBuilderDelegate
-import com.inductiveautomation.ignition.designer.workspacewelcome.ResourceBuilderPanel
-import com.inductiveautomation.ignition.designer.workspacewelcome.WorkspaceWelcomePanel
-import com.mussonindustrial.embr.common.logging.getLogger
 import com.mussonindustrial.ignition.embr.periscope.icons.PeriscopeIcons
 import com.mussonindustrial.ignition.embr.periscope.navtree.model.ClientResourceRootFolder
 import java.util.*
@@ -34,8 +29,6 @@ class ClientResourceWorkspace(
             .scope(ApplicationScope.GATEWAY)
             .build(),
     ) {
-
-    private val logger = this.getLogger()
 
     override fun getKey(): String {
         return ClientResource.type.typeId
@@ -63,41 +56,11 @@ class ClientResourceWorkspace(
         return descriptor.resourceEditorFactory.createResourceEditor(this, resourcePath)
     }
 
-    override fun addNewResourceActions(folderNode: ResourceFolderNode, menu: JPopupMenu) {
-        clientResourceManager.descriptors.forEach {
-            menu.add(NewClientResourceAction(this, folderNode, it))
-        }
-    }
-
     override fun createWorkspaceHomeTab(): Optional<JComponent> {
         return Optional.of<JComponent>(
-            object :
-                WorkspaceWelcomePanel(BundleUtil.i18n("periscope.client-resource.nouns-long")) {
-                override fun createPanels(): List<JComponent> {
-                    return listOf<JComponent>(
-                        ResourceBuilderPanel(
-                            context,
-                            BundleUtil.i18n("periscope.client-resource.noun"),
-                            ClientResource.type.rootPath(),
-                            clientResourceManager.descriptors.map {
-                                it.asResourceBuilderDelegate()
-                            },
-                            this@ClientResourceWorkspace::open,
-                        ),
-                        RecentlyModifiedTablePanel(
-                            context,
-                            ClientResource.type,
-                            BundleUtil.i18n("periscope.client-resource.nouns-long"),
-                            this@ClientResourceWorkspace::open,
-                        ),
-                    )
-                }
-            }
+            ClientResourceWorkspaceHomeTab(context, clientResourceManager, this)
         )
     }
-
-    fun ClientResourceDescriptor<*>.asResourceBuilderDelegate(): ResourceBuilderDelegate =
-        ResourceBuilderDelegate.build(nounLongKey, icon, createEmpty()::applyToBuilder)
 
     class NewClientResourceAction(
         workspace: TabbedResourceWorkspace,
@@ -110,5 +73,11 @@ class ClientResourceWorkspace(
         }
 
         override fun newResourceName() = definition.defaultResourceName
+    }
+
+    override fun addNewResourceActions(folderNode: ResourceFolderNode, menu: JPopupMenu) {
+        clientResourceManager.descriptors.forEach {
+            menu.add(NewClientResourceAction(this, folderNode, it))
+        }
     }
 }
