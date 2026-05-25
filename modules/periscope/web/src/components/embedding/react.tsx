@@ -40,7 +40,6 @@ export type ClientResourceReference = {
 
 type ReactProps = {
   resource: ClientResourceReference
-  export: string
   props: ReactComponentProps
   events: ComponentEvents & {
     component: {
