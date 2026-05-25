@@ -5,8 +5,9 @@ import com.inductiveautomation.ignition.common.project.RuntimeProject
 import com.inductiveautomation.ignition.common.project.resource.ProjectResource
 import com.inductiveautomation.ignition.common.project.resource.ProjectResourceId
 import com.inductiveautomation.ignition.gateway.project.ProjectLifecycle
+import com.mussonindustrial.embr.perspective.gateway.session.PerspectiveSessionMonitor
 
-class ClientResourceSessionNotifier(
+class ClientResourceChangeNotifier(
     val sessionMonitor: PerspectiveSessionMonitor,
     project: RuntimeProject,
 ) : ProjectLifecycle(project) {
