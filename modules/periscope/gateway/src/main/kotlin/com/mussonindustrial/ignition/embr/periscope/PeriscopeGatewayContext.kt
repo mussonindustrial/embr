@@ -21,12 +21,12 @@ import com.mussonindustrial.embr.perspective.gateway.component.asGatewayComponen
 import com.mussonindustrial.embr.perspective.gateway.component.registerComponent
 import com.mussonindustrial.embr.perspective.gateway.component.removeComponent
 import com.mussonindustrial.embr.perspective.gateway.reflect.ViewLoader
+import com.mussonindustrial.embr.perspective.gateway.session.PerspectiveSessionMonitor
 import com.mussonindustrial.embr.servlets.ModuleServletManager
 import com.mussonindustrial.ignition.embr.periscope.component.embedding.*
 import com.mussonindustrial.ignition.embr.periscope.resources.ClientResourceChangeListener
 import com.mussonindustrial.ignition.embr.periscope.resources.ClientResourceManager
 import com.mussonindustrial.ignition.embr.periscope.resources.CssModuleResource
-import com.mussonindustrial.ignition.embr.periscope.resources.PerspectiveSessionMonitor
 import com.mussonindustrial.ignition.embr.periscope.resources.TypeScriptResource
 import java.util.EnumSet
 import java.util.WeakHashMap
