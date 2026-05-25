@@ -1,20 +1,37 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema#",
+    "definitions": {
+        "resource": {
+            "type": "object",
+            "properties": {
+                "path": {
+                    "type": "string",
+                    "description": "Resource Path.",
+                    "extension": {
+                        "suggestion-source": "embr-periscope-client-resource"
+                    }
+                },
+                "export": {
+                    "type": "string",
+                    "description": "Exported component inside the resource.",
+                    "default": "default"
+                }
+            },
+            "required": [
+                "path",
+                "export"
+            ]
+        }
+    },
     "properties": {
-        "resourcePath": {
-            "type": "string",
-            "description": "Resource Path.",
-            "extension": {
-                "suggestion-source": "embr-periscope-typescript-resource"
-            }
-        },
-        "component": {
-            "type": "string",
-            "description": "Exported component inside the resource.",
-            "default": "default"
+        "resource": {
+            "$ref": "#/definitions/resource",
+            "description": "Resource to render.",
+            "default": {}
         },
         "props": {
-            "type": "object"
+            "type": "object",
+            "description": "Props to pass to resource."
         },
         "events": {
             "type": "object",
