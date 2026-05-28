@@ -155,22 +155,29 @@ export class ClientResourceStore {
     )
   }
 
+  /* TODO: Getting resources should be synchronous, or at least fully resolved by the first render.
+     TODO: Until this is implemented, we should not expose a stable interface
+  */
   private installScriptingGlobals() {
-    Embr.scripting.add('periscope', 'resource', async (path: string) => {
-      const resource = await this.getResource(path)
+    Embr.scripting.add(
+      'periscope',
+      'UNSTABLE_resource',
+      async (path: string) => {
+        const resource = await this.getResource(path)
 
-      if (resource == null) {
-        throw new Error(`Resource '${path}' not found`)
+        if (resource == null) {
+          throw new Error(`Resource '${path}' not found`)
+        }
+
+        return resource
       }
-
-      return resource
-    })
+    )
   }
 
   private setupSystemModules() {
     const modules = Embr.scripting.createGlobals({
-      client: this.clientStore!,
-      page: this.clientStore!.page,
+      client: this.clientStore,
+      page: this.clientStore?.page,
     })
 
     this.systemModules.set('perspective', modules['perspective'])
