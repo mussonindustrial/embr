@@ -33,10 +33,13 @@ import { ClientResourceComponent } from '@/extensions'
 const COMPONENT_TYPE = 'embr.periscope.embedding.react'
 
 type ReactComponentProps = Record<string, never>
+export type ClientResourceReference = {
+  path: string
+  export?: string
+}
 
 type ReactProps = {
-  resourcePath: string
-  component: string
+  resource: ClientResourceReference
   props: ReactComponentProps
   events: ComponentEvents & {
     component: {
@@ -90,8 +93,8 @@ export function ReactComponent(props: ComponentProps<ReactProps>) {
   return (
     <div {...props.emit()}>
       <ClientResourceComponent
-        resourcePath={props.props.resourcePath}
-        component={props.props.component}
+        resourcePath={props.props.resource.path}
+        component={props.props.resource.export}
         props={innerProps}
         writeProps={writeProps}
         thisArg={props}
@@ -136,8 +139,7 @@ export class ReactComponentMeta implements ComponentMeta {
 
   getPropsReducer(tree: PropertyTree): ReactProps {
     return {
-      resourcePath: tree.readString('resourcePath', ''),
-      component: tree.readString('component', 'default'),
+      resource: tree.read('resource', { path: '', export: undefined }),
       props: tree.readObject('props', {}),
       events: tree.readObject('events', {}),
       style: tree.readStyle('style'),

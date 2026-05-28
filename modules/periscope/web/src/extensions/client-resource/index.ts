@@ -4,7 +4,6 @@ import { registerStore } from '@embr-js/perspective-client'
 import { ClientResourceStore } from '@/stores'
 
 export * from './ClientResourceComponent'
-export * from './ClientResourceManager'
 export * from './viewClientResourceSupport'
 
 export async function installClientResources(clientStore: ClientStore) {

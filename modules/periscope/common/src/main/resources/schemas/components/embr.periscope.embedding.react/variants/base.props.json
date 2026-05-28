@@ -1,6 +1,8 @@
 {
-  "resource": "",
-  "component": "default",
+  "resource": {
+    "path": "",
+    "export": "default"
+  },
   "props": {},
   "style": {
     "classes": ""
