@@ -1,5 +1,11 @@
 # @mussonindustrial/embr-jvm-core-common
 
+## 0.8.2
+
+### Patch Changes
+
+- 760c0eb: Introduce `setPrivateProperty` extension function.
+
 ## 0.8.1
 
 ## 0.8.0

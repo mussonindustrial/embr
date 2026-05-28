@@ -1,7 +1,7 @@
 {
     "name": "@embr-modules/periscope-web",
     "private": true,
-    "version": "0.13.0",
+    "version": "0.14.0",
     "scripts": {
         "dev": "vite",
         "build": "tsc && nx vite:build && nx vite:test --run",
@@ -13,7 +13,7 @@
     },
     "dependencies": {
         "@embr-js/utils": "0.6.2",
-        "@embr-js/perspective-client": "0.6.2",
+        "@embr-js/perspective-client": "0.7.0",
         "react-toastify": "11.0.5",
         "swiper": "11.2.10"
     }
