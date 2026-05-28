@@ -8,7 +8,6 @@ jetty = "12.0.7"
 kotlin = "1.9.20"
 kotest = "6.0.0"
 node-gradle = "7.1.0"
-rhino = "1.7.15"
 snmp4j = "3.9.7"
 spotless = "8.5.1"
 
