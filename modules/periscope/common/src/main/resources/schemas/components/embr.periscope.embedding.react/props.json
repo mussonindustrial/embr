@@ -18,8 +18,7 @@
                 }
             },
             "required": [
-                "path",
-                "export"
+                "path"
             ]
         }
     },
@@ -62,5 +61,5 @@
         }
     },
     "type": "object",
-    "required": ["resourcePath"]
+    "required": ["resource"]
 }
