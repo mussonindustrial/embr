@@ -1,5 +1,11 @@
 # @embr-jvm/perspective-gateway
 
+## 0.9.2
+
+### Patch Changes
+
+- 36067e1: Introduce `PerspectiveSessionMonitor`.
+
 ## 0.9.1
 
 ### Patch Changes

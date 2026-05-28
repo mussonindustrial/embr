@@ -1,5 +1,11 @@
 # @embr-js/perspective-client
 
+## 0.7.0
+
+### Minor Changes
+
+- 4675d8f: Refactor Embr global stores.
+
 ## 0.6.2
 
 ### Patch Changes
