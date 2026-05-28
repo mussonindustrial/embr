@@ -1,5 +1,13 @@
 # @mussonindustrial/embr-jvm-core-designer
 
+## 0.8.2
+
+### Patch Changes
+
+- 24dd437: Change Designer alert wording from "Unlicensed" to "Unsupported".
+- Updated dependencies [4675d8f]
+  - @embr-jvm/core-common@0.8.2
+
 ## 0.8.1
 
 ### Patch Changes

@@ -1,5 +1,23 @@
 # @mussonindustrial/embr-charts
 
+## 6.0.0
+
+### Major Changes
+
+- 4675d8f: Refactor Embr global stores.
+
+### Patch Changes
+
+- Updated dependencies [36067e1]
+- Updated dependencies [4675d8f]
+- Updated dependencies [24dd437]
+  - @embr-jvm/perspective-gateway@0.9.2
+  - @embr-jvm/core-common@0.8.2
+  - @embr-jvm/core-designer@0.8.2
+  - @embr-modules/charts-web@6.0.0
+  - @embr-jvm/perspective-common@0.9.2
+  - @embr-jvm/perspective-designer@0.9.2
+
 ## 5.0.0
 
 ### Major Changes
