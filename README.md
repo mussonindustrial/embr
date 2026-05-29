@@ -65,6 +65,9 @@ If you'd like to sponsor this project and have your avatar or company logo appea
   </a>
   <a href="https://github.com/thewebpleb/">
     <img src="https://avatars.githubusercontent.com/u/86393727?s=100" alt="thewebpleb" />
+  </a>  
+  <a href="http://www.signal-fire.com/">
+    <img src="https://www.signal-fire.com/wp-content/uploads/2024/01/SignalFire-Website-Logo-2.svg" width="100" height="100" style="margin: 8px;" alt="thewebpleb" />
   </a>
 </h1>
 
