@@ -1,5 +1,12 @@
 # @embr-modules/periscope
 
+## 0.14.1
+
+### Patch Changes
+
+- d0b53bd: Resolve NPE related to `ClientResourceManager` initialization for `ClientResourceWorkspace`'s Welcome Page.
+  - @embr-modules/periscope-web@0.14.1
+
 ## 0.14.0
 
 ### Minor Changes
