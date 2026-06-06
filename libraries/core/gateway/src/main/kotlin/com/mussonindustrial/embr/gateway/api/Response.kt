@@ -2,10 +2,25 @@ package com.mussonindustrial.embr.gateway.api
 
 import com.inductiveautomation.ignition.common.gson.JsonElement
 import com.inductiveautomation.ignition.common.gson.JsonObject
-import javax.servlet.http.HttpServletResponse
+import jakarta.servlet.http.HttpServletResponse
+import javax.servlet.http.HttpServletResponse as JavaXHttpServletResponse
 import kotlin.text.Charsets.UTF_8
 
 fun <T : HttpServletResponse> T.sendSuccess(data: JsonElement) {
+    val json = JsonObject()
+    json.addProperty("status", "success")
+    json.add("data", data)
+
+    apply {
+        status = HttpServletResponse.SC_OK
+        contentType = "application/json"
+        characterEncoding = UTF_8.toString()
+        writer.println(json.toString())
+        writer.close()
+    }
+}
+
+fun <T : JavaXHttpServletResponse> T.sendSuccess(data: JsonElement) {
     val json = JsonObject()
     json.addProperty("status", "success")
     json.add("data", data)

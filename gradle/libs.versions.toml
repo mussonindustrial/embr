@@ -4,7 +4,7 @@ if97 = "2.0.0"
 ignition-module = "0.5.0"
 ignition-sdk = "8.1.33"
 java = "21"
-jetty = "10.0.21"
+jetty = "12.0.17"
 kotlin = "1.9.20"
 kotest = "6.0.0"
 node-gradle = "7.1.0"
@@ -31,8 +31,8 @@ ignition-perspective-common = { group = "com.inductiveautomation.ignitionsdk", n
 ignition-perspective-designer = { group = "com.inductiveautomation.ignitionsdk", name = "perspective-designer", version.ref = "ignition-sdk" }
 ignition-perspective-gateway = { group = "com.inductiveautomation.ignitionsdk", name = "perspective-gateway", version.ref = "ignition-sdk" }
 jetty-server = { group = "org.eclipse.jetty", name = "jetty-server", version.ref = "jetty" }
-jetty-servlet = { group = "org.eclipse.jetty", name = "jetty-servlet", version.ref = "jetty" }
-jetty-servlets = { group = "org.eclipse.jetty", name = "jetty-servlets", version.ref = "jetty" }
+jetty-servlet = { group = "org.eclipse.jetty.ee10", name = "jetty-ee10-servlet", version.ref = "jetty" }
+jetty-servlets = { group = "org.eclipse.jetty.ee10", name = "jetty-ee10-servlets", version.ref = "jetty" }
 snmp4j = { group = "org.snmp4j", name = "snmp4j", version.ref = "snmp4j"}
 
 # test framework
@@ -51,6 +51,8 @@ gateway = [
     "ignition-common",
     "ignition-driver-api",
     "ignition-gateway-api",
+    "jetty-server",
+    "jetty-servlet"
 ]
 designer = [
     "ignition-gson",
