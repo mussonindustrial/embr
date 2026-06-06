@@ -1,5 +1,15 @@
 # @mussonindustrial/embr-jvm-core-servlets
 
+## 0.9.0
+
+### Minor Changes
+
+- 8c76341: Update to Jetty 12.
+
+### Patch Changes
+
+- @embr-jvm/core-common@0.9.0
+
 ## 0.8.2
 
 ### Patch Changes

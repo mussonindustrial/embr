@@ -1,5 +1,16 @@
 # @embr-modules/thermo
 
+## 3.1.0
+
+### Minor Changes
+
+- 8c76341: Bump minimum compatible Ignition version from `8.1.33` to `8.1.49`.
+
+### Patch Changes
+
+- @embr-jvm/core-common@0.9.0
+- @embr-jvm/core-gateway@0.9.0
+
 ## 3.0.1
 
 ### Patch Changes
