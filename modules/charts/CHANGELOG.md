@@ -1,5 +1,15 @@
 # @mussonindustrial/embr-charts
 
+## 6.2.0
+
+### Minor Changes
+
+- f64c92d: Bump minimum compatible Ignition version from `8.1.33` to `8.1.49`.
+
+### Patch Changes
+
+- @embr-modules/charts-web@6.2.0
+
 ## 6.1.0
 
 ### Minor Changes
