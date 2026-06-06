@@ -1,5 +1,15 @@
 # @embr-modules/periscope
 
+## 0.16.0
+
+### Minor Changes
+
+- f64c92d: Bump minimum compatible Ignition version from `8.1.33` to `8.1.49`.
+
+### Patch Changes
+
+- @embr-modules/periscope-web@0.16.0
+
 ## 0.15.0
 
 ### Minor Changes

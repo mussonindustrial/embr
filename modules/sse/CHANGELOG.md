@@ -1,5 +1,11 @@
 # @mussonindustrial/embr-tag-stream
 
+## 0.8.0
+
+### Minor Changes
+
+- f64c92d: Bump minimum compatible Ignition version from `8.1.33` to `8.1.49`.
+
 ## 0.7.0
 
 ### Minor Changes
