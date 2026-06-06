@@ -1,10 +1,10 @@
 package com.mussonindustrial.embr.servlets
 
 import com.inductiveautomation.ignition.gateway.web.WebResourceManager
-import javax.servlet.Servlet
-import org.eclipse.jetty.server.handler.HandlerCollection
-import org.eclipse.jetty.servlet.ServletContextHandler
-import org.eclipse.jetty.servlet.ServletHolder
+import jakarta.servlet.Servlet
+import org.eclipse.jetty.ee10.servlet.ServletContextHandler
+import org.eclipse.jetty.ee10.servlet.ServletHolder
+import org.eclipse.jetty.server.Handler.Sequence
 
 class ModuleServletManager(
     webResourceManager: WebResourceManager,
@@ -13,8 +13,7 @@ class ModuleServletManager(
     private val servlets = hashMapOf<String, Class<out Servlet>>()
     private val runningServlets = hashMapOf<String, ServletHolder>()
     private var handler: ServletContextHandler? = null
-    private val serverHandlerCollection =
-        webResourceManager.getJettyServer().handler as HandlerCollection
+    private val serverHandlerCollection = webResourceManager.getJettyServer().handler as Sequence
 
     private fun getContextHandler(): ServletContextHandler {
         return ServletContextHandler().apply {
@@ -27,7 +26,7 @@ class ModuleServletManager(
         servlets[path] = servlet
         val newHandler = getContextHandler()
         serverHandlerCollection.removeHandler(handler)
-        serverHandlerCollection.prependHandler(newHandler)
+        serverHandlerCollection.addHandler(newHandler)
         newHandler.start()
         handler = newHandler
     }
@@ -49,7 +48,7 @@ class ModuleServletManager(
 
             val newHandler = getContextHandler()
             serverHandlerCollection.removeHandler(handler)
-            serverHandlerCollection.prependHandler(newHandler)
+            serverHandlerCollection.addHandler(newHandler)
             newHandler.start()
             handler = newHandler
         }
