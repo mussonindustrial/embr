@@ -1,5 +1,17 @@
 # @embr-modules/periscope
 
+## 0.15.0
+
+### Minor Changes
+
+- 8c76341: Bump minimum compatible Ignition version from `8.1.33` to `8.1.49`.
+
+### Patch Changes
+
+- @embr-jvm/core-common@0.9.0
+- @embr-jvm/core-designer@0.9.0
+- @embr-modules/periscope-web@0.15.0
+
 ## 0.14.1
 
 ### Patch Changes

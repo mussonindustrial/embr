@@ -1,5 +1,18 @@
 # @mussonindustrial/embr-tag-stream
 
+## 0.7.0
+
+### Minor Changes
+
+- 8c76341: Bump minimum compatible Ignition version from `8.1.33` to `8.1.49`.
+- 8c76341: Update to Jetty 12.
+
+### Patch Changes
+
+- Updated dependencies [8c76341]
+  - @embr-jvm/core-servlets@0.9.0
+  - @embr-jvm/core-common@0.9.0
+
 ## 0.6.3
 
 ### Patch Changes
