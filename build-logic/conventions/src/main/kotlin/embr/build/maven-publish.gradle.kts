@@ -7,9 +7,23 @@ import org.gradle.api.publish.maven.tasks.PublishToMavenRepository
 
 plugins { id("maven-publish") }
 
+val groupSuffix: String by lazy {
+    val suffix = project.findProperty("embr.groupSuffix")?.toString() ?: ""
+    suffix.trim()
+}
+
 publishing {
     publications {
         create<MavenPublication>("maven") {
+            project.afterEvaluate {
+                val targetNamespace = "com.mussonindustrial.embr"
+                val currentGroup = project.group.toString()
+
+                if (groupSuffix.isNotBlank() && currentGroup.startsWith(targetNamespace)) {
+                    groupId =
+                        currentGroup.replaceFirst(targetNamespace, "$targetNamespace.$groupSuffix")
+                }
+            }
             components.matching { it.name == "java" }.all { from(this) }
         }
     }
