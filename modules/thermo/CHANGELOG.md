@@ -1,5 +1,11 @@
 # @embr-modules/thermo
 
+## 3.2.1
+
+### Patch Changes
+
+- 05f93b2: Assign correct `groupId`.
+
 ## 3.2.0
 
 ### Minor Changes
