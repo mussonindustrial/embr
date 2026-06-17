@@ -1,5 +1,13 @@
 # @embr-modules/periscope
 
+## 0.16.1
+
+### Patch Changes
+
+- 05f93b2: Assign correct `groupId`.
+- Updated dependencies [05f93b2]
+  - @embr-modules/periscope-web@0.16.1
+
 ## 0.16.0
 
 ### Minor Changes

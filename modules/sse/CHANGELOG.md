@@ -1,5 +1,11 @@
 # @mussonindustrial/embr-tag-stream
 
+## 0.8.1
+
+### Patch Changes
+
+- 05f93b2: Assign correct `groupId`.
+
 ## 0.8.0
 
 ### Minor Changes
