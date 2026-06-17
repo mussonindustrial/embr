@@ -1,5 +1,11 @@
 # @mussonindustrial/embr-jvm-core-common
 
+## 0.9.1
+
+### Patch Changes
+
+- 588ffb7: Version bump to retrigger publishing.
+
 ## 0.9.0
 
 ## 0.8.2
