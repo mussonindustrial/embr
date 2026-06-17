@@ -1,5 +1,13 @@
 # @embr-modules/snmp
 
+## 0.5.3
+
+### Patch Changes
+
+- Updated dependencies [7f5ebc0]
+  - @embr-jvm/core-common@0.8.3
+  - @embr-jvm/core-gateway@0.8.3
+
 ## 0.5.2
 
 ### Patch Changes
