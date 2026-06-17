@@ -2,6 +2,8 @@ plugins {
     id("embr.build.ignition-module-library")
 }
 
+group = "com.mussonindustrial.embr.periscope"
+
 dependencies {
     compileOnly(libs.bundles.perspectiveGateway)
     compileOnly(projects.libraries.core.common)

@@ -2,6 +2,7 @@ package embr.build
 
 plugins {
     id("embr.build.kotlin-library")
+    id("embr.build.maven-publish")
     `java-library`
 }
 

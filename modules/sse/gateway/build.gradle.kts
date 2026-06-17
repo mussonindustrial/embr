@@ -2,6 +2,8 @@ plugins {
     id("embr.build.ignition-module-library")
 }
 
+group = "com.mussonindustrial.embr.sse"
+
 dependencies {
     compileOnly(libs.bundles.gateway)
     compileOnly(libs.bundles.perspectiveGateway)

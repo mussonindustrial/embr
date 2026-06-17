@@ -2,6 +2,8 @@ plugins {
     id("embr.build.ignition-module-library")
 }
 
+group = "com.mussonindustrial.embr.snmp"
+
 dependencies {
     compileOnly(libs.bundles.designer)
     compileOnly(projects.libraries.core.common)
