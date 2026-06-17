@@ -1,5 +1,13 @@
 # @embr-modules/periscope
 
+## 0.14.2
+
+### Patch Changes
+
+- d11ca3b: Assign correct `groupId`.
+- Updated dependencies [d11ca3b]
+  - @embr-modules/periscope-web@0.14.2
+
 ## 0.14.1
 
 ### Patch Changes

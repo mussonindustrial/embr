@@ -1,5 +1,11 @@
 # @mussonindustrial/embr-js-chart-js
 
+## 0.14.2
+
+### Patch Changes
+
+- d11ca3b: Assign correct `groupId`.
+
 ## 0.14.1
 
 ## 0.14.0

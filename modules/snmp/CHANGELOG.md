@@ -1,5 +1,11 @@
 # @embr-modules/snmp
 
+## 0.5.2
+
+### Patch Changes
+
+- d11ca3b: Assign correct `groupId`.
+
 ## 0.5.1
 
 ### Patch Changes
