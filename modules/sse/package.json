@@ -1,6 +1,6 @@
 {
     "name": "@embr-modules/sse",
-    "version": "0.6.4",
+    "version": "0.6.5",
     "private": false,
     "keywords": [
         "ignition",
@@ -11,7 +11,7 @@
         "!**/*.unsigned.modl"
     ],
     "dependencies": {
-        "@embr-jvm/core-common": "0.8.2",
-        "@embr-jvm/core-servlets": "0.8.2"
+        "@embr-jvm/core-common": "0.8.3",
+        "@embr-jvm/core-servlets": "0.8.3"
     }
 }
