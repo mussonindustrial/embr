@@ -1,5 +1,14 @@
 # @embr-modules/periscope
 
+## 0.16.2
+
+### Patch Changes
+
+- Updated dependencies [588ffb7]
+  - @embr-jvm/core-common@0.9.1
+  - @embr-jvm/core-designer@0.9.1
+  - @embr-modules/periscope-web@0.16.2
+
 ## 0.16.1
 
 ### Patch Changes

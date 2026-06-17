@@ -1,5 +1,14 @@
 # @mussonindustrial/embr-charts
 
+## 6.2.1
+
+### Patch Changes
+
+- Updated dependencies [588ffb7]
+  - @embr-jvm/core-common@0.9.1
+  - @embr-jvm/core-designer@0.9.1
+  - @embr-modules/charts-web@6.2.1
+
 ## 6.2.0
 
 ### Minor Changes
