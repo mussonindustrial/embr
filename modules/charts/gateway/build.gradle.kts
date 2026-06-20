@@ -12,4 +12,5 @@ dependencies {
     modlImplementation(projects.libraries.perspective.gateway)
     compileOnly(projects.modules.charts.common)
     modlImplementation(projects.modules.charts.web)
+    modlImplementation(projects.libraries.core.servlets)
 }
