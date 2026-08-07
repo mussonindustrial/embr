@@ -1304,12 +1304,12 @@
   resolved "https://registry.yarnpkg.com/@icons/material/-/material-0.2.4.tgz#e90c9f71768b3736e76d7dd6783fc6c2afa88bc8"
   integrity sha512-QPcGmICAPbGLGb6F/yNf/KzKqvFx8z5qx3D1yFqVAjoFmXK35EgyW+cJ57Te3CNsmzblwtzakLGFqHPqrfb4Tw==
 
-"@inductiveautomation/perspective-client@2.1.33", "@inductiveautomation/perspective-client@workspace:*":
-  version "2.1.33"
-  resolved "https://nexus.inductiveautomation.com/repository/node-packages/@inductiveautomation/perspective-client/-/perspective-client-2.1.33.tgz#4f0ec9c018ac3e7be5740b18e9bc24e24ae5e3fc"
-  integrity sha1-Tw7JwBisPnvldAsY6bwk4krl4/w=
+"@inductiveautomation/perspective-client@2.1.49":
+  version "2.1.49"
+  resolved "https://nexus.inductiveautomation.com/repository/node-packages/@inductiveautomation/perspective-client/-/perspective-client-2.1.49.tgz#fa54e367dd41b32ce9cb41a4a977bea303bc20f4"
+  integrity sha512-BL+h32HnUH0avdJXL+1akXedB+j0ArXR782GdRBgEAB1nm5I/PZqnGwK1npIzJG7tXI51k4/wjr0TlIelTh1pg==
   dependencies:
-    axios "^0.27.2"
+    axios "1.10.0"
     bind-decorator "^1.0.11"
     classnames "2.3.1"
     history "^4.5.1"
@@ -1324,21 +1324,21 @@
     prop-types "^15.7.2"
     react "18.2.0"
     react-container-dimensions "^1.3.3"
-    react-device-detect "^2.1.2"
+    react-device-detect "^2.2.3"
     react-dom "18.2.0"
     react-resize-detector "^6.7.2"
     react-swipeable-views "^0.13.0"
     react-to-print "2.14.12"
     transformation-matrix "^2.1.0"
-    ua-parser-js "^0.7.31"
+    ua-parser-js "^0.7.33"
 
-"@inductiveautomation/perspective-components@2.1.33":
-  version "2.1.33"
-  resolved "https://nexus.inductiveautomation.com/repository/node-packages/@inductiveautomation/perspective-components/-/perspective-components-2.1.33.tgz#dd89fec22a39974625d84fe152d5d8e971a58d5a"
-  integrity sha1-3Yn+wio5l0Yl2E/hUtXY6XGljVo=
+"@inductiveautomation/perspective-components@2.1.49":
+  version "2.1.49"
+  resolved "https://nexus.inductiveautomation.com/repository/node-packages/@inductiveautomation/perspective-components/-/perspective-components-2.1.49.tgz#6c69c8558418c67a464b47d3c38f8cc51e143998"
+  integrity sha512-vwf3QOOdqPjbAD2tjrtjzkm6uZej/Kmwn2SbHwuOjSLVb2M1lQrqPZVVcoZorohjk8P0DjKF2Pkm63qJf/6uWA==
   dependencies:
-    "@inductiveautomation/perspective-client" "workspace:*"
-    "@inductiveautomation/perspective-drawing-common" "workspace:*"
+    "@inductiveautomation/perspective-client" "2.1.49"
+    "@inductiveautomation/perspective-drawing-common" "2.1.49"
     bind-decorator "^1.0.11"
     classnames "^2.3.1"
     csstype "2.6.20"
@@ -1357,7 +1357,7 @@
     react "18.2.0"
     react-color "^2.19.3"
     react-container-dimensions "^1.3.3"
-    react-device-detect "^2.1.2"
+    react-device-detect "^2.2.3"
     react-dom "18.2.0"
     react-draggable "4.1.0"
     react-markdown "^4.3.1"
@@ -1368,14 +1368,14 @@
     tinycolor2 "^1.4.1"
     transformation-matrix "^2.1.0"
 
-"@inductiveautomation/perspective-designer@2.1.33":
-  version "2.1.33"
-  resolved "https://nexus.inductiveautomation.com/repository/node-packages/@inductiveautomation/perspective-designer/-/perspective-designer-2.1.33.tgz#d4d29aec87c5912208aecb34f6e17cfbd85072e5"
-  integrity sha1-1NKa7IfFkSIIrss09uF8+9hQcuU=
+"@inductiveautomation/perspective-designer@2.1.49":
+  version "2.1.49"
+  resolved "https://nexus.inductiveautomation.com/repository/node-packages/@inductiveautomation/perspective-designer/-/perspective-designer-2.1.49.tgz#4298997b203be7b2beb7fa0696d511349d619b71"
+  integrity sha512-67MTDSC7rJFRp2j+Ldnxe8EoyNpL0+XDC8OFP7lj43ys6fLcLAye/AYEF/fQlmu3XLnqh/fXphwaW+Hmw480Uw==
   dependencies:
-    "@inductiveautomation/perspective-client" "workspace:*"
-    "@inductiveautomation/perspective-drawing-common" "workspace:*"
-    axios "^0.20.0"
+    "@inductiveautomation/perspective-client" "2.1.49"
+    "@inductiveautomation/perspective-drawing-common" "2.1.49"
+    axios "1.10.0"
     bind-decorator "^1.0.11"
     history "^4.5.1"
     jsnlog "^2.30.0"
@@ -1393,20 +1393,10 @@
     react-virtualized "^9.22.3"
     transformation-matrix "^2.1.0"
 
-"@inductiveautomation/perspective-drawing-common@2.1.33":
-  version "2.1.33"
-  resolved "https://nexus.inductiveautomation.com/repository/node-packages/@inductiveautomation/perspective-drawing-common/-/perspective-drawing-common-2.1.33.tgz#3be59431dd096540a1900ff2568342383eb83b49"
-  integrity sha512-tl5vexIINMpIrs5D8PU3Y2/kgqytu0Jec0MkXxOdNYRUmyelpuLFaA69mTXLLJ0KTatwKvABatZDHtrTqEOhKw==
-  dependencies:
-    bind-decorator "^1.0.10"
-    prop-types "^15.7.2"
-    react "18.2.0"
-    react-dom "18.2.0"
-
-"@inductiveautomation/perspective-drawing-common@workspace:*":
-  version "2.1.42"
-  resolved "https://nexus.inductiveautomation.com/repository/node-packages/@inductiveautomation/perspective-drawing-common/-/perspective-drawing-common-2.1.42.tgz#6a9f1384d8f41ed4397e94bbd7b486a8015ba1b3"
-  integrity sha512-g4MMA9u61xB/DHylpvoRmySFzf13X9l5S1NH5L7cQQROQuS8uolPo+aSA7BMtZtwHjG7J+Dao3M90hFfR23jqw==
+"@inductiveautomation/perspective-drawing-common@2.1.49":
+  version "2.1.49"
+  resolved "https://nexus.inductiveautomation.com/repository/node-packages/@inductiveautomation/perspective-drawing-common/-/perspective-drawing-common-2.1.49.tgz#05d32c5bb8c2f2bf6e36e0a837bd4075f137a789"
+  integrity sha512-4x+uETiFswCL3jEBK9HQnfPsjoMqjXsmvcTBeaP/kMFdutrMnY5mtfcMWfAByRB5tTQ8VkMJD5H+XbJ/YbW7Mg==
   dependencies:
     bind-decorator "^1.0.10"
     prop-types "^15.7.2"
@@ -2787,20 +2777,14 @@ aws4@^1.2.1, aws4@^1.8.0:
   resolved "https://registry.yarnpkg.com/aws4/-/aws4-1.13.2.tgz#0aa167216965ac9474ccfa83892cfb6b3e1e52ef"
   integrity sha512-lHe62zvbTB5eEABUVi/AwVh0ZKY9rMMDhmm+eeyuuUQbQ3+J+fONVQOZyj+DdrvD4BY33uYniyRJ4UJIaSKAfw==
 
-axios@^0.20.0:
-  version "0.20.0"
-  resolved "https://registry.yarnpkg.com/axios/-/axios-0.20.0.tgz#057ba30f04884694993a8cd07fa394cff11c50bd"
-  integrity sha512-ANA4rr2BDcmmAQLOKft2fufrtuvlqR+cXNNinUmvfeSNCOF98PZL+7M/v1zIdGo7OLjEA9J2gXJL+j4zGsl0bA==
+axios@1.10.0:
+  version "1.10.0"
+  resolved "https://registry.yarnpkg.com/axios/-/axios-1.10.0.tgz#af320aee8632eaf2a400b6a1979fa75856f38d54"
+  integrity sha512-/1xYAC4MP/HEG+3duIhFr4ZQXR4sQXOIe+o6sdqzeykGLx6Upp/1p8MHqhINOvGeP7xyNHe7tsiJByc4SSVUxw==
   dependencies:
-    follow-redirects "^1.10.0"
-
-axios@^0.27.2:
-  version "0.27.2"
-  resolved "https://registry.yarnpkg.com/axios/-/axios-0.27.2.tgz#207658cc8621606e586c85db4b41a750e756d972"
-  integrity sha512-t+yRIyySRTp/wua5xEr+z1q60QmLq8ABsS5O9Me1AsE5dfKqgnCFzwiCZZ/cGNd1lq4/7akDWMxdhVlucjmnOQ==
-  dependencies:
-    follow-redirects "^1.14.9"
+    follow-redirects "^1.15.6"
     form-data "^4.0.0"
+    proxy-from-env "^1.1.0"
 
 axios@^1.8.3:
   version "1.11.0"
@@ -4943,7 +4927,7 @@ flush-write-stream@^1.0.0:
     inherits "^2.0.3"
     readable-stream "^2.3.6"
 
-follow-redirects@^1.0.0, follow-redirects@^1.10.0, follow-redirects@^1.14.9, follow-redirects@^1.15.6:
+follow-redirects@^1.0.0, follow-redirects@^1.15.6:
   version "1.15.9"
   resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.15.9.tgz#a604fa10e443bf98ca94228d9eebcc2e8a2c8ee1"
   integrity sha512-gew4GsXizNgdoRyqmyfMHyAmXsZDk6mHkSxZFCzW9gwlbtOW44CDtYavM+y+72qD/Vq2l550kMF52DT8fOLJqQ==
@@ -8109,7 +8093,7 @@ react-container-dimensions@^1.3.3:
     invariant "^2.2.2"
     prop-types "^15.5.8"
 
-react-device-detect@^2.1.2:
+react-device-detect@^2.2.3:
   version "2.2.3"
   resolved "https://registry.yarnpkg.com/react-device-detect/-/react-device-detect-2.2.3.tgz#97a7ae767cdd004e7c3578260f48cf70c036e7ca"
   integrity sha512-buYY3qrCnQVlIFHrC5UcUoAj7iANs/+srdkwsnNjI7anr3Tt7UY6MqNxtMLlr0tMBied0O49UZVK8XKs3ZIiPw==
@@ -9043,6 +9027,11 @@ smart-buffer@^1.0.13:
   resolved "https://registry.yarnpkg.com/smart-buffer/-/smart-buffer-1.1.15.tgz#7f114b5b65fab3e2a35aa775bb12f0d1c649bf16"
   integrity sha512-1+8bxygjTsNfvQe0/0pNBesTOlSHtOeG6b6LYbvsZCCHDKYZ40zcQo6YTnZBWrBSLWOCbrHljLdEmGMYebu7aQ==
 
+smoothie@1.36.1:
+  version "1.36.1"
+  resolved "https://registry.yarnpkg.com/smoothie/-/smoothie-1.36.1.tgz#969958f339913b50e62a1dee206c31630530871b"
+  integrity sha512-499Vr2od6TicP8s7ykcyTfddh/6n11BB41G9RE7gqQRyfoPIAYotUTzwAxQpAfOdVOb+BvcG2qla+hjyqwe+PA==
+
 sntp@1.x.x:
   version "1.0.9"
   resolved "https://registry.yarnpkg.com/sntp/-/sntp-1.0.9.tgz#6541184cc90aeea6c6e7b35e2659082443c66198"
@@ -9859,10 +9848,10 @@ typescript@5.9.2:
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-5.9.2.tgz#d93450cddec5154a2d5cabe3b8102b83316fb2a6"
   integrity sha512-CWBzXQrc/qOkhidw1OzBTQuYRbfyxDXJMVJ1XNwUHGROVmuaeiEm3OslpZ1RV96d7SKKjZKrSJu3+t/xlw3R9A==
 
-ua-parser-js@^0.7.31:
-  version "0.7.39"
-  resolved "https://registry.yarnpkg.com/ua-parser-js/-/ua-parser-js-0.7.39.tgz#c71efb46ebeabc461c4612d22d54f88880fabe7e"
-  integrity sha512-IZ6acm6RhQHNibSt7+c09hhvsKy9WUr4DVbeq9U8o71qxyYtJpQeDxQnMrVqnIFMLcQjHO0I9wgfO2vIahht4w==
+ua-parser-js@^0.7.33:
+  version "0.7.41"
+  resolved "https://registry.yarnpkg.com/ua-parser-js/-/ua-parser-js-0.7.41.tgz#9f6dee58c389e8afababa62a4a2dc22edb69a452"
+  integrity sha512-O3oYyCMPYgNNHuO7Jjk3uacJWZF8loBgwrfd/5LE/HyZ3lUIOdniQ7DNXJcIgZbwioZxk0fLfI4EVnetdiX5jg==
 
 ua-parser-js@^1.0.33:
   version "1.0.39"

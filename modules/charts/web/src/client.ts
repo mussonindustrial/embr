@@ -11,3 +11,10 @@ ComponentRegistry.register(new ApexChartLegacyMeta())
 import { ChartJsComponent, ChartJsComponentMeta } from './components'
 export { ChartJsComponent }
 ComponentRegistry.register(ChartJsComponentMeta)
+
+import {
+  SmoothieChartComponent,
+  SmoothieChartComponentMeta,
+} from './components'
+export { SmoothieChartComponent }
+ComponentRegistry.register(SmoothieChartComponentMeta)

@@ -14,6 +14,8 @@ import com.mussonindustrial.ignition.embr.charts.component.chart.ApexCharts
 import com.mussonindustrial.ignition.embr.charts.component.chart.ApexChartsLegacy
 import com.mussonindustrial.ignition.embr.charts.component.chart.ApexChartsLegacyModelDelegate
 import com.mussonindustrial.ignition.embr.charts.component.chart.ChartJs
+import com.mussonindustrial.ignition.embr.charts.component.chart.SmoothieChart
+import com.mussonindustrial.ignition.embr.charts.component.chart.SmoothieChartModelDelegate
 import com.mussonindustrial.ignition.embr.charts.modules.KyvisLabsApexCharts
 
 class ChartsGatewayContext(private val context: GatewayContext) :
@@ -28,6 +30,7 @@ class ChartsGatewayContext(private val context: GatewayContext) :
             ApexCharts.asGatewayComponent { JavaScriptProxyableComponentModelDelegate(it) },
             ApexChartsLegacy.asGatewayComponent { ApexChartsLegacyModelDelegate(it) },
             ChartJs.asGatewayComponent { JavaScriptProxyableComponentModelDelegate(it) },
+            SmoothieChart.asGatewayComponent { SmoothieChartModelDelegate(it) },
         )
 
     private val moduleObservers = listOf(KyvisLabsApexCharts.Observer(this))

@@ -10,6 +10,7 @@ import com.mussonindustrial.embr.perspective.designer.component.removeComponent
 import com.mussonindustrial.ignition.embr.charts.component.chart.ApexCharts
 import com.mussonindustrial.ignition.embr.charts.component.chart.ApexChartsLegacy
 import com.mussonindustrial.ignition.embr.charts.component.chart.ChartJs
+import com.mussonindustrial.ignition.embr.charts.component.chart.SmoothieChart
 
 class ChartsDesignerContext(private val context: DesignerContext) :
     EmbrDesignerContext by EmbrDesignerContextImpl(context) {
@@ -23,6 +24,7 @@ class ChartsDesignerContext(private val context: DesignerContext) :
             ApexCharts.asDesignerComponent(),
             ApexChartsLegacy.asDesignerComponent(),
             ChartJs.asDesignerComponent(),
+            SmoothieChart.asDesignerComponent(),
         )
 
     init {
