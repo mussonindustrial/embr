@@ -4,12 +4,22 @@ import com.inductiveautomation.perspective.gateway.model.ComponentModel
 import com.inductiveautomation.perspective.gateway.script.ComponentModelScriptWrapper
 import com.mussonindustrial.embr.common.reflect.getPrivateProperty
 import org.python.core.PyFrame
-import org.python.core.PyString
 
 fun ComponentModelScriptWrapper.getComponentModel(): ComponentModel {
     return this.getPrivateProperty("componentModel") as ComponentModel
 }
 
 fun PyFrame.getComponentModelScriptWrapper(name: String = "self"): ComponentModelScriptWrapper? {
-    return this.locals.__getitem__(PyString(name)) as? ComponentModelScriptWrapper ?: return null
+    val key = name.intern()
+    var frame: PyFrame? = this
+
+    while (frame != null) {
+        (frame.locals.__finditem__(key) as? ComponentModelScriptWrapper)?.let {
+            return it
+        }
+
+        frame = frame.f_back
+    }
+
+    return null
 }
