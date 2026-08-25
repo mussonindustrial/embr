@@ -62,8 +62,9 @@ fun ViewModel.subscribeToParams(
         mdc { this.logger.trace("Creating subscriptions for ${tree.rootKeys}") }
     }
 
-    val listeners =
-        outputKeys.associateWith { rootKey -> tree.subscribe(rootKey, acceptableOrigins, block) }
+    val listeners = outputKeys.associateWith { rootKey ->
+        tree.subscribe(rootKey, acceptableOrigins, block)
+    }
 
     return listeners
 }

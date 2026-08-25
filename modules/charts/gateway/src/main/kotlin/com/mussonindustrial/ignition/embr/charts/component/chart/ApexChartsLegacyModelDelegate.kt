@@ -206,7 +206,8 @@ class ApexChartsLegacyModelDelegate(component: Component) : ComponentModelDelega
     @ScriptCallable
     @KeywordArgs(
         names = ["newSeries", "animate", "maintainZoom", "syncProps", "fetchResults"],
-        types = [MutableList::class, Boolean::class, Boolean::class, Boolean::class, Boolean::class],
+        types =
+            [MutableList::class, Boolean::class, Boolean::class, Boolean::class, Boolean::class],
     )
     @Throws(Exception::class)
     fun updateSeries(pyArgs: Array<PyObject?>?, keywords: Array<String?>?) {
