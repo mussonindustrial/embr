@@ -30,16 +30,15 @@ data class SnmpConnectivityConfig(
     @Required
     val timeout: Int,
 ) {
-    fun validate(errors: ValidationErrors.Builder) =
-        errors.apply {
-            requireNotBlank("connectivity.address", address)
-            checkField(
-                GenericAddress.parse(address) != null,
-                "connectivity.address",
-                "Address must be valid.",
-            )
-            checkField(timeout >= 1, "connectivity.timeout", "Timeout must not be negative")
-        }
+    fun validate(errors: ValidationErrors.Builder) = errors.apply {
+        requireNotBlank("connectivity.address", address)
+        checkField(
+            GenericAddress.parse(address) != null,
+            "connectivity.address",
+            "Address must be valid.",
+        )
+        checkField(timeout >= 1, "connectivity.timeout", "Timeout must not be negative")
+    }
 }
 
 data class SnmpHealthcheckConfig(
@@ -56,24 +55,23 @@ data class SnmpHealthcheckConfig(
     @FormField(FormFieldType.TEXT)
     val oid: String?,
 ) {
-    fun validate(errors: ValidationErrors.Builder) =
-        errors.apply {
-            frequency?.let {
-                checkField(
-                    frequency >= 0,
-                    "healthcheck.frequency",
-                    "Frequency must not be negative",
-                )
-            }
+    fun validate(errors: ValidationErrors.Builder) = errors.apply {
+        frequency?.let {
+            checkField(
+                frequency >= 0,
+                "healthcheck.frequency",
+                "Frequency must not be negative",
+            )
+        }
 
-            oid?.let {
-                try {
-                    OID(oid)
-                } catch (_: Exception) {
-                    checkField(false, "healthcheck.oid", "Healthcheck OID must be a valid OID")
-                }
+        oid?.let {
+            try {
+                OID(oid)
+            } catch (_: Exception) {
+                checkField(false, "healthcheck.oid", "Healthcheck OID must be a valid OID")
             }
         }
+    }
 }
 
 data class SnmpCommunityConfig(
@@ -91,8 +89,9 @@ data class SnmpCommunityConfig(
     @DefaultValue("private")
     val write: String?,
 ) {
-    fun validate(errors: ValidationErrors.Builder) =
-        errors.apply { requireNotBlank("community.read", read) }
+    fun validate(errors: ValidationErrors.Builder) = errors.apply {
+        requireNotBlank("community.read", read)
+    }
 }
 
 data class SnmpV3AuthenticationConfig(
