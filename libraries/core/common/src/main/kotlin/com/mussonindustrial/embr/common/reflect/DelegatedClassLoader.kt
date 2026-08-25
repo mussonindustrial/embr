@@ -19,8 +19,9 @@ class DelegatedClassLoader(parent: ClassLoader, private vararg val delegates: Cl
         throw ClassNotFoundException(name)
     }
 
-    override fun findResource(name: String): URL? =
-        delegates.firstNotNullOfOrNull { it.getResource(name) }
+    override fun findResource(name: String): URL? = delegates.firstNotNullOfOrNull {
+        it.getResource(name)
+    }
 
     override fun findResources(name: String): Enumeration<URL> =
         Collections.enumeration(delegates.flatMap { it.getResources(name).toList() })
