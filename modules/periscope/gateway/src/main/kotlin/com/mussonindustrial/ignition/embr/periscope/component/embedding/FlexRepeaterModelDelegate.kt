@@ -190,8 +190,9 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
         }
     }
 
-    private fun initializeView(instance: InstancePropsHandler) =
-        instance.onView { viewModel -> initializeView(instance, viewModel) }
+    private fun initializeView(instance: InstancePropsHandler) = instance.onView { viewModel ->
+        initializeView(instance, viewModel)
+    }
 
     private fun initializeView(instance: InstancePropsHandler, viewModel: ViewModel) {
         viewModel.writeToParams(instance.viewParams, Origin.Delegate, this)
@@ -472,20 +473,23 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
     @ScriptCallable
     @KeywordArgs(names = ["index"], types = [Int::class])
     @Suppress("unused")
-    fun popInstance(args: Array<PyObject>, keywords: Array<String>) =
-        queue.submit { component.mdc { methods.popInstance.call(args, keywords) } }
+    fun popInstance(args: Array<PyObject>, keywords: Array<String>) = queue.submit {
+        component.mdc { methods.popInstance.call(args, keywords) }
+    }
 
     @ScriptCallable
     @KeywordArgs(names = ["instance"], types = [PyObject::class])
     @Suppress("unused")
-    fun pushInstance(args: Array<PyObject>, keywords: Array<String>) =
-        queue.submit { component.mdc { methods.pushInstance.call(args, keywords) } }
+    fun pushInstance(args: Array<PyObject>, keywords: Array<String>) = queue.submit {
+        component.mdc { methods.pushInstance.call(args, keywords) }
+    }
 
     @ScriptCallable
     @KeywordArgs(names = ["index", "instance"], types = [Int::class, PyObject::class])
     @Suppress("unused")
-    fun insertInstance(args: Array<PyObject>, keywords: Array<String>) =
-        queue.submit { component.mdc { methods.insertInstance.call(args, keywords) } }
+    fun insertInstance(args: Array<PyObject>, keywords: Array<String>) = queue.submit {
+        component.mdc { methods.insertInstance.call(args, keywords) }
+    }
 
     inner class MethodOverloads {
         val popInstance =
