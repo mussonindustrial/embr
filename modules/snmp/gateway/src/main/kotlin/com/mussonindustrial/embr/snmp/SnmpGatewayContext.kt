@@ -10,8 +10,10 @@ import com.mussonindustrial.embr.gateway.EmbrGatewayContext
 import com.mussonindustrial.embr.gateway.EmbrGatewayContextImpl
 import com.mussonindustrial.embr.snmp.agents.SnmpAgentRegistry
 import com.mussonindustrial.embr.snmp.agents.rpc.SnmpAgentRpcImpl
+import com.mussonindustrial.embr.snmp.opc.SnmpNamespace
 import java.util.concurrent.ThreadFactory
 import java.util.concurrent.atomic.AtomicInteger
+import org.eclipse.milo.opcua.sdk.server.OpcUaServer
 import org.snmp4j.SNMP4JSettings
 import org.snmp4j.mp.MPv3
 import org.snmp4j.security.SecurityModels
@@ -32,6 +34,7 @@ class SnmpGatewayContext(private val context: GatewayContext) :
     val logger = this.getLoggerEx()
     val agentRegistry = SnmpAgentRegistry()
     val agentRpc = SnmpAgentRpcImpl(this)
+    lateinit var opcUaServer: OpcUaServer
 
     init {
         instance = this
@@ -61,6 +64,13 @@ class SnmpGatewayContext(private val context: GatewayContext) :
                     Thread(null, r, "embr-snmp-executor-${counter.incrementAndGet()}")
             },
         )
+
+    fun initOpcUaServer(server: OpcUaServer) {
+        if (!::opcUaServer.isInitialized) {
+            opcUaServer = server
+            SnmpNamespace(server).startup()
+        }
+    }
 
     override fun getHealthCheckRegistry(): HealthCheckRegistry? {
         return super.getHealthCheckRegistry()

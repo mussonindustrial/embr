@@ -1,0 +1,77 @@
+package com.mussonindustrial.embr.snmp.model
+
+import com.mussonindustrial.embr.snmp.opc.types.SnmpDataType
+import org.eclipse.milo.opcua.stack.core.StatusCodes
+import org.eclipse.milo.opcua.stack.core.types.builtin.DataValue
+import org.eclipse.milo.opcua.stack.core.types.builtin.Variant
+import org.eclipse.milo.opcua.stack.core.types.builtin.unsigned.ULong
+import org.snmp4j.smi.Counter64
+import org.snmp4j.smi.Integer32
+import org.snmp4j.smi.Null
+import org.snmp4j.smi.OID
+import org.snmp4j.smi.OctetString
+import org.snmp4j.smi.SMIAddress
+import org.snmp4j.smi.UnsignedInteger32
+import org.snmp4j.smi.Variable
+
+interface ObjectModel {
+
+    val oids: List<Oid>
+
+    fun observe(value: OidValue<Variable>): OidValue<DataValue>
+
+    fun getDescriptors(oids: List<Oid>): List<Descriptor>
+
+    fun toSnmpValue(value: OidValue<Any?>): OidValue<Variable> {
+        val descriptor = getDescriptors(listOf(value.oid)).first()
+
+        val snmpValue =
+            when (descriptor) {
+                is ValueDescriptor ->
+                    SnmpDataType.variableOfType(descriptor.snmpDataType, value.value)
+                is InvalidDescriptor -> Null.instance
+                is TableColumnDescriptor -> Null.instance
+                is TableDescriptor -> Null.instance
+                is UnknownDescriptor -> Null.instance
+            }
+        return BasicOidValue(value.oid, snmpValue)
+    }
+
+    fun toOpcUaValue(value: OidValue<Variable>): OidValue<DataValue> {
+        if (value.value == SnmpCommunicationError) {
+            return BasicOidValue(value.oid, DataValue(StatusCodes.Bad_CommunicationError))
+        }
+
+        val opcUaValue =
+            when (value.value) {
+                Null.endOfMibView -> DataValue(StatusCodes.Bad_NotFound)
+                Null.noSuchObject -> DataValue(StatusCodes.Bad_NotFound)
+                Null.noSuchInstance -> DataValue(StatusCodes.Bad_NotFound)
+                Null.instance -> DataValue(Variant.NULL_VALUE)
+                is Integer32 -> DataValue(Variant.ofInt32(value.value.toInt()))
+                is UnsignedInteger32 -> DataValue(Variant.ofInt32(value.value.toInt()))
+                is Counter64 -> DataValue(Variant.ofUInt64(ULong.valueOf(value.value.toLong())))
+                is SMIAddress -> DataValue(Variant.ofString(value.value.toString()))
+                is OctetString -> DataValue(Variant.ofString(value.value.toString()))
+                is OID -> DataValue(Variant.ofString(value.value.toString()))
+                else -> DataValue(Variant.ofString(value.value.toString()))
+            }
+        return BasicOidValue(value.oid, opcUaValue)
+    }
+
+    sealed class Descriptor(val oid: Oid)
+
+    class InvalidDescriptor(oid: Oid) : Descriptor(oid)
+
+    class UnknownDescriptor(oid: Oid) : Descriptor(oid)
+
+    open class ValueDescriptor(
+        oid: Oid,
+        val snmpDataType: SnmpDataType,
+        var expectedSize: Int = 0,
+    ) : Descriptor(oid)
+
+    class TableColumnDescriptor(oid: Oid, val snmpDataType: SnmpDataType) : Descriptor(oid)
+
+    class TableDescriptor(oid: Oid, val columns: List<TableColumnDescriptor>) : Descriptor(oid)
+}

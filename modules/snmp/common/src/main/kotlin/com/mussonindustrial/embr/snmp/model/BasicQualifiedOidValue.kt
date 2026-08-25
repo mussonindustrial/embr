@@ -41,7 +41,7 @@ data class BasicQualifiedOidValue(
                 1 ->
                     BasicQualifiedOidValue(
                         value = payload["value"],
-                        oid = Oid.fromNumeric(payload["oid"] as String),
+                        oid = Snmp4jOid(payload["oid"] as String),
                         quality = QualityCode((payload["quality"] as Number).toInt()),
                         timeStamp = Date((payload["timestamp"] as Number).toLong()),
                     )

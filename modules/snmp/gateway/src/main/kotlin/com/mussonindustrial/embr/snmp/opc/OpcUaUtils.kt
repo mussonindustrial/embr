@@ -1,4 +1,4 @@
-package com.mussonindustrial.embr.snmp.utils
+package com.mussonindustrial.embr.snmp.opc
 
 import com.inductiveautomation.ignition.common.model.values.QualityCode
 import org.eclipse.milo.opcua.sdk.server.UaNodeManager
