@@ -49,17 +49,15 @@ class OidAddressSpace(val device: SnmpAgentDevice, composite: AddressSpaceCompos
         val results = readValueIds.map { ReadRequest(it) }
         val toProcess = results.filter { it.result == null }
 
-        val valueReads =
-            toProcess.filter {
-                AttributeId.from(it.readValueId.attributeId).get() == AttributeId.Value
-            }
+        val valueReads = toProcess.filter {
+            AttributeId.from(it.readValueId.attributeId).get() == AttributeId.Value
+        }
         val valueReadResults = device.read(valueReads.map { VariableBinding(it.oid) })
         valueReadResults.zip(valueReads).forEach { (value, result) -> result.result = value }
 
-        val nonValueReads =
-            toProcess.filter {
-                AttributeId.from(it.readValueId.attributeId).get() != AttributeId.Value
-            }
+        val nonValueReads = toProcess.filter {
+            AttributeId.from(it.readValueId.attributeId).get() != AttributeId.Value
+        }
         val nonValueReadResults = readNonValueAttributes(nonValueReads)
         nonValueReadResults.zip(nonValueReads).forEach { (value, result) -> result.result = value }
 

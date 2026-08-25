@@ -90,8 +90,9 @@ class EventStreamManager(val context: EventStreamGatewayContext) {
 
     private fun updateMetrics() {
         systemTags.sessionCountConnected = sessions.count { (_, session) -> session.opened.plain }
-        systemTags.sessionCountUnconnected =
-            sessions.count { (_, session) -> !session.opened.plain }
+        systemTags.sessionCountUnconnected = sessions.count { (_, session) ->
+            !session.opened.plain
+        }
     }
 
     enum class SessionType {
