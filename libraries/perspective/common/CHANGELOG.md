@@ -1,5 +1,11 @@
 # @mussonindustrial/embr-jvm-perspective-core
 
+## 0.9.4
+
+### Patch Changes
+
+- 774ba0c: Version bump
+
 ## 0.9.3
 
 ## 0.9.2
