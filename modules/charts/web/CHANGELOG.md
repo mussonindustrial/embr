@@ -1,5 +1,7 @@
 # @mussonindustrial/embr-js-chart-js
 
+## 6.2.3
+
 ## 6.2.2
 
 ## 6.2.1
