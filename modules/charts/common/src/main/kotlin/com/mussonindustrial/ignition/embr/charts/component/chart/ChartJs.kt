@@ -5,7 +5,7 @@ import com.inductiveautomation.perspective.common.api.ComponentDescriptorImpl
 import com.mussonindustrial.embr.perspective.common.component.PaletteEntry
 import com.mussonindustrial.embr.perspective.common.component.PerspectiveComponent
 import com.mussonindustrial.embr.perspective.common.component.addPaletteEntry
-import com.mussonindustrial.ignition.embr.charts.Components
+import com.mussonindustrial.ignition.embr.charts.ChartsComponents
 import com.mussonindustrial.ignition.embr.charts.Meta.MODULE_ID
 
 class ChartJs {
@@ -111,7 +111,7 @@ class ChartJs {
                 .addPaletteEntry(VARIANT_RADAR)
                 .addPaletteEntry(VARIANT_VIOLIN)
                 .setDefaultMetaName("Chartjs")
-                .setResources(Components.BROWSER_RESOURCES)
+                .setResources(ChartsComponents.BROWSER_RESOURCES)
                 .build()
     }
 }
