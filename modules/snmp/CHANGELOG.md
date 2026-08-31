@@ -1,5 +1,12 @@
 # @embr-modules/snmp
 
+## 0.5.4
+
+### Patch Changes
+
+- 7ec3791: Bump `org.snmp4j:snmp4j` from 3.12.2 to 3.13.1
+- 3583112: Bump `org.snmp4j:snmp4j` from 3.9.7 to 3.12.2
+
 ## 0.5.3
 
 ### Patch Changes
