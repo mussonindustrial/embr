@@ -1,6 +1,6 @@
 {
     "name": "@embr-modules/snmp",
-    "version": "0.7.2",
+    "version": "0.7.3",
     "private": false,
     "keywords": [
         "ignition",

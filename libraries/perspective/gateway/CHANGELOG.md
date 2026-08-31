@@ -1,5 +1,11 @@
 # @embr-jvm/perspective-gateway
 
+## 0.9.3
+
+### Patch Changes
+
+- f822b43: `PyFrame.getComponentModelScriptWrapper`: Recursively search for `self` items in the frame stack. Resolves #582.
+
 ## 0.9.2
 
 ### Patch Changes
