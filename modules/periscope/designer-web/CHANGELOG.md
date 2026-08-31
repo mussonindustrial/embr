@@ -1,5 +1,7 @@
 # @embr-modules/periscope-designer-web
 
+## 0.14.5
+
 ## 0.14.4
 
 ## 0.14.3
