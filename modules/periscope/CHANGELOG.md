@@ -1,5 +1,15 @@
 # @embr-modules/periscope
 
+## 0.14.4
+
+### Patch Changes
+
+- Updated dependencies [7093468]
+  - @embr-jvm/perspective-gateway@0.9.3
+  - @embr-jvm/perspective-common@0.9.3
+  - @embr-jvm/perspective-designer@0.9.3
+  - @embr-modules/periscope-web@0.14.4
+
 ## 0.14.3
 
 ### Patch Changes
