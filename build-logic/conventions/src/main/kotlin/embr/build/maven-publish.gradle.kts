@@ -48,8 +48,6 @@ tasks.withType<PublishToMavenRepository>().configureEach {
 
         val actor = System.getenv("GITHUB_ACTOR")
         val token = System.getenv("GITHUB_TOKEN")
-        val projectGroup = project.group.toString()
-        val projectVersion = project.version.toString()
 
         require(!actor.isNullOrBlank()) {
             "Publishing aborted: GITHUB_ACTOR environment variable is missing."
@@ -57,16 +55,23 @@ tasks.withType<PublishToMavenRepository>().configureEach {
         require(!token.isNullOrBlank()) {
             "Publishing aborted: GITHUB_TOKEN environment variable is missing."
         }
-        require(projectGroup != "unspecified" && projectGroup.isNotBlank()) {
-            "Publishing aborted: Project group is not configured."
+
+        val groupId = publication.groupId
+        val artifactId = publication.artifactId
+        val version = publication.version
+
+        require(groupId.isNotBlank()) {
+            "Publishing aborted: Publication groupId is not configured."
         }
-        require(projectVersion != "unspecified" && projectVersion.isNotBlank()) {
-            "Publishing aborted: Project version is not configured."
+        require(artifactId.isNotBlank()) {
+            "Publishing aborted: Publication artifactId is not configured."
+        }
+        require(version.isNotBlank()) {
+            "Publishing aborted: Publication version is not configured."
         }
 
-        val groupId = projectGroup.replace(".", "/")
-        val artifactId = project.name
-        val pomUrl = "$repoUrl/$groupId/$artifactId/$projectVersion/$artifactId-$projectVersion.pom"
+        val groupPath = groupId.replace(".", "/")
+        val pomUrl = "$repoUrl/$groupPath/$artifactId/$version/$artifactId-$version.pom"
 
         try {
             val connection = URI(pomUrl).toURL().openConnection() as HttpURLConnection
@@ -75,15 +80,21 @@ tasks.withType<PublishToMavenRepository>().configureEach {
             val auth = Base64.getEncoder().encodeToString("$actor:$token".toByteArray())
             connection.setRequestProperty("Authorization", "Basic $auth")
 
-            val responseCode = connection.responseCode
+            when (val responseCode = connection.responseCode) {
+                200 -> {
+                    logger.lifecycle(
+                        "Artifact $groupId:$artifactId:$version already exists. Skipping publish."
+                    )
+                    false
+                }
 
-            if (responseCode == 200) {
-                logger.lifecycle(
-                    "Artifact $projectGroup:$artifactId:$projectVersion already exists. Skipping publish."
-                )
-                false
-            } else {
-                true
+                404 -> true
+
+                else ->
+                    throw IllegalStateException(
+                        "Publishing aborted: GitHub Packages returned HTTP $responseCode " +
+                            "while checking $groupId:$artifactId:$version."
+                    )
             }
         } catch (e: Exception) {
             throw IllegalStateException(
