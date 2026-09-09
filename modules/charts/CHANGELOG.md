@@ -1,5 +1,13 @@
 # @mussonindustrial/embr-charts
 
+## 6.2.4
+
+### Patch Changes
+
+- eebf1bc: Chart.js - Add an inline patch for the Crosshair Plugin to crashes when enabling the plugin. Resolves #603.
+- Updated dependencies [eebf1bc]
+  - @embr-modules/charts-web@6.2.4
+
 ## 6.2.3
 
 ### Patch Changes
