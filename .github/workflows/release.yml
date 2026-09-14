@@ -40,7 +40,7 @@ jobs:
 
       - name: Create Release Pull Request
         id: changesets
-        uses: changesets/action@v1
+        uses: changesets/action@v2
         with:
           commit: '[ci] release v8.3 branch'
           title: '(CI) Release v8.3 Branch'
