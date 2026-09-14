@@ -7,7 +7,7 @@ import com.inductiveautomation.perspective.common.api.ComponentEventDescriptor
 import com.mussonindustrial.embr.perspective.common.component.PaletteEntry
 import com.mussonindustrial.embr.perspective.common.component.PerspectiveComponent
 import com.mussonindustrial.embr.perspective.common.component.addPaletteEntry
-import com.mussonindustrial.ignition.embr.charts.Components
+import com.mussonindustrial.ignition.embr.charts.ChartsComponents
 import com.mussonindustrial.ignition.embr.charts.Meta.MODULE_ID
 
 class ApexChartsLegacy {
@@ -64,7 +64,7 @@ class ApexChartsLegacy {
                 name,
                 description,
                 JsonSchema.parse(
-                    Components::class
+                    ChartsComponents::class
                         .java
                         .getResourceAsStream(
                             "/schemas/components/${id}/events/${schemaName}.props.json"
@@ -220,7 +220,7 @@ class ApexChartsLegacy {
                 .addPaletteEntry(VARIANT_RADAR)
                 .addPaletteEntry(VARIANT_TIMESERIES)
                 .setDefaultMetaName("ApexChartsLegacy")
-                .setResources(Components.BROWSER_RESOURCES)
+                .setResources(ChartsComponents.BROWSER_RESOURCES)
                 .build()
     }
 }

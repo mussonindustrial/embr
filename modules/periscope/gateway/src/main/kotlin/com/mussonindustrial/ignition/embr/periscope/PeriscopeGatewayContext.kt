@@ -21,8 +21,13 @@ import com.mussonindustrial.embr.perspective.gateway.component.registerComponent
 import com.mussonindustrial.embr.perspective.gateway.component.removeComponent
 import com.mussonindustrial.embr.perspective.gateway.reflect.ViewLoader
 import com.mussonindustrial.embr.perspective.gateway.session.PerspectiveSessionMonitor
-import com.mussonindustrial.embr.servlets.ModuleServletManager
+import com.mussonindustrial.embr.servlets.ClassLoaderResourceHandler
+import com.mussonindustrial.embr.servlets.createDataServletRouteGroup
+import com.mussonindustrial.embr.servlets.removeDataServletRouteGroup
 import com.mussonindustrial.ignition.embr.periscope.component.embedding.*
+import com.mussonindustrial.ignition.embr.periscope.handlers.ClientResourceHandler
+import com.mussonindustrial.ignition.embr.periscope.handlers.ClientResourceManifestHandler
+import com.mussonindustrial.ignition.embr.periscope.handlers.SystemModuleHandler
 import com.mussonindustrial.ignition.embr.periscope.resources.ClientResourceChangeListener
 import com.mussonindustrial.ignition.embr.periscope.resources.ClientResourceManager
 import com.mussonindustrial.ignition.embr.periscope.resources.CssModuleResource
@@ -36,7 +41,6 @@ class PeriscopeGatewayContext(private val context: GatewayContext) :
         lateinit var instance: PeriscopeGatewayContext
     }
 
-    val servletManager = ModuleServletManager(context.webResourceManager, "/embr/periscope")
     val clientResourceManager = ClientResourceManager()
 
     val perspectiveContext: GatewayHook.PerspectiveGatewayContext
@@ -111,8 +115,19 @@ class PeriscopeGatewayContext(private val context: GatewayContext) :
         projectLifecycles.forEach { it.shutdown() }
     }
 
-    fun removeServlets() {
-        servletManager.removeAllServlets()
+    fun registerServlets() {
+        val routeGroup = context.webResourceManager.createDataServletRouteGroup("embr-periscope")
+        ClassLoaderResourceHandler(this.javaClass.classLoader, "static", "/resources")
+            .mount(routeGroup.newRoute("/resources/*"))
+        ClientResourceManifestHandler(this)
+            .mount(routeGroup.newRoute("/client-resource/:project_name/manifest.json"))
+        SystemModuleHandler(this).mount(routeGroup.newRoute("/system-module/:hash/:module_name"))
+        ClientResourceHandler(this)
+            .mount(routeGroup.newRoute("/client-resource/:project_name/:hash/*"))
+    }
+
+    fun unregisterServlets() {
+        context.webResourceManager.removeDataServletRouteGroup("embr-periscope")
     }
 
     override fun getTelemetryManager(): TelemetryManager? {

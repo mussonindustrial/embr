@@ -10,6 +10,9 @@ import com.mussonindustrial.embr.perspective.gateway.component.JavaScriptProxyab
 import com.mussonindustrial.embr.perspective.gateway.component.asGatewayComponent
 import com.mussonindustrial.embr.perspective.gateway.component.registerComponent
 import com.mussonindustrial.embr.perspective.gateway.component.removeComponent
+import com.mussonindustrial.embr.servlets.ClassLoaderResourceHandler
+import com.mussonindustrial.embr.servlets.createDataServletRouteGroup
+import com.mussonindustrial.embr.servlets.removeDataServletRouteGroup
 import com.mussonindustrial.ignition.embr.charts.component.chart.ApexCharts
 import com.mussonindustrial.ignition.embr.charts.component.chart.ApexChartsLegacy
 import com.mussonindustrial.ignition.embr.charts.component.chart.ApexChartsLegacyModelDelegate
@@ -51,6 +54,16 @@ class ChartsGatewayContext(private val context: GatewayContext) :
 
     fun removeModuleObservers() {
         moduleObservers.forEach { moduleManager.removeModuleObserver(it) }
+    }
+
+    fun registerServlets() {
+        val routeGroup = context.webResourceManager.createDataServletRouteGroup("embr-charts")
+        ClassLoaderResourceHandler(this.javaClass.classLoader, "static", "/resources")
+            .mount(routeGroup.newRoute("/resources/*"))
+    }
+
+    fun unregisterServlets() {
+        context.webResourceManager.removeDataServletRouteGroup("embr-charts")
     }
 
     override fun getTelemetryManager(): TelemetryManager? {
