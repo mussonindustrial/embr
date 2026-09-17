@@ -23,6 +23,7 @@ import com.mussonindustrial.embr.perspective.gateway.reflect.ViewLoader
 import com.mussonindustrial.embr.perspective.gateway.session.PerspectiveSessionMonitor
 import com.mussonindustrial.embr.servlets.ModuleServletManager
 import com.mussonindustrial.ignition.embr.periscope.component.embedding.*
+import com.mussonindustrial.ignition.embr.periscope.pystore.PerspectivePyStores
 import com.mussonindustrial.ignition.embr.periscope.resources.ClientResourceChangeListener
 import com.mussonindustrial.ignition.embr.periscope.resources.ClientResourceManager
 import com.mussonindustrial.ignition.embr.periscope.resources.CssModuleResource
@@ -50,6 +51,8 @@ class PeriscopeGatewayContext(private val context: GatewayContext) :
             Swiper.asGatewayComponent { JavaScriptProxyableComponentModelDelegate(it) },
             React.asGatewayComponent { JavaScriptProxyableComponentModelDelegate(it) },
         )
+
+    val pyStores = PerspectivePyStores(executionManager)
 
     private val clientResourceDefinitions =
         listOf(CssModuleResource.Descriptor, TypeScriptResource.Descriptor)

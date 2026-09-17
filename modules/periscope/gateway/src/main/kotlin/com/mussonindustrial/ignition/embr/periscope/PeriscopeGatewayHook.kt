@@ -1,6 +1,7 @@
 package com.mussonindustrial.ignition.embr.periscope
 
 import com.inductiveautomation.ignition.common.BundleUtil
+import com.inductiveautomation.ignition.common.expressions.ExpressionFunctionManager
 import com.inductiveautomation.ignition.common.licensing.LicenseState
 import com.inductiveautomation.ignition.common.script.ScriptManager
 import com.inductiveautomation.ignition.common.script.hints.PropertiesFileDocProvider
@@ -9,10 +10,12 @@ import com.inductiveautomation.ignition.gateway.model.AbstractGatewayModuleHook
 import com.inductiveautomation.ignition.gateway.model.GatewayContext
 import com.mussonindustrial.embr.common.Embr
 import com.mussonindustrial.ignition.embr.periscope.Meta.SHORT_MODULE_ID
+import com.mussonindustrial.ignition.embr.periscope.expressions.PyStoreExpression
 import com.mussonindustrial.ignition.embr.periscope.handlers.ClientResourceHandler
 import com.mussonindustrial.ignition.embr.periscope.handlers.ClientResourceManifestHandler
 import com.mussonindustrial.ignition.embr.periscope.handlers.SystemModuleHandler
 import com.mussonindustrial.ignition.embr.periscope.scripting.JavaScriptFunctions
+import com.mussonindustrial.ignition.embr.periscope.scripting.PyStoreFunctions
 import com.mussonindustrial.ignition.embr.periscope.scripting.QueueFunctions
 import java.util.*
 import org.slf4j.Logger
@@ -94,6 +97,20 @@ class PeriscopeGatewayHook : AbstractGatewayModuleHook() {
             "system.perspective",
             QueueFunctions(this.context),
             PropertiesFileDocProvider(),
+        )
+        manager.addScriptModule(
+            "system.perspective",
+            PyStoreFunctions(this.context),
+            PropertiesFileDocProvider(),
+        )
+    }
+
+    override fun configureFunctionFactory(manager: ExpressionFunctionManager) {
+        super.configureFunctionFactory(manager)
+        manager.addFunction(
+            PyStoreExpression.NAME,
+            PyStoreExpression.CATEGORY,
+            PyStoreExpression(context.pyStores),
         )
     }
 
