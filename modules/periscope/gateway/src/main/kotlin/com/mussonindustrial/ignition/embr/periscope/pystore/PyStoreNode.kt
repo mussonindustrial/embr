@@ -74,6 +74,11 @@ abstract class PyStoreNode : PyObject() {
         owner.touchMany(relativePaths.map(::resolve))
     }
 
+    fun listen(callback: PyObject): PyStoreListener = owner.listen(path, callback)
+
+    fun listen(relativePath: String, callback: PyObject): PyStoreListener =
+        owner.listen(resolve(relativePath), callback)
+
     override fun __findattr_ex__(name: String): PyObject? {
         super.__findattr_ex__(name)?.let {
             return it

@@ -20,6 +20,7 @@ class PyStore(
     private var initialized = false
     private var initializing = false
 
+    private var notifying = false
     private var notificationDeferralDepth = 0
 
     private val changeset = PyStoreChangeset()
@@ -246,27 +247,60 @@ class PyStore(
         }
     }
 
-    private fun notifyChanges(changeset: PyStoreChangeset) {
-        if (changeset.isEmpty) return
+    private fun notifyChanges(initialChangeset: PyStoreChangeset) {
+        var current = initialChangeset
 
-        val listeners =
-            synchronized(lock) {
-                if (!active || subscribers.isEmpty()) return
+        while (true) {
+            val listeners =
+                synchronized(lock) {
+                    if (!active) {
+                        notifying = false
+                        changeset.clear()
+                        return
+                    }
 
-                subscribers.toList()
+                    subscribers.toList()
+                }
+
+            val pathNames =
+                current.paths.joinToString { if (it.isRoot) "<root>" else it.toString() }
+
+            for (listener in listeners) {
+                try {
+                    listener.onChanges(current)
+                } catch (exception: Exception) {
+                    logger.warn(
+                        "Error notifying subscriber of PyStore '$name' changes at [$pathNames]",
+                        exception,
+                    )
+                }
             }
 
-        val pathNames = changeset.paths.joinToString { if (it.isRoot) "<root>" else it.toString() }
+            val next =
+                synchronized(lock) {
+                    when {
+                        !active -> {
+                            changeset.clear()
+                            notifying = false
+                            null
+                        }
 
-        for (listener in listeners) {
-            try {
-                listener.onChanges(changeset)
-            } catch (exception: Exception) {
-                logger.warn(
-                    "Error notifying subscriber of PyStore '$name' changes at [$pathNames]",
-                    exception,
-                )
-            }
+                        initializing || notificationDeferralDepth > 0 -> {
+                            notifying = false
+                            null
+                        }
+
+                        else -> {
+                            changeset.drain().also {
+                                if (it == null) {
+                                    notifying = false
+                                }
+                            }
+                        }
+                    }
+                }
+
+            current = next ?: return
         }
     }
 
@@ -398,11 +432,27 @@ class PyStore(
     }
 
     private fun drainChanges(): PyStoreChangeset? {
-        if (initializing || notificationDeferralDepth > 0) {
+        if (initializing || notificationDeferralDepth > 0 || notifying) {
             return null
         }
 
-        return changeset.drain()
+        return changeset.drain()?.also {
+            notifying = true
+        }
+    }
+
+    internal fun listen(path: PyStorePath, callback: PyObject): PyStoreListener {
+        require(callback.isCallable) { "PyStore listener callback must be callable" }
+
+        return access {
+            PyStoreListener(this, path, callback).also {
+                subscribers += it
+            }
+        }
+    }
+
+    internal fun unsubscribe(listener: ChangeListener) {
+        synchronized(lock) { subscribers -= listener }
     }
 
     private inline fun <T> access(block: () -> T): T =
