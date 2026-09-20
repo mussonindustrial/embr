@@ -70,6 +70,10 @@ abstract class PyStoreNode : PyObject() {
         owner.touch(resolve(relativePath))
     }
 
+    fun touchMany(vararg relativePaths: String) {
+        owner.touchMany(relativePaths.map(::resolve))
+    }
+
     override fun __findattr_ex__(name: String): PyObject? {
         super.__findattr_ex__(name)?.let {
             return it
@@ -125,27 +129,14 @@ abstract class PyStoreNode : PyObject() {
 
     override fun __iter__(): PyObject = keys().__iter__()
 
-    fun keys(): PyList =
-        PyList(
-            owner.children(path).map {
-                Py.newString(it.first)
-            }
-        )
+    fun keys(): PyList = PyList(owner.children(path).map { Py.newString(it.first) })
 
-    fun values(): PyList =
-        PyList(
-            owner.children(path).map {
-                it.second.toPyValue()
-            }
-        )
+    fun values(): PyList = PyList(owner.children(path).map { it.second.toPyValue() })
 
     fun items(): PyList =
         PyList(
             owner.children(path).map { (key, value) ->
-                PyTuple(
-                    Py.newString(key),
-                    value.toPyValue(),
-                )
+                PyTuple(Py.newString(key), value.toPyValue())
             }
         )
 

@@ -74,9 +74,7 @@ class PyStorePath private constructor(val segments: List<String>) {
                 }
             }
 
-            require(!escaping) {
-                "Invalid PyStore path '$path': trailing escape"
-            }
+            require(!escaping) { "Invalid PyStore path '$path': trailing escape" }
 
             finishSegment()
 

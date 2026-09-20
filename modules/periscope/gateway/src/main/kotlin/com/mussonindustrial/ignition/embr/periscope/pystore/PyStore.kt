@@ -21,9 +21,9 @@ class PyStore(
     private var initializing = false
 
     private var notificationDeferralDepth = 0
-    private var deferredNotificationsDirty = false
 
-    private val subscribers = LinkedHashSet<(PyStorePath) -> Unit>()
+    private val changeset = PyStoreChangeset()
+    private val subscribers = LinkedHashSet<ChangeListener>()
 
     override val owner: PyStore
         get() = this
@@ -42,13 +42,9 @@ class PyStore(
 
         try {
             access {
-                if (initialized) {
-                    return false
-                }
+                if (initialized) return false
 
-                check(!initializing) {
-                    "PyStore '$name' is already being initialized"
-                }
+                check(!initializing) { "PyStore '$name' is already being initialized" }
 
                 initializing = true
                 attempted = true
@@ -71,16 +67,9 @@ class PyStore(
 
     fun deferNotifications(): PyObject = NotificationDeferral()
 
-    fun subscribe(listener: (PyStorePath) -> Unit): AutoCloseable {
-        access {
-            subscribers += listener
-        }
-
-        return AutoCloseable {
-            synchronized(lock) {
-                subscribers -= listener
-            }
-        }
+    fun subscribe(listener: ChangeListener): AutoCloseable {
+        access { subscribers += listener }
+        return AutoCloseable { synchronized(lock) { subscribers -= listener } }
     }
 
     internal fun read(path: PyStorePath): PyStoreReadResult = access {
@@ -113,9 +102,7 @@ class PyStore(
     }
 
     internal fun getOrPut(path: PyStorePath, initializer: () -> Any?): Any? {
-        require(!path.isRoot) {
-            "The root of PyStore '$name' cannot be replaced"
-        }
+        require(!path.isRoot) { "The root of PyStore '$name' cannot be replaced" }
 
         var result: Any? = null
 
@@ -151,9 +138,7 @@ class PyStore(
     }
 
     internal fun remove(path: PyStorePath): PyStoreReadResult {
-        require(!path.isRoot) {
-            "The root of PyStore '$name' cannot be removed"
-        }
+        require(!path.isRoot) { "The root of PyStore '$name' cannot be removed" }
 
         var result: PyStoreReadResult = PyStoreReadResult.Unresolved
 
@@ -178,9 +163,7 @@ class PyStore(
                         "Cannot clear '$path': path is not a PyStore node"
                     )
 
-            if (node.isEmpty()) {
-                return@mutate false
-            }
+            if (node.isEmpty()) return@mutate false
 
             node.clear()
             true
@@ -188,9 +171,7 @@ class PyStore(
     }
 
     internal fun node(path: PyStorePath): PyStoreNode {
-        if (path.isRoot) {
-            return this
-        }
+        if (path.isRoot) return this
 
         mutate(path) {
             var current = root
@@ -222,7 +203,21 @@ class PyStore(
     }
 
     internal fun touch(path: PyStorePath) {
-        mutate(path) { true }
+        val changes = access {
+            changeset.add(path)
+            drainChanges()
+        }
+
+        changes?.let(::notifyChanges)
+    }
+
+    internal fun touchMany(paths: Iterable<PyStorePath>) {
+        val changes = access {
+            changeset.addAll(paths)
+            drainChanges()
+        }
+
+        changes?.let(::notifyChanges)
     }
 
     internal fun expressionValue(path: PyStorePath): PyStoreReadResult = access {
@@ -242,35 +237,33 @@ class PyStore(
 
     internal fun invalidate() {
         synchronized(lock) {
-            if (!active) {
-                return
-            }
+            if (!active) return
 
             active = false
             root.clear()
             subscribers.clear()
-            deferredNotificationsDirty = false
+            changeset.clear()
         }
     }
 
-    private fun notifyChange(path: PyStorePath) {
+    private fun notifyChanges(changeset: PyStoreChangeset) {
+        if (changeset.isEmpty) return
+
         val listeners =
             synchronized(lock) {
-                if (!active || subscribers.isEmpty()) {
-                    return
-                }
+                if (!active || subscribers.isEmpty()) return
 
                 subscribers.toList()
             }
 
-        val pathName = if (path.isRoot) "<root>" else path.toString()
+        val pathNames = changeset.paths.joinToString { if (it.isRoot) "<root>" else it.toString() }
 
         for (listener in listeners) {
             try {
-                listener(path)
+                listener.onChanges(changeset)
             } catch (exception: Exception) {
                 logger.warn(
-                    "Error notifying subscriber of PyStore '$name' change at '$pathName'",
+                    "Error notifying subscriber of PyStore '$name' changes at [$pathNames]",
                     exception,
                 )
             }
@@ -278,13 +271,11 @@ class PyStore(
     }
 
     private fun beginNotificationDeferral() {
-        access {
-            notificationDeferralDepth++
-        }
+        access { notificationDeferralDepth++ }
     }
 
     private fun endNotificationDeferral() {
-        val notify =
+        val changes =
             synchronized(lock) {
                 check(notificationDeferralDepth > 0) {
                     "No PyStore notification deferral is active"
@@ -292,43 +283,26 @@ class PyStore(
 
                 notificationDeferralDepth--
 
-                if (notificationDeferralDepth > 0) {
-                    return@synchronized false
+                if (!active) {
+                    changeset.clear()
+                    return@synchronized null
                 }
 
-                val notify = active && deferredNotificationsDirty
-
-                deferredNotificationsDirty = false
-                notify
+                drainChanges()
             }
 
-        if (notify) {
-            notifyChange(PyStorePath.ROOT)
-        }
-    }
-
-    private fun recordChange(): Boolean {
-        if (initializing) {
-            return false
-        }
-
-        if (notificationDeferralDepth > 0) {
-            deferredNotificationsDirty = true
-            return false
-        }
-
-        return true
+        changes?.let(::notifyChanges)
     }
 
     private fun recordRootChange() {
-        val notify =
+        val changes =
             synchronized(lock) {
-                active && recordChange()
+                if (!active) return
+                changeset.add(PyStorePath.ROOT)
+                drainChanges()
             }
 
-        if (notify) {
-            notifyChange(PyStorePath.ROOT)
-        }
+        changes?.let(::notifyChanges)
     }
 
     private fun resolve(segments: List<String>, create: Boolean = false): PyStoreReadResult {
@@ -413,11 +387,7 @@ class PyStore(
 
     private fun snapshot(value: Any?): Any? =
         when (value) {
-            is NodeData ->
-                value.mapValues {
-                    snapshot(it.value)
-                }
-
+            is NodeData -> value.mapValues { snapshot(it.value) }
             else -> value
         }
 
@@ -427,24 +397,40 @@ class PyStore(
         }
     }
 
+    private fun drainChanges(): PyStoreChangeset? {
+        if (initializing || notificationDeferralDepth > 0) {
+            return null
+        }
+
+        return changeset.drain()
+    }
+
     private inline fun <T> access(block: () -> T): T =
         synchronized(lock) {
             checkActive()
             block()
         }
 
-    private inline fun mutate(path: PyStorePath, block: () -> Boolean) {
-        val notify = access {
-            block() && recordChange()
+    private inline fun mutate(
+        path: PyStorePath,
+        block: () -> Boolean,
+    ) {
+        val changes = access {
+            if (!block()) return@access null
+
+            changeset.add(path)
+            drainChanges()
         }
 
-        if (notify) {
-            notifyChange(path)
-        }
+        changes?.let(::notifyChanges)
     }
 
     private fun resolveNode(path: PyStorePath): NodeData? =
         (resolve(path.segments) as? PyStoreReadResult.Resolved)?.value as? NodeData
+
+    fun interface ChangeListener {
+        fun onChanges(changeset: PyStoreChangeset)
+    }
 
     private inner class NotificationDeferral : PyObject(), ContextManager {
 

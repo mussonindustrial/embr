@@ -10,7 +10,6 @@ import com.mussonindustrial.embr.perspective.gateway.model.ThreadContext
 import java.lang.ref.WeakReference
 import java.util.IdentityHashMap
 import java.util.Locale
-import java.util.WeakHashMap
 import java.util.concurrent.TimeUnit
 
 class PerspectivePyStores(
@@ -23,8 +22,7 @@ class PerspectivePyStores(
     private val valueResolver = PyStoreValueResolver()
 
     private val scopes = IdentityHashMap<AbstractLifecycle, MutableMap<String, PyStore>>()
-    private val bindingsByToken = WeakHashMap<Any, Binding>()
-    private val bindingsByStore = IdentityHashMap<PyStore, MutableSet<Binding>>()
+    private val subscriptionsByStore = IdentityHashMap<PyStore, MutableSet<Subscription>>()
 
     private var closed = false
 
@@ -81,26 +79,19 @@ class PerspectivePyStores(
     }
 
     fun release(lifecycle: AbstractLifecycle) {
-        val stores =
-            synchronized(lock) {
-                detachScope(lifecycle)
-            }
-
+        val stores = synchronized(lock) { detachScope(lifecycle) }
         stores.forEach(PyStore::invalidate)
     }
 
     override fun close() {
         val stores =
             synchronized(lock) {
-                if (closed) {
-                    return
-                }
+                if (closed) return
 
                 closed = true
 
                 scopes.keys.toList().flatMap(::detachScope).also {
-                    bindingsByToken.clear()
-                    bindingsByStore.clear()
+                    subscriptionsByStore.clear()
                 }
             }
 
@@ -108,38 +99,27 @@ class PerspectivePyStores(
         stores.forEach(PyStore::invalidate)
     }
 
-    internal fun bind(
-        token: Any,
+    internal fun subscribe(
+        owner: Any,
         store: PyStore,
         path: PyStorePath,
         listener: InteractionListener,
-    ) {
-        access {
-            val binding =
-                Binding(
-                    WeakReference(token),
-                    store,
-                    path,
-                    WeakReference(listener),
-                )
+    ): AutoCloseable {
+        val subscription =
+            Subscription(
+                owner,
+                store,
+                path,
+                listener,
+            )
 
-            bindingsByToken.put(token, binding)?.let(::unindex)
-
-            index(binding)
-        }
-    }
-
-    internal fun unbind(token: Any) {
-        synchronized(lock) {
-            bindingsByToken.remove(token)?.let(::unindex)
-        }
+        access { index(subscription) }
+        return subscription
     }
 
     private fun createStore(name: String): PyStore =
         PyStore(name, valueResolver).also { store ->
-            store.subscribe {
-                changed(store, it)
-            }
+            store.subscribe { changed(store, it) }
         }
 
     private fun lifecycleFor(
@@ -151,17 +131,13 @@ class PerspectivePyStores(
             Scope.PAGE -> page
             Scope.SESSION -> page.session as AbstractLifecycle
             Scope.VIEW ->
-                requireNotNull(view) {
-                    "A view-scoped PyStore requires a current Perspective view"
-                }
+                requireNotNull(view) { "A view-scoped PyStore requires a current Perspective view" }
         }
 
     private fun checkExpired() {
         val expired =
             synchronized(lock) {
-                if (closed) {
-                    return
-                }
+                if (closed) return
 
                 scopes.keys.filterNot { it.isRunning }.flatMap(::detachScope)
             }
@@ -171,20 +147,12 @@ class PerspectivePyStores(
 
     private fun detachScope(lifecycle: AbstractLifecycle): List<PyStore> {
         val stores = scopes.remove(lifecycle)?.values?.toList() ?: return emptyList()
-
-        stores.forEach(::removeStoreBindings)
-
+        stores.forEach(::removeStoreSubscriptions)
         return stores
     }
 
-    private fun changed(
-        store: PyStore,
-        path: PyStorePath,
-    ) {
-        val listeners =
-            synchronized(lock) {
-                collectListeners(store, path)
-            }
+    private fun changed(store: PyStore, changeset: PyStoreChangeset) {
+        val listeners = synchronized(lock) { collectListeners(store, changeset) }
 
         listeners.forEach {
             try {
@@ -200,63 +168,45 @@ class PerspectivePyStores(
 
     private fun collectListeners(
         store: PyStore,
-        changedPath: PyStorePath,
+        changeset: PyStoreChangeset,
     ): List<InteractionListener> {
-        val bindings = bindingsByStore[store] ?: return emptyList()
-
+        val subscriptions = subscriptionsByStore[store] ?: return emptyList()
         val listeners = IdentityHashMap<InteractionListener, Unit>()
-
-        val iterator = bindings.iterator()
+        val iterator = subscriptions.iterator()
 
         while (iterator.hasNext()) {
-            val binding = iterator.next()
-            val token = binding.token.get()
-            val listener = binding.listener.get()
+            val subscription = iterator.next()
+            val listener = subscription.resolveListener()
 
-            if (token == null || listener == null) {
+            if (listener == null) {
                 iterator.remove()
-
-                if (token != null) {
-                    bindingsByToken.remove(token, binding)
-                }
-
                 continue
             }
 
-            if (binding.path.isRelatedTo(changedPath)) {
+            if (changeset.affects(subscription.path)) {
                 listeners[listener] = Unit
             }
         }
 
-        if (bindings.isEmpty()) {
-            bindingsByStore.remove(store)
-        }
+        if (subscriptions.isEmpty()) removeStoreSubscriptions(store)
 
         return listeners.keys.toList()
     }
 
-    private fun index(binding: Binding) {
-        bindingsByStore.getOrPut(binding.store) { LinkedHashSet() }.add(binding)
+    private fun index(subscription: Subscription) {
+        subscriptionsByStore.getOrPut(subscription.store) { LinkedHashSet() }.add(subscription)
     }
 
-    private fun unindex(binding: Binding) {
-        val bindings = bindingsByStore[binding.store] ?: return
+    private fun unindex(subscription: Subscription) {
+        val subscriptions = subscriptionsByStore[subscription.store] ?: return
 
-        bindings.remove(binding)
+        subscriptions.remove(subscription)
 
-        if (bindings.isEmpty()) {
-            bindingsByStore.remove(binding.store)
-        }
+        if (subscriptions.isEmpty()) removeStoreSubscriptions(subscription.store)
     }
 
-    private fun removeStoreBindings(store: PyStore) {
-        val bindings = bindingsByStore.remove(store) ?: return
-
-        bindings.forEach { binding ->
-            binding.token.get()?.let {
-                bindingsByToken.remove(it, binding)
-            }
-        }
+    private fun removeStoreSubscriptions(store: PyStore) {
+        subscriptionsByStore.remove(store)
     }
 
     fun entries(): List<Entry> {
@@ -315,12 +265,25 @@ class PerspectivePyStores(
                 "Invalid PyStore scope '$scope'. Expected 'view', 'page', or 'session'."
             )
 
-    private class Binding(
-        val token: WeakReference<Any>,
+    private inner class Subscription(
+        owner: Any,
         val store: PyStore,
         val path: PyStorePath,
-        val listener: WeakReference<InteractionListener>,
-    )
+        listener: InteractionListener,
+    ) : AutoCloseable {
+
+        private val owner = WeakReference(owner)
+        private val listener = WeakReference(listener)
+
+        fun resolveListener(): InteractionListener? {
+            owner.get() ?: return null
+            return listener.get()
+        }
+
+        override fun close() {
+            synchronized(lock) { unindex(this) }
+        }
+    }
 
     data class Entry(
         val name: String,

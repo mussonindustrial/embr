@@ -20,6 +20,7 @@ class PyStoreExpression(private val stores: PerspectivePyStores) : AbstractFunct
     }
 
     private var updateListener: InteractionListener? = null
+    private var subscription: AutoCloseable? = null
 
     override fun copy() = PyStoreExpression(stores)
 
@@ -29,7 +30,7 @@ class PyStoreExpression(private val stores: PerspectivePyStores) : AbstractFunct
 
     override fun getType(): Class<*> = Any::class.java
 
-    override fun validateNumArgs(num: Int) = num in 2..3
+    override fun validateNumArgs(num: Int) = num in 1..3
 
     override fun connect(
         context: CommonContext,
@@ -40,21 +41,30 @@ class PyStoreExpression(private val stores: PerspectivePyStores) : AbstractFunct
     }
 
     override fun disconnect() {
-        stores.unbind(this)
+        unsubscribe()
         updateListener = null
         super.disconnect()
     }
 
     override fun execute(args: Array<Expression>): QualifiedValue {
-        stores.unbind(this)
+        unsubscribe()
 
         val name = stringArg(args[0], "name")
-        val path = parsePath(stringArg(args[1], "path"))
+
+        val pathString = args.getOrNull(1)?.let { stringArg(it, "path") } ?: ""
+        val path = parsePath(pathString)
+
         val scope = args.getOrNull(2)?.let { stringArg(it, "scope") } ?: "page"
         val store = resolveStore(name, scope)
 
         updateListener?.let {
-            stores.bind(this, store, path, it)
+            subscription =
+                stores.subscribe(
+                    owner = this,
+                    store = store,
+                    path = path,
+                    listener = it,
+                )
         }
 
         return BasicQualifiedValue(
@@ -72,23 +82,22 @@ class PyStoreExpression(private val stores: PerspectivePyStores) : AbstractFunct
             throw ExpressionException("Invalid PyStore path '$path'", exception)
         }
 
-    private fun resolveStore(
-        name: String,
-        scope: String,
-    ) =
+    private fun resolveStore(name: String, scope: String) =
         try {
             stores.getCurrent(name, scope)
         } catch (exception: Exception) {
             throw ExpressionException("Unable to resolve $scope PyStore '$name'", exception)
         }
 
-    private fun stringArg(
-        expression: Expression,
-        name: String,
-    ): String {
+    private fun stringArg(expression: Expression, name: String): String {
         val value = expression.execute().value
 
         return value as? String
             ?: throw ExpressionException("$NAME() argument '$name' must be a string")
+    }
+
+    private fun unsubscribe() {
+        subscription?.close()
+        subscription = null
     }
 }

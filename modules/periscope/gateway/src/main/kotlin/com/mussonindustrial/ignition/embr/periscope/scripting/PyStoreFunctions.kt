@@ -53,14 +53,7 @@ class PyStoreFunctions(private val context: PeriscopeGatewayContext) :
                 else -> onSession(sessionId) { context.pyStores.entries(it) }
             }
 
-        return result
-            .map {
-                mapOf(
-                    "name" to it.name,
-                    "scope" to it.scope,
-                )
-            }
-            .toPyValue()
+        return result.map { mapOf("name" to it.name, "scope" to it.scope) }.toPyValue()
     }
 
     inner class ScriptOverloads {
