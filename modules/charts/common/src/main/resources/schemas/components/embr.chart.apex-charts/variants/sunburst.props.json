@@ -1,0 +1,9 @@
+{
+  "type": "sunburst",
+  "series": [{ "data": [{ "x": "A", "y": 40, "children": [{ "x": "A1", "y": 20 }, { "x": "A2", "y": 20 }] }, { "x": "B", "y": 60 }] }],
+  "options": {
+    "chart": {},
+    "title": { "align": "left", "text": "Sunburst Chart" }
+  },
+  "style": {}
+}

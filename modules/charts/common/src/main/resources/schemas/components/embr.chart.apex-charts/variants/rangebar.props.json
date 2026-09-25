@@ -1,0 +1,19 @@
+{
+  "type": "rangeBar",
+  "series": [
+    {
+      "name": "Task",
+      "data": [
+        { "x": "Design", "y": [1, 4] },
+        { "x": "Build", "y": [4, 7] },
+        { "x": "Test", "y": [7, 9] }
+      ]
+    }
+  ],
+  "options": {
+    "chart": {},
+    "title": { "align": "left", "text": "Range Bar Chart" },
+    "plotOptions": { "bar": { "horizontal": true, "barHeight": "50%" } }
+  },
+  "style": {}
+}

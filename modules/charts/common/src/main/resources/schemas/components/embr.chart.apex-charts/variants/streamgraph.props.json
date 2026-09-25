@@ -1,0 +1,14 @@
+{
+  "type": "streamgraph",
+  "series": [
+    { "name": "Drama", "data": [{ "x": "2024-01-01", "y": 32 }, { "x": "2024-02-01", "y": 35 }] },
+    { "name": "Comedy", "data": [{ "x": "2024-01-01", "y": 24 }, { "x": "2024-02-01", "y": 22 }] }
+  ],
+  "options": {
+    "chart": {},
+    "title": { "align": "left", "text": "Streamgraph Chart" },
+    "plotOptions": { "streamgraph": { "offset": "wiggle" } },
+    "xaxis": { "type": "datetime" }
+  },
+  "style": {}
+}

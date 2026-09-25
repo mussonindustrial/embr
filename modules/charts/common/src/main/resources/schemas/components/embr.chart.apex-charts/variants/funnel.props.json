@@ -1,5 +1,5 @@
 {
-  "type": "bar",
+  "type": "funnel",
   "series": [
     {
       "name": "Funnel Series",

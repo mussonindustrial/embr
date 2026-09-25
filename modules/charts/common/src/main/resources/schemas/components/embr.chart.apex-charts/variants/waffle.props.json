@@ -1,0 +1,10 @@
+{
+  "type": "waffle",
+  "series": [10, 20, 30, 40],
+  "options": {
+    "chart": {},
+    "labels": ["A", "B", "C", "D"],
+    "title": { "align": "left", "text": "Waffle Chart" }
+  },
+  "style": {}
+}

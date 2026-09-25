@@ -15,6 +15,7 @@ import {
   PlainObject,
   isPlainObject,
   ReactResizeDetector,
+  StyleObject,
 } from '@inductiveautomation/perspective-client'
 import { bind } from 'bind-decorator'
 import objectScan from 'object-scan'
@@ -33,6 +34,7 @@ export interface ApexChartProps {
   options: any
   series: Array<any>
   zoom: any
+  style?: StyleObject
 }
 
 // These match events in the Gateway side component delegate.
@@ -731,6 +733,13 @@ export class ApexChart extends Component<ComponentProps<ApexChartProps>, any> {
 
   @bind
   beforeResetZoomHandler(chartContext, opts) {
+    const e = {
+      xaxis: {
+        min: this.lastZoom[0],
+        max: this.lastZoom[1],
+      },
+    }
+    this.props.componentEvents.fireComponentEvent('beforeResetZoomHandler', e)
     this.clearZoom()
   }
 
@@ -841,6 +850,7 @@ export class ApexChartMeta implements ComponentMeta {
       options: tree.read('options'),
       series: tree.readArray('series'),
       zoom: tree.read('zoom'),
+      style: tree.readStyle('style'),
     }
   }
 }

@@ -16,7 +16,7 @@
         "@embr-js/perspective-client": "0.7.0",
         "@robloche/chartjs-plugin-streaming": "3.1.0",
         "@sgratzl/chartjs-chart-boxplot": "4.4.4",
-        "apexcharts": "3.54.1",
+        "apexcharts": "7.5.1",
         "bind-decorator": "1.0.11",
         "chart.js": "4.4.9",
         "chartjs-adapter-moment": "1.0.1",

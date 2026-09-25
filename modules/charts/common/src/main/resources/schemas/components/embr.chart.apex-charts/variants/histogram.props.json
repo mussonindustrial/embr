@@ -1,0 +1,10 @@
+{
+  "type": "histogram",
+  "series": [{ "name": "Samples", "data": [12, 19, 4, 18, 22, 15, 9, 27, 13, 21] }],
+  "options": {
+    "chart": {},
+    "title": { "align": "left", "text": "Histogram Chart" },
+    "plotOptions": { "histogram": { "bins": "auto" } }
+  },
+  "style": {}
+}

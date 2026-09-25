@@ -7,13 +7,15 @@ import React, {
   useCallback,
 } from 'react'
 import ApexCharts from 'apexcharts'
+import 'apexcharts/features/raincloud'
+import 'apexcharts/features/stats'
 
 import type { ApexOptions } from 'apexcharts'
 import type { ForwardedRef } from 'react'
 import { extend, merge } from 'lodash'
 
 export type ApexChartProps = {
-  type: ApexChart['type']
+  type: NonNullable<NonNullable<ApexOptions['chart']>['type']>
   options: ApexOptions
   series: ApexOptions['series']
   width: number | string

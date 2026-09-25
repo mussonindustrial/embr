@@ -774,16 +774,28 @@
         "bubble",
         "candlestick",
         "donut",
+        "dumbbell",
+        "funnel",
+        "gauge",
         "heatmap",
+        "histogram",
         "line",
         "pie",
         "polarArea",
+        "pyramid",
         "radar",
         "radialBar",
+        "raincloud",
         "rangeArea",
         "rangeBar",
         "scatter",
-        "treemap"
+        "streamgraph",
+        "sunburst",
+        "treemap",
+        "unit",
+        "violin",
+        "waffle",
+        "waterfall"
       ],
       "type": "string"
     },
@@ -1601,7 +1613,89 @@
         "polarArea": { "$ref":  "#/$defs/plot_options_polararea" },
         "radar": { "$ref":  "#/$defs/plot_options_radar" },
         "radialBar": { "$ref":  "#/$defs/plot_options_radialbar" },
-        "treemap": { "$ref":  "#/$defs/plot_options_treemap" }
+        "treemap": { "$ref":  "#/$defs/plot_options_treemap" },
+        "streamgraph": { "$ref":  "#/$defs/plot_options_streamgraph" },
+        "violin": { "$ref":  "#/$defs/plot_options_violin" },
+        "waterfall": { "$ref":  "#/$defs/plot_options_waterfall" },
+        "dumbbell": { "$ref":  "#/$defs/plot_options_dumbbell" },
+        "gauge": { "$ref":  "#/$defs/plot_options_gauge" },
+        "pyramid": { "$ref":  "#/$defs/plot_options_pyramid" },
+        "raincloud": { "$ref":  "#/$defs/plot_options_raincloud" },
+        "histogram": { "$ref":  "#/$defs/plot_options_histogram" },
+        "sunburst": { "$ref":  "#/$defs/plot_options_sunburst" },
+        "unit": { "$ref":  "#/$defs/plot_options_unit" },
+        "waffle": { "$ref":  "#/$defs/plot_options_waffle" }
+      }
+    },
+    "plot_options_streamgraph": {
+      "type": "object",
+      "properties": {
+        "offset": { "type": "string", "suggestions": ["wiggle", "silhouette", "zero", "expand"] },
+        "order": { "type": "string", "suggestions": ["inside-out", "inverse", "none"] }
+      }
+    },
+    "plot_options_violin": {
+      "type": "object",
+      "properties": {
+        "normalize": { "type": "string", "suggestions": ["individual", "group"] },
+        "side": { "type": "string", "suggestions": ["both", "left", "right", "top", "bottom"] },
+        "points": {
+          "type": "object",
+          "properties": {
+            "show": { "type": "boolean" },
+            "size": { "type": "number" },
+            "jitter": { "type": "number" },
+            "position": { "type": "string", "suggestions": ["center", "left", "right", "top", "bottom"] }
+          }
+        }
+      }
+    },
+    "plot_options_waterfall": {
+      "type": "object",
+      "properties": {
+        "connectors": {
+          "type": "object",
+          "properties": {
+            "show": { "type": "boolean" },
+            "color": { "$ref": "#/$defs/color" },
+            "strokeWidth": { "type": "number" },
+            "strokeDashArray": { "type": "number" }
+          }
+        }
+      }
+    },
+    "plot_options_dumbbell": {
+      "type": "object",
+      "properties": {
+        "connector": {
+          "type": "object",
+          "properties": {
+            "color": { "$ref": "#/$defs/color" },
+            "opacity": { "type": "number" }
+          }
+        },
+        "dataLabels": { "type": "object" },
+        "tooltip": { "type": "object" }
+      }
+    },
+    "plot_options_gauge": {
+      "type": "object",
+      "properties": {
+        "min": { "type": "number" },
+        "max": { "type": "number" },
+        "shape": { "type": "string", "suggestions": ["circular", "needle"] }
+      }
+    },
+    "plot_options_pyramid": {
+      "type": "object",
+      "properties": {
+        "distributed": { "type": "boolean" }
+      }
+    },
+    "plot_options_raincloud": {
+      "type": "object",
+      "properties": {
+        "side": { "type": "string", "suggestions": ["left", "right", "top", "bottom"] }
       }
     },
     "plot_options_area": {
@@ -1611,6 +1705,33 @@
           "type": "string",
           "suggestions": ["origin", "end"]
         }
+      }
+    },
+    "plot_options_histogram": {
+      "type": "object",
+      "properties": {
+        "bins": { "type": ["string", "number"] },
+        "binWidth": { "type": "number" },
+        "normalize": { "type": "string", "suggestions": ["count", "relative", "density"] },
+        "cumulative": { "type": "boolean" }
+      }
+    },
+    "plot_options_sunburst": {
+      "type": "object",
+      "properties": {
+        "distributed": { "type": "boolean" }
+      }
+    },
+    "plot_options_unit": {
+      "type": "object",
+      "properties": {
+        "distributed": { "type": "boolean" }
+      }
+    },
+    "plot_options_waffle": {
+      "type": "object",
+      "properties": {
+        "distributed": { "type": "boolean" }
       }
     },
     "plot_options_bar": {
@@ -2067,6 +2188,11 @@
             "properties": {
               "x": { "type": ["number", "object", "string", "array"], "default": 0 },
               "y": { "type": ["number", "object", "string", "array"], "default": 0 },
+              "z": { "type": ["number", "null"] },
+              "points": { "type": "array", "items": { "type": "number" } },
+              "density": { "type": "array", "items": { "type": "array", "items": { "type": "number" } } },
+              "isSubtotal": { "type": "boolean" },
+              "isTotal": { "type": "boolean" },
               "fill": { "$ref": "#/$defs/fill" },
               "fillColor": { "$ref": "#/$defs/color" },
               "strokeColor": { "$ref": "#/$defs/color" },
@@ -2353,9 +2479,7 @@
       "description": "Chart series.",
       "type": "array",
       "default": [],
-      "items": {
-        "$ref": "#/$defs/series"
-      }
+      "items": { "type": ["number", "object", "array"] }
     },
     "events": {
       "type": "object",

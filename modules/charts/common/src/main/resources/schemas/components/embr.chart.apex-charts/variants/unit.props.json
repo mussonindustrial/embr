@@ -1,0 +1,10 @@
+{
+  "type": "unit",
+  "series": [10, 20, 30, 40, 50],
+  "options": {
+    "chart": {},
+    "labels": ["A", "B", "C", "D", "E"],
+    "title": { "align": "left", "text": "Unit Chart" }
+  },
+  "style": {}
+}
