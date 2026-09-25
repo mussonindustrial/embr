@@ -1,0 +1,11 @@
+{
+  "type": "gauge",
+  "series": [72],
+  "options": {
+    "chart": {},
+    "labels": ["Progress"],
+    "title": { "align": "left", "text": "Gauge Chart" },
+    "plotOptions": { "radialBar": { "startAngle": -90, "endAngle": 90 } }
+  },
+  "style": {}
+}

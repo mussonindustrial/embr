@@ -1,0 +1,38 @@
+{
+  "type": "violin",
+  "series": [
+    { "name": "Measurement", "data": [{ "x": "Group A", "y": { "density": [[42, 0.01], [46, 0.06], [50, 0.13], [54, 0.06], [58, 0.01]], "points": [48.2, 51.7, 49.9, 53.1, 50.4] } }, { "x": "Group B", "y": { "density": [[55, 0.02], [60, 0.1], [62, 0.18], [64, 0.1], [69, 0.02]], "points": [61.2, 63.4, 60.1, 62.8] } }] }
+  ],
+  "options": {
+    "chart": {},
+    "colors": ["#2F80ED", "#00B8A9", "#F6B942", "#EB5757", "#9B51E0"],
+    "fill": {
+      "type": "gradient",
+      "gradient": {
+        "shade": "dark",
+        "type": "vertical",
+        "shadeIntensity": 0.7,
+        "opacityFrom": 0.95,
+        "opacityTo": 0.7,
+        "stops": [0, 100]
+      }
+    },
+    "stroke": { "width": 2, "colors": ["#1D4ED8", "#008F86", "#C28116", "#C63D3D", "#7030A0"] },
+    "grid": { "borderColor": "#CBD5E1", "strokeDashArray": 3 },
+    "title": { "align": "left", "text": "Violin Chart" },
+    "plotOptions": {
+      "violin": {
+        "points": {
+          "show": true,
+          "size": 4,
+          "jitter": 0.35,
+          "position": "center",
+          "opacity": 0.95,
+          "strokeColor": "#FFFFFF",
+          "strokeWidth": 1
+        }
+      }
+    }
+  },
+  "style": {}
+}

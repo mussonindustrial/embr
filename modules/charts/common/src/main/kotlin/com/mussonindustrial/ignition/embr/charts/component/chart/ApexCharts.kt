@@ -69,14 +69,6 @@ class ApexCharts {
                 "Column",
                 "Compares values across categories using vertical bars.",
             )
-        private val VARIANT_FUNNEL =
-            PaletteEntry(
-                this::class.java,
-                id,
-                "funnel",
-                "Funnel",
-                "Displays stages in a process with decreasing proportions.",
-            )
         private val VARIANT_HEATMAP =
             PaletteEntry(
                 this::class.java,
@@ -165,6 +157,118 @@ class ApexCharts {
                 "Tree Map",
                 "Uses nested rectangles to show part-to-whole relationships.",
             )
+        private val VARIANT_FUNNEL_FIRST_CLASS =
+            PaletteEntry(
+                this::class.java,
+                id,
+                "funnel",
+                "Funnel",
+                "Displays stages in a process with decreasing proportions.",
+            )
+        private val VARIANT_DONUT =
+            PaletteEntry(
+                this::class.java,
+                id,
+                "donut",
+                "Donut",
+                "Shows parts of a whole as proportional slices with a center label.",
+            )
+        private val VARIANT_DUMBBELL =
+            PaletteEntry(
+                this::class.java,
+                id,
+                "dumbbell",
+                "Dumbbell",
+                "Compares two or more measures per category.",
+            )
+        private val VARIANT_GAUGE =
+            PaletteEntry(
+                this::class.java,
+                id,
+                "gauge",
+                "Gauge",
+                "Displays one value against a defined range.",
+            )
+        private val VARIANT_PYRAMID =
+            PaletteEntry(
+                this::class.java,
+                id,
+                "pyramid",
+                "Pyramid",
+                "Displays hierarchy with the base as the largest group.",
+            )
+        private val VARIANT_RAINCLOUD =
+            PaletteEntry(
+                this::class.java,
+                id,
+                "raincloud",
+                "Raincloud",
+                "Combines distribution shape, summary, and raw observations.",
+            )
+        private val VARIANT_STREAMGRAPH =
+            PaletteEntry(
+                this::class.java,
+                id,
+                "streamgraph",
+                "Streamgraph",
+                "Shows changing composition over time on a drifting baseline.",
+            )
+        private val VARIANT_VIOLIN =
+            PaletteEntry(
+                this::class.java,
+                id,
+                "violin",
+                "Violin",
+                "Shows the full distribution shape across categories.",
+            )
+        private val VARIANT_WATERFALL =
+            PaletteEntry(
+                this::class.java,
+                id,
+                "waterfall",
+                "Waterfall",
+                "Explains how a starting value becomes an ending value.",
+            )
+        private val VARIANT_RANGEBAR =
+            PaletteEntry(
+                this::class.java,
+                id,
+                "timeline",
+                "Range Bar",
+                "Displays horizontal ranges across categories.",
+            )
+        private val VARIANT_HISTOGRAM =
+            PaletteEntry(
+                this::class.java,
+                id,
+                "histogram",
+                "Histogram",
+                "Shows the distribution of numeric observations.",
+            )
+        private val VARIANT_SUNBURST =
+            PaletteEntry(
+                this::class.java,
+                id,
+                "sunburst",
+                "Sunburst",
+                "Shows hierarchical composition with nested sectors.",
+            )
+        private val VARIANT_UNIT =
+            PaletteEntry(
+                this::class.java,
+                id,
+                "unit",
+                "Unit",
+                "Shows values as unit marks.",
+            )
+        private val VARIANT_WAFFLE =
+            PaletteEntry(
+                this::class.java,
+                id,
+                "waffle",
+                "Waffle",
+                "Shows composition with a grid of unit marks.",
+            )
 
         override val descriptor: ComponentDescriptor =
             ComponentDescriptorImpl.ComponentBuilder.newBuilder()
@@ -180,7 +284,7 @@ class ApexCharts {
                 .addPaletteEntry(VARIANT_BUBBLE)
                 .addPaletteEntry(VARIANT_CANDLESTICK)
                 .addPaletteEntry(VARIANT_COLUMN)
-                .addPaletteEntry(VARIANT_FUNNEL)
+                .addPaletteEntry(VARIANT_FUNNEL_FIRST_CLASS)
                 .addPaletteEntry(VARIANT_HEATMAP)
                 .addPaletteEntry(VARIANT_LINE)
                 .addPaletteEntry(VARIANT_MIXED)
@@ -192,6 +296,19 @@ class ApexCharts {
                 .addPaletteEntry(VARIANT_SCATTER)
                 .addPaletteEntry(VARIANT_SLOPE)
                 .addPaletteEntry(VARIANT_TREEMAP)
+                .addPaletteEntry(VARIANT_DONUT)
+                .addPaletteEntry(VARIANT_DUMBBELL)
+                .addPaletteEntry(VARIANT_GAUGE)
+                .addPaletteEntry(VARIANT_PYRAMID)
+                .addPaletteEntry(VARIANT_RAINCLOUD)
+                .addPaletteEntry(VARIANT_STREAMGRAPH)
+                .addPaletteEntry(VARIANT_VIOLIN)
+                .addPaletteEntry(VARIANT_WATERFALL)
+                .addPaletteEntry(VARIANT_RANGEBAR)
+                .addPaletteEntry(VARIANT_HISTOGRAM)
+                .addPaletteEntry(VARIANT_SUNBURST)
+                .addPaletteEntry(VARIANT_UNIT)
+                .addPaletteEntry(VARIANT_WAFFLE)
                 .setDefaultMetaName("ApexCharts")
                 .setResources(Components.BROWSER_RESOURCES)
                 .build()

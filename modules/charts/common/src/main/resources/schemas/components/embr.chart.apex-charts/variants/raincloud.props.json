@@ -1,0 +1,13 @@
+{
+  "type": "raincloud",
+  "series": [
+    { "name": "Weight gain", "data": [{ "x": "DD", "points": [97, 101, 88, 94, 110, 92] }, { "x": "DR", "points": [84, 79, 91, 80, 76, 88] }] }
+  ],
+  "options": {
+    "chart": {},
+    "title": { "align": "left", "text": "Raincloud Chart" },
+    "plotOptions": { "bar": { "distributed": true } },
+    "legend": { "show": false }
+  },
+  "style": {}
+}

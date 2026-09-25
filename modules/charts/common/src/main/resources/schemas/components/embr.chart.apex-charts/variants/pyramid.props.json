@@ -1,0 +1,12 @@
+{
+  "type": "pyramid",
+  "series": [
+    { "name": "Pyramid", "data": [200, 330, 548, 740, 880, 990, 1100, 1380] }
+  ],
+  "options": {
+    "chart": {},
+    "title": { "align": "left", "text": "Pyramid Chart" },
+    "plotOptions": { "bar": { "distributed": true } }
+  },
+  "style": {}
+}

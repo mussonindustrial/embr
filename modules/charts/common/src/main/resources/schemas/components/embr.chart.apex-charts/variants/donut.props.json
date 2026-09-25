@@ -1,10 +1,10 @@
 {
-  "type": "pie",
+  "type": "donut",
   "series": [44, 55, 41, 17, 15],
   "options": {
     "chart": {},
     "labels": ["A", "B", "C", "D", "E"],
-    "title": { "align": "left", "text": "Pie Chart" },
+    "title": { "align": "left", "text": "Donut Chart" },
     "legend": { "position": "bottom" }
   },
   "style": {}

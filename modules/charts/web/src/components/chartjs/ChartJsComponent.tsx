@@ -9,6 +9,7 @@ import {
   PlainObject,
   PropertyTree,
   SizeObject,
+  StyleObject,
 } from '@inductiveautomation/perspective-client'
 import { Chart as ChartJs, ChartProps } from 'react-chartjs-2'
 import { Chart, UpdateMode } from 'chart.js'
@@ -39,6 +40,7 @@ type ChartComponentProps = ChartProps & {
   }
   updateMode?: UpdateMode
   redraw?: boolean
+  style?: StyleObject
 }
 
 function extractPropsData(props: ChartComponentProps) {
@@ -49,7 +51,7 @@ function extractPropsData(props: ChartComponentProps) {
     data.push(dataset.data ? dataset.data : [])
     unset(dataset, 'data')
   })
-  return { props, data }
+  return { props: localProps, data }
 }
 
 function installPropsData(props: ChartComponentProps, data: ChartData[]) {
@@ -90,12 +92,10 @@ export function ChartJsComponent(props: ComponentProps<ChartComponentProps>) {
     transformedProps.events?.chart?.lifecycle ?? {},
     chartRef.current
   )
-
   const beforeRender_DEPRECATED = transformedProps.events?.beforeRender
   if (beforeRender_DEPRECATED && typeof beforeRender_DEPRECATED == 'function') {
     beforeRender_DEPRECATED(chartRef.current)
   }
-
   return (
     <div {...props.emit()}>
       <ChartJs
@@ -153,6 +153,7 @@ export const ChartJsComponentMeta: ComponentMeta = {
       redraw: tree.read('redraw', undefined),
       updateMode: tree.read('updateMode', undefined),
       events: tree.read('events', {}),
+      style: tree.readStyle('style'),
     } as never
   },
   getViewComponent: function (): PComponent {

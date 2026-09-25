@@ -1,0 +1,12 @@
+{
+  "type": "waterfall",
+  "series": [
+    { "name": "Operating income", "data": [{ "x": "Net revenue", "y": 8786000 }, { "x": "Cost of sales", "y": -2786000 }, { "x": "Gross profit", "isSubtotal": true }, { "x": "Operating expenses", "y": -1786000 }, { "x": "Operating income", "isTotal": true }] }
+  ],
+  "options": {
+    "chart": {},
+    "title": { "align": "left", "text": "Waterfall Chart" },
+    "plotOptions": { "waterfall": { "connectors": { "show": true } } }
+  },
+  "style": {}
+}
