@@ -1,4 +1,7 @@
-import { ComponentRegistry } from '@inductiveautomation/perspective-client'
+import {
+  ActionRegistry,
+  ComponentRegistry,
+} from '@inductiveautomation/perspective-client'
 import {
   SwiperComponent,
   SwiperComponentMeta,
@@ -13,7 +16,7 @@ import {
   ReactComponent,
   ReactComponentMeta,
 } from './components'
-import { installExtensions } from './extensions'
+import { installExtensions, JavaScriptActionFactory } from './extensions'
 import { waitForClientStore } from '@embr-js/perspective-client'
 
 export {
@@ -35,6 +38,9 @@ const components = [
 ]
 
 components.forEach((c) => ComponentRegistry.register(c))
+
+const actions = [JavaScriptActionFactory]
+actions.forEach((a) => ActionRegistry.register(a))
 
 waitForClientStore().then(async (clientStore) => {
   await installExtensions(clientStore)
