@@ -10,6 +10,7 @@ import com.mussonindustrial.embr.designer.EmbrDesignerContextImpl
 import com.mussonindustrial.embr.perspective.designer.component.asDesignerComponent
 import com.mussonindustrial.embr.perspective.designer.component.registerComponent
 import com.mussonindustrial.embr.perspective.designer.component.removeComponent
+import com.mussonindustrial.ignition.embr.periscope.action.JavaScriptActionDesignDelegate
 import com.mussonindustrial.ignition.embr.periscope.component.ComponentIdSuggestionSource
 import com.mussonindustrial.ignition.embr.periscope.component.TypeScriptResourceSuggestionSource
 import com.mussonindustrial.ignition.embr.periscope.component.embedding.*
@@ -54,6 +55,9 @@ class PeriscopeDesignerContext(val context: DesignerContext) :
                 TypeScriptResourceSuggestionSource.ID,
                 TypeScriptResourceSuggestionSource(this@PeriscopeDesignerContext),
             )
+        }
+        perspectiveDesignerInterface.actionRegistry.apply {
+            registerAction(JavaScriptActionDesignDelegate())
         }
     }
 
