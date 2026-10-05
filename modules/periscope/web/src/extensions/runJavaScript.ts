@@ -111,7 +111,7 @@ export const JavaScriptActionFactory: ActionFactory = {
         component,
       })
 
-      const f = toUserScript(action.config.function, clientStore, globals)
+      const f = toUserScript(action.config.function, component, globals)
       resolve(f.runNamed({ self: component, event }))
     }).catch((error: unknown) => console.error(error))
   },
