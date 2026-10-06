@@ -1,7 +1,7 @@
 import {
   ComponentStore,
   EventGroupActions,
-  EventGroupType,
+  StandardEventGroup,
   PlainObject,
 } from '@inductiveautomation/perspective-client'
 
@@ -69,10 +69,10 @@ function fireLifecycleEvent(
 ) {
   const key = eventKey(eventName)
 
-  store.componentEvents.runClientActions(EventGroupType.SYSTEM, key, event)
+  store.componentEvents.runClientActions(StandardEventGroup.SYSTEM, key, event)
 
   if (shouldNotifyGateway(store, key)) {
-    store.onEventFired(EventGroupType.SYSTEM, key, event)
+    store.onEventFired(StandardEventGroup.SYSTEM, key, event)
   }
 }
 
