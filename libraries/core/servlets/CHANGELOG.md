@@ -1,5 +1,12 @@
 # @mussonindustrial/embr-jvm-core-servlets
 
+## 0.9.2
+
+### Patch Changes
+
+- Updated dependencies [49dc29f]
+  - @embr-jvm/core-common@0.9.2
+
 ## 0.9.1
 
 ### Patch Changes

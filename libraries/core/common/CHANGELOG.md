@@ -1,5 +1,11 @@
 # @mussonindustrial/embr-jvm-core-common
 
+## 0.9.2
+
+### Patch Changes
+
+- 49dc29f: Update Designer supporter message. Changes (UNSUPPORTED) to (Become a Supporter!).
+
 ## 0.9.1
 
 ### Patch Changes
