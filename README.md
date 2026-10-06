@@ -69,6 +69,9 @@ If you'd like to sponsor this project and have your avatar or company logo appea
   <a href="http://www.signal-fire.com/">
     <img src="https://www.signal-fire.com/wp-content/uploads/2024/01/SignalFire-Website-Logo-2.svg" width="100" height="100" style="margin: 8px;" alt="thewebpleb" />
   </a>
+  <a href=https://automationstation.net/">
+    <img src="https://automationstation.net/wp-content/uploads/2024/09/logo-white-1.svg" width="100" height="100" style="margin: 8px;" alt="Automation Station" />
+  </a>
 </h1>
 
 ## Links
