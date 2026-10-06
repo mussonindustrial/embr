@@ -16,6 +16,7 @@ object Embr {
     val THERMO = EmbrModuleMeta("com.mussonindustrial.embr.thermo", "embr-thermo", "/embr/thermo")
 
     const val DOCUMENTATION_URL = "https://docs.mussonindustrial.com/"
+    const val WEBSTORE_URL = "https://mussonindustrial.com/store"
 
     fun isLicenseRequired(): Boolean {
         return !PlatformEdition.isMaker()
