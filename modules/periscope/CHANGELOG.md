@@ -1,5 +1,18 @@
 # @embr-modules/periscope
 
+## 0.14.6
+
+### Patch Changes
+
+- 9e4841f: Add the following component events: `onMount`, `onUnmount`, `onVisible`, `onHidden`, `onPageVisible`, and `onPageHidden`.
+- 9e4841f: Add a new `JavaScript` component action, which directly runs JavaScript on the client without a round trip to the Gateway.
+- Updated dependencies [9e4841f]
+- Updated dependencies [3d50687]
+- Updated dependencies [9e4841f]
+  - @embr-modules/periscope-web@0.14.6
+  - @embr-jvm/core-designer@0.8.4
+  - @embr-jvm/core-common@0.8.4
+
 ## 0.14.5
 
 ### Patch Changes
