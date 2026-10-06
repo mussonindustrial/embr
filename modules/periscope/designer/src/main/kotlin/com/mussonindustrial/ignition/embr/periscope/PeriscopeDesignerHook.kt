@@ -47,6 +47,9 @@ class PeriscopeDesignerHook : AbstractDesignerModuleHook() {
 
         logger.debug("Registering resource editors...")
         this.context.registerResourceWorkspaces()
+
+        logger.debug("Registering AWT event listeners...")
+        this.context.registerAWTEventListeners()
     }
 
     override fun shutdown() {
@@ -60,6 +63,9 @@ class PeriscopeDesignerHook : AbstractDesignerModuleHook() {
 
         logger.debug("Removing components...")
         this.context.removeComponents()
+
+        logger.debug("Removing AWT event listeners...")
+        this.context.removeAWTEventListeners()
     }
 
     override fun getResourceIcon(id: ResourceId): Icon? {
