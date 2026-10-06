@@ -1,5 +1,8 @@
 import { toUserScript, UserScriptParams } from '@embr-js/utils'
-import { ClientStore } from '@inductiveautomation/perspective-client'
+import {
+  ActionFactory,
+  ClientStore,
+} from '@inductiveautomation/perspective-client'
 import { getChildStore } from '@embr-js/perspective-client'
 
 export const PROTOCOL = {
@@ -92,4 +95,24 @@ export function installRunJavaScript(clientStore: ClientStore) {
       .then((result: unknown) => resolveSuccess(result))
       .catch((error: unknown) => resolveError(error))
   })
+}
+
+export const JavaScriptActionFactory: ActionFactory = {
+  type: 'embr.periscope.javascript',
+  create: (component, action) => (event) => {
+    new Promise((resolve) => {
+      const view = component.view
+      const clientStore = view.page.parent
+
+      const globals = Embr.scripting.createGlobals({
+        client: clientStore,
+        page: clientStore.page,
+        view,
+        component,
+      })
+
+      const f = toUserScript(action.config.function, component, globals)
+      resolve(f.runNamed({ self: component, event }))
+    }).catch((error: unknown) => console.error(error))
+  },
 }

@@ -3,6 +3,7 @@ import { installRunJavaScript } from './runJavaScript'
 import { installToasts } from './toast'
 import { installClientResources } from './client-resource'
 
+export * from './componentEvents'
 export * from './client-resource'
 export * from './JoinableView'
 export * from './toast'

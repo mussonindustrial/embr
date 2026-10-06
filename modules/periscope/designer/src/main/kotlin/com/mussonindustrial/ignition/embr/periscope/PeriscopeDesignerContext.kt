@@ -10,9 +10,11 @@ import com.mussonindustrial.embr.designer.EmbrDesignerContextImpl
 import com.mussonindustrial.embr.perspective.designer.component.asDesignerComponent
 import com.mussonindustrial.embr.perspective.designer.component.registerComponent
 import com.mussonindustrial.embr.perspective.designer.component.removeComponent
+import com.mussonindustrial.ignition.embr.periscope.action.JavaScriptActionDesignDelegate
 import com.mussonindustrial.ignition.embr.periscope.component.ComponentIdSuggestionSource
 import com.mussonindustrial.ignition.embr.periscope.component.TypeScriptResourceSuggestionSource
 import com.mussonindustrial.ignition.embr.periscope.component.embedding.*
+import com.mussonindustrial.ignition.embr.periscope.event.PeriscopeComponentEvents
 import com.mussonindustrial.ignition.embr.periscope.icons.PeriscopeIcons
 import com.mussonindustrial.ignition.embr.periscope.js.PeriscopeDesignerBridge
 import com.mussonindustrial.ignition.embr.periscope.navtree.model.CssModuleResourceNode
@@ -25,6 +27,8 @@ import com.mussonindustrial.ignition.embr.periscope.resources.asDesignerDescript
 import com.mussonindustrial.ignition.embr.periscope.resources.editor.CssModuleResourceEditor
 import com.mussonindustrial.ignition.embr.periscope.resources.editor.TypeScriptResourceEditor
 import com.teamdev.jxbrowser.engine.Engine
+import java.awt.AWTEvent
+import java.awt.Toolkit
 
 class PeriscopeDesignerContext(val context: DesignerContext) :
     EmbrDesignerContext by EmbrDesignerContextImpl(context) {
@@ -54,6 +58,9 @@ class PeriscopeDesignerContext(val context: DesignerContext) :
                 TypeScriptResourceSuggestionSource.ID,
                 TypeScriptResourceSuggestionSource(this@PeriscopeDesignerContext),
             )
+        }
+        perspectiveDesignerInterface.actionRegistry.apply {
+            registerAction(JavaScriptActionDesignDelegate())
         }
     }
 
@@ -98,5 +105,14 @@ class PeriscopeDesignerContext(val context: DesignerContext) :
 
     fun registerClientResourceDefinitions() {
         clientResourceDefinitions.forEach { clientResourceManager.register(it) }
+    }
+
+    fun registerAWTEventListeners() {
+        Toolkit.getDefaultToolkit()
+            .addAWTEventListener(PeriscopeComponentEvents, AWTEvent.WINDOW_EVENT_MASK)
+    }
+
+    fun removeAWTEventListeners() {
+        Toolkit.getDefaultToolkit().removeAWTEventListener(PeriscopeComponentEvents)
     }
 }
