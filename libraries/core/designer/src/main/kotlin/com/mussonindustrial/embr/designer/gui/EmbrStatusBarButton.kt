@@ -16,14 +16,14 @@ class EmbrStatusBarButton(private val context: EmbrDesignerContext) : JLabel() {
 
     init {
         icon = EmbrDesignerIcons.emblem
-        text = if (context.unlicensedEmbrModules.isNotEmpty()) "Embr (UNSUPPORTED)" else ""
+        text = if (context.unlicensedEmbrModules.isNotEmpty()) "Embr (Become a Supporter!)" else ""
         toolTipText = buildTooltipHtml()
 
         addMouseListener(
             object : MouseAdapter() {
                 override fun mousePressed(e: MouseEvent) {
                     if (SwingUtilities.isLeftMouseButton(e)) {
-                        BrowserLauncher.openURL(Embr.DOCUMENTATION_URL)
+                        BrowserLauncher.openURL(Embr.WEBSTORE_URL)
                     }
                 }
             }
@@ -39,18 +39,18 @@ class EmbrStatusBarButton(private val context: EmbrDesignerContext) : JLabel() {
                 if (isLicensed) {
                     "<font color='$colorGreen'>${module.name}</font>"
                 } else {
-                    "<font color='$colorRed'>${module.name} <b>(<u>UNSUPPORTED</u>)</b></font>"
+                    "<font color='$colorRed'>${module.name} <b>(<u>No License</u>)</b></font>"
                 }
             }
 
         return """
             <html>
                 <b>Embr by Musson Industrial</b>
-                <p>This gateway is utilizing Embr, a collection of open-source modules by Musson Industrial.</p>
+                <p>This gateway is using Embr, a collection of open-source modules by Musson Industrial.</p>
                 $moduleList
                 <br>
-                You can view the documentation by clicking here.<br>
-                Need support? We can help!
+                You can become a supporter and remove this message by purchasing a license.<br>
+                Click here to visit the web store.
             </html>
         """
             .trimIndent()
