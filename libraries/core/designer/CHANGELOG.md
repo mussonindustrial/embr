@@ -1,5 +1,13 @@
 # @mussonindustrial/embr-jvm-core-designer
 
+## 0.8.4
+
+### Patch Changes
+
+- 3d50687: Update Designer supporter message. Changes (UNSUPPORTED) to (Become a Supporter!).
+- Updated dependencies [3d50687]
+  - @embr-jvm/core-common@0.8.4
+
 ## 0.8.3
 
 ### Patch Changes
