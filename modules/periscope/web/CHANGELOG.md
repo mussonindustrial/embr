@@ -1,5 +1,12 @@
 # @mussonindustrial/embr-js-chart-js
 
+## 0.16.5
+
+### Patch Changes
+
+- 8dab726: Add the following component events: `onMount`, `onUnmount`, `onVisible`, `onHidden`, `onPageVisible`, and `onPageHidden`.
+- 8dab726: Add a new `JavaScript` component action, which directly runs JavaScript on the client without a round trip to the Gateway.
+
 ## 0.16.4
 
 ## 0.16.3
