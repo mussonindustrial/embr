@@ -1,5 +1,7 @@
 # @mussonindustrial/embr-js-chart-js
 
+## 0.14.7
+
 ## 0.14.6
 
 ### Patch Changes
