@@ -1,10 +1,10 @@
 package com.mussonindustrial.ignition.embr.charts
 
 import com.inductiveautomation.ignition.common.licensing.LicenseState
+import com.inductiveautomation.ignition.gateway.dataroutes.RouteGroup
 import com.inductiveautomation.ignition.gateway.model.AbstractGatewayModuleHook
 import com.inductiveautomation.ignition.gateway.model.GatewayContext
 import com.mussonindustrial.embr.common.Embr
-import java.util.*
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -22,6 +22,9 @@ class ChartsGatewayHook : AbstractGatewayModuleHook() {
     override fun startup(activationState: LicenseState) {
         logger.debug("Embr-Charts module startup.")
 
+        logger.debug("Registering servlets...")
+        context.registerServlets()
+
         logger.debug("Registering module observers...")
         context.registerModuleObservers()
 
@@ -37,14 +40,9 @@ class ChartsGatewayHook : AbstractGatewayModuleHook() {
 
         logger.debug("Removing components...")
         context.removeComponents()
-    }
 
-    override fun getMountedResourceFolder(): Optional<String> {
-        return Optional.of("static")
-    }
-
-    override fun getMountPathAlias(): Optional<String> {
-        return Optional.of(Embr.CHARTS.shortId)
+        logger.debug("Unregistering servlets...")
+        context.unregisterServlets()
     }
 
     override fun isFreeModule(): Boolean {
@@ -53,5 +51,9 @@ class ChartsGatewayHook : AbstractGatewayModuleHook() {
 
     override fun isMakerEditionCompatible(): Boolean {
         return true
+    }
+
+    override fun mountRouteHandlers(routes: RouteGroup?) {
+        super.mountRouteHandlers(routes)
     }
 }

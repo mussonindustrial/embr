@@ -1,3 +1,7 @@
 package com.mussonindustrial.embr.gateway
 
-interface EmbrGatewayContextExtension
+import com.mussonindustrial.embr.common.EmbrModuleMeta
+
+interface EmbrGatewayContextExtension {
+    fun isModuleInstalled(module: EmbrModuleMeta): Boolean
+}
