@@ -1,5 +1,13 @@
 # @embr-modules/periscope
 
+## 0.14.7
+
+### Patch Changes
+
+- aa80b36: (Client Resource): Fix 404 errors for inherited resources.
+  - Inherited resources were visible in the manifest, but not accessible through the resource handler endpoint.
+  - @embr-modules/periscope-web@0.14.7
+
 ## 0.14.6
 
 ### Patch Changes
