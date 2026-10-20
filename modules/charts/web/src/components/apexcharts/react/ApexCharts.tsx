@@ -48,6 +48,12 @@ function ApexChartsComponent(
   const chartRef = useRef<ApexCharts | null>(null)
   const containerRef = useRef<HTMLDivElement>(null)
 
+  const identity = [
+    props.options.chart?.id ?? '',
+    props.options.chart?.group ?? '',
+    type,
+  ].join('-')
+
   const chartOptions = useMemo(() => {
     return merge(options, {
       chart: {
@@ -79,7 +85,7 @@ function ApexChartsComponent(
 
   useEffect(() => {
     if (!redraw && chartRef.current && chartOptions) {
-      void chartRef.current.updateOptions(chartOptions, false, false, true)
+      void chartRef.current.updateOptions(chartOptions, false, false, false)
     }
   }, [redraw, chartOptions])
 
@@ -102,8 +108,8 @@ function ApexChartsComponent(
     if (!chartRef.current) return
 
     destroyChart()
-    setTimeout(renderChart)
-  }, [type])
+    renderChart()
+  }, [identity])
 
   useEffect(() => {
     renderChart()
