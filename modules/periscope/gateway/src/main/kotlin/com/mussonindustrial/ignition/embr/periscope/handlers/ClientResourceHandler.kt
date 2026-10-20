@@ -1,5 +1,7 @@
 package com.mussonindustrial.ignition.embr.periscope.handlers
 
+import com.inductiveautomation.ignition.common.model.ApplicationScope
+import com.inductiveautomation.ignition.common.resourcecollection.ResourceFilter
 import com.inductiveautomation.ignition.common.resourcecollection.ResourcePath
 import com.inductiveautomation.ignition.gateway.dataroutes.HttpMethod
 import com.inductiveautomation.ignition.gateway.dataroutes.RequestContext
@@ -47,8 +49,13 @@ class ClientResourceHandler(val context: PeriscopeGatewayContext) : RouteHandler
 
         val resource =
             context.projectManager
-                .getResource(projectName, ResourcePath(ClientResource.type, resourceName))
+                .find(
+                    projectName,
+                    ResourceFilter(ApplicationScope.ALL, listOf(ClientResource.type)),
+                )
+                .flatMap { it.getResource(ResourcePath(ClientResource.type, resourceName)) }
                 .orElse(null)
+
         if (resource == null) {
             response.sendError(
                 HttpServletResponse.SC_NOT_FOUND,
