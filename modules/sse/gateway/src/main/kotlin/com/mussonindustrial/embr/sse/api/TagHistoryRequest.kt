@@ -46,7 +46,7 @@ data class TagHistoryRequest(
                         TypeUtilities.toDate(json.get("end_date")?.asLong),
                         json.get("return_size")?.asInt ?: -1,
                         AggregationMode.valueOfCaseInsensitive(
-                            json.get("aggregation_mode")?.asString ?: "simpleaverage"
+                            json.get("aggregation_mode")?.asString ?: "simpleaverage",
                         ),
                     )
                 }

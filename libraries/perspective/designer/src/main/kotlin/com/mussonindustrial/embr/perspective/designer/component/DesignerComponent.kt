@@ -14,7 +14,7 @@ class DesignerComponentWrapper(
 ) : PerspectiveComponent by component, DesignerComponent
 
 fun PerspectiveComponent.asDesignerComponent(
-    delegate: ComponentDesignDelegate? = null
+    delegate: ComponentDesignDelegate? = null,
 ): DesignerComponent {
     return DesignerComponentWrapper(this, delegate)
 }

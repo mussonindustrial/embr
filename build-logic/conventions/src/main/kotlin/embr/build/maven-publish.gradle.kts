@@ -83,7 +83,7 @@ tasks.withType<PublishToMavenRepository>().configureEach {
             when (val responseCode = connection.responseCode) {
                 200 -> {
                     logger.lifecycle(
-                        "Artifact $groupId:$artifactId:$version already exists. Skipping publish."
+                        "Artifact $groupId:$artifactId:$version already exists. Skipping publish.",
                     )
                     false
                 }
@@ -93,7 +93,7 @@ tasks.withType<PublishToMavenRepository>().configureEach {
                 else ->
                     throw IllegalStateException(
                         "Publishing aborted: GitHub Packages returned HTTP $responseCode " +
-                            "while checking $groupId:$artifactId:$version."
+                            "while checking $groupId:$artifactId:$version.",
                     )
             }
         } catch (e: Exception) {

@@ -19,7 +19,7 @@ object KyvisLabsApexCharts {
 
         private fun warnConflicts() {
             logger.warn(
-                "Conflicts exist between Embr Charts and Kyvis Labs Apex Charts. The Kyvis Labs Apex Charts module ($ID) should be uninstalled."
+                "Conflicts exist between Embr Charts and Kyvis Labs Apex Charts. The Kyvis Labs Apex Charts module ($ID) should be uninstalled.",
             )
         }
 

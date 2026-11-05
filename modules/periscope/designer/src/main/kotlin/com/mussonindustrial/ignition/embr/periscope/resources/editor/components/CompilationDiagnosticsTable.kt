@@ -103,7 +103,7 @@ class CompilationDiagnosticsTable : SortableTable() {
                     diagnostic.range?.start?.line,
                     diagnostic.range?.start?.column,
                     diagnostic.message,
-                )
+                ),
             )
         }
     }

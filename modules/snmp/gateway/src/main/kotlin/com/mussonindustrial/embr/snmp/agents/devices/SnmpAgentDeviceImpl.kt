@@ -125,22 +125,22 @@ class SnmpAgentDeviceImpl<T : SnmpAgentDeviceSettings>(override val context: Snm
                         if (errorIdx in 1..pdu.size()) {
                             val badOid = pdu.get(errorIdx - 1).oid
                             logger.debug(
-                                "GET failed at OID: $badOid (index ${errorIdx}), removing and retrying..."
+                                "GET failed at OID: $badOid (index ${errorIdx}), removing and retrying...",
                             )
                             val failedResults = remaining.remove(badOid)
                             failedResults?.forEach {
                                 results[it] =
                                     it.oid.toOidReadResult(
-                                        DataValue(StatusCodes.Bad_CommunicationError)
+                                        DataValue(StatusCodes.Bad_CommunicationError),
                                     )
                             }
                         } else {
                             logger.warn(
-                                "GET failed with errorStatusText: ${response.errorStatusText}"
+                                "GET failed with errorStatusText: ${response.errorStatusText}",
                             )
                             return reads.map {
                                 it.oid.toOidReadResult(
-                                    DataValue(StatusCodes.Bad_CommunicationError)
+                                    DataValue(StatusCodes.Bad_CommunicationError),
                                 )
                             }
                         }
@@ -174,7 +174,7 @@ class SnmpAgentDeviceImpl<T : SnmpAgentDeviceSettings>(override val context: Snm
                 if (response == null) {
                     logger.warn("SET failed: no response.")
                     return@map it.oid.toOidWriteResult(
-                        StatusCode(StatusCodes.Bad_CommunicationError)
+                        StatusCode(StatusCodes.Bad_CommunicationError),
                     )
                 }
 

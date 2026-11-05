@@ -10,7 +10,7 @@ interface PerspectiveComponent {
         get() {
             return withContextClassLoaders(this::class.java.classLoader) {
                 JsonSchema.parse(
-                    this::class.java.getResourceAsStream("/schemas/components/${id}/props.json")
+                    this::class.java.getResourceAsStream("/schemas/components/${id}/props.json"),
                 )
             }
         }
