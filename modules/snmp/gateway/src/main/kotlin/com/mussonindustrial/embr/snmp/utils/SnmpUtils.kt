@@ -60,7 +60,7 @@ fun LifecycleManager.addLifecycle(snmp: Snmp) {
             override fun shutdown() {
                 snmp.close()
             }
-        }
+        },
     )
 }
 

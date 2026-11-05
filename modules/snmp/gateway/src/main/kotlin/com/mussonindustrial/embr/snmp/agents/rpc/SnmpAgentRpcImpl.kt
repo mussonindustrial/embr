@@ -41,7 +41,7 @@ class SnmpAgentRpcImpl(val context: SnmpGatewayContext) : SnmpAgentRpc {
             .write(
                 oids.zip(values).map { (oid, value) ->
                     VariableBinding(OID(oid), OctetString(value))
-                }
+                },
             )
             .map { it.statusCode.toQualityCode() }
     }

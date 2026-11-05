@@ -57,7 +57,7 @@ class DiagnosticSeverityAdapter :
                 DiagnosticSeverity.ERROR -> "error"
                 DiagnosticSeverity.WARNING -> "warning"
                 DiagnosticSeverity.INFO -> "info"
-            }
+            },
         )
     }
 

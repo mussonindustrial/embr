@@ -57,7 +57,7 @@ class ViewLoader(page: PageModel) {
                                 if (!maybeView.isCancelled) {
                                     queue.submit {
                                         log.trace(
-                                            "View ${viewInstanceId.id} not found, getting back in queue..."
+                                            "View ${viewInstanceId.id} not found, getting back in queue...",
                                         )
                                         tryLoad(result)
                                     }

@@ -47,7 +47,7 @@ class PyArgOverload<T>(
                             val jValue = TypeUtilities.pyToJava(pyValue)
                             return@associateBy TypeUtilities.coerce(jValue, it.type.rawJavaClass())
                         },
-                    )
+                    ),
                 )
             }
         }

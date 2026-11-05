@@ -26,7 +26,7 @@ class EmbrStatusBarButton(private val context: EmbrDesignerContext) : JLabel() {
                         BrowserLauncher.openURL(Embr.WEBSTORE_URL)
                     }
                 }
-            }
+            },
         )
     }
 

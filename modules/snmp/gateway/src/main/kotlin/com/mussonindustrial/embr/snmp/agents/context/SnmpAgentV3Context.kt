@@ -30,7 +30,7 @@ class SnmpAgentV3Context(
                 "device-name" to deviceContext.name,
                 "device-type" to deviceConfig.type,
                 "address" to snmpConfig.connectivity.address,
-            )
+            ),
         )
 
     override lateinit var readTarget: Target<Address>
