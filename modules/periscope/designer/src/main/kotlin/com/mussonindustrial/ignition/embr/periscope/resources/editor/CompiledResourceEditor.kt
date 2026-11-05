@@ -136,7 +136,7 @@ abstract class CompiledResourceEditor<T : ClientResource>(
                 dirty = true
                 compileState = CompileState.DIRTY
                 compilationDebounce?.restart()
-            }
+            },
         )
 
         invokeLater {
@@ -148,7 +148,7 @@ abstract class CompiledResourceEditor<T : ClientResource>(
     fun format(): FormatResult {
         val result =
             compiler.format(
-                FormatRequest(textArea.text, resourcePath.path.toString(), textArea.caretPosition)
+                FormatRequest(textArea.text, resourcePath.path.toString(), textArea.caretPosition),
             )
         textArea.text = result.output
         textArea.caretPosition = result.cursor

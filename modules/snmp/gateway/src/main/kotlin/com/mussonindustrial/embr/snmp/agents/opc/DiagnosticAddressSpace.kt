@@ -31,7 +31,7 @@ class DiagnosticAddressSpace(val device: SnmpAgentDevice, composite: AddressSpac
                 override fun shutdown() {
                     nodeManager.removeAllNodes()
                 }
-            }
+            },
         )
     }
 
@@ -51,7 +51,7 @@ class DiagnosticAddressSpace(val device: SnmpAgentDevice, composite: AddressSpac
                 Identifiers.Organizes,
                 getDeviceNodeId().expanded(),
                 Reference.Direction.INVERSE,
-            )
+            ),
         )
 
         addDiagnosticNode(
@@ -93,7 +93,7 @@ class DiagnosticAddressSpace(val device: SnmpAgentDevice, composite: AddressSpac
                     Identifiers.HasComponent,
                     folder.nodeId.expanded(),
                     Reference.Direction.INVERSE,
-                )
+                ),
             )
             addAttributeFilter(attributeFilter)
             buildAndAdd()

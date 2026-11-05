@@ -67,8 +67,8 @@ class ApexChartsLegacy {
                     Components::class
                         .java
                         .getResourceAsStream(
-                            "/schemas/components/${id}/events/${schemaName}.props.json"
-                        )
+                            "/schemas/components/${id}/events/${schemaName}.props.json",
+                        ),
                 ),
             )
         }
@@ -211,7 +211,7 @@ class ApexChartsLegacy {
                         BEFORE_RESET_ZOOM_HANDLER,
                         SCROLLED_HANDLER,
                         BRUSH_SCROLLED_HANDLER,
-                    )
+                    ),
                 )
                 .setName("ApexCharts (Legacy)")
                 .addPaletteEntry(VARIANT_BASE)

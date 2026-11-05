@@ -128,7 +128,7 @@ class JavaScriptActionDesignDelegate :
 
             (textArea.document as AbstractDocument).documentFilter = SignatureFilter()
             textArea.document.addDocumentListener(
-                CatchAllListener.createCoalesced(context::notifyConfigChanged)
+                CatchAllListener.createCoalesced(context::notifyConfigChanged),
             )
         }
 

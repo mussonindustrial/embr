@@ -28,7 +28,7 @@ class SnmpAgentV2cContext(
                 "device-name" to this.deviceContext.getName(),
                 "device-type" to this.deviceSettings.type,
                 "address" to this.snmpSettings.address,
-            )
+            ),
         )
 
     override lateinit var readTarget: Target<Address>

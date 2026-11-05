@@ -45,7 +45,7 @@ class PerspectiveSessionMonitor(context: PerspectiveContext) {
     class SessionKey
     internal constructor(private val authId: String, private val projectName: String) {
         internal constructor(
-            session: InternalSession
+            session: InternalSession,
         ) : this(session.sessionCollection.uuid, session.projectName)
 
         override fun equals(other: Any?): Boolean {

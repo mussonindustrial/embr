@@ -50,7 +50,7 @@ fun getImage(clazz: Class<*>, path: String): BufferedImage? {
 @Suppress("UNUSED_PARAMETER")
 fun getJsonProps(clazz: Class<*>, path: String): JsonObject {
     return JsonParser.parseReader(
-            PaletteEntry::class.java.getResourceAsStream(path)?.let { InputStreamReader(it) }
+            PaletteEntry::class.java.getResourceAsStream(path)?.let { InputStreamReader(it) },
         )
         .asJsonObject
 }
