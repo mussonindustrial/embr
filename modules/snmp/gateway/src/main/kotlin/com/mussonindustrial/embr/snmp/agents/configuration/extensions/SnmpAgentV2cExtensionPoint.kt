@@ -66,7 +66,7 @@ object SnmpAgentV2cExtensionPoint :
                 SchemaUtil.fromType(DeviceProfileConfig::class.java),
                 SchemaUtil.fromType(Config::class.java),
                 mutableSetOf<String>(),
-            )
+            ),
         )
     }
 

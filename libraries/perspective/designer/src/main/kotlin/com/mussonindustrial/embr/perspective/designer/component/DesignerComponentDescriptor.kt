@@ -14,7 +14,7 @@ data class DesignerComponentDescriptor(val componentDescriptor: ComponentDescrip
 
     private val svgIcon: InteractiveSvgIcon =
         InteractiveSvgIcon.createIcon(
-            "images/components/${componentDescriptor.id()}/component.icon.svg"
+            "images/components/${componentDescriptor.id()}/component.icon.svg",
         )
 
     override fun childPositionSchema(): JsonSchema? {

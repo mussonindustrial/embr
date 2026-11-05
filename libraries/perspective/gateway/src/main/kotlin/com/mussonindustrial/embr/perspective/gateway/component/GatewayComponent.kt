@@ -14,7 +14,7 @@ class GatewayComponentWrapper(
 ) : PerspectiveComponent by component, GatewayComponent
 
 fun PerspectiveComponent.asGatewayComponent(
-    delegateFactory: ComponentModelDelegateFactory? = null
+    delegateFactory: ComponentModelDelegateFactory? = null,
 ): GatewayComponent {
     return GatewayComponentWrapper(this, delegateFactory)
 }

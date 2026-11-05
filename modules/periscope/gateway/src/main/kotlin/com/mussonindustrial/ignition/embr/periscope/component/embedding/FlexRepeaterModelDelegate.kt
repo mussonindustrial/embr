@@ -165,7 +165,7 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
                     event.path.toString().replace(instance.treePath.toString() + ".", "")
                 if (changeRoot.startsWith("viewParams")) {
                     log.trace(
-                        "Dispatching change event on ${event.path} to instance ${instance.mountPath}"
+                        "Dispatching change event on ${event.path} to instance ${instance.mountPath}",
                     )
                     this.onViewInputChanged(instance, event)
                 }
@@ -287,7 +287,7 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
         private val commonViewPath: String
             get() {
                 return toJsonDeep(
-                        tree.read("instanceCommon.viewPath").orElse(BasicQualifiedValue(""))
+                        tree.read("instanceCommon.viewPath").orElse(BasicQualifiedValue("")),
                     )
                     ?.asString ?: ""
             }
@@ -297,7 +297,7 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
                 return toJsonDeep(
                         tree
                             .read(treePath.createChildPath("viewPath"))
-                            .orElse(BasicQualifiedValue(""))
+                            .orElse(BasicQualifiedValue("")),
                     )
                     ?.asString ?: ""
             }
@@ -504,12 +504,14 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
                     },
                     "index" to typeOf<Int>(),
                 )
-                .addOverload({
-                    val newInstances = props.instances.json
-                    newInstances.remove(newInstances.size() - 1)
-                    props.instances.json = newInstances
-                    return@addOverload
-                })
+                .addOverload(
+                    {
+                        val newInstances = props.instances.json
+                        newInstances.remove(newInstances.size() - 1)
+                        props.instances.json = newInstances
+                        return@addOverload
+                    },
+                )
                 .build()
 
         val pushInstance =
@@ -526,7 +528,7 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
                             newInstances.addAll(instance.asJsonArray)
                         } else {
                             throw IllegalArgumentException(
-                                "instance must be an object or a list of objects"
+                                "instance must be an object or a list of objects",
                             )
                         }
                         props.instances.json = newInstances
@@ -556,7 +558,7 @@ class FlexRepeaterModelDelegate(component: Component) : ComponentModelDelegate(c
                             newInstances.addAll(instance.asJsonArray)
                         } else {
                             throw IllegalArgumentException(
-                                "instance must be an object or a list of objects"
+                                "instance must be an object or a list of objects",
                             )
                         }
 

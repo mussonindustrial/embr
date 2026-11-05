@@ -86,7 +86,7 @@ class PeriscopeGatewayContext(private val context: GatewayContext) :
 
     fun injectResources() {
         perspectiveContext.componentRegistry.addResourcesTo(
-            PeriscopeComponents.REQUIRED_RESOURCES
+            PeriscopeComponents.REQUIRED_RESOURCES,
         ) {
             it.moduleId() == PerspectiveModule.MODULE_ID
         }
@@ -94,7 +94,7 @@ class PeriscopeGatewayContext(private val context: GatewayContext) :
 
     fun removeResources() {
         perspectiveContext.componentRegistry.removeResourcesFrom(
-            PeriscopeComponents.REQUIRED_RESOURCES
+            PeriscopeComponents.REQUIRED_RESOURCES,
         ) {
             it.moduleId() == PerspectiveModule.MODULE_ID
         }

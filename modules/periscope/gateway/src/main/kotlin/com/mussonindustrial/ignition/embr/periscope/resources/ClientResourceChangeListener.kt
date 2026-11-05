@@ -20,7 +20,7 @@ class ClientResourceChangeListener(
     }
 
     override fun createLifecycle(
-        collection: RuntimeResourceCollection
+        collection: RuntimeResourceCollection,
     ): ResourceCollectionLifecycle {
         return ClientResourceChangeNotifier(sessionMonitor, collection)
     }

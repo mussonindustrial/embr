@@ -10,6 +10,6 @@ object Components {
                 "embr-charts-client",
                 "/res/${Embr.CHARTS.shortId}/embr-charts-client.js",
                 BrowserResource.ResourceType.JS,
-            )
+            ),
         )
 }

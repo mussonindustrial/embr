@@ -27,7 +27,7 @@ data class BasicQualifiedOidValue(
                         "oid" to value.oid.numeric,
                         "quality" to value.quality.code,
                         "timestamp" to value.timestamp.time,
-                    )
+                    ),
                 )
                 .toByteArray()
         }
@@ -47,7 +47,7 @@ data class BasicQualifiedOidValue(
                     )
                 else ->
                     throw IllegalArgumentException(
-                        "Unsupported BasicQualifiedOidValue version: $version"
+                        "Unsupported BasicQualifiedOidValue version: $version",
                     )
             }
         }

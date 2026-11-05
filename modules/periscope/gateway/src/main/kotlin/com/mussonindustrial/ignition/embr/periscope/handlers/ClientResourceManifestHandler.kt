@@ -75,7 +75,7 @@ class ClientResourceManifestHandler(val context: PeriscopeGatewayContext) : Rout
                                 addProperty("path", it.resourcePath.path.toString())
                                 addProperty("type", clientResource.type.key)
                                 addProperty("hash", it.getHashKey())
-                            }
+                            },
                         )
                     }
             }

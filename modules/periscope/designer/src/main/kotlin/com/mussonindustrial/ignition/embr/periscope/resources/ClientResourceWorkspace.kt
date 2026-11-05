@@ -83,7 +83,7 @@ class ClientResourceWorkspace(
                         ),
                     )
                 }
-            }
+            },
         )
     }
 

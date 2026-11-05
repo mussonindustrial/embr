@@ -31,14 +31,14 @@ class DeviceAddressSpace(deviceContext: DeviceContext, composite: AddressSpaceCo
                             NodeIds.Organizes,
                             getRootNodeId().expanded(),
                             Reference.Direction.INVERSE,
-                        )
+                        ),
                     )
                 }
 
                 override fun shutdown() {
                     nodeManager.removeAllNodes()
                 }
-            }
+            },
         )
     }
 }

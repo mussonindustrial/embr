@@ -11,6 +11,6 @@ fun Window.onWindowOpenedOnce(block: (WindowEvent) -> Unit) {
                 removeWindowListener(this)
                 block(e)
             }
-        }
+        },
     )
 }

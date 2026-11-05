@@ -73,7 +73,7 @@ class SnmpGatewayHook : AbstractDeviceModuleHook() {
         return Optional.of(
             GatewayRpcImplementation.newBuilder(ProtoRpcSerializer.DEFAULT_INSTANCE)
                 .addInterface(snmpContext.agentRpc, SnmpAgentRpc.SERIALIZER)
-                .build()
+                .build(),
         )
     }
 
