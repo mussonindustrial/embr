@@ -26,6 +26,8 @@ import com.mussonindustrial.ignition.embr.periscope.resources.TypeScriptResource
 import com.mussonindustrial.ignition.embr.periscope.resources.asDesignerDescriptor
 import com.mussonindustrial.ignition.embr.periscope.resources.editor.CssModuleResourceEditor
 import com.mussonindustrial.ignition.embr.periscope.resources.editor.TypeScriptResourceEditor
+import com.mussonindustrial.ignition.embr.periscope.resources.language.ClientResourceLanguageProject
+import com.mussonindustrial.ignition.embr.periscope.resources.language.TypeScriptLanguageService
 import com.teamdev.jxbrowser.engine.Engine
 import java.awt.AWTEvent
 import java.awt.Toolkit
@@ -63,6 +65,13 @@ class PeriscopeDesignerContext(val context: DesignerContext) :
             registerAction(JavaScriptActionDesignDelegate())
         }
     }
+
+    val languageProject =
+        ClientResourceLanguageProject(
+            context,
+            clientResourceManager,
+            TypeScriptLanguageService(bridge),
+        )
 
     private val components =
         listOf(
@@ -105,6 +114,14 @@ class PeriscopeDesignerContext(val context: DesignerContext) :
 
     fun registerClientResourceDefinitions() {
         clientResourceDefinitions.forEach { clientResourceManager.register(it) }
+    }
+
+    fun startLanguageProject() {
+        languageProject.startup()
+    }
+
+    fun stopLanguageProject() {
+        languageProject.shutdown()
     }
 
     fun registerAWTEventListeners() {

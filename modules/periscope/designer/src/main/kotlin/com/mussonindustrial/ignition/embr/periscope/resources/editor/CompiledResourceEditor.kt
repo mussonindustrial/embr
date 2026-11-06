@@ -1,53 +1,64 @@
 package com.mussonindustrial.ignition.embr.periscope.resources.editor
 
 import com.inductiveautomation.ignition.common.resourcecollection.ResourcePath
-import com.inductiveautomation.ignition.designer.gui.tools.DisplayTrackingSyntaxTextArea
 import com.inductiveautomation.ignition.designer.tabbedworkspace.ResourceEditor
 import com.inductiveautomation.ignition.designer.tabbedworkspace.TabbedResourceWorkspace
-import com.jidesoft.swing.*
-import com.mussonindustrial.ignition.embr.periscope.icons.PeriscopeIcons
+import com.jidesoft.swing.JideSplitPane
 import com.mussonindustrial.ignition.embr.periscope.resources.ClientResource
-import com.mussonindustrial.ignition.embr.periscope.resources.compiler.*
-import com.mussonindustrial.ignition.embr.periscope.resources.editor.components.*
-import com.mussonindustrial.ignition.embr.periscope.resources.editor.parser.DiagnosticParser
-import java.awt.*
-import javax.swing.*
+import com.mussonindustrial.ignition.embr.periscope.resources.CompiledResource
+import com.mussonindustrial.ignition.embr.periscope.resources.compiler.CompileRequest
+import com.mussonindustrial.ignition.embr.periscope.resources.compiler.CompileResult
+import com.mussonindustrial.ignition.embr.periscope.resources.compiler.Compiler
+import com.mussonindustrial.ignition.embr.periscope.resources.compiler.Diagnostic
+import com.mussonindustrial.ignition.embr.periscope.resources.compiler.DiagnosticSeverity
+import com.mussonindustrial.ignition.embr.periscope.resources.compiler.FormatRequest
+import com.mussonindustrial.ignition.embr.periscope.resources.compiler.FormatResult
+import com.mussonindustrial.ignition.embr.periscope.resources.editor.components.CompilationStatusLabel
+import com.mussonindustrial.ignition.embr.periscope.resources.editor.components.CompileState
+import com.mussonindustrial.ignition.embr.periscope.resources.editor.components.ScriptEditor
+import com.mussonindustrial.ignition.embr.periscope.resources.editor.components.ScriptEditor.Companion.menuItem
+import com.mussonindustrial.ignition.embr.periscope.resources.editor.components.ScriptTextArea
+import com.mussonindustrial.ignition.embr.periscope.resources.language.Location
+import java.awt.Font
+import java.awt.event.ActionEvent
+import java.awt.event.InputEvent
+import java.awt.event.KeyEvent
+import javax.swing.Icon
+import javax.swing.JComponent
+import javax.swing.JLabel
+import javax.swing.JMenuItem
+import javax.swing.KeyStroke
 import javax.swing.SwingUtilities.invokeLater
+import javax.swing.Timer
 import net.miginfocom.swing.MigLayout
-import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea
-import org.fife.ui.rtextarea.Gutter
-import org.fife.ui.rtextarea.RTextScrollPane
 
 abstract class CompiledResourceEditor<T : ClientResource>(
-    workspace: TabbedResourceWorkspace,
+    private val resourceWorkspace: TabbedResourceWorkspace,
     path: ResourcePath,
-) : ResourceEditor<T>(workspace, path) {
+) : ResourceEditor<T>(resourceWorkspace, path) {
 
     abstract val compiler: Compiler
     abstract val virtualFileType: String
-    open val headerIcon: Icon = PeriscopeIcons.tsx
+    // A getter, since init runs before subclasses set their properties.
+    abstract val syntaxStyle: String
+    abstract val headerIcon: Icon
 
-    lateinit var statusBar: CompilationStatusBar
-    lateinit var textArea: RSyntaxTextArea
-    lateinit var diagnosticsTable: CompilationDiagnosticsTable
-    lateinit var bottomTabs: JideTabbedPane
-    lateinit var gutter: Gutter
+    lateinit var status: CompilationStatusLabel
+    lateinit var editor: ScriptEditor
+    lateinit var textArea: ScriptTextArea
+    private lateinit var editorSplit: JideSplitPane
 
     var compileResult: CompileResult? = null
+        private set
+
     var compileState = CompileState.DIRTY
         set(value) {
             field = value
             updateStatus()
         }
 
-    var dirty = false
-        set(value) {
-            field = value
-            updateStatus()
-        }
-
-    private val compilationDebounce: Timer? = Timer(500) { compile() }.apply { isRepeats = false }
-    private val parser = DiagnosticParser()
+    private lateinit var compilationDebounce: Timer
+    private var analysis: List<Diagnostic> = emptyList()
 
     private val virtualFilePath: String
         get() =
@@ -55,94 +66,70 @@ abstract class CompiledResourceEditor<T : ClientResource>(
                 if (it.endsWith(virtualFileType)) it else it + virtualFileType
             }
 
-    override fun init(resource: T) {
-        removeAll()
-        layout = BorderLayout()
-
-        val mainSplit =
-            JideSplitPane(JideSplitPane.VERTICAL_SPLIT).apply {
-                add(createEditorPanel(resource))
-                add(createBottomTabs())
-                isProportionalLayout = false
-                dividerSize = 8
-            }
-
-        add(createHeader(), BorderLayout.NORTH)
-        add(mainSplit, BorderLayout.CENTER)
-
-        setupListeners()
-    }
-
-    private fun createHeader(): JPanel {
-        val header =
-            JPanel(MigLayout("ins 8 12 8 12, fillx", "[shrink][grow, fill][]", "[]")).apply {
-                border = PartialEtchedBorder(PartialEtchedBorder.LOWERED, PartialSide.SOUTH)
-            }
-        val title =
-            StyledLabel(tabTitle, headerIcon, JLabel.LEFT).apply {
-                font = Font(Font.DIALOG, Font.BOLD, 16)
-                iconTextGap = 8
-            }
-        header.add(title)
-
-        invokeLater { title.icon = headerIcon }
-
-        return header
-    }
-
-    private fun createEditorPanel(resource: T): JPanel {
-        textArea =
-            DisplayTrackingSyntaxTextArea(resource.fileContents.source).apply {
-                antiAliasingEnabled = true
-                isCodeFoldingEnabled = true
-                tabSize = 2
-                popupMenu?.let { popup ->
-                    popup.addSeparator()
-                    popup.add(JMenuItem("Format").apply { addActionListener { format() } })
-                    popup.add(JMenuItem("Compile").apply { addActionListener { compile() } })
-                }
-            }
-
-        val scrollPane =
-            RTextScrollPane(textArea).apply {
-                minimumSize = Dimension(0, 300)
-                isIconRowHeaderEnabled = true
-            }
-        gutter = scrollPane.gutter
-        statusBar = CompilationStatusBar()
-
-        return JPanel(BorderLayout()).apply {
-            add(scrollPane, BorderLayout.CENTER)
-            add(statusBar, BorderLayout.SOUTH)
+    protected val compiledContents: CompiledResource.FileContents
+        get() {
+            val compiled =
+                compileResult?.takeIf { it.success }?.output ?: "/* Compilation failed */"
+            return CompiledResource.FileContents(textArea.text, compiled)
         }
-    }
 
-    private fun createBottomTabs(): JideTabbedPane {
-        diagnosticsTable =
-            CompilationDiagnosticsTable().apply { onNavigate = ::navigateToDiagnostic }
-        bottomTabs =
-            JideTabbedPane(JideTabbedPane.TOP).apply {
-                preferredSize = Dimension(420, 200)
-                minimumSize = Dimension(280, 100)
-                isBoldActiveTab = true
-                addTab("Problems", JideScrollPane(diagnosticsTable))
-            }
-        return bottomTabs
-    }
+    protected val compilerMetadata: CompiledResource.CompilerMetadata
+        get() = CompiledResource.CompilerMetadata(compiler.version)
 
-    private fun setupListeners() {
-        textArea.document.addDocumentListener(
-            SimpleDocumentListener {
-                dirty = true
-                compileState = CompileState.DIRTY
-                compilationDebounce?.restart()
+    override fun init(resource: T) {
+        compilationDebounce = Timer(500) { compile() }.apply { isRepeats = false }
+        removeAll()
+        layout = MigLayout("ins 8, fill")
+
+        status = CompilationStatusLabel()
+        add(
+            JLabel(tabTitle, headerIcon, JLabel.LEFT).apply {
+                font = Font(Font.MONOSPACED, Font.PLAIN, 14)
+                iconTextGap = 6
             },
         )
+        add(status, "right, wrap")
+        add(createEditorPanel(resource), "push, grow, spanx")
 
-        invokeLater {
-            textArea.addParser(parser)
-            compile()
+        textArea.document.addDocumentListener(
+            SimpleDocumentListener {
+                compileState = CompileState.DIRTY
+                compilationDebounce.restart()
+            },
+        )
+        bindKey(FORMAT_KEY) { format() }
+        invokeLater { compile() }
+    }
+
+    private fun createEditorPanel(resource: T): JComponent {
+        editor = ScriptEditor(resource.fileContents.source, syntaxStyle)
+        textArea = editor.textArea
+        textArea.popupMenu?.let { popup ->
+            popup.addSeparator()
+            popup.add(menuItem("Format", FORMAT_KEY, ::format))
+            popup.add(JMenuItem("Compile").apply { addActionListener { compile() } })
         }
+        editorSplit =
+            JideSplitPane(JideSplitPane.HORIZONTAL_SPLIT).apply {
+                add(editor)
+                dividerSize = DIVIDER_SIZE
+                isProportionalLayout = true
+            }
+        return editorSplit
+    }
+
+    protected fun bindKey(key: KeyStroke, action: (ActionEvent) -> Unit) {
+        editor.bindKey(key, action)
+    }
+
+    protected fun addSidePanel(component: JComponent) {
+        editorSplit.add(component)
+        editorSplit.setProportions(doubleArrayOf(0.85))
+    }
+
+    protected fun showAnalysis(diagnostics: List<Diagnostic>) {
+        analysis = diagnostics
+        showDiagnostics()
     }
 
     fun format(): FormatResult {
@@ -152,7 +139,6 @@ abstract class CompiledResourceEditor<T : ClientResource>(
             )
         textArea.text = result.output
         textArea.caretPosition = result.cursor
-        dirty = true
         compile()
         return result
     }
@@ -161,50 +147,44 @@ abstract class CompiledResourceEditor<T : ClientResource>(
         compileState = CompileState.COMPILING
         val result = compiler.compile(CompileRequest(textArea.text, virtualFilePath))
         compileResult = result
+        showDiagnostics()
 
-        applyCompileResult(result)
-
-        if (result.success) {
-            dirty = false
-            commit()
-            compileState = CompileState.SUCCESS
-        } else {
-            compileState = CompileState.FAILED
-        }
+        if (result.success) commit()
+        compileState = if (result.success) CompileState.SUCCESS else CompileState.FAILED
         return result
     }
 
-    private fun applyCompileResult(result: CompileResult) {
+    fun select(start: Int, length: Int) {
+        editor.select(start, length)
+    }
+
+    open fun reveal(location: Location) {
+        editor.reveal(location)
+    }
+
+    fun openResource(path: String, then: (CompiledResourceEditor<*>) -> Unit) {
+        val target = ResourcePath(ClientResource.type, path)
+        resourceWorkspace.open(target) { editor ->
+            (editor as? CompiledResourceEditor<*>)?.let { invokeLater { then(it) } }
+        }
+    }
+
+    private fun showDiagnostics() {
+        editor.showDiagnostics(compileResult?.diagnostics.orEmpty() + analysis)
         updateStatus()
-        updateDiagnostics(result)
-        parser.setDiagnostics(result.diagnostics)
-        textArea.forceReparsing(parser)
     }
 
     private fun updateStatus() {
-        val result = compileResult
-        val errors = result?.diagnostics?.count { it.severity == DiagnosticSeverity.ERROR } ?: 0
-        val warnings = result?.diagnostics?.count { it.severity == DiagnosticSeverity.WARNING } ?: 0
-        val message =
-            if (result?.success == false)
-                "Compilation failed. Errors must be resolved before saving."
-            else null
-
-        statusBar.update(dirty, compileState, errors, warnings, message)
+        val errors = editor.diagnostics.count { it.severity == DiagnosticSeverity.ERROR }
+        status.update(compileState, errors)
     }
 
-    private fun updateDiagnostics(result: CompileResult) {
-        bottomTabs.setTitleAt(0, "Problems (${result.diagnostics.size})")
-        diagnosticsTable.updateDiagnostics(result.diagnostics)
-        gutter.updateDiagnostics(result.diagnostics)
-    }
-
-    private fun navigateToDiagnostic(diagnostic: Diagnostic) {
-        try {
-            val line = diagnostic.range!!.start.line - 1
-            val column = diagnostic.range!!.start.column - 1
-            textArea.caretPosition = textArea.getLineStartOffset(line) + column
-            textArea.requestFocusInWindow()
-        } catch (_: Exception) {}
+    companion object {
+        private const val DIVIDER_SIZE = 6
+        private val FORMAT_KEY: KeyStroke =
+            KeyStroke.getKeyStroke(
+                KeyEvent.VK_F,
+                InputEvent.SHIFT_DOWN_MASK or InputEvent.ALT_DOWN_MASK,
+            )
     }
 }
