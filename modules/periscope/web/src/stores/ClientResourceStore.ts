@@ -1,4 +1,7 @@
+import type { ESModule } from '@embr-js/utils/types'
 import { ClientStore } from '@inductiveautomation/perspective-client'
+
+import { createPeriscopeModule } from '../system/periscopeModule'
 
 const PROTOCOL = {
   REFRESH: 'periscope-client-resource-refresh',
@@ -8,12 +11,6 @@ export type ClientResourceDefinition = {
   path: string
   hash: string
   type: string
-}
-
-export type ESModule<T = unknown> = {
-  [K in string]: T
-} & {
-  default?: T
 }
 
 export type ResourceManifest = {
@@ -181,7 +178,7 @@ export class ClientResourceStore {
     })
 
     this.systemModules.set('perspective', modules['perspective'])
-    this.systemModules.set('periscope', modules['periscope'])
+    this.systemModules.set('periscope', createPeriscopeModule(this))
   }
 
   private installListener() {
