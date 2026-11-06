@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { compiler } from './index'
+import { compiler } from '../../../src/compiler/typescript'
 
 describe('TypeScript Compiler', () => {
   describe('compile()', () => {

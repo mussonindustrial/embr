@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { compiler } from './index'
+import { compiler } from '../../../src/compiler/css-module'
 
 describe('CSS Module Compiler', () => {
   describe('compile()', () => {
