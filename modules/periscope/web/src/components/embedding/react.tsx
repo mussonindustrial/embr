@@ -14,9 +14,9 @@ import {
   PComponent,
   PlainObject,
   PropertyTree,
-  SizeObject,
   StyleObject,
 } from '@inductiveautomation/perspective-client'
+import type { SizeObject } from '@inductiveautomation/perspective-common'
 import {
   ComponentDelegateJavaScriptProxy,
   ComponentEvents,

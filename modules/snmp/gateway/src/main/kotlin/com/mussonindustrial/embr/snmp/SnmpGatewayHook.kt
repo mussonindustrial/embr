@@ -6,7 +6,6 @@ import com.inductiveautomation.ignition.common.licensing.LicenseState
 import com.inductiveautomation.ignition.common.rpc.proto.ProtoRpcSerializer
 import com.inductiveautomation.ignition.common.script.ScriptManager
 import com.inductiveautomation.ignition.common.script.hints.PropertiesFileDocProvider
-import com.inductiveautomation.ignition.gateway.config.migration.IdbMigrationStrategy
 import com.inductiveautomation.ignition.gateway.model.GatewayContext
 import com.inductiveautomation.ignition.gateway.opcua.server.api.AbstractDeviceModuleHook
 import com.inductiveautomation.ignition.gateway.opcua.server.api.DeviceExtensionPoint
@@ -58,14 +57,6 @@ class SnmpGatewayHook : AbstractDeviceModuleHook() {
             SnmpAgentV1ExtensionPoint,
             SnmpAgentV2cExtensionPoint,
             SnmpAgentV3ExtensionPoint,
-        )
-    }
-
-    override fun getRecordMigrationStrategies(): List<IdbMigrationStrategy> {
-        return listOf(
-            SnmpAgentV1ExtensionPoint.recordMigrationStrategy,
-            SnmpAgentV2cExtensionPoint.recordMigrationStrategy,
-            SnmpAgentV3ExtensionPoint.recordMigrationStrategy,
         )
     }
 

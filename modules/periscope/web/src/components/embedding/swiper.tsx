@@ -11,10 +11,10 @@ import {
   PComponent,
   PlainObject,
   PropertyTree,
-  SizeObject,
   StyleObject,
   View,
 } from '@inductiveautomation/perspective-client'
+import type { SizeObject } from '@inductiveautomation/perspective-common'
 
 import 'swiper/css/bundle'
 import {

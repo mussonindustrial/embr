@@ -6,9 +6,9 @@ ignitionModule {
     name.set("Embr Server Sent Events")
     moduleDescription.set("Provides an API for streaming events via SSE.")
     id.set("com.mussonindustrial.embr.sse")
-    fileName.set("Embr-SSE-Ignition83-${version}.modl")
+    fileName.set("Embr-SSE-Ignition2027-${version}.modl")
     freeModule.set(true)
-    requiredIgnitionVersion.set(libs.versions.ignition.sdk)
+    requiredIgnitionVersion.set(libs.versions.ignition.sdk.map { it.substringBefore("-") })
 
     projectScopes.putAll(
         mapOf(

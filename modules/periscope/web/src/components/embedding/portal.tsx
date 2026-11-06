@@ -10,10 +10,10 @@ import {
   layoutCallbackCreator,
   PComponent,
   PropertyTree,
-  SizeObject,
   StyleObject,
   ViewStateDisplay,
 } from '@inductiveautomation/perspective-client'
+import type { SizeObject } from '@inductiveautomation/perspective-common'
 import { transformProps } from '@embr-js/utils'
 import { createPortal } from 'react-dom'
 import {

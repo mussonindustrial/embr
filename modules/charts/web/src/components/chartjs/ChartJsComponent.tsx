@@ -8,8 +8,8 @@ import {
   PComponent,
   PlainObject,
   PropertyTree,
-  SizeObject,
 } from '@inductiveautomation/perspective-client'
+import type { SizeObject } from '@inductiveautomation/perspective-common'
 import { Chart as ChartJs, ChartProps } from 'react-chartjs-2'
 import { Chart, UpdateMode } from 'chart.js'
 import { transformProps } from '@embr-js/utils'
