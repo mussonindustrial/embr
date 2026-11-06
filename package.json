@@ -14,10 +14,10 @@
     ],
     "dependencies": {
         "@changesets/cli": "2.29.5",
-        "@inductiveautomation/perspective-client": "2.3.0",
-        "@inductiveautomation/perspective-components": "2.3.0",
-        "@inductiveautomation/perspective-designer": "2.3.0",
-        "@inductiveautomation/perspective-drawing-common": "2.3.0",
+        "@inductiveautomation/perspective-client": "2027.2.0-beta1",
+        "@inductiveautomation/perspective-components": "2027.2.0-beta1",
+        "@inductiveautomation/perspective-designer": "2027.2.0-beta1",
+        "@inductiveautomation/perspective-drawing-common": "2027.2.0-beta1",
         "changeset": "^0.2.6",
         "lodash": "4.17.21",
         "npx": "10.2.2",
@@ -48,6 +48,11 @@
         "typescript": "5.9.2",
         "vite": "7.1.1",
         "vitest": "3.2.4"
+    },
+    "resolutions": {
+        "@inductiveautomation/perspective-client": "2027.2.0-beta1",
+        "@inductiveautomation/perspective-common": "2027.2.0-beta1",
+        "@inductiveautomation/perspective-drawing-common": "2027.2.0-beta1"
     },
     "packageManager": "yarn@1.22.19"
 }

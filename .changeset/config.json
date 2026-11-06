@@ -12,7 +12,7 @@
   ],
   "linked": [],
   "access": "public",
-  "baseBranch": "8.3/main",
+  "baseBranch": "2027/main",
   "updateInternalDependencies": "patch",
   "ignore": [],
   "privatePackages": {

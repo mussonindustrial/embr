@@ -12,11 +12,11 @@ import {
   PageStore,
   PComponent,
   PropertyTree,
-  SizeObject,
   StyleObject,
   ViewDefinition,
   ViewStateDisplay,
 } from '@inductiveautomation/perspective-client'
+import type { SizeObject } from '@inductiveautomation/perspective-common'
 import { JoinableView } from '@/extensions'
 
 const COMPONENT_TYPE = 'embr.periscope.embedding.json-view'

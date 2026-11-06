@@ -4,7 +4,6 @@ package com.mussonindustrial.embr.snmp.agents.configuration.extensions
 
 import com.inductiveautomation.ignition.gateway.config.ExtensionPoint
 import com.inductiveautomation.ignition.gateway.config.ValidationErrors
-import com.inductiveautomation.ignition.gateway.config.migration.ExtensionPointRecordMigrationStrategy
 import com.inductiveautomation.ignition.gateway.dataroutes.openapi.SchemaUtil
 import com.inductiveautomation.ignition.gateway.opcua.server.api.*
 import com.inductiveautomation.ignition.gateway.web.nav.*
@@ -12,7 +11,6 @@ import com.mussonindustrial.embr.snmp.agents.configuration.SnmpAgentConfig
 import com.mussonindustrial.embr.snmp.agents.configuration.SnmpCommunityConfig
 import com.mussonindustrial.embr.snmp.agents.configuration.SnmpConnectivityConfig
 import com.mussonindustrial.embr.snmp.agents.configuration.SnmpHealthcheckConfig
-import com.mussonindustrial.embr.snmp.agents.configuration.records.SnmpAgentV1DeviceRecord
 import com.mussonindustrial.embr.snmp.agents.context.SnmpAgentV1Context
 import com.mussonindustrial.embr.snmp.agents.devices.SnmpAgentDeviceImpl
 import java.util.*
@@ -24,24 +22,6 @@ object SnmpAgentV1ExtensionPoint :
         "Snmp.device.SnmpAgentV1.Description",
         Config::class.java,
     ) {
-
-    val recordMigrationStrategy: ExtensionPointRecordMigrationStrategy =
-        ExtensionPointRecordMigrationStrategy.newBuilder(typeId)
-            .resourceType(DEVICE_RESOURCE_TYPE)
-            .profileMeta(DeviceSettingsRecord.META)
-            .settingsRecordForeignKey(SnmpAgentV1DeviceRecord.DEVICE_SETTINGS)
-            .settingsMeta(SnmpAgentV1DeviceRecord.META)
-            .settingsEncoder { builder ->
-                SnmpAgentV1DeviceRecord.apply {
-                    builder.withCustomFieldName(ADDRESS, "connectivity.address")
-                    builder.withCustomFieldName(TIMEOUT, "connectivity.timeout")
-                    builder.withCustomFieldName(HEALTHCHECK_FREQUENCY, "healthcheck.frequency")
-                    builder.withCustomFieldName(HEALTHCHECK_OID, "healthcheck.oid")
-                    builder.withCustomFieldName(COMMUNITY_READ, "community.read")
-                    builder.withCustomFieldName(COMMUNITY_WRITE, "community.write")
-                }
-            }
-            .build()
 
     override fun createDevice(
         context: DeviceContext,

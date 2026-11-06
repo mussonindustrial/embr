@@ -13,4 +13,19 @@ interface EmbrDesignerContext :
 
     val unlicensedEmbrModules: List<ModuleInfo>
         get() = embrModules.filter { getLicenseState(it.id).licenseMode != LicenseMode.Activated }
+
+    fun getModuleSafe(moduleId: String): Any? {
+        return try {
+            getModule(moduleId)
+        } catch (_: Throwable) {
+            null
+        }
+    }
+
+    fun <T> ifModule(moduleId: String, action: () -> T): T? {
+        if (getModuleSafe(moduleId) != null) {
+            return action()
+        }
+        return null
+    }
 }

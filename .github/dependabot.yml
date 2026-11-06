@@ -27,3 +27,17 @@ updates:
         interval: "weekly"
       rebase-strategy: "disabled"
       target-branch: "8.3/main"
+
+    - package-ecosystem: "gradle"
+      directory: "/"
+      schedule:
+        interval: "weekly"
+      rebase-strategy: "disabled"
+      target-branch: "2027/main"
+
+    - package-ecosystem: "github-actions"
+      directory: "/"
+      schedule:
+        interval: "weekly"
+      rebase-strategy: "disabled"
+      target-branch: "2027/main"

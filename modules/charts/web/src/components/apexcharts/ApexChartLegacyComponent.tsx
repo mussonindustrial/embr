@@ -11,11 +11,11 @@ import {
   makeLogger,
   PComponent,
   PropertyTree,
-  SizeObject,
   PlainObject,
   isPlainObject,
   ReactResizeDetector,
 } from '@inductiveautomation/perspective-client'
+import type { SizeObject } from '@inductiveautomation/perspective-common'
 import { bind } from 'bind-decorator'
 import objectScan from 'object-scan'
 import cleanDeep from 'clean-deep'

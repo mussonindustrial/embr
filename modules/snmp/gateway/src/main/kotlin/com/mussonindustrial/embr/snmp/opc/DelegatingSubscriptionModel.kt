@@ -10,7 +10,6 @@ import org.eclipse.milo.opcua.sdk.server.OpcUaServer
 import org.eclipse.milo.opcua.sdk.server.Session
 import org.eclipse.milo.opcua.sdk.server.items.DataItem
 import org.eclipse.milo.opcua.sdk.server.items.MonitoredItem
-import org.eclipse.milo.opcua.sdk.server.util.PendingRead
 import org.eclipse.milo.opcua.stack.core.AttributeId
 import org.eclipse.milo.opcua.stack.core.types.builtin.DataValue
 import org.eclipse.milo.opcua.stack.core.types.enumerated.TimestampsToReturn
@@ -94,9 +93,11 @@ class DelegatingSubscriptionModel(
                     { it.session },
                     { session ->
                         Function { sessionItems ->
-                            val pending =
-                                sessionItems.stream().map { PendingRead(it.readValueId) }.toList()
-                            val ids = pending.stream().map { it.input }.collect(Collectors.toList())
+                            val ids =
+                                sessionItems
+                                    .stream()
+                                    .map { it.readValueId }
+                                    .collect(Collectors.toList())
                             val context =
                                 ScheduledUpdateContext(
                                     server,
