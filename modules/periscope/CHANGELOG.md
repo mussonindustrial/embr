@@ -1,5 +1,21 @@
 # @embr-modules/periscope
 
+## 0.15.0
+
+### Minor Changes
+
+- 02f9d32: Initial 2027 Release
+
+### Patch Changes
+
+- Updated dependencies [02f9d32]
+  - @embr-jvm/core-common@0.9.0
+  - @embr-jvm/core-designer@0.9.0
+  - @embr-jvm/perspective-common@0.10.0
+  - @embr-jvm/perspective-designer@0.10.0
+  - @embr-jvm/perspective-gateway@0.10.0
+  - @embr-modules/periscope-web@0.15.0
+
 ## 0.14.7
 
 ### Patch Changes

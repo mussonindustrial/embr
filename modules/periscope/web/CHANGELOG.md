@@ -1,5 +1,17 @@
 # @mussonindustrial/embr-js-chart-js
 
+## 0.15.0
+
+### Minor Changes
+
+- 02f9d32: Initial 2027 Release
+
+### Patch Changes
+
+- Updated dependencies [02f9d32]
+  - @embr-js/perspective-client@0.8.0
+  - @embr-js/utils@0.7.0
+
 ## 0.14.7
 
 ## 0.14.6

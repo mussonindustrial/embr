@@ -1,5 +1,17 @@
 # @embr-modules/snmp
 
+## 0.6.0
+
+### Minor Changes
+
+- 02f9d32: Initial 2027 Release
+
+### Patch Changes
+
+- Updated dependencies [02f9d32]
+  - @embr-jvm/core-common@0.9.0
+  - @embr-jvm/core-gateway@0.9.0
+
 ## 0.5.5
 
 ### Patch Changes

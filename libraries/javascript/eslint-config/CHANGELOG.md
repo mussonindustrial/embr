@@ -1,5 +1,11 @@
 # @mussonindustrial/eslint-config-embr
 
+## 0.4.0
+
+### Minor Changes
+
+- 02f9d32: Initial 2027 Release
+
 ## 0.3.1
 
 ### Patch Changes

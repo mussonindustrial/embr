@@ -1,5 +1,16 @@
 # @mussonindustrial/embr-jvm-core-servlets
 
+## 0.9.0
+
+### Minor Changes
+
+- 02f9d32: Initial 2027 Release
+
+### Patch Changes
+
+- Updated dependencies [02f9d32]
+  - @embr-jvm/core-common@0.9.0
+
 ## 0.8.4
 
 ### Patch Changes
