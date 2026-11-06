@@ -1,5 +1,17 @@
 # @embr-modules/thermo
 
+## 4.0.0
+
+### Major Changes
+
+- 02f9d32: Initial 2027 Release
+
+### Patch Changes
+
+- Updated dependencies [02f9d32]
+  - @embr-jvm/core-common@0.9.0
+  - @embr-jvm/core-gateway@0.9.0
+
 ## 3.0.4
 
 ### Patch Changes

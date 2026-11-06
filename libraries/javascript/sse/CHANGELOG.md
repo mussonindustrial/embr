@@ -1,5 +1,11 @@
 # @mussonindustrial/embr-js-tag-stream
 
+## 0.5.0
+
+### Minor Changes
+
+- 02f9d32: Initial 2027 Release
+
 ## 0.4.1
 
 ### Patch Changes

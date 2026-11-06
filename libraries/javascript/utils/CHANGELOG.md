@@ -1,5 +1,11 @@
 # @mussonindustrial/embr-js-utils
 
+## 0.7.0
+
+### Minor Changes
+
+- 02f9d32: Initial 2027 Release
+
 ## 0.6.2
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @mussonindustrial/embr-jvm-perspective-core
 
+## 0.10.0
+
+### Minor Changes
+
+- 02f9d32: Initial 2027 Release
+
 ## 0.9.4
 
 ### Patch Changes

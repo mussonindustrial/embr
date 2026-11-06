@@ -1,5 +1,21 @@
 # @mussonindustrial/embr-charts
 
+## 7.0.0
+
+### Major Changes
+
+- 02f9d32: Initial 2027 Release
+
+### Patch Changes
+
+- Updated dependencies [02f9d32]
+  - @embr-modules/charts-web@7.0.0
+  - @embr-jvm/core-common@0.9.0
+  - @embr-jvm/core-designer@0.9.0
+  - @embr-jvm/perspective-common@0.10.0
+  - @embr-jvm/perspective-designer@0.10.0
+  - @embr-jvm/perspective-gateway@0.10.0
+
 ## 6.0.5
 
 ### Patch Changes
