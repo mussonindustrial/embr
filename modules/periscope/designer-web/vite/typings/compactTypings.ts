@@ -12,7 +12,8 @@ export function compactTypings(text: string, docs: boolean) {
   )
   const templateDepths: number[] = []
   let braceDepth = 0
-  let output = ''
+  const lines: string[] = []
+  let line = ''
 
   for (
     let kind = scanner.scan();
@@ -31,9 +32,13 @@ export function compactTypings(text: string, docs: boolean) {
     } else if (kind === ts.SyntaxKind.TemplateHead) {
       templateDepths.push(braceDepth)
     }
-    output = append(output, kind, scanner.getTokenText(), docs)
+    line = append(line, kind, scanner.getTokenText(), docs)
+    if (line.length > 1 && line.endsWith('\n')) {
+      lines.push(line.slice(0, -1))
+      line = '\n'
+    }
   }
-  return output.trim() + '\n'
+  return (lines.join('') + line).trim() + '\n'
 }
 
 function append(
