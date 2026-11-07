@@ -27,7 +27,7 @@ class SystemModuleHandler(val context: PeriscopeGatewayContext) : RouteHandler {
     val modules =
         listOf(
             SystemModule("periscope", listOf("resource", "toast")),
-            SystemModule("perspective", listOf("context", "sendMessage")),
+            SystemModule("perspective", listOf("context", "createView", "sendMessage")),
         )
     val modulesByName = modules.associateBy { it.name }
 

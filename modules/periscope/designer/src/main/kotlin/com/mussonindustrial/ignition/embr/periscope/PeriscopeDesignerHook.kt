@@ -50,6 +50,9 @@ class PeriscopeDesignerHook : AbstractDesignerModuleHook() {
 
         logger.debug("Registering AWT event listeners...")
         this.context.registerAWTEventListeners()
+
+        logger.debug("Starting TypeScript language service...")
+        this.context.startLanguageProject()
     }
 
     override fun shutdown() {
@@ -66,6 +69,9 @@ class PeriscopeDesignerHook : AbstractDesignerModuleHook() {
 
         logger.debug("Removing AWT event listeners...")
         this.context.removeAWTEventListeners()
+
+        logger.debug("Stopping TypeScript language service...")
+        this.context.stopLanguageProject()
     }
 
     override fun getResourceIcon(id: ResourceId): Icon? {
