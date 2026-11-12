@@ -12,8 +12,15 @@
         "lint:prettier": "prettier -c . --cache --ignore-path=../../.prettierignore"
     },
     "dependencies": {
+        "@embr-js/perspective-client": "0.8.0",
         "@embr-js/utils": "0.7.0",
+        "@embr-modules/periscope-web": "0.15.0",
+        "marked": "16.4.2",
         "postcss": "8.5.14",
         "postcss-modules": "6.0.1"
+    },
+    "devDependencies": {
+        "@types/prop-types": "15.7.14",
+        "csstype": "3.1.3"
     }
 }
