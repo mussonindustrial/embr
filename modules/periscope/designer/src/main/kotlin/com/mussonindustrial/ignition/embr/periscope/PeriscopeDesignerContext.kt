@@ -12,6 +12,7 @@ import com.mussonindustrial.embr.perspective.designer.component.registerComponen
 import com.mussonindustrial.embr.perspective.designer.component.removeComponent
 import com.mussonindustrial.ignition.embr.periscope.action.JavaScriptActionDesignDelegate
 import com.mussonindustrial.ignition.embr.periscope.component.ComponentIdSuggestionSource
+import com.mussonindustrial.ignition.embr.periscope.component.TypeScriptResourceExportSuggestionSource
 import com.mussonindustrial.ignition.embr.periscope.component.TypeScriptResourceSuggestionSource
 import com.mussonindustrial.ignition.embr.periscope.component.embedding.*
 import com.mussonindustrial.ignition.embr.periscope.event.PeriscopeComponentEvents
@@ -26,6 +27,8 @@ import com.mussonindustrial.ignition.embr.periscope.resources.TypeScriptResource
 import com.mussonindustrial.ignition.embr.periscope.resources.asDesignerDescriptor
 import com.mussonindustrial.ignition.embr.periscope.resources.editor.CssModuleResourceEditor
 import com.mussonindustrial.ignition.embr.periscope.resources.editor.TypeScriptResourceEditor
+import com.mussonindustrial.ignition.embr.periscope.resources.language.TypeScriptLanguageService
+import com.mussonindustrial.ignition.embr.periscope.resources.language.TypeScriptWorkspace
 import com.teamdev.jxbrowser.engine.Engine
 import java.awt.AWTEvent
 import java.awt.Toolkit
@@ -58,11 +61,22 @@ class PeriscopeDesignerContext(val context: DesignerContext) :
                 TypeScriptResourceSuggestionSource.ID,
                 TypeScriptResourceSuggestionSource(this@PeriscopeDesignerContext),
             )
+            registerSuggestionSource(
+                TypeScriptResourceExportSuggestionSource.ID,
+                TypeScriptResourceExportSuggestionSource(this@PeriscopeDesignerContext),
+            )
         }
         perspectiveDesignerInterface.actionRegistry.apply {
             registerAction(JavaScriptActionDesignDelegate())
         }
     }
+
+    val typeScriptWorkspace =
+        TypeScriptWorkspace(
+            context,
+            clientResourceManager,
+            TypeScriptLanguageService(bridge),
+        )
 
     private val components =
         listOf(
@@ -103,8 +117,21 @@ class PeriscopeDesignerContext(val context: DesignerContext) :
         workspaces.forEach { registerResourceWorkspace(it) }
     }
 
+    fun commitResourceEditors() {
+        workspaces.forEach { it.commitAll() }
+    }
+
     fun registerClientResourceDefinitions() {
         clientResourceDefinitions.forEach { clientResourceManager.register(it) }
+    }
+
+    fun startTypeScriptWorkspace() {
+        typeScriptWorkspace.startup()
+    }
+
+    fun stopTypeScriptWorkspace() {
+        typeScriptWorkspace.shutdown()
+        bridge.close()
     }
 
     fun registerAWTEventListeners() {

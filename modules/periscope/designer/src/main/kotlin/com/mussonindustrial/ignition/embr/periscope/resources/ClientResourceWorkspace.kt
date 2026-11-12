@@ -13,6 +13,7 @@ import com.inductiveautomation.ignition.designer.workspacewelcome.ResourceBuilde
 import com.inductiveautomation.ignition.designer.workspacewelcome.WorkspaceWelcomePanel
 import com.mussonindustrial.ignition.embr.periscope.icons.PeriscopeIcons
 import com.mussonindustrial.ignition.embr.periscope.navtree.model.ClientResourceRootFolder
+import com.mussonindustrial.ignition.embr.periscope.resources.editor.CompiledResourceEditor
 import java.util.*
 import javax.swing.JComponent
 import javax.swing.JPopupMenu
@@ -34,6 +35,16 @@ class ClientResourceWorkspace(
             .build(),
     ) {
 
+    init {
+        addTabbedWorkspaceListener(
+            object : TabbedWorkspaceListener {
+                override fun editorClosed(editor: ResourceEditor<*>) {
+                    (editor as? CompiledResourceEditor<*>)?.onClosed()
+                }
+            },
+        )
+    }
+
     override fun getKey(): String {
         return ClientResource.type.typeId!!
     }
@@ -54,7 +65,7 @@ class ClientResourceWorkspace(
         requireNotNull(resource) { "Resource $resourcePath not found!" }
 
         val descriptor =
-            clientResourceManager.getDescriptor(resource) as DesignerClientResourceDescriptor
+            clientResourceManager.getDescriptor(resource) as? DesignerClientResourceDescriptor
         requireNotNull(descriptor) { "Resource $resourcePath has no descriptor!" }
 
         return descriptor.resourceEditorFactory.createResourceEditor(this, resourcePath)
