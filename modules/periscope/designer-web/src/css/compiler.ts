@@ -6,10 +6,9 @@ import {
   CompileResult,
   CompilerRequest,
   Diagnostic,
-  FormatResult,
-} from '../protocol'
-import * as prettier from 'prettier/standalone'
+} from '../compiler/protocol'
 import * as parserPostCss from 'prettier/parser-postcss'
+import { errorDiagnostic, formatWith } from '../compiler/utils'
 
 class InMemoryLoader {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -40,23 +39,10 @@ function mapError(error: unknown): Diagnostic {
     }
   }
 
-  if (error instanceof Error) {
-    return {
-      severity: 'error',
-      source: 'css-modules',
-      message: error.message,
-      stack: error.stack,
-    }
-  }
-
-  return {
-    severity: 'error',
-    source: 'css-modules',
-    message: String(error),
-  }
+  return errorDiagnostic('css-modules', error)
 }
 
-function mapDiagnostic(_source: string, warning: postcss.Warning): Diagnostic {
+function mapDiagnostic(warning: postcss.Warning): Diagnostic {
   const start = {
     line: warning.line,
     column: warning.column,
@@ -127,54 +113,19 @@ export const styles = ${styles}
 export default styles
     `.trim()
 
-    const diagnostics =
-      result.warnings().map((w) => mapDiagnostic(source, w)) ?? []
-
-    return {
-      success: diagnostics.every((d) => d.severity !== 'error'),
-      output,
-      diagnostics,
-    }
-  } catch (error) {
-    return {
-      success: false,
-      diagnostics: [mapError(error)],
-    }
-  }
-}
-
-export async function format({
-  source,
-  cursor,
-}: CompilerRequest & {
-  cursor: number
-}): Promise<FormatResult> {
-  try {
-    const result = await prettier.formatWithCursor(source, {
-      endOfLine: 'lf',
-      cursorOffset: cursor,
-      parser: 'css',
-      printWidth: 120,
-      plugins: [parserPostCss],
-    })
-
     return {
       success: true,
-      output: result.formatted,
-      cursor: result.cursorOffset,
-      diagnostics: [],
+      output,
+      diagnostics: result.warnings().map(mapDiagnostic),
     }
   } catch (error) {
     return {
       success: false,
-      output: source,
-      cursor,
       diagnostics: [mapError(error)],
     }
   }
 }
 
-export const compiler: Compiler = {
-  compile: compile,
-  format: format,
-}
+export const format = formatWith('css', [parserPostCss])
+
+export const compiler: Compiler = { compile, format }
