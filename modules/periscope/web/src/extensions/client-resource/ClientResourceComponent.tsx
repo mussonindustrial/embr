@@ -40,7 +40,8 @@ function getClientResourceComponent(
       }
 
       return {
-        default: reference.bind(thisArg),
+        default:
+          typeof reference === 'function' ? reference.bind(thisArg) : reference,
       }
     }) as ComponentType<unknown>
 
