@@ -1,31 +1,30 @@
-import { CssModuleCompiler, TypeScriptCompiler, Compiler } from './compiler'
+import { compiler as cssCompiler } from './css/compiler'
+import { compiler as typescriptCompiler } from './typescript/compiler'
+import { languageService } from './typescript/language'
 
-export * from './compiler'
-
-const CompilerRegistry = {
-  typescript: TypeScriptCompiler,
-  css: CssModuleCompiler,
+const services: Record<string, Record<string, object>> = {
+  typescript: { compiler: typescriptCompiler, language: languageService },
+  css: { compiler: cssCompiler },
 }
-type CompilerKey = keyof typeof CompilerRegistry
-type CompilerMethod = keyof Compiler
 
 export const invoke = async function (
-  compiler: CompilerKey,
-  method: CompilerMethod,
+  service: string,
+  method: string,
   payloadJson: string
 ) {
   const payload = JSON.parse(payloadJson)
 
-  const service = CompilerRegistry[compiler]
-  if (!service) {
-    throw new Error(`Unknown compiler: ${compiler}`)
+  const [language, capability] = service.split('.')
+  const target = services[language]?.[capability]
+  if (!target) {
+    throw new Error(`Unknown service: ${service}`)
   }
 
-  const fn = service[method]
+  const fn = (target as Record<string, unknown>)[method]
   if (typeof fn !== 'function') {
-    throw new Error(`Unknown compiler method: ${compiler}.${method}`)
+    throw new Error(`Unknown service method: ${service}.${method}`)
   }
 
   const result = await fn(payload)
-  return JSON.stringify(result)
+  return JSON.stringify(result ?? null)
 }
