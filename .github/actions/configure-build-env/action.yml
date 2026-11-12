@@ -1,5 +1,5 @@
-name: 'Hello World'
-description: 'Greet someone'
+name: Configure Build Environment
+description: Configure Embr's Build Environment (Java + Gradle, Node.js + Yarn)
 inputs:
   java-version:
     description: 'Java Version'
