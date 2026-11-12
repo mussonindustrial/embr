@@ -21,9 +21,15 @@ jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+      attestations: write
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
 
       - name: Configure Build Environment
         uses: ./.github/actions/configure-build-env
@@ -34,5 +40,29 @@ jobs:
           module-signing-certificate: '${{ secrets.IGNITION_MODULE_CERT_BASE64 }}'
           module-signing-keystore: '${{ secrets.IGNITION_MODULE_KEYSTORE_BASE64 }}'
 
+      - name: Apply Changesets
+        if: github.event_name == 'pull_request'
+        run: |
+          yarn changeset status --since="origin/$GITHUB_BASE_REF" --output=release-plan.json || echo '{"releases":[]}' > release-plan.json
+          yarn changeset version
+          echo "SNAPSHOT=pr${{ github.event.pull_request.number }}-${HEAD_SHA::7}" >> $GITHUB_ENV
+          echo "IGNITION=${GITHUB_BASE_REF%%/*}" | tr -d . >> $GITHUB_ENV
+        env:
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+
       - name: Build
-        run: ./gradlew --scan build
+        run: ./gradlew --scan build ${SNAPSHOT:+collectSnapshots -Psnapshot=$SNAPSHOT}
+
+      - name: Attest Snapshot Provenance
+        if: github.event_name == 'pull_request' && hashFiles('build/snapshots/*.modl') != ''
+        uses: actions/attest@v4
+        with:
+          subject-path: 'build/snapshots/*.modl'
+
+      - name: Upload Snapshot Modules
+        if: github.event_name == 'pull_request'
+        uses: actions/upload-artifact@v4
+        with:
+          name: Embr-Ignition${{ env.IGNITION }}-${{ env.SNAPSHOT }}
+          path: build/snapshots/*.modl
+          if-no-files-found: ignore
