@@ -11,7 +11,9 @@ import com.mussonindustrial.embr.common.Embr
 import com.mussonindustrial.ignition.embr.periscope.Meta.SHORT_MODULE_ID
 import com.mussonindustrial.ignition.embr.periscope.handlers.ClientResourceHandler
 import com.mussonindustrial.ignition.embr.periscope.handlers.ClientResourceManifestHandler
-import com.mussonindustrial.ignition.embr.periscope.handlers.SystemModuleHandler
+import com.mussonindustrial.ignition.embr.periscope.handlers.VirtualModuleHandler
+import com.mussonindustrial.ignition.embr.periscope.js.modules.GlobalModule
+import com.mussonindustrial.ignition.embr.periscope.js.modules.SystemModule
 import com.mussonindustrial.ignition.embr.periscope.scripting.JavaScriptFunctions
 import com.mussonindustrial.ignition.embr.periscope.scripting.QueueFunctions
 import java.util.*
@@ -100,7 +102,10 @@ class PeriscopeGatewayHook : AbstractGatewayModuleHook() {
     override fun mountRouteHandlers(routes: RouteGroup) {
         ClientResourceManifestHandler(context)
             .mount(routes.newRoute("/client-resource/:project_name/manifest.json"))
-        SystemModuleHandler(context).mount(routes.newRoute("/system-module/:hash/:module_name"))
+        VirtualModuleHandler(context, SystemModule.all)
+            .mount(routes.newRoute("/system-module/:hash/*"))
+        VirtualModuleHandler(context, GlobalModule.all)
+            .mount(routes.newRoute("/global-module/:hash/*"))
         ClientResourceHandler(context)
             .mount(routes.newRoute("/client-resource/:project_name/:hash/*"))
     }
