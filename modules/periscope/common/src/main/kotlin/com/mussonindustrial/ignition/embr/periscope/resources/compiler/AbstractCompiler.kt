@@ -1,19 +1,20 @@
 package com.mussonindustrial.ignition.embr.periscope.resources.compiler
 
-abstract class AbstractCompiler(private val bridge: CompilerBridge) : Compiler {
+import com.mussonindustrial.ignition.embr.periscope.js.DesignerWebBridge
+import java.util.concurrent.CompletableFuture
 
-    abstract val compilerKey: String
+abstract class AbstractCompiler(private val bridge: DesignerWebBridge) : Compiler {
+
+    abstract val service: String
     val gson = Compiler.gson
 
-    override fun compile(request: CompileRequest): CompileResult {
-        val payload = gson.toJson(request, CompileRequest::class.java)
-        val result = bridge.invoke(compiler = compilerKey, method = "compile", payload)
-        return gson.fromJson(result, CompileResult::class.java)
-    }
+    override fun compile(request: CompileRequest): CompletableFuture<CompileResult> =
+        bridge.invoke(service, "compile", gson.toJson(request)) {
+            gson.fromJson(it, CompileResult::class.java)
+        }
 
-    override fun format(request: FormatRequest): FormatResult {
-        val payload = gson.toJson(request, FormatRequest::class.java)
-        val result = bridge.invoke(compiler = compilerKey, method = "format", payload)
-        return gson.fromJson(result, FormatResult::class.java)
-    }
+    override fun format(request: FormatRequest): CompletableFuture<FormatResult> =
+        bridge.invoke(service, "format", gson.toJson(request)) {
+            gson.fromJson(it, FormatResult::class.java)
+        }
 }

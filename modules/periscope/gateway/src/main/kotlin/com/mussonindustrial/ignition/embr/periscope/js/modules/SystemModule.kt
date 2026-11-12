@@ -10,4 +10,12 @@ class SystemModule(override val name: String, override val namedExports: List<St
             namedExports.forEach { appendLine("export const $it = m.$it;") }
         }
     }
+
+    companion object {
+        val all =
+            listOf(
+                SystemModule("periscope", listOf("resource", "toast")),
+                SystemModule("perspective", listOf("context", "createView", "sendMessage")),
+            )
+    }
 }

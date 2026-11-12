@@ -5,6 +5,7 @@ import com.inductiveautomation.ignition.common.licensing.LicenseState
 import com.inductiveautomation.ignition.common.project.resource.ProjectResourceId
 import com.inductiveautomation.ignition.designer.model.AbstractDesignerModuleHook
 import com.inductiveautomation.ignition.designer.model.DesignerContext
+import com.inductiveautomation.ignition.designer.model.SaveContext
 import com.inductiveautomation.perspective.common.PerspectiveModule
 import com.inductiveautomation.perspective.designer.DesignerComponentRegistry
 import com.inductiveautomation.perspective.designer.api.PerspectiveDesignerInterface
@@ -14,6 +15,7 @@ import com.mussonindustrial.ignition.embr.periscope.Meta.SHORT_MODULE_ID
 import com.mussonindustrial.ignition.embr.periscope.resources.ClientResource
 import com.mussonindustrial.ignition.embr.periscope.resources.DesignerClientResourceDescriptor
 import javax.swing.Icon
+import javax.swing.SwingUtilities
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -50,6 +52,14 @@ class PeriscopeDesignerHook : AbstractDesignerModuleHook() {
 
         logger.debug("Registering AWT event listeners...")
         this.context.registerAWTEventListeners()
+
+        logger.debug("Starting TypeScript language service...")
+        this.context.startTypeScriptWorkspace()
+    }
+
+    override fun notifyProjectSaveStart(save: SaveContext) {
+        if (SwingUtilities.isEventDispatchThread()) context.commitResourceEditors()
+        else SwingUtilities.invokeAndWait { context.commitResourceEditors() }
     }
 
     override fun shutdown() {
@@ -66,6 +76,9 @@ class PeriscopeDesignerHook : AbstractDesignerModuleHook() {
 
         logger.debug("Removing AWT event listeners...")
         this.context.removeAWTEventListeners()
+
+        logger.debug("Stopping TypeScript language service...")
+        this.context.stopTypeScriptWorkspace()
     }
 
     override fun getResourceIcon(id: ProjectResourceId): Icon? {

@@ -1,4 +1,5 @@
 {
   "extends": "@embr-js/tsconfig/vite.json",
-  "include": ["src"]
+  "include": ["src", "test"],
+  "exclude": ["test/vite"]
 }

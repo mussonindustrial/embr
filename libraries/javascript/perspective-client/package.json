@@ -4,6 +4,10 @@
     "version": "0.7.0",
     "description": "Perspective client extensions.",
     "main": "src/index.ts",
+    "exports": {
+        ".": "./src/index.ts",
+        "./api": "./src/scripting/perspectiveApi.ts"
+    },
     "scripts": {
         "dev": "vite",
         "build": "tsc && nx vite:build",
