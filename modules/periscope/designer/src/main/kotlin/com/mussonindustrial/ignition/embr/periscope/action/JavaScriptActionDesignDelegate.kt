@@ -8,15 +8,20 @@ import com.inductiveautomation.ignition.client.util.gui.HeaderLabel
 import com.inductiveautomation.ignition.common.BundleUtil
 import com.inductiveautomation.ignition.common.gson.JsonObject
 import com.inductiveautomation.ignition.common.script.typing.TypeDescriptor
-import com.inductiveautomation.ignition.designer.gui.tools.DisplayTrackingSyntaxTextArea
 import com.inductiveautomation.perspective.common.config.ActionConfig
 import com.inductiveautomation.perspective.designer.api.ActionConfigPanel
 import com.inductiveautomation.perspective.designer.api.ActionDesignDelegate
 import com.inductiveautomation.perspective.designer.api.ActionEditContext
 import com.jidesoft.pane.CollapsiblePane
 import com.mussonindustrial.ignition.embr.periscope.Meta
+import com.mussonindustrial.ignition.embr.periscope.PeriscopeDesignerContext
+import com.mussonindustrial.ignition.embr.periscope.resources.compiler.Diagnostic
+import com.mussonindustrial.ignition.embr.periscope.resources.editor.components.ScriptEditor
+import com.mussonindustrial.ignition.embr.periscope.resources.editor.language.LanguageFeatures
+import com.mussonindustrial.ignition.embr.periscope.resources.editor.language.ScriptLanguage
 import java.awt.Color
 import java.awt.Dimension
+import java.util.concurrent.atomic.AtomicInteger
 import javax.swing.BorderFactory
 import javax.swing.JPanel
 import javax.swing.text.AbstractDocument
@@ -24,7 +29,6 @@ import javax.swing.text.AttributeSet
 import javax.swing.text.DocumentFilter
 import net.miginfocom.swing.MigLayout
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants
-import org.fife.ui.rtextarea.RTextScrollPane
 import org.jdesktop.swingx.JXHyperlink
 
 class JavaScriptActionDesignDelegate :
@@ -43,21 +47,38 @@ class JavaScriptActionDesignDelegate :
         ActionConfigPanel(context, MigLayout("ins 0, fill")) {
 
         companion object {
-            const val DESIGNER_HEADER = "async function runAction(self, event) {\n"
+            const val DESIGNER_HEADER =
+                "/**\n" +
+                    " * @param {PerspectiveClient.ComponentStore} self\n" +
+                    " * @param {{}} event\n" +
+                    " */\n" +
+                    "async function runAction(self, event) {\n"
             const val CLIENT_HEADER = "async (self, event) => {\n"
             const val FOOTER = "\n}"
+
+            private val editors = AtomicInteger()
 
             fun body(function: String, header: String) =
                 function.removePrefix(header).removeSuffix(FOOTER)
         }
 
-        private val textArea =
-            DisplayTrackingSyntaxTextArea("").apply {
-                syntaxEditingStyle = SyntaxConstants.SYNTAX_STYLE_JAVASCRIPT
-                antiAliasingEnabled = true
-                isCodeFoldingEnabled = true
-                tabSize = 2
-            }
+        private val editor = ScriptEditor(syntaxStyle = SyntaxConstants.SYNTAX_STYLE_JAVASCRIPT)
+        private val textArea = editor.textArea
+        private val language =
+            LanguageFeatures(
+                PeriscopeDesignerContext.instance.typeScriptWorkspace,
+                editor,
+                "__embedded__/actions/javascript-${editors.incrementAndGet()}",
+                ScriptLanguage.JAVASCRIPT,
+                showDiagnostics = { found ->
+                    editor.showDiagnostics(found.filter { !it.isOnSignature() })
+                },
+            )
+
+        private fun Diagnostic.isOnSignature(): Boolean {
+            val line = range?.start?.line ?: return false
+            return line <= DESIGNER_HEADER.count { it == '\n' }
+        }
 
         init {
             val lineColor = IgnitionLookAndFeel.Colors.Base500
@@ -92,7 +113,17 @@ class JavaScriptActionDesignDelegate :
 
             add(parametersPane, "growx, h pref!, wrap 16")
             add(HeaderLabel.forKey("words.script"), "wrap 4")
-            add(RTextScrollPane(textArea), "push, grow")
+            add(editor, "push, grow")
+        }
+
+        override fun addNotify() {
+            super.addNotify()
+            language.install()
+        }
+
+        override fun removeNotify() {
+            language.uninstall()
+            super.removeNotify()
         }
 
         private fun JPanel.addParameter(name: String, type: String, description: String?) {
@@ -125,6 +156,7 @@ class JavaScriptActionDesignDelegate :
             textArea.text = DESIGNER_HEADER + body(function, CLIENT_HEADER) + FOOTER
             textArea.caretPosition = DESIGNER_HEADER.length
             textArea.discardAllEdits()
+            textArea.dimmedLines = DESIGNER_HEADER.count { it == '\n' } - 1
 
             (textArea.document as AbstractDocument).documentFilter = SignatureFilter()
             textArea.document.addDocumentListener(
