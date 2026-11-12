@@ -2,12 +2,12 @@ name: 'Build'
 
 on:
   push:
-    branches: ['2027/main']
+    branches: ['*/main']
   pull_request:
-    branches: ['2027/main']
+    branches: ['*/main']
 
 concurrency:
-  group: 2027-${{ github.workflow }}-${{ github.ref }}
+  group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 env:

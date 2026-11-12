@@ -2,10 +2,10 @@ name: Release
 
 on:
   push:
-    branches: ['2027/main']
+    branches: ['*/main']
   workflow_dispatch:
 
-concurrency: 2027-${{ github.workflow }}-${{ github.ref }}
+concurrency: ${{ github.workflow }}-${{ github.ref }}
 
 env:
   JAVA_VERSION: 21
@@ -19,6 +19,7 @@ permissions:
 jobs:
   changesets:
     name: Process Changesets
+    needs: [release-tag]
     runs-on: ubuntu-latest
     outputs:
       hasChangesets: ${{ steps.changesets.outputs.hasChangesets }}
@@ -42,8 +43,8 @@ jobs:
         id: changesets
         uses: changesets/action@v1
         with:
-          commit: '[ci] release v2027 branch'
-          title: '(CI) Release v2027 Branch'
+          commit: '[ci] release v${{ needs.release-tag.outputs.VERSION }} branch'
+          title: '(CI) Release v${{ needs.release-tag.outputs.VERSION }} Branch'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
@@ -52,14 +53,16 @@ jobs:
     name: Determine Release Tag
     runs-on: ubuntu-latest
     outputs:
+      VERSION: ${{ env.VERSION }}
       RELEASE_NAME: ${{ env.RELEASE_NAME }}
       RELEASE_TAG: ${{ env.RELEASE_TAG }}
     steps:
       - name: Determine Release Tag
         id: get_release_tag
         run: |
-          VERSION="2027"
+          VERSION="${GITHUB_REF_NAME%%/*}"
           DATE=$(date +%Y.%-m.%-d)
+          echo "VERSION=${VERSION}" >> $GITHUB_ENV
           echo "RELEASE_NAME=Embr v${VERSION} - ${DATE}" >> $GITHUB_ENV
           echo "RELEASE_TAG=releases/${VERSION}/${DATE}" >> $GITHUB_ENV
 
@@ -69,7 +72,7 @@ jobs:
     if: >
       (
         needs.changesets.outputs.hasChangesets == 'false' &&
-        contains(github.event.head_commit.message, '[ci] release v2027 branch')
+        contains(github.event.head_commit.message, format('[ci] release v{0} branch', needs.release-tag.outputs.VERSION))
       ) ||
       github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
@@ -107,7 +110,7 @@ jobs:
       - name: Extract Release Notes from Changesets PR
         id: extract_release_notes
         run: |
-          PR_NUMBER=$(gh pr list --search "(CI) Release v2027 Branch" --state merged --json number -q '.[0].number')
+          PR_NUMBER=$(gh pr list --search "(CI) Release v${VERSION} Branch" --state merged --json number -q '.[0].number')
           if [ -z "$PR_NUMBER" ]; then
             echo "No matching merged PR found."
             exit 1
@@ -119,6 +122,7 @@ jobs:
           echo "$RELEASE_NOTES" > ./RELEASE_NOTES.md
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERSION: ${{ needs.release-tag.outputs.VERSION }}
 
       - name: Create Release
         run: |
@@ -129,7 +133,7 @@ jobs:
               --title "$NAME" \
               --notes-file ./RELEASE_NOTES.md \
               --target "$GITHUB_SHA" \
-              --latest=false
+              --latest="$(cat .github/release-latest)"
           fi
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
