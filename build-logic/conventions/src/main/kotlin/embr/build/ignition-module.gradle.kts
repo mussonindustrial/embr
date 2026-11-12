@@ -15,7 +15,17 @@ fun buildTime(): String {
     return SimpleDateFormat("yyyyMMddHH").format(Date())
 }
 
-ignitionModule { moduleVersion.set("${version}.${buildTime()}") }
+val snapshot = providers.gradleProperty("snapshot").orNull
+val snapshotQualifier = if (snapshot == null) "" else "-SNAPSHOT"
+
+ignitionModule { moduleVersion.set("${version}.${buildTime()}$snapshotQualifier") }
+
+afterEvaluate {
+    if (snapshot != null) {
+        val fileName = ignitionModule.fileName.get().removeSuffix(".modl")
+        ignitionModule.fileName.set("$fileName-SNAPSHOT-$snapshot.modl")
+    }
+}
 
 tasks.deployModl { hostGateway = "http://localhost:8088" }
 

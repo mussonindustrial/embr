@@ -4,6 +4,9 @@ import com.mussonindustrial.embr.perspective.common.exceptions.JavaScriptExcepti
 import com.teamdev.jxbrowser.js.JsObject
 import com.teamdev.jxbrowser.js.JsPromise
 import java.util.concurrent.CompletableFuture
+import java.util.concurrent.TimeUnit
+
+private const val TIMEOUT_SECONDS = 15L
 
 inline fun <reified T> JsObject.require(name: String): T {
     return property<T>(name).orElseThrow { IllegalStateException("Missing JS property '$name'") }
@@ -33,5 +36,5 @@ fun <T> JsPromise.await(transform: (Array<Any>) -> T): T {
             future.completeExceptionally(exception)
         }
 
-    return future.get()
+    return future.get(TIMEOUT_SECONDS, TimeUnit.SECONDS)
 }

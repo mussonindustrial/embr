@@ -4,8 +4,7 @@ import com.inductiveautomation.ignition.common.resourcecollection.ResourcePath
 import com.inductiveautomation.ignition.designer.tabbedworkspace.ResourceEditor
 import com.inductiveautomation.ignition.designer.tabbedworkspace.TabbedResourceWorkspace
 
-@FunctionalInterface
-interface ResourceEditorFactory<T> {
+fun interface ResourceEditorFactory<T> {
     fun createResourceEditor(
         workspace: TabbedResourceWorkspace,
         path: ResourcePath,

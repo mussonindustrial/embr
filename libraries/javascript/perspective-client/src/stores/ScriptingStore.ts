@@ -6,7 +6,7 @@ import {
   PageStore,
   ViewStore,
 } from '@inductiveautomation/perspective-client'
-import { createViewFunction, makeSendMessage } from '../scripting'
+import { createPerspectiveApi, PerspectiveApiContext } from '../scripting'
 
 export type GlobalsNamespace = Record<string, unknown>
 export type CallingContext = {
@@ -43,16 +43,9 @@ export class ScriptingStoreImpl implements ScriptingStore {
   }
 
   createGlobals(context: CallingContext): ScriptingGlobals {
-    if (context.client == undefined) {
-      context.client = getClientStore()
-    }
-
+    context.client ??= getClientStore()
     const globals = {
-      perspective: {
-        context,
-        sendMessage: makeSendMessage(context),
-        createView: createViewFunction(context),
-      },
+      perspective: createPerspectiveApi(context as PerspectiveApiContext),
     }
 
     merge(globals, Object.fromEntries(this.globals))
