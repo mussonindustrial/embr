@@ -76,6 +76,8 @@ jobs:
     permissions:
       contents: write
       packages: write
+      id-token: write
+      attestations: write
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v7
@@ -91,6 +93,11 @@ jobs:
 
       - name: Build
         run: ./gradlew --scan build
+
+      - name: Attest Module Provenance
+        uses: actions/attest@v4
+        with:
+          subject-path: './build/modules/*.modl'
 
       - name: Publish to GitHub Packages
         run: ./gradlew publish
@@ -114,15 +121,20 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create Release
-        uses: ncipollo/release-action@v1
-        id: create_release
-        with:
-          tag: ${{ needs.release-tag.outputs.RELEASE_TAG }}
-          name: ${{ needs.release-tag.outputs.RELEASE_NAME }}
-          bodyFile: './RELEASE_NOTES.md'
-          makeLatest: false
-          skipIfReleaseExists: true
-          artifacts: './build/modules/*.modl'
+        run: |
+          if gh release view "$TAG"; then
+            echo "::notice::Release $TAG already exists, skipping."
+          else
+            gh release create "$TAG" ./build/modules/*.modl \
+              --title "$NAME" \
+              --notes-file ./RELEASE_NOTES.md \
+              --target "$GITHUB_SHA" \
+              --latest=false
+          fi
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ needs.release-tag.outputs.RELEASE_TAG }}
+          NAME: ${{ needs.release-tag.outputs.RELEASE_NAME }}
 
   dependency-submission:
     runs-on: ubuntu-latest
