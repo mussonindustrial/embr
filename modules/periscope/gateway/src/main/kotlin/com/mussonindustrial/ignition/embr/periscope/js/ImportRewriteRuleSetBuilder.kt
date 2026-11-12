@@ -17,6 +17,10 @@ class ImportRewriteRuleSetBuilder() {
         }
     }
 
+    fun exact(specifiers: Collection<String>, rewrite: (String) -> String) {
+        rules += ImportRewriteRule { spec -> if (spec in specifiers) rewrite(spec) else null }
+    }
+
     fun preserve(prefix: String) {
         rules += ImportRewriteRule { spec ->
             if (!spec.startsWith(prefix)) return@ImportRewriteRule null

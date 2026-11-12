@@ -7,11 +7,15 @@ import com.inductiveautomation.ignition.gateway.dataroutes.RouteHandler
 import com.inductiveautomation.perspective.gateway.api.SessionScope
 import com.mussonindustrial.embr.common.logging.getLoggerEx
 import com.mussonindustrial.ignition.embr.periscope.PeriscopeGatewayContext
-import com.mussonindustrial.ignition.embr.periscope.js.modules.SystemModule
+import com.mussonindustrial.ignition.embr.periscope.js.modules.VirtualModule
 import jakarta.servlet.http.HttpServletResponse
+import java.net.URLDecoder
 import java.util.EnumSet
 
-class SystemModuleHandler(val context: PeriscopeGatewayContext) : RouteHandler {
+class VirtualModuleHandler(
+    val context: PeriscopeGatewayContext,
+    val modules: List<VirtualModule>,
+) : RouteHandler {
 
     val logger = this.getLoggerEx()
 
@@ -24,11 +28,6 @@ class SystemModuleHandler(val context: PeriscopeGatewayContext) : RouteHandler {
             .mount()
     }
 
-    val modules =
-        listOf(
-            SystemModule("periscope", listOf("resource", "toast")),
-            SystemModule("perspective", listOf("context", "sendMessage")),
-        )
     val modulesByName = modules.associateBy { it.name }
 
     fun handleVirtualModule(response: HttpServletResponse, name: String) {
@@ -42,20 +41,19 @@ class SystemModuleHandler(val context: PeriscopeGatewayContext) : RouteHandler {
     }
 
     override fun handle(request: RequestContext, response: HttpServletResponse) {
-        logger.trace("System Module request: $request")
+        logger.trace("Virtual module request: $request")
 
-        val moduleName =
-            request.getParameter("module_name")
-                ?: return response.sendError(
-                    HttpServletResponse.SC_BAD_REQUEST,
-                    "Missing module name",
-                )
+        val hash =
+            request.getParameter("hash")
+                ?: return response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing hash")
+
+        val moduleName = URLDecoder.decode(request.path.substringAfter("$hash/"), Charsets.UTF_8)
 
         if (moduleName in modulesByName) {
             handleVirtualModule(response, moduleName)
             return
         }
 
-        response.sendError(HttpServletResponse.SC_NOT_FOUND, "System Module not found: $moduleName")
+        response.sendError(HttpServletResponse.SC_NOT_FOUND, "Module not found: $moduleName")
     }
 }

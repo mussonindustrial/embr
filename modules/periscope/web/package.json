@@ -2,6 +2,10 @@
     "name": "@embr-modules/periscope-web",
     "private": true,
     "version": "0.14.7",
+    "exports": {
+        "./api": "./src/api/periscopeApi.ts",
+        "./perspective-globals.json": "./perspective-globals.json"
+    },
     "scripts": {
         "dev": "vite",
         "build": "tsc && nx vite:build && nx vite:test --run",
