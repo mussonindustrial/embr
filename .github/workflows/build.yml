@@ -1,25 +1,21 @@
-# GitHub Actions workflow to automatically build and test Embr.
 name: 'Build'
 
 on:
   push:
+    branches: ['8.3/main']
   pull_request:
     branches: ['8.3/main']
 
-# Cancel in-progress workflows on pull_requests.
-# https://docs.github.com/en/actions/using-jobs/using-concurrency#example-using-a-fallback-value
 concurrency:
   group: 8.3-${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 env:
   JAVA_VERSION: 21
   NODE_VERSION: 20
 
 permissions:
-  issues: write
-  contents: write
-  pull-requests: write
+  contents: read
 
 jobs:
   build:
