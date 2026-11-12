@@ -8,13 +8,16 @@
                     "type": "string",
                     "description": "Resource Path.",
                     "extension": {
-                        "suggestion-source": "embr-periscope-client-resource"
+                        "suggestion-source": "embr-periscope-typescript-resource"
                     }
                 },
                 "export": {
                     "type": "string",
                     "description": "Exported component inside the resource.",
-                    "default": "default"
+                    "default": "default",
+                    "extension": {
+                        "suggestion-source": "embr-periscope-typescript-resource-export"
+                    }
                 }
             },
             "required": [
