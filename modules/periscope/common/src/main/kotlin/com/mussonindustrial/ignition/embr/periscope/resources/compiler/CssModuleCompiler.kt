@@ -1,6 +1,8 @@
 package com.mussonindustrial.ignition.embr.periscope.resources.compiler
 
-class CssModuleCompiler(bridge: CompilerBridge) : AbstractCompiler(bridge) {
-    override val compilerKey: String = "css"
+import com.mussonindustrial.ignition.embr.periscope.js.DesignerWebBridge
+
+class CssModuleCompiler(bridge: DesignerWebBridge) : AbstractCompiler(bridge) {
+    override val service: String = "css.compiler"
     override val version: String = "0.1.0"
 }
