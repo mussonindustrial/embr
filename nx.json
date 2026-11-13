@@ -3,32 +3,12 @@
     "targetDefaults": {
         "build": {
             "dependsOn": ["^build"],
+            "outputs": ["{projectRoot}/dist"],
             "cache": true
         },
         "test": {
             "dependsOn": ["build"]
         }
     },
-    "defaultBase": "main",
-    "plugins": [
-        {
-            "plugin": "@nx/vite/plugin",
-            "options": {
-                "buildTargetName": "vite:build",
-                "testTargetName": "vite:test",
-                "serveTargetName": "serve",
-                "previewTargetName": "preview",
-                "serveStaticTargetName": "serve-static"
-            }
-        }
-    ],
-    "namedInputs": {
-        "default": ["{projectRoot}/**/*"],
-        "production": [
-            "default",
-            "!{projectRoot}/src/test/**/*",
-            "!{projectRoot}/**/?(*.)+(spec|test).[jt]s?(x)?(.snap)",
-            "!{projectRoot}/tsconfig.spec.json"
-        ]
-    }
+    "defaultBase": "2027/main"
 }
