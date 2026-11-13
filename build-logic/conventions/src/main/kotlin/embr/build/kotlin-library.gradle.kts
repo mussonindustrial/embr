@@ -2,6 +2,7 @@ package embr.build
 
 import libs
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 
 plugins {
     id("embr.build.base")
@@ -21,5 +22,8 @@ spotless { kotlin { ktfmt().kotlinlangStyle() } }
 tasks.build { dependsOn(tasks.spotlessCheck) }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
-    compilerOptions { jvmTarget.set(JvmTarget.JVM_17) }
+    compilerOptions {
+        jvmTarget.set(JvmTarget.JVM_17)
+        apiVersion.set(KotlinVersion.KOTLIN_1_9)
+    }
 }
