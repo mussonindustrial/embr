@@ -1,5 +1,11 @@
 # @embr-jvm/perspective-gateway
 
+## 0.9.5
+
+### Patch Changes
+
+- 917284c: (Build) - Rebuilt with Gradle 9 and Kotlin 2.3. No functional changes.
+
 ## 0.9.4
 
 ## 0.9.3

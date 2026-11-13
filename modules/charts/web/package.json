@@ -1,7 +1,7 @@
 {
     "name": "@embr-modules/charts-web",
     "private": true,
-    "version": "6.0.5",
+    "version": "6.0.6",
     "scripts": {
         "dev": "vite",
         "build": "tsc && vite build && vitest run",

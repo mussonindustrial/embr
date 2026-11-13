@@ -1,5 +1,11 @@
 # @mussonindustrial/embr-jvm-core-common
 
+## 0.8.5
+
+### Patch Changes
+
+- 917284c: (Build) - Rebuilt with Gradle 9 and Kotlin 2.3. No functional changes.
+
 ## 0.8.4
 
 ### Patch Changes
