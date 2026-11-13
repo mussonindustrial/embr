@@ -1,5 +1,14 @@
 # @mussonindustrial/embr-tag-stream
 
+## 0.7.1
+
+### Patch Changes
+
+- 5b22f80: (Build) - Rebuilt with Gradle 9. No functional changes.
+- Updated dependencies [5b22f80]
+  - @embr-jvm/core-common@0.9.1
+  - @embr-jvm/core-servlets@0.9.1
+
 ## 0.7.0
 
 ### Minor Changes

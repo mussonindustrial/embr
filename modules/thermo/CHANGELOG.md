@@ -1,5 +1,14 @@
 # @embr-modules/thermo
 
+## 4.0.1
+
+### Patch Changes
+
+- 5b22f80: (Build) - Rebuilt with Gradle 9. No functional changes.
+- Updated dependencies [5b22f80]
+  - @embr-jvm/core-common@0.9.1
+  - @embr-jvm/core-gateway@0.9.1
+
 ## 4.0.0
 
 ### Major Changes

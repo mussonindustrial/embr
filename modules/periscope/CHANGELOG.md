@@ -1,5 +1,19 @@
 # @embr-modules/periscope
 
+## 0.16.1
+
+### Patch Changes
+
+- ee55ed4: (Periscope) - Drop accidentally included Jetty JARs.
+- 5b22f80: (Build) - Rebuilt with Gradle 9. No functional changes.
+- Updated dependencies [5b22f80]
+  - @embr-jvm/core-common@0.9.1
+  - @embr-jvm/core-designer@0.9.1
+  - @embr-jvm/perspective-common@0.10.1
+  - @embr-jvm/perspective-designer@0.10.1
+  - @embr-jvm/perspective-gateway@0.10.1
+  - @embr-modules/periscope-web@0.16.1
+
 ## 0.16.0
 
 ### Minor Changes
