@@ -9,8 +9,6 @@ plugins {
     alias(libs.plugins.ignition.module)
 }
 
-allprojects { group = "com.mussonindustrial.embr" }
-
 fun buildTime(): String {
     return SimpleDateFormat("yyyyMMddHH").format(Date())
 }

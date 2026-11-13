@@ -55,7 +55,7 @@ export default defineConfig(({ mode }) => ({
     ],
     reporters: ['default'],
     coverage: {
-      reportsDirectory: '../coverage/js/chart-js',
+      reportsDirectory: '../coverage/js/periscope-web',
       provider: 'v8',
     },
   },

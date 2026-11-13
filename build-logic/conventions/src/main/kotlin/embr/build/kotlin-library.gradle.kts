@@ -14,6 +14,8 @@ java {
     targetCompatibility = JavaVersion.VERSION_17
 }
 
+kotlin { jvmToolchain(libs.versions.java.get().toInt()) }
+
 spotless { kotlin { ktfmt().kotlinlangStyle() } }
 
 tasks.build { dependsOn(tasks.spotlessCheck) }
