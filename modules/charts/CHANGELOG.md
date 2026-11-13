@@ -1,5 +1,18 @@
 # @mussonindustrial/embr-charts
 
+## 6.2.6
+
+### Patch Changes
+
+- 1db9bc7: (Build) - Rebuilt with Gradle 9 and Kotlin 2.3. No functional changes.
+- Updated dependencies [1db9bc7]
+  - @embr-jvm/core-common@0.9.3
+  - @embr-jvm/core-designer@0.9.3
+  - @embr-jvm/perspective-common@0.9.5
+  - @embr-jvm/perspective-designer@0.9.5
+  - @embr-jvm/perspective-gateway@0.9.5
+  - @embr-modules/charts-web@6.2.6
+
 ## 6.2.5
 
 ### Patch Changes
