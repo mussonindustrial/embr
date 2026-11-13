@@ -14,7 +14,7 @@ dependencies {
     modlImplementation(projects.modules.periscope.web)
     compileOnly(libs.jetty.server)
     compileOnly(libs.jetty.servlet)
-    modlImplementation(libs.jetty.servlets)
+    compileOnly(libs.jetty.servlets)
     modlImplementation(projects.libraries.core.servlets)
 }
 
