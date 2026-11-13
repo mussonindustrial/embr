@@ -1,6 +1,7 @@
 .gradle
 **/build/
 !src/**/build/
+!build-logic/**/embr/build/
 
 # Ignore Gradle GUI config
 gradle-app.setting
@@ -23,7 +24,6 @@ gradle-app.setting
 # JavaScript
 .DS_Store
 node_modules
-.turbo
 *.log
 dist
 dist-ssr

@@ -1,16 +1,33 @@
 import com.github.gradle.node.npm.task.NpxTask
+import com.github.gradle.node.yarn.task.YarnTask
 import groovy.json.JsonSlurper
+import org.jetbrains.kotlin.gradle.targets.js.npm.fromSrcPackageJson
 
 plugins {
     base
-    alias(libs.plugins.node.gradle)
+    alias(libs.plugins.kotlin) apply false
+    alias(libs.plugins.gradle.node)
 }
 
-repositories {
-    mavenCentral()
-    mavenLocal()
-    google()
-    gradlePluginPortal()
+node {
+    download.set(true)
+    version.set(nodeVersion())
+    workDir.set(gradle.gradleUserHomeDir.resolve("nodejs"))
+    yarnWorkDir.set(gradle.gradleUserHomeDir.resolve("yarn"))
+    yarnVersion.set((json(file("package.json"))["packageManager"] as String).substringAfter("@"))
+}
+
+tasks.nodeSetup { onlyIf { !nodeDir.get().asFile.exists() } }
+
+val yarnInstall by tasks.registering(YarnTask::class) {
+    group = "nx"
+    args.set(listOf("install", "--frozen-lockfile"))
+    inputs.files("package.json", "yarn.lock")
+    inputs.files(fileTree(projectDir) {
+        include("libraries/**/package.json", "modules/**/package.json")
+        exclude("**/node_modules/**", "**/build/**", "**/dist/**")
+    })
+    outputs.file("node_modules/.yarn-integrity")
 }
 
 val changesetVersion by tasks.registering(NpxTask::class) {
@@ -60,6 +77,11 @@ val zipModules by tasks.registering(Zip::class) {
 
 fun json(file: File) = JsonSlurper().parse(file) as Map<*, *>
 
+fun nodeVersion(): String {
+    val devEngines = json(file("package.json"))["devEngines"] as Map<*, *>
+    return (devEngines["runtime"] as Map<*, *>)["version"] as String
+}
+
 val collectSnapshots by tasks.registering(Copy::class) {
     group = "ignition module"
 
@@ -70,7 +92,7 @@ val collectSnapshots by tasks.registering(Copy::class) {
         .map { it["name"] }
     val signModuleTasks = subprojects
         .filter { it.file("package.json").exists() }
-        .filter { json(it.file("package.json"))["name"] in releasedPackages }
+        .filter { fromSrcPackageJson(it.file("package.json"))?.name in releasedPackages }
         .flatMap { subproject -> subproject.tasks.named { it == "signModule" } }
 
     from(signModuleTasks)

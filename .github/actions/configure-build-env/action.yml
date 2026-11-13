@@ -1,12 +1,6 @@
 name: Configure Build Environment
 description: Configure Embr's Build Environment (Java + Gradle, Node.js + Yarn)
 inputs:
-  java-version:
-    description: 'Java Version'
-    required: true
-  node-version:
-    description: 'Node.js Version'
-    required: true
   gradle-signing-props:
     description: 'Gradle.properties for signing'
     required: true
@@ -20,16 +14,26 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    - name: 'Set up Java ${{ inputs.java-version }}'
+    - name: Read Java Version
+      id: java
+      shell: bash
+      run: echo "version=$(sed -n 's/^java = "\(.*\)"/\1/p' gradle/libs.versions.toml)" >> "$GITHUB_OUTPUT"
+
+    - name: Set up Java
       uses: actions/setup-java@v4
       with:
-        java-version: '${{ inputs.java-version }}'
+        java-version: '${{ steps.java.outputs.version }}'
         distribution: 'zulu'
 
     - name: Setup Gradle
       uses: gradle/actions/setup-gradle@v6
       with:
         cache-read-only: ${{ github.event_name == 'pull_request' }}
+        gradle-home-cache-includes: |
+          caches
+          notifications
+          nodejs
+          yarn
         build-scan-publish: true
         build-scan-terms-of-use-url: "https://gradle.com/terms-of-service"
         build-scan-terms-of-use-agree: "yes"
@@ -44,7 +48,7 @@ runs:
     - name: Set up Node
       uses: actions/setup-node@v6
       with:
-        node-version: '${{ inputs.node-version }}'
+        node-version-file: 'package.json'
         cache: 'yarn'
 
     - name: Install Dependencies
