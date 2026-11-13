@@ -1,9 +1,11 @@
 import { defineConfig } from 'vite'
 import { resolve } from 'path'
+import perspectiveGlobals from './perspective-globals'
 
 const packageName = 'embr-periscope'
 
 export default defineConfig(({ mode }) => ({
+  plugins: [perspectiveGlobals()],
   resolve: {
     alias: {
       '@': resolve(__dirname, './src'),
