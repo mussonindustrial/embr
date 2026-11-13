@@ -1,8 +1,8 @@
 {
     "name": "@embr-jvm/core-gateway",
-    "version": "0.8.4",
+    "version": "0.8.5",
     "private": true,
     "dependencies": {
-        "@embr-jvm/core-common": "0.8.4"
+        "@embr-jvm/core-common": "0.8.5"
     }
 }

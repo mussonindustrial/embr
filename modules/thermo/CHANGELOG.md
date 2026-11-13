@@ -1,5 +1,14 @@
 # @embr-modules/thermo
 
+## 3.0.5
+
+### Patch Changes
+
+- 917284c: (Build) - Rebuilt with Gradle 9 and Kotlin 2.3. No functional changes.
+- Updated dependencies [917284c]
+  - @embr-jvm/core-common@0.8.5
+  - @embr-jvm/core-gateway@0.8.5
+
 ## 3.0.4
 
 ### Patch Changes

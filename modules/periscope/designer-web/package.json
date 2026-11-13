@@ -1,7 +1,7 @@
 {
     "name": "@embr-modules/periscope-designer-web",
     "private": true,
-    "version": "0.15.0",
+    "version": "0.15.1",
     "scripts": {
         "dev": "vite",
         "build": "tsc && vite build && vitest run",
@@ -13,7 +13,7 @@
     "dependencies": {
         "@embr-js/perspective-client": "0.7.0",
         "@embr-js/utils": "0.6.2",
-        "@embr-modules/periscope-web": "0.15.0",
+        "@embr-modules/periscope-web": "0.15.1",
         "marked": "16.4.2",
         "postcss": "8.5.14",
         "postcss-modules": "6.0.1"
