@@ -4,7 +4,7 @@
     "version": "0.16.0",
     "exports": {
         "./api": "./src/api/periscopeApi.ts",
-        "./perspective-globals.json": "./perspective-globals.json"
+        "./perspective-globals.json": "./dist/perspective-globals.json"
     },
     "scripts": {
         "dev": "vite",
