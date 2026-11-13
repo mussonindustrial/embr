@@ -1,5 +1,11 @@
 # @mussonindustrial/embr-jvm-perspective-core
 
+## 0.10.1
+
+### Patch Changes
+
+- 5b22f80: (Build) - Rebuilt with Gradle 9. No functional changes.
+
 ## 0.10.0
 
 ### Minor Changes

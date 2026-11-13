@@ -1,7 +1,7 @@
 {
     "name": "@embr-modules/periscope-web",
     "private": true,
-    "version": "0.16.0",
+    "version": "0.16.1",
     "exports": {
         "./api": "./src/api/periscopeApi.ts",
         "./perspective-globals.json": "./dist/perspective-globals.json"
