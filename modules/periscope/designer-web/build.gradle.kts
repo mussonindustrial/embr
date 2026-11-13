@@ -3,5 +3,3 @@ plugins {
 }
 
 group = "com.mussonindustrial.embr.periscope"
-
-tasks.nxBuild { dependsOn(":modules:periscope:gateway:generatePerspectiveGlobals") }

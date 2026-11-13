@@ -20,7 +20,7 @@ class GlobalModule(
     companion object {
         val all: List<GlobalModule> by lazy {
             val perspectiveGlobals =
-                GlobalModule::class.java.getResourceAsStream("perspective-globals.json")
+                GlobalModule::class.java.getResourceAsStream("/static/perspective-globals.json")
                     ?: error("perspective-globals.json is missing")
 
             perspectiveGlobals
