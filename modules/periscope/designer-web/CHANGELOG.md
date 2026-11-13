@@ -1,5 +1,11 @@
 # @embr-modules/periscope-designer-web
 
+## 0.17.1
+
+### Patch Changes
+
+- @embr-modules/periscope-web@0.17.1
+
 ## 0.17.0
 
 ### Minor Changes

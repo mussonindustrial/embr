@@ -1,5 +1,11 @@
 # @mussonindustrial/embr-jvm-perspective-core
 
+## 0.9.5
+
+### Patch Changes
+
+- 1db9bc7: (Build) - Rebuilt with Gradle 9 and Kotlin 2.3. No functional changes.
+
 ## 0.9.4
 
 ### Patch Changes

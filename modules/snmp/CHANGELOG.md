@@ -1,5 +1,14 @@
 # @embr-modules/snmp
 
+## 0.7.5
+
+### Patch Changes
+
+- 1db9bc7: (Build) - Rebuilt with Gradle 9 and Kotlin 2.3. No functional changes.
+- Updated dependencies [1db9bc7]
+  - @embr-jvm/core-common@0.9.3
+  - @embr-jvm/core-gateway@0.9.3
+
 ## 0.7.4
 
 ### Patch Changes
