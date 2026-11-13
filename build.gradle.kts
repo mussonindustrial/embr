@@ -19,7 +19,7 @@ node {
 
 tasks.nodeSetup { onlyIf { !nodeDir.get().asFile.exists() } }
 
-val yarnInstall by tasks.registering(YarnTask::class) {
+val yarnInstall = tasks.register<YarnTask>("yarnInstall") {
     group = "nx"
     args.set(listOf("install", "--frozen-lockfile"))
     inputs.files("package.json", "yarn.lock")
@@ -30,25 +30,25 @@ val yarnInstall by tasks.registering(YarnTask::class) {
     outputs.file("node_modules/.yarn-integrity")
 }
 
-val changesetVersion by tasks.registering(NpxTask::class) {
+val changesetVersion = tasks.register<NpxTask>("changesetVersion") {
     group = "changesets"
     command.set("changeset")
     args.set(listOf("version"))
 }
 
-val changesetPublish by tasks.registering(NpxTask::class) {
+val changesetPublish = tasks.register<NpxTask>("changesetPublish") {
     group = "changesets"
     mustRunAfter(zipModules, changesetVersion)
     command.set("changeset")
     args.set(listOf("publish"))
 }
 
-val release by tasks.registering {
+val release = tasks.register("release") {
     group = "publishing"
     dependsOn(tasks.build, changesetVersion)
 }
 
-val assembleModules by tasks.registering(Copy::class) {
+val assembleModules = tasks.register<Copy>("assembleModules") {
     group = "ignition module"
 
     val signModuleTasks = subprojects.flatMap { subproject ->
@@ -66,7 +66,7 @@ val assembleModules by tasks.registering(Copy::class) {
     destinationDir = file("build/modules")
 }
 
-val zipModules by tasks.registering(Zip::class) {
+val zipModules = tasks.register<Zip>("zipModules") {
     group = "ignition module"
     inputs.files(assembleModules.get().outputs)
 
@@ -82,7 +82,7 @@ fun nodeVersion(): String {
     return (devEngines["runtime"] as Map<*, *>)["version"] as String
 }
 
-val collectSnapshots by tasks.registering(Copy::class) {
+val collectSnapshots = tasks.register<Copy>("collectSnapshots") {
     group = "ignition module"
 
     val releases = json(file("release-plan.json"))["releases"] as List<*>
