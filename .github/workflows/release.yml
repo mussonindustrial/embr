@@ -7,10 +7,6 @@ on:
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
-env:
-  JAVA_VERSION: 21
-  NODE_VERSION: 20
-
 permissions:
   issues: write
   contents: write
@@ -33,7 +29,7 @@ jobs:
       - name: Set up Node
         uses: actions/setup-node@v7
         with:
-          node-version: '${{ env.NODE_VERSION }}'
+          node-version-file: 'package.json'
           cache: 'yarn'
 
       - name: Install Dependencies
@@ -88,8 +84,6 @@ jobs:
       - name: Configure Build Environment
         uses: ./.github/actions/configure-build-env
         with:
-          java-version: '${{ env.JAVA_VERSION }}'
-          node-version: '${{ env.NODE_VERSION }}'
           gradle-signing-props: '${{ secrets.GRADLE_IGNITION_MODULE_SIGNING_PROPS }}'
           module-signing-certificate: '${{ secrets.IGNITION_MODULE_CERT_BASE64 }}'
           module-signing-keystore: '${{ secrets.IGNITION_MODULE_KEYSTORE_BASE64 }}'
@@ -147,10 +141,14 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v7
 
-      - name: 'Set up Java ${{ env.JAVA_VERSION }}'
+      - name: Read Java Version
+        id: java
+        run: echo "version=$(sed -n 's/^java = "\(.*\)"/\1/p' gradle/libs.versions.toml)" >> "$GITHUB_OUTPUT"
+
+      - name: Set up Java
         uses: actions/setup-java@v6
         with:
-          java-version: '${{ env.JAVA_VERSION }}'
+          java-version: '${{ steps.java.outputs.version }}'
           distribution: 'zulu'
 
       - name: Make gradlew executable
