@@ -10,8 +10,7 @@
     },
     "scripts": {
         "dev": "vite",
-        "build": "tsc && nx vite:build",
-        "clean": "",
+        "build": "tsc && vite build",
         "test": "vitest run",
         "preview": "vite preview",
         "lint": "eslint src/**/*.ts",

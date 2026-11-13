@@ -1,38 +1,34 @@
 package embr.build
 
+import com.github.gradle.node.NodeExtension
 import com.github.gradle.node.npm.task.NpxTask
 import libs
 
 plugins {
     id("embr.build.kotlin-library")
-    alias(libs.plugins.node.gradle)
-}
-
-repositories {
-    ivy {
-        name = "Node.js"
-        setUrl("https://nodejs.org/dist/")
-        patternLayout { artifact("v[revision]/[artifact](-v[revision]-[classifier]).[ext]") }
-        metadataSources { artifact() }
-        content { includeModule("org.nodejs", "node") }
-    }
+    alias(libs.plugins.gradle.node)
 }
 
 node {
-    workDir = file("${rootProject.projectDir}/.gradle/nodejs")
-    npmWorkDir = file("${rootProject.projectDir}/.gradle/npm")
-    yarnWorkDir = file("${rootProject.projectDir}/.gradle/yarn")
-    distBaseUrl.set("https://nodejs.org/dist")
+    download.set(true)
+    version.set(rootProject.the<NodeExtension>().version)
+    workDir.set(gradle.gradleUserHomeDir.resolve("nodejs"))
 }
 
-tasks.nodeSetup { enabled = false }
+tasks.nodeSetup {
+    enabled = false
+    dependsOn(rootProject.tasks.named("nodeSetup"))
+}
 
-tasks.npmInstall { enabled = false }
+abstract class NxService : BuildService<BuildServiceParameters.None>
+
+val nx = gradle.sharedServices.registerIfAbsent("nx", NxService::class) { maxParallelUsages.set(1) }
 
 val nxBuild =
     tasks.register<NpxTask>("nxBuild") {
         group = "nx"
-        dependsOn(tasks.npmInstall)
+        dependsOn(rootProject.tasks.named("yarnInstall"))
+        usesService(nx)
         command.set("nx")
         args.set(listOf("build"))
 
@@ -41,7 +37,7 @@ val nxBuild =
     }
 
 val nxClean =
-    tasks.create<Delete>("nxClean") {
+    tasks.register<Delete>("nxClean") {
         group = "nx"
         delete = setOf("${projectDir}/dist")
     }

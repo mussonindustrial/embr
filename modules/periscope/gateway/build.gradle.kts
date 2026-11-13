@@ -35,6 +35,7 @@ val generatePerspectiveGlobals by
         val generator = file("perspective-globals.mjs")
         val perspectiveGlobals = rootProject.file("modules/periscope/web/perspective-globals.json")
         inputs.file(generator)
+        inputs.files(rootProject.tasks.named("yarnInstall"))
         inputs.files(extractPerspectiveScripts)
         outputs.file(perspectiveGlobals)
         commandLine(
