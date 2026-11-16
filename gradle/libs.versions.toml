@@ -8,7 +8,7 @@ java = "17"
 jetty = "12.0.15"
 kotlin = "2.3.21"
 kotest = "6.2.7"
-snmp4j = "3.13.1"
+snmp4j = "3.13.2"
 spotless = "8.11.0"
 
 [plugins]
