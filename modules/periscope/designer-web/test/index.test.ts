@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { invoke } from '../src'
+import { connect, dispatch, invoke } from '../src'
 
 describe('invoke()', () => {
   it('calls a service method with a JSON payload and answers in JSON', async () => {
@@ -30,5 +30,28 @@ describe('invoke()', () => {
     await expect(
       invoke('typescript.language', 'missing', '{}')
     ).rejects.toThrow('Unknown service method: typescript.language.missing')
+  })
+})
+
+describe('dispatch()', () => {
+  it('delivers each reply to the connected function by id', async () => {
+    const replies: [string, boolean, string][] = []
+    const done = new Promise<void>((resolve) =>
+      connect((id, success, value) => {
+        replies.push([id, success, value])
+        if (replies.length === 2) resolve()
+      })
+    )
+
+    dispatch('1', 'typescript.language', 'removeFile', '{"path":"missing"}')
+    dispatch('2', 'python', 'compile', '{}')
+    await done
+
+    expect(replies).toEqual(
+      expect.arrayContaining([
+        ['1', true, 'null'],
+        ['2', false, 'Unknown service: python'],
+      ])
+    )
   })
 })

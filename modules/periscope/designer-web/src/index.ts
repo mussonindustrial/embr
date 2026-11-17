@@ -28,3 +28,27 @@ export const invoke = async function (
   const result = await fn(payload)
   return JSON.stringify(result ?? null)
 }
+
+type Reply = (id: string, success: boolean, value: string) => void
+
+let sendReply: Reply | undefined
+
+export const connect = function (reply: Reply) {
+  sendReply = reply
+}
+
+export const dispatch = function (
+  id: string,
+  service: string,
+  method: string,
+  payloadJson: string
+) {
+  const onSuccess = (result: string) => {
+    sendReply?.(id, true, result)
+  }
+  const onFailure = (error: Error) => {
+    sendReply?.(id, false, String(error?.message ?? error))
+  }
+
+  invoke(service, method, payloadJson).then(onSuccess, onFailure)
+}

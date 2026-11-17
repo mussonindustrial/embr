@@ -5,17 +5,19 @@ import com.mussonindustrial.ignition.embr.periscope.Meta.SHORT_MODULE_ID
 
 object PeriscopeComponents {
 
+    private const val ASSETS_PATH = "/data/$SHORT_MODULE_ID/assets"
+
     private val JS_RESOURCE =
         BrowserResource(
             "embr-periscope-client-js",
-            "/res/${SHORT_MODULE_ID}/embr-periscope-client.js",
+            "$ASSETS_PATH/embr-periscope-client.js",
             BrowserResource.ResourceType.JS,
         )
 
     private val CSS_RESOURCE =
         BrowserResource(
             "embr-periscope-css",
-            "/res/${SHORT_MODULE_ID}/embr-periscope.css",
+            "$ASSETS_PATH/embr-periscope.css",
             BrowserResource.ResourceType.CSS,
         )
     val BROWSER_RESOURCES = mutableSetOf(JS_RESOURCE, CSS_RESOURCE)
