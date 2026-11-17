@@ -235,11 +235,38 @@ describe('TypeScript Language Service', () => {
     it('completes the exports and types of each system module', async () => {
       const modules = {
         periscope: [
-          'ReactComponent',
-          'ReactComponentContext',
-          'ReactComponentProps',
+          'Child',
+          'ChildRenderOptions',
+          'ChildSlotProps',
+          'ComponentContext',
+          'ComponentDefinition',
+          'ComponentEvent',
+          'ComponentLibrary',
+          'ComponentMetadata',
+          'ComponentMode',
+          'ComponentRender',
+          'ComponentVariant',
+          'defineComponent',
+          'defineComponentLibrary',
+          'ElementProps',
+          'event',
+          'EventSchema',
+          'Infer',
+          'InferEvents',
+          'InferProps',
+          'LibraryComponent',
+          'LibraryComponentEvent',
+          'NumberProp',
+          'PlacedChild',
+          'PositionChange',
+          'prop',
+          'Prop',
+          'PropSchema',
+          'ResizeHandle',
           'resource',
+          'RootProps',
           'toast',
+          'useComponent',
         ],
         perspective: [
           'context',
@@ -532,27 +559,6 @@ describe('TypeScript Language Service', () => {
           'PropertyTree',
         ])
       )
-    })
-
-    it('types a component for the React component, with its props and this', async () => {
-      const main = [
-        "import type { ReactComponent } from 'system:periscope'",
-        'export const View: ReactComponent<{ label: string }> = function ({',
-        '  label,',
-        '  writeProps,',
-        '  renderContext,',
-        '}) {',
-        "  writeProps('label', label.toUpperCase())",
-        '  return this.store === renderContext.store ? label : this.props.resource.path',
-        '}',
-        'export const Wrong: ReactComponent<{ label: string }> = ({ missing }) => missing',
-      ].join('\n')
-
-      const errors = await errorsOf(main)
-
-      expect(errors.map((error) => error.message)).toEqual([
-        expect.stringContaining("Property 'missing' does not exist"),
-      ])
     })
 
     it("types the mobx globals, and what Perspective's typings take from mobx and React", async () => {
@@ -886,34 +892,6 @@ describe('TypeScript Language Service', () => {
         ['config', []],
         ['make', [['local', []]]],
       ])
-    })
-  })
-
-  describe('reactComponentNames()', () => {
-    it('names the exports typed as a ReactComponent', async () => {
-      await setProject(
-        [
-          "import type { ReactComponent } from 'system:periscope'",
-          "export { add } from '@/shared/utils'",
-          'type Local<P> = (props: P) => null',
-          'export const Gauge: ReactComponent<{ value: number }> = () => null',
-          'export const Untyped = () => null',
-          'export const Lookalike: Local<object> = () => null',
-          'export type Size = number',
-          'const Main: ReactComponent = function () {',
-          '  return null',
-          '}',
-          'export default Main',
-        ].join('\n')
-      )
-
-      const main = await language.reactComponentNames({ path: 'app/main' })
-      const missing = await language.reactComponentNames({
-        path: 'app/missing',
-      })
-
-      expect(main.names.sort()).toEqual(['Gauge', 'default'])
-      expect(missing.names).toEqual([])
     })
   })
 

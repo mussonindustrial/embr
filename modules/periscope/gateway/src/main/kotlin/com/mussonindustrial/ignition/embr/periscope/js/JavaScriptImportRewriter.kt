@@ -7,6 +7,10 @@ interface JavaScriptImportRewriter {
     companion object {
         private val importExportRegex =
             """(\b(?:import|export)\b(?:\s+[\w\s{},*$]*?\s+from)?\s*)(['"])([^'"]+)\2""".toRegex()
+
+        fun specifiers(source: String): Sequence<String> {
+            return importExportRegex.findAll(source).map { it.groupValues[3] }
+        }
     }
 
     fun rewrite(source: String): String {

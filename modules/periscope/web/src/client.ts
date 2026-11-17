@@ -15,6 +15,7 @@ import {
   PortalComponentMeta,
   ReactComponent,
   ReactComponentMeta,
+  installLibraryComponents,
 } from './components'
 import {
   installExtensions,
@@ -22,6 +23,9 @@ import {
   JavaScriptActionFactory,
 } from './extensions'
 import { waitForClientStore } from '@embr-js/perspective-client'
+import { prefetch } from './stores/clientBundle'
+
+prefetch()
 
 export {
   FlexRepeaterComponent,
@@ -42,6 +46,7 @@ const components = [
 ]
 
 components.forEach((c) => ComponentRegistry.register(c))
+installLibraryComponents()
 
 const actions = [JavaScriptActionFactory]
 actions.forEach((a) => ActionRegistry.register(a))

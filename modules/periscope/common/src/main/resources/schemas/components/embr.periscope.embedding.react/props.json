@@ -14,10 +14,7 @@
                 "export": {
                     "type": "string",
                     "description": "Exported component inside the resource.",
-                    "default": "default",
-                    "extension": {
-                        "suggestion-source": "embr-periscope-typescript-resource-export"
-                    }
+                    "default": "default"
                 }
             },
             "required": [

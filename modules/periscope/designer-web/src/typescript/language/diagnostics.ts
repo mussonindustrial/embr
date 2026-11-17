@@ -1,4 +1,5 @@
 import { importDiagnostics } from './browserImports'
+import { evaluationFailuresOf } from './components'
 import { toDiagnostic } from '../../compiler/utils'
 import { toCodeAction } from './convert'
 import { isResource } from './files'
@@ -33,10 +34,17 @@ export async function diagnostics({
     ? importDiagnostics(sourceFile, semantic)
     : semantic
 
+  const evaluationFailures = evaluationFailuresOf(path).map(({ message }) => ({
+    message,
+    severity: 'error' as const,
+  }))
+
+  const typeScriptDiagnostics = [...syntactic, ...imports, ...unnecessary].map(
+    (d) => toDiagnostic(textOf(fileName), d)
+  )
+
   return {
-    diagnostics: [...syntactic, ...imports, ...unnecessary].map((d) =>
-      toDiagnostic(textOf(fileName), d)
-    ),
+    diagnostics: [...typeScriptDiagnostics, ...evaluationFailures],
   }
 }
 
