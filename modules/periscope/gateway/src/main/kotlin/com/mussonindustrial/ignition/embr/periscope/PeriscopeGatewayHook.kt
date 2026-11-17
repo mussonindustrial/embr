@@ -9,8 +9,9 @@ import com.inductiveautomation.ignition.gateway.model.AbstractGatewayModuleHook
 import com.inductiveautomation.ignition.gateway.model.GatewayContext
 import com.mussonindustrial.embr.common.Embr
 import com.mussonindustrial.ignition.embr.periscope.Meta.SHORT_MODULE_ID
+import com.mussonindustrial.ignition.embr.periscope.handlers.ClientBundleHandler
 import com.mussonindustrial.ignition.embr.periscope.handlers.ClientResourceHandler
-import com.mussonindustrial.ignition.embr.periscope.handlers.ClientResourceManifestHandler
+import com.mussonindustrial.ignition.embr.periscope.handlers.ClientResourceHashHandler
 import com.mussonindustrial.ignition.embr.periscope.handlers.VirtualModuleHandler
 import com.mussonindustrial.ignition.embr.periscope.js.modules.GlobalModule
 import com.mussonindustrial.ignition.embr.periscope.js.modules.SystemModule
@@ -35,6 +36,9 @@ class PeriscopeGatewayHook : AbstractGatewayModuleHook() {
     override fun startup(activationState: LicenseState) {
         logger.debug("Embr-Periscope module startup.")
 
+        logger.debug("Versioning assets...")
+        context.versionAssets()
+
         logger.debug("Injecting required resources...")
         context.injectResources()
 
@@ -46,6 +50,9 @@ class PeriscopeGatewayHook : AbstractGatewayModuleHook() {
 
         logger.debug("Starting project lifecycles...")
         context.startupProjectLifecycles()
+
+        logger.debug("Starting component defaults...")
+        context.startupComponentDefaults()
     }
 
     override fun shutdown() {
@@ -63,6 +70,12 @@ class PeriscopeGatewayHook : AbstractGatewayModuleHook() {
 
         logger.debug("Stopping project lifecycles...")
         context.shutdownProjectLifecycles()
+
+        logger.debug("Stopping component defaults...")
+        context.shutdownComponentDefaults()
+
+        logger.debug("Removing library components...")
+        context.removeLibraryComponents()
     }
 
     override fun getMountedResourceFolder(): Optional<String> {
@@ -100,13 +113,15 @@ class PeriscopeGatewayHook : AbstractGatewayModuleHook() {
     }
 
     override fun mountRouteHandlers(routes: RouteGroup) {
-        ClientResourceManifestHandler(context)
-            .mount(routes.newRoute("/client-resource/:project_name/manifest.json"))
+        ClientResourceHashHandler(context)
+            .mount(routes.newRoute("/client-resource/:project_name/hash.json"))
+        ClientBundleHandler(context).mount(routes.newRoute("/client-bundle/:project_name/:hash"))
         VirtualModuleHandler(context, SystemModule.all)
             .mount(routes.newRoute("/system-module/:hash/*"))
         VirtualModuleHandler(context, GlobalModule.all)
             .mount(routes.newRoute("/global-module/:hash/*"))
         ClientResourceHandler(context)
             .mount(routes.newRoute("/client-resource/:project_name/:hash/*"))
+        context.assets.mount(routes.newRoute("/assets/*"))
     }
 }

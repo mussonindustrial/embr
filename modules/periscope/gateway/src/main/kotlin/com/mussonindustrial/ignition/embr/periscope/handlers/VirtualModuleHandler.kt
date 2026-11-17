@@ -1,32 +1,16 @@
 package com.mussonindustrial.ignition.embr.periscope.handlers
 
-import com.inductiveautomation.ignition.gateway.dataroutes.HttpMethod
 import com.inductiveautomation.ignition.gateway.dataroutes.RequestContext
-import com.inductiveautomation.ignition.gateway.dataroutes.RouteGroup
-import com.inductiveautomation.ignition.gateway.dataroutes.RouteHandler
-import com.inductiveautomation.perspective.gateway.api.SessionScope
 import com.mussonindustrial.embr.common.logging.getLoggerEx
 import com.mussonindustrial.ignition.embr.periscope.PeriscopeGatewayContext
 import com.mussonindustrial.ignition.embr.periscope.js.modules.VirtualModule
 import java.net.URLDecoder
-import java.util.EnumSet
 import javax.servlet.http.HttpServletResponse
 
-class VirtualModuleHandler(
-    val context: PeriscopeGatewayContext,
-    val modules: List<VirtualModule>,
-) : RouteHandler {
+class VirtualModuleHandler(context: PeriscopeGatewayContext, modules: List<VirtualModule>) :
+    SessionRouteHandler(context, "text/javascript") {
 
     val logger = this.getLoggerEx()
-
-    fun mount(mounter: RouteGroup.RouteMounter) {
-        mounter
-            .method(HttpMethod.GET)
-            .type("text/javascript")
-            .restrict(context.requireSession(EnumSet.allOf(SessionScope::class.java)))
-            .handler(this)
-            .mount()
-    }
 
     val modulesByName = modules.associateBy { it.name }
 
@@ -35,12 +19,12 @@ class VirtualModuleHandler(
 
         response.apply {
             contentType = "text/javascript"
-            setHeader("Cache-Control", "public, max-age=604800, immutable")
+            cacheForever()
             writer.use { it.write(js) }
         }
     }
 
-    override fun handle(request: RequestContext, response: HttpServletResponse) {
+    override fun respond(request: RequestContext, response: HttpServletResponse) {
         logger.trace("Virtual module request: $request")
 
         val hash =

@@ -1,49 +1,84 @@
 import type { ESModule } from '@embr-js/utils/types'
 import { ClientStore } from '@inductiveautomation/perspective-client'
 
-import { createPeriscopeApi } from '../api/periscopeApi'
+import {
+  createPeriscopeApi,
+  keyOf,
+  LibraryComponent,
+  libraryOf,
+} from '../api/periscopeApi'
+import {
+  type ClientBundle,
+  clientResourceUrl,
+  takeClientBundle,
+} from './clientBundle'
+
+const COMPONENT_LIBRARY = 'component-library'
+const SYSTEM_MODULE_BASE = '/data/embr-periscope/system-module'
+const GLOBAL_MODULE_BASE = '/data/embr-periscope/global-module'
+const SYSTEM_PREFIX = 'system:'
 
 const PROTOCOL = {
   REFRESH: 'periscope-client-resource-refresh',
 }
 
-export type ClientResourceDefinition = {
-  path: string
-  hash: string
-  type: string
-}
-
-export type ResourceManifest = {
-  hash: string
-  resources: ClientResourceDefinition[]
-}
-
-export type ResourceManifestResponse = {
-  data: ResourceManifest
+function preloadModules(urls: string[]) {
+  for (const href of urls) {
+    const link = document.createElement('link')
+    link.rel = 'modulepreload'
+    link.href = href
+    document.head.appendChild(link)
+  }
 }
 
 export class ClientResourceStore {
-  private manifest?: ResourceManifest
-  private manifestPromise?: Promise<ResourceManifest>
+  private loading?: Promise<ClientBundle>
+  private loaded?: Promise<void>
 
   readonly resources = new Map<string, ESModule>()
   readonly systemModules = new Map<string, object>()
+  readonly components = new Map<string, LibraryComponent>()
 
   private readonly resourcePromises = new Map<
     string,
     Promise<ESModule | null>
   >()
 
-  urlBase = '/data/embr-periscope/client-resource'
-
   clientStore?: ClientStore
 
   async initialize(clientStore: ClientStore) {
     this.clientStore = clientStore
+    this.loading = takeClientBundle(clientStore.projectName)
     this.installScriptingGlobals()
     this.setupSystemModules()
     this.installListener()
-    await this.preload()
+    this.loaded = this.preload()
+    await this.loaded
+  }
+
+  private registerLibrary(path: string, module: ESModule) {
+    const { namespace, components } = libraryOf(module)
+
+    for (const component of components) {
+      const key = keyOf(namespace, component.periscope.id)
+      const existing = this.components.get(key)
+
+      if (existing == null) {
+        this.components.set(key, component)
+      } else if (existing !== component) {
+        console.error(`Component '${key}' is already defined ('${path}')`)
+      }
+    }
+  }
+
+  async libraryComponent(key: string): Promise<LibraryComponent | undefined> {
+    await this.loaded
+    return this.components.get(key)
+  }
+
+  async libraryComponents(): Promise<Map<string, LibraryComponent>> {
+    await this.loaded
+    return this.components
   }
 
   async resource(path: string): Promise<ESModule> {
@@ -77,41 +112,13 @@ export class ClientResourceStore {
     return promise
   }
 
-  private manifestPath() {
-    return `${this.urlBase}/${this.clientStore!.projectName}/manifest.json`
-  }
-
   private resourcePath(hash: string, path: string) {
-    return `${this.urlBase}/${this.clientStore!.projectName}/${hash}/${encodeURI(path)}`
-  }
-
-  private async getManifest(): Promise<ResourceManifest> {
-    if (this.manifest) {
-      return this.manifest
-    }
-
-    this.manifestPromise ??= this.fetchManifest()
-
-    return this.manifestPromise
-  }
-
-  private async fetchManifest(): Promise<ResourceManifest> {
-    const response = await fetch(this.manifestPath())
-
-    if (!response.ok) {
-      throw new Error(`Failed to fetch manifest: ${response.statusText}`)
-    }
-
-    const json = (await response.json()) as ResourceManifestResponse
-
-    this.manifest = json.data
-
-    return this.manifest
+    return clientResourceUrl(this.clientStore!.projectName, hash, path)
   }
 
   private async fetchResource(path: string): Promise<ESModule | null> {
     try {
-      const manifest = await this.getManifest()
+      const { manifest, urls } = await this.loading!
 
       const resource = manifest.resources.find(
         (resource) => resource.path === path
@@ -121,7 +128,9 @@ export class ClientResourceStore {
         return null
       }
 
-      const module = await import(this.resourcePath(manifest.hash, path))
+      const module = await import(
+        urls.get(path) ?? this.resourcePath(manifest.hash, path)
+      )
 
       this.resources.set(path, module)
 
@@ -135,20 +144,71 @@ export class ClientResourceStore {
     }
   }
 
-  private async preload() {
-    const manifest = await this.getManifest()
+  private importedUrls({ manifest, urls }: ClientBundle, paths: string[]) {
+    const resourcesByPath = new Map(
+      manifest.resources.map((resource) => [resource.path, resource])
+    )
+    const visited = new Set<string>()
+    const sharedUrls: string[] = []
+    const localUrls: string[] = []
 
-    await Promise.all(
-      manifest.resources.map((resource) => {
-        let promise = this.resourcePromises.get(resource.path)
+    const visit = (specifier: string) => {
+      if (visited.has(specifier)) {
+        return
+      }
 
-        if (promise == null) {
-          promise = this.fetchResource(resource.path)
-          this.resourcePromises.set(resource.path, promise)
+      visited.add(specifier)
+
+      const resource = resourcesByPath.get(specifier)
+
+      if (resource != null) {
+        if (!urls.has(specifier)) {
+          localUrls.push(this.resourcePath(manifest.hash, specifier))
         }
 
-        return promise
-      })
+        resource.imports?.forEach(visit)
+      } else if (specifier.startsWith(SYSTEM_PREFIX)) {
+        const name = specifier.slice(SYSTEM_PREFIX.length)
+        sharedUrls.push(`${SYSTEM_MODULE_BASE}/${manifest.hash}/${name}`)
+      } else {
+        sharedUrls.push(`${GLOBAL_MODULE_BASE}/${manifest.hash}/${specifier}`)
+      }
+    }
+
+    paths.forEach(visit)
+
+    return [...sharedUrls, ...localUrls]
+  }
+
+  private async loadLibrary(path: string) {
+    const module = await this.getResource(path)
+
+    if (module == null) {
+      return
+    }
+
+    try {
+      this.registerLibrary(path, module)
+    } catch (error) {
+      console.error(`Error loading component library '${path}'`, error)
+    }
+  }
+
+  private async preload() {
+    const bundle = await this.loading!
+
+    const libraryPaths = bundle.manifest.resources
+      .filter((resource) => resource.type === COMPONENT_LIBRARY)
+      .map((resource) => resource.path)
+
+    preloadModules(this.importedUrls(bundle, libraryPaths))
+
+    await Promise.all(libraryPaths.map((path) => this.loadLibrary(path)))
+
+    void Promise.all(
+      bundle.manifest.resources.map((resource) =>
+        this.getResource(resource.path)
+      )
     )
   }
 
