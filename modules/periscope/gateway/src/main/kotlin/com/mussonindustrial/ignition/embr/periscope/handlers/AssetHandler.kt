@@ -4,8 +4,8 @@ import com.inductiveautomation.ignition.gateway.dataroutes.RequestContext
 import com.inductiveautomation.perspective.common.api.BrowserResource
 import com.mussonindustrial.embr.common.logging.getLoggerEx
 import com.mussonindustrial.ignition.embr.periscope.PeriscopeGatewayContext
-import jakarta.servlet.http.HttpServletResponse
 import java.security.MessageDigest
+import javax.servlet.http.HttpServletResponse
 import org.apache.commons.codec.binary.Hex
 
 class AssetHandler(context: PeriscopeGatewayContext) : SessionRouteHandler(context) {

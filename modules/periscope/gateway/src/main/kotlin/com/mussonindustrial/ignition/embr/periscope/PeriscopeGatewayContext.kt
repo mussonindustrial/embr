@@ -91,8 +91,7 @@ class PeriscopeGatewayContext(private val context: GatewayContext) :
         Hex.encodeHexString(digest.digest())
     }
 
-    fun clientResourceHash(project: Project) =
-        project.getClientResourceHash(runtimeHash)
+    fun clientResourceHash(project: Project) = project.getClientResourceHash(runtimeHash)
 
     private val libraryComponentTypes =
         LibraryComponentTypes(perspectiveContext, componentDefaults, context.projectManager)

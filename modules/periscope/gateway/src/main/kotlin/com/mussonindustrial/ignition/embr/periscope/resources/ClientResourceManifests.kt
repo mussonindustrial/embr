@@ -2,8 +2,8 @@ package com.mussonindustrial.ignition.embr.periscope.resources
 
 import com.inductiveautomation.ignition.common.gson.JsonArray
 import com.inductiveautomation.ignition.common.gson.JsonObject
-import com.inductiveautomation.ignition.common.resourcecollection.Resource
-import com.inductiveautomation.ignition.common.resourcecollection.RuntimeResourceCollection
+import com.inductiveautomation.ignition.common.project.RuntimeProject
+import com.inductiveautomation.ignition.common.project.resource.ProjectResource
 import com.mussonindustrial.ignition.embr.periscope.js.JavaScriptImportRewriter
 import com.mussonindustrial.ignition.embr.periscope.utils.getHashKey
 import java.net.URI
@@ -13,9 +13,9 @@ class ClientResourceManifests(private val manager: ClientResourceManager) {
 
     private val cachedImports = ConcurrentHashMap<String, List<String>>()
 
-    fun createManifest(collection: RuntimeResourceCollection, hash: String): JsonObject {
+    fun createManifest(project: RuntimeProject, hash: String): JsonObject {
         val resources =
-            collection.getResourcesOfType(ClientResource.type).sortedBy {
+            project.getResourcesOfType(ClientResource.type).sortedBy {
                 it.resourcePath.path.toString()
             }
 
@@ -31,7 +31,7 @@ class ClientResourceManifests(private val manager: ClientResourceManager) {
         }
     }
 
-    private fun createEntry(resource: Resource): JsonObject? {
+    private fun createEntry(resource: ProjectResource): JsonObject? {
         val clientResource = manager.fromResource(resource) ?: return null
         val path = resource.resourcePath.path.toString()
         val hashKey = resource.getHashKey()

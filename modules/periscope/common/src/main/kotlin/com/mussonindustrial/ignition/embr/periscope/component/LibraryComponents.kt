@@ -2,7 +2,7 @@ package com.mussonindustrial.ignition.embr.periscope.component
 
 import com.inductiveautomation.ignition.common.gson.JsonObject
 import com.inductiveautomation.ignition.common.jsonschema.JsonSchema
-import com.inductiveautomation.ignition.common.resourcecollection.ResourceType
+import com.inductiveautomation.ignition.common.project.resource.ResourceType
 import com.inductiveautomation.perspective.common.PerspectiveModule
 import com.inductiveautomation.perspective.common.api.ComponentDescriptor
 import com.inductiveautomation.perspective.common.api.ComponentDescriptorImpl

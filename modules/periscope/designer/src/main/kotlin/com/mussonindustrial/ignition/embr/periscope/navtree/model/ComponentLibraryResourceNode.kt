@@ -1,6 +1,6 @@
 package com.mussonindustrial.ignition.embr.periscope.navtree.model
 
-import com.inductiveautomation.ignition.common.resourcecollection.Resource
+import com.inductiveautomation.ignition.common.project.resource.ProjectResource
 import com.inductiveautomation.ignition.designer.model.DesignerContext
 import com.inductiveautomation.ignition.designer.tabbedworkspace.TabbedResourceWorkspace
 import com.mussonindustrial.ignition.embr.periscope.icons.PeriscopeIcons
@@ -11,7 +11,7 @@ import javax.swing.Icon
 class ComponentLibraryResourceNode(
     context: DesignerContext,
     workspace: TabbedResourceWorkspace,
-    resource: Resource,
+    resource: ProjectResource,
 ) : ClientResourceNode<ComponentLibraryResource>(context, workspace, resource) {
 
     companion object {
@@ -20,7 +20,7 @@ class ComponentLibraryResourceNode(
                 override fun createNode(
                     context: DesignerContext,
                     workspace: TabbedResourceWorkspace,
-                    resource: Resource,
+                    resource: ProjectResource,
                 ): ComponentLibraryResourceNode {
                     return ComponentLibraryResourceNode(context, workspace, resource)
                 }
@@ -31,7 +31,7 @@ class ComponentLibraryResourceNode(
         return PeriscopeIcons.componentLibrary
     }
 
-    override fun getClientResource(resource: Resource): ComponentLibraryResource {
+    override fun getClientResource(resource: ProjectResource): ComponentLibraryResource {
         return ComponentLibraryResource.fromResource(resource)
     }
 }

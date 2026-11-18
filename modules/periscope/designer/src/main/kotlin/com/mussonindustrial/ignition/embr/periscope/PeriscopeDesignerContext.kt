@@ -1,6 +1,6 @@
 package com.mussonindustrial.ignition.embr.periscope
 
-import com.inductiveautomation.ignition.common.resourcecollection.ResourcePath
+import com.inductiveautomation.ignition.common.project.resource.ResourcePath
 import com.inductiveautomation.ignition.designer.IgnitionDesigner
 import com.inductiveautomation.ignition.designer.model.DesignerContext
 import com.inductiveautomation.perspective.designer.DesignerHook

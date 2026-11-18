@@ -13,6 +13,7 @@ import com.inductiveautomation.perspective.gateway.property.PropertyTree
 import com.inductiveautomation.perspective.gateway.session.InternalSession
 import com.mussonindustrial.embr.common.logging.getLoggerEx
 import com.mussonindustrial.embr.perspective.gateway.reflect.getHandlers
+import com.mussonindustrial.embr.perspective.gateway.reflect.runningSessions
 import com.mussonindustrial.embr.perspective.gateway.reflect.unregister
 import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap

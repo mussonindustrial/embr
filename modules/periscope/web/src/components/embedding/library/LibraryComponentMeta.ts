@@ -5,7 +5,7 @@ import {
   PComponent,
   PropertyTree,
 } from '@inductiveautomation/perspective-client'
-import type { SizeObject } from '@inductiveautomation/perspective-common'
+import type { SizeObject } from '@inductiveautomation/perspective-client'
 
 import { COMPONENT_TYPE_PREFIX } from '@/api/periscopeApi'
 import { ReactComponentDelegate } from '../react'

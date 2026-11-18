@@ -5,7 +5,7 @@ import com.inductiveautomation.ignition.gateway.dataroutes.RequestContext
 import com.inductiveautomation.ignition.gateway.dataroutes.RouteGroup
 import com.inductiveautomation.ignition.gateway.dataroutes.RouteHandler
 import com.mussonindustrial.ignition.embr.periscope.PeriscopeGatewayContext
-import jakarta.servlet.http.HttpServletResponse
+import javax.servlet.http.HttpServletResponse
 
 abstract class SessionRouteHandler(
     protected val context: PeriscopeGatewayContext,
@@ -18,7 +18,7 @@ abstract class SessionRouteHandler(
             route.type(contentType)
         }
 
-        route.accessControl(context.anySession).handler(this).mount()
+        route.restrict(context.anySession).handler(this).mount()
     }
 
     final override fun handle(request: RequestContext, response: HttpServletResponse): Any? {

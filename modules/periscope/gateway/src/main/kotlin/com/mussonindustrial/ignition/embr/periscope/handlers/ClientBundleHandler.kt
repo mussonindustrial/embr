@@ -1,16 +1,16 @@
 package com.mussonindustrial.ignition.embr.periscope.handlers
 
 import com.inductiveautomation.ignition.common.gson.JsonObject
-import com.inductiveautomation.ignition.common.resourcecollection.RuntimeResourceCollection
+import com.inductiveautomation.ignition.common.project.RuntimeProject
 import com.inductiveautomation.ignition.gateway.dataroutes.RequestContext
 import com.mussonindustrial.embr.common.logging.getLoggerEx
 import com.mussonindustrial.ignition.embr.periscope.PeriscopeGatewayContext
 import com.mussonindustrial.ignition.embr.periscope.js.ClientResourceImportRewriter
 import com.mussonindustrial.ignition.embr.periscope.resources.ClientResource
 import com.mussonindustrial.ignition.embr.periscope.utils.findClientResources
-import jakarta.servlet.http.HttpServletResponse
 import java.io.ByteArrayOutputStream
 import java.util.zip.GZIPOutputStream
+import javax.servlet.http.HttpServletResponse
 
 class ClientBundleHandler(context: PeriscopeGatewayContext) :
     SessionRouteHandler(context, "application/json") {
@@ -57,16 +57,16 @@ class ClientBundleHandler(context: PeriscopeGatewayContext) :
     }
 
     private fun buildBundle(projectName: String, hash: String): ByteArray? {
-        val collection = context.projectManager.findClientResources(projectName) ?: return null
-        if (context.clientResourceHash(collection) != hash) {
+        val project = context.projectManager.findClientResources(projectName) ?: return null
+        if (context.clientResourceHash(project) != hash) {
             return null
         }
 
         val json =
             JsonObject().apply {
                 addProperty("hash", hash)
-                add("manifest", context.clientResourceManifests.createManifest(collection, hash))
-                add("modules", createModules(projectName, collection, hash))
+                add("manifest", context.clientResourceManifests.createManifest(project, hash))
+                add("modules", createModules(projectName, project, hash))
             }
 
         val bundle = gzip(json.toString())
@@ -76,13 +76,13 @@ class ClientBundleHandler(context: PeriscopeGatewayContext) :
 
     private fun createModules(
         projectName: String,
-        collection: RuntimeResourceCollection,
+        project: RuntimeProject,
         hash: String,
     ): JsonObject {
         val rewriter = ClientResourceImportRewriter(projectName, hash)
         val modules = JsonObject()
 
-        for (resource in collection.getResourcesOfType(ClientResource.type)) {
+        for (resource in project.getResourcesOfType(ClientResource.type)) {
             val clientResource = context.clientResourceManager.fromResource(resource) ?: continue
             val compiled = clientResource.fileContents.compiled
             if (clientResource.contentType.contains("javascript") && compiled.isNotEmpty()) {

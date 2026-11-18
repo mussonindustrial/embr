@@ -3,10 +3,10 @@ package com.mussonindustrial.ignition.embr.periscope.component
 import com.inductiveautomation.ignition.common.gson.JsonObject
 import com.inductiveautomation.ignition.common.jsonschema.JsonSchema
 import com.inductiveautomation.ignition.common.model.ApplicationScope
-import com.inductiveautomation.ignition.common.resourcecollection.ChangeOperation
-import com.inductiveautomation.ignition.common.resourcecollection.ResourceFilter
-import com.inductiveautomation.ignition.common.resourcecollection.ResourceListener
+import com.inductiveautomation.ignition.common.project.ChangeOperation
+import com.inductiveautomation.ignition.common.project.ProjectResourceListener
 import com.inductiveautomation.ignition.designer.model.DesignerContext
+import com.inductiveautomation.ignition.gateway.project.ResourceFilter
 import com.inductiveautomation.perspective.common.api.ComponentDescriptor
 import com.inductiveautomation.perspective.common.api.ComponentEventDescriptor
 import com.inductiveautomation.perspective.common.api.ExtensionFunctionDescriptor
@@ -27,7 +27,6 @@ import java.util.concurrent.ScheduledFuture
 import java.util.concurrent.TimeUnit
 import javax.swing.Icon
 import javax.swing.SwingUtilities.invokeLater
-import kotlin.jvm.optionals.getOrNull
 
 class LibraryComponentRegistry(
     private val context: DesignerContext,
@@ -42,7 +41,7 @@ class LibraryComponentRegistry(
     }
 
     private val viewListener =
-        object : ResourceListener {
+        object : ProjectResourceListener {
             override fun resourcesCreated(
                 projectName: String,
                 changes: List<ChangeOperation.CreateResourceOperation>,
@@ -74,7 +73,7 @@ class LibraryComponentRegistry(
 
     fun startup() {
         ComponentIcons.onImageLoaded = { invokeLater { context.frame.repaint() } }
-        context.project?.addResourceListener(viewListener)
+        context.project?.addProjectResourceListener(viewListener)
         viewsChanged()
 
         workspace.addChangeListener(workspaceListener)
@@ -82,7 +81,7 @@ class LibraryComponentRegistry(
     }
 
     fun shutdown() {
-        context.project?.removeResourceListener(viewListener)
+        context.project?.removeProjectResourceListener(viewListener)
         workspace.removeChangeListener(workspaceListener)
         executor.shutdownNow()
         ComponentIcons.onImageLoaded = {}
@@ -119,7 +118,7 @@ class LibraryComponentRegistry(
         val views = context.project?.getResourcesOfType(VIEWS).orEmpty()
         val usedIds = mutableSetOf<String>()
         for (view in views) {
-            val viewJson = view.getData(VIEW_FILE).getOrNull()?.bytesAsString.orEmpty()
+            val viewJson = view.getData(VIEW_FILE)?.decodeToString().orEmpty()
             usedIds += LibraryComponents.usedIn(viewJson)
         }
         return usedIds

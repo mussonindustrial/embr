@@ -2,24 +2,23 @@ package com.mussonindustrial.ignition.embr.periscope.component
 
 import com.inductiveautomation.ignition.common.gson.JsonObject
 import com.inductiveautomation.ignition.common.model.ApplicationScope
-import com.inductiveautomation.ignition.common.resourcecollection.Resource
-import com.inductiveautomation.ignition.common.resourcecollection.ResourceFilter
-import com.inductiveautomation.ignition.common.resourcecollection.ResourceId
-import com.inductiveautomation.ignition.common.resourcecollection.RuntimeResourceCollection
+import com.inductiveautomation.ignition.common.project.RuntimeProject
+import com.inductiveautomation.ignition.common.project.resource.ProjectResource
+import com.inductiveautomation.ignition.common.project.resource.ProjectResourceId
+import com.inductiveautomation.ignition.gateway.project.ProjectLifecycle
+import com.inductiveautomation.ignition.gateway.project.ProjectLifecycleFactory
 import com.inductiveautomation.ignition.gateway.project.ProjectManager
-import com.inductiveautomation.ignition.gateway.resourcecollection.ResourceCollectionLifecycle
-import com.inductiveautomation.ignition.gateway.resourcecollection.ResourceCollectionLifecycleFactory
+import com.inductiveautomation.ignition.gateway.project.ResourceFilter
 import com.inductiveautomation.perspective.gateway.api.ComponentModelDelegateFactory
 import com.inductiveautomation.perspective.gateway.api.PerspectiveContext
 import com.mussonindustrial.embr.common.logging.getLoggerEx
 import java.util.concurrent.ConcurrentHashMap
-import kotlin.jvm.optionals.getOrNull
 
 class LibraryComponentTypes(
     private val perspective: PerspectiveContext,
     private val delegateFactory: ComponentModelDelegateFactory,
     projectManager: ProjectManager,
-) : ResourceCollectionLifecycleFactory<ResourceCollectionLifecycle>(projectManager) {
+) : ProjectLifecycleFactory<ProjectLifecycle>(projectManager) {
 
     private val logger = this.getLoggerEx()
     private val viewFilter = ResourceFilter(ApplicationScope.ALL, listOf(LibraryComponents.VIEWS))
@@ -30,10 +29,8 @@ class LibraryComponentTypes(
         return viewFilter
     }
 
-    override fun createLifecycle(
-        collection: RuntimeResourceCollection,
-    ): ResourceCollectionLifecycle {
-        return Project(collection)
+    override fun createProjectLifecycle(project: RuntimeProject): ProjectLifecycle {
+        return Project(project)
     }
 
     fun clear() {
@@ -86,55 +83,54 @@ class LibraryComponentTypes(
         perspective.componentModelDelegateRegistry.remove(type)
     }
 
-    inner class Project(private val collection: RuntimeResourceCollection) :
-        ResourceCollectionLifecycle(collection) {
+    inner class Project(project: RuntimeProject) : ProjectLifecycle(project) {
 
         private val componentsByView = mutableMapOf<String, Set<String>>()
 
-        override fun onStartup(resources: List<Resource>) {
+        override fun onStartup(resources: List<ProjectResource>) {
             readViews(resources)
         }
 
-        override fun onShutdown(resourceIds: List<ResourceId>) {
-            componentsByProject.remove(collection.name)
+        override fun onShutdown(resourceIds: List<ProjectResourceId>) {
+            componentsByProject.remove(project.name)
             updateRegistry()
         }
 
-        override fun onResourcesCreated(resources: List<Resource>) {
+        override fun onResourcesCreated(resources: List<ProjectResource>) {
             readViews(resources)
         }
 
-        override fun onResourcesModified(resources: List<Resource>) {
+        override fun onResourcesModified(resources: List<ProjectResource>) {
             readViews(resources)
         }
 
-        override fun onResourcesDeleted(resources: List<ResourceId>) {
+        override fun onResourcesDeleted(resources: List<ProjectResourceId>) {
             resources
                 .filter { it.resourceType == LibraryComponents.VIEWS }
                 .forEach { componentsByView.remove(it.resourcePath.path.toString()) }
             updateProject()
         }
 
-        private fun readViews(resources: List<Resource>) {
+        private fun readViews(resources: List<ProjectResource>) {
             resources
                 .filter { it.resourceType == LibraryComponents.VIEWS }
                 .forEach { componentsByView[it.resourcePath.path.toString()] = findComponents(it) }
             updateProject()
         }
 
-        private fun findComponents(view: Resource): Set<String> {
-            val data = view.getData(LibraryComponents.VIEW_FILE).getOrNull() ?: return emptySet()
-            val viewJson = data.bytesAsString ?: return emptySet()
+        private fun findComponents(view: ProjectResource): Set<String> {
+            val viewJson =
+                view.getData(LibraryComponents.VIEW_FILE)?.decodeToString() ?: return emptySet()
             return LibraryComponents.usedIn(viewJson).toSet()
         }
 
         private fun updateProject() {
             val usedComponents = componentsByView.values.flatten().toSet()
-            if (componentsByProject[collection.name] == usedComponents) {
+            if (componentsByProject[project.name] == usedComponents) {
                 return
             }
 
-            componentsByProject[collection.name] = usedComponents
+            componentsByProject[project.name] = usedComponents
             updateRegistry()
         }
     }
