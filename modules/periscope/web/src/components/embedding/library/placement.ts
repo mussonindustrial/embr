@@ -1,4 +1,4 @@
-import type { Point } from '@inductiveautomation/perspective-common'
+import type { Point } from '@inductiveautomation/perspective-client'
 import { DesignerComponentStore } from '@inductiveautomation/perspective-designer'
 
 import type { PositionChange, ResizeHandle } from '@/api/periscopeApi'

@@ -6,7 +6,7 @@ import {
 import type {
   DetailedRectangle,
   Point,
-} from '@inductiveautomation/perspective-common'
+} from '@inductiveautomation/perspective-client'
 import {
   ContainerDesignDelegate,
   DeepSelection,

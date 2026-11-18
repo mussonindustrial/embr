@@ -4,18 +4,24 @@ import com.inductiveautomation.ignition.common.gson.JsonObject
 import com.inductiveautomation.ignition.gateway.dataroutes.RequestContext
 import com.inductiveautomation.perspective.gateway.comm.Routes
 import com.inductiveautomation.perspective.gateway.session.InternalSession
+import com.inductiveautomation.perspective.gateway.session.PerspectiveSessionCollection
 import com.mussonindustrial.embr.common.logging.getLoggerEx
+import com.mussonindustrial.embr.common.reflect.getPrivateMethod
 import com.mussonindustrial.embr.gateway.api.sendSuccess
 import com.mussonindustrial.ignition.embr.periscope.PeriscopeGatewayContext
 import com.mussonindustrial.ignition.embr.periscope.resources.ClientResource
 import com.mussonindustrial.ignition.embr.periscope.utils.findClientResources
+import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
+import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
 class ClientResourceHashHandler(context: PeriscopeGatewayContext) :
     SessionRouteHandler(context, "application/json") {
 
     val logger = this.getLoggerEx()
+    private val getSession =
+        Routes::class.java.getPrivateMethod("getSession", HttpServletRequest::class.java)
 
     override fun respond(request: RequestContext, response: HttpServletResponse) {
         logger.trace("Client Resource hash request: $request")
@@ -47,7 +53,8 @@ class ClientResourceHashHandler(context: PeriscopeGatewayContext) :
     }
 
     private fun findProjectSession(request: RequestContext, projectName: String): InternalSession? {
-        val session = Routes.getSession(request.request).getOrNull() ?: return null
+        val sessions = getSession.invoke(null, request.request) as Optional<*>
+        val session = sessions.getOrNull() as? PerspectiveSessionCollection ?: return null
         return session.findProjectSession(projectName).getOrNull()
     }
 }
