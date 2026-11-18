@@ -7,7 +7,7 @@ import type { Values } from './shared'
 export type Box = { x: number; y: number; width: number; height: number }
 
 export type SlotOptions = {
-  getPosition?: (change: PositionChange) => Values
+  positionChild?: (change: PositionChange) => Values
   resize?: boolean | ResizeHandle[]
 }
 
@@ -18,6 +18,7 @@ export const PLACEHOLDER = 'data-embr-placeholder'
 export const DROP_ACTIVE = 'data-embr-drop-active'
 
 const GRID_LINE = /^-?\d+$/
+const SIZES = ['width', 'height'] as const
 
 export const slotOptions = new WeakMap<Element, SlotOptions>()
 
@@ -213,31 +214,52 @@ export function dropIndexAt(
   return next?.index ?? placed[placed.length - 1].index + 1
 }
 
+function withoutUnchangedSize(
+  position: Values,
+  bounds: Box,
+  reason: PositionChange['reason']
+): Values {
+  if (reason === 'resize') {
+    return position
+  }
+
+  const kept = { ...position }
+
+  for (const name of SIZES) {
+    if (kept[name] === bounds[name]) {
+      delete kept[name]
+    }
+  }
+
+  return kept
+}
+
 export function childPositionAt(
   zone: Element | undefined,
   client: Box | undefined,
   reason: PositionChange['reason']
 ): Values {
   const declared = declaredPosition(zone)
-  const getPosition =
-    zone == null ? undefined : slotOptions.get(zone)?.getPosition
+  const positionChild =
+    zone == null ? undefined : slotOptions.get(zone)?.positionChild
 
-  if (getPosition == null || zone == null || client == null) {
+  if (positionChild == null || zone == null || client == null) {
     return declared
   }
 
   const element = zone as HTMLElement
+  const bounds = boxInZone(zone, client)
 
   try {
-    const position = getPosition({
-      bounds: boxInZone(zone, client),
+    const position = positionChild({
+      bounds,
       slot: { width: element.clientWidth, height: element.clientHeight },
       reason,
     })
 
-    return { ...declared, ...position }
+    return { ...declared, ...withoutUnchangedSize(position, bounds, reason) }
   } catch (error) {
-    console.error('Error placing child', error)
+    console.error('Error positioning child', error)
     return declared
   }
 }

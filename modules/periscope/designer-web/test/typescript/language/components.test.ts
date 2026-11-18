@@ -254,7 +254,7 @@ describe('Library components', () => {
   it('types where a child slot places and resizes its children', async () => {
     const source = slots.replace(
       'as="ul"',
-      "as=\"ul\" resize={['e', 's']} getPosition={({ bounds, slot, reason }) => ({ slot: reason === 'move' && bounds.x > slot.width / 2 && title ? 'header' : 'content' })}"
+      "as=\"ul\" resize={['e', 's']} positionChild={({ bounds, slot, reason }) => ({ slot: reason === 'move' && bounds.x > slot.width / 2 && title ? 'header' : 'content' })}"
     )
 
     expect(await errorsOf(source)).toEqual([])
