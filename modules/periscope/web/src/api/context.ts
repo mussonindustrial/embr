@@ -15,7 +15,7 @@ import type {
 
 type Values = Record<string, unknown>
 
-const DESIGN_ONLY_PROPS = ['getPosition', 'resize', 'placeholder']
+const DESIGN_ONLY_PROPS = ['positionChild', 'resize', 'placeholder']
 
 export const ComponentReactContext = createContext<ComponentContext | null>(
   null

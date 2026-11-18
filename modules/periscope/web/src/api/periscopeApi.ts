@@ -287,14 +287,16 @@ export type ChildSlotProps<C extends PropSchema = PropSchema> = Omit<
    */
   where?: Partial<InferProps<C>>
   /**
-   * Chooses the position props of a child from the bounds it is dropped, moved
-   * or resized to in the Designer, such as its coordinates or the cell of a
-   * grid. The result is set over the `where` of the slot.
+   * Positions a child the Designer drops, moves or resizes in the slot: returns
+   * its position props for the new bounds, such as its coordinates or the cell
+   * of a grid. The result is set over the `where` of the slot. On a drop or
+   * move, a `width` or `height` equal to the bounds is left out, so a child
+   * keeps its size props until it is resized.
    */
-  getPosition?: (change: PositionChange) => Partial<InferProps<C>>
+  positionChild?: (change: PositionChange) => Partial<InferProps<C>>
   /**
-   * Shows handles that resize a child in the Designer, which calls `getPosition`
-   * with the new bounds. `true` shows all eight.
+   * Shows handles that resize a child in the Designer, which calls
+   * `positionChild` with the new bounds. `true` shows all eight.
    */
   resize?: boolean | ResizeHandle[]
   /** Shown in the Designer while the slot has no children. */

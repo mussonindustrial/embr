@@ -44,7 +44,7 @@ export const ChildSlot = forwardRef<HTMLElement, ChildSlotProps>(
     {
       as,
       where,
-      getPosition,
+      positionChild,
       resize,
       placeholder,
       children: renderChild,
@@ -69,7 +69,7 @@ export const ChildSlot = forwardRef<HTMLElement, ChildSlotProps>(
       }
 
       slotOptions.set(element.current, {
-        getPosition: getPosition as SlotOptions['getPosition'],
+        positionChild: positionChild as SlotOptions['positionChild'],
         resize,
       })
     })
