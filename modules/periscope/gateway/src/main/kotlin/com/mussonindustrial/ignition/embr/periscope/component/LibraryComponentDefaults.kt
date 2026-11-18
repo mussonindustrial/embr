@@ -91,25 +91,32 @@ class LibraryComponentDefaults(private val perspective: PerspectiveContext) :
     }
 
     override fun create(component: Component): ComponentModelDelegate {
-        applyDefaults(component)
-        return noModelDelegate()
-    }
-
-    private fun applyDefaults(component: Component) {
         val key = PageKey(component.session.sessionId, component.page.id)
         val componentId = LibraryComponents.idOf(component.type)
-        val definition = definitionsByPage[key]?.get(componentId) ?: return
+        val definition = definitionsByPage[key]?.get(componentId) ?: return noModelDelegate()
 
         component.getPropertyTreeOf(PropertyType.props)?.let {
             fillMissing(it, definition.defaults)
         }
 
-        val positionDefaults = definition.positionDefaults ?: return
-        component.children.forEach { child ->
-            child.getPropertyTreeOf(PropertyType.position)?.let {
-                fillMissing(it, positionDefaults)
+        val positionDefaults = definition.positionDefaults ?: return noModelDelegate()
+        return PositionDefaultsDelegate(component, positionDefaults)
+    }
+
+    private inner class PositionDefaultsDelegate(
+        component: Component,
+        private val positionDefaults: JsonObject,
+    ) : ComponentModelDelegate(component) {
+
+        override fun onStartup() {
+            component.children.forEach { child ->
+                child.getPropertyTreeOf(PropertyType.position)?.let {
+                    fillMissing(it, positionDefaults)
+                }
             }
         }
+
+        override fun onShutdown() {}
     }
 
     @Suppress("UNCHECKED_CAST")
