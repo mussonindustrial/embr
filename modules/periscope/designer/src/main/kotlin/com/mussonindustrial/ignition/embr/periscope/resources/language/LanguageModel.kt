@@ -138,6 +138,7 @@ data class ComponentInfo(
     val name: String,
     val description: String? = null,
     val icon: String? = null,
+    val library: String? = null,
     val category: String? = null,
     val defaultSize: ComponentSize? = null,
     val source: String? = null,
@@ -153,9 +154,20 @@ data class ComponentFailure(val path: String, val message: String)
 
 data class ComponentsRequest(val revision: Int?)
 
+data class ComponentLibraryInfo(
+    val path: String,
+    val namespace: String,
+    val name: String? = null,
+    val icon: String? = null,
+) {
+    val displayName: String
+        get() = name ?: namespace
+}
+
 data class ComponentsResult(
     val revision: Int,
     val components: List<ComponentInfo>?,
+    val libraries: List<ComponentLibraryInfo>?,
     val failures: List<ComponentFailure>?,
 )
 

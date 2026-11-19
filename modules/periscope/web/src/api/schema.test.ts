@@ -208,6 +208,26 @@ describe('defineComponent', () => {
     expect(library('acme', [])).not.toThrow()
   })
 
+  it('keeps the icon of a library', () => {
+    const { api } = define()
+    const library = (icon: unknown) =>
+      api.defineComponentLibrary({ namespace: 'acme', icon, components: [] } as never)
+
+    expect(library('material/home').icon).toBe('material/home')
+    expect(library(undefined)).not.toHaveProperty('icon')
+    expect(() => library(42)).toThrow('icon must be a string')
+  })
+
+  it('keeps the name of a library', () => {
+    const { api } = define()
+    const library = (name: unknown) =>
+      api.defineComponentLibrary({ namespace: 'acme', name, components: [] } as never)
+
+    expect(library('Acme Controls').name).toBe('Acme Controls')
+    expect(library(undefined)).not.toHaveProperty('name')
+    expect(() => library(42)).toThrow('name must be a string')
+  })
+
   it('reports a name used by both a prop and an event', () => {
     const { api, created } = define()
     api.defineComponent({

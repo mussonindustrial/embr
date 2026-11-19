@@ -501,6 +501,10 @@ const LIBRARY_COMPONENTS =
 const LIBRARY_NAMESPACE =
   'The namespace must start with a letter and contain only letters, digits, - and _'
 
+const LIBRARY_NAME = 'The name must be a string'
+
+const LIBRARY_ICON = 'The icon must be a string, such as `material/home`'
+
 const NAMESPACE = /^[A-Za-z][\w-]*$/
 
 const LIBRARY = Symbol.for('embr.periscope.component-library')
@@ -518,6 +522,10 @@ function isLibraryComponent(value: unknown): value is LibraryComponent {
 export type ComponentLibrary = {
   /** Qualifies the ids of the library's components, such as `acme.button`. */
   readonly namespace: string
+  /** The name shown in the Designer. Defaults to the namespace. */
+  readonly name?: string
+  /** The icon shown in the Designer, as `library/name`. */
+  readonly icon?: string
   /** The components that views can use. */
   readonly components: readonly LibraryComponent[]
 }
@@ -528,12 +536,22 @@ export type ComponentLibrary = {
  */
 export function defineComponentLibrary(library: {
   namespace: string
+  name?: string
+  icon?: string
   components: readonly LibraryComponent[]
 }): ComponentLibrary {
-  const { namespace, components } = library ?? {}
+  const { namespace, name, icon, components } = library ?? {}
 
   if (typeof namespace !== 'string' || !NAMESPACE.test(namespace)) {
     throw new Error(LIBRARY_NAMESPACE)
+  }
+
+  if (name !== undefined && typeof name !== 'string') {
+    throw new Error(LIBRARY_NAME)
+  }
+
+  if (icon !== undefined && typeof icon !== 'string') {
+    throw new Error(LIBRARY_ICON)
   }
 
   if (!Array.isArray(components) || !components.every(isLibraryComponent)) {
@@ -542,6 +560,8 @@ export function defineComponentLibrary(library: {
 
   return Object.freeze({
     namespace,
+    ...(name !== undefined && { name }),
+    ...(icon !== undefined && { icon }),
     components: Object.freeze([...components]),
     [LIBRARY]: true,
   })
