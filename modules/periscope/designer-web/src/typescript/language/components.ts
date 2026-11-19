@@ -10,6 +10,7 @@ import {
 import { isResource, ProjectFile } from './files'
 import {
   ComponentFailure,
+  ComponentLibraryInfo,
   ComponentsRequest,
   ComponentsResult,
   ComponentsRevision,
@@ -209,7 +210,9 @@ function duplicateDiagnostic(key: string, source: string) {
 
 function evaluateLibraries(libraries: string[]): Evaluation {
   const components = new Map<string, LibraryComponent>()
+  const componentLibraries = new Map<string, string>()
   const duplicates = new Map<string, string[]>()
+  const libraryInfos: ComponentLibraryInfo[] = []
   const failures: ComponentFailure[] = []
 
   const addComponent = (
@@ -220,6 +223,7 @@ function evaluateLibraries(libraries: string[]): Evaluation {
     const existing = components.get(key)
     if (existing == null) {
       components.set(key, component)
+      componentLibraries.set(key, library)
       return
     }
     if (existing === component) return
@@ -234,7 +238,13 @@ function evaluateLibraries(libraries: string[]): Evaluation {
     if (loaded.error != null) return
 
     try {
-      const { namespace, components: listed } = libraryOf(loaded.module.exports)
+      const {
+        namespace,
+        name,
+        icon,
+        components: listed,
+      } = libraryOf(loaded.module.exports)
+      libraryInfos.push({ path: library, namespace, name, icon })
       listed.forEach((component) => {
         const key = keyOf(namespace, component.periscope.id)
         addComponent(key, component, library)
@@ -253,10 +263,11 @@ function evaluateLibraries(libraries: string[]): Evaluation {
       ...description.diagnostics,
       ...(duplicates.get(key) ?? []),
     ]
-    return { ...description, id: key, diagnostics }
+    const library = componentLibraries.get(key)
+    return { ...description, id: key, library, diagnostics }
   })
 
-  return { components: described, failures }
+  return { components: described, libraries: libraryInfos, failures }
 }
 
 function evaluate(): ComponentsResult {

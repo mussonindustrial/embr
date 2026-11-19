@@ -183,8 +183,16 @@ export type ComponentFailure = {
   message: string
 }
 
+export type ComponentLibraryInfo = {
+  path: string
+  namespace: string
+  name?: string
+  icon?: string
+}
+
 export type ComponentsResult = ComponentsRevision & {
-  components: { id: string }[]
+  components: { id: string; library?: string }[]
+  libraries: ComponentLibraryInfo[]
   failures: ComponentFailure[]
 }
 

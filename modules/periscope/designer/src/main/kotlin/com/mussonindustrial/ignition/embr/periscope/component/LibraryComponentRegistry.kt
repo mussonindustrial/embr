@@ -18,6 +18,7 @@ import com.mussonindustrial.ignition.embr.periscope.component.LibraryComponents.
 import com.mussonindustrial.ignition.embr.periscope.component.LibraryComponents.VIEW_FILE
 import com.mussonindustrial.ignition.embr.periscope.resources.language.ComponentFailure
 import com.mussonindustrial.ignition.embr.periscope.resources.language.ComponentInfo
+import com.mussonindustrial.ignition.embr.periscope.resources.language.ComponentLibraryInfo
 import com.mussonindustrial.ignition.embr.periscope.resources.language.TypeScriptWorkspace
 import java.util.Optional
 import java.util.concurrent.CopyOnWriteArrayList
@@ -72,6 +73,9 @@ class LibraryComponentRegistry(
     var components: List<ComponentInfo> = emptyList()
         private set
 
+    var libraries: List<ComponentLibraryInfo> = emptyList()
+        private set
+
     fun startup() {
         ComponentIcons.onImageLoaded = { invokeLater { context.frame.repaint() } }
         context.project?.addResourceListener(viewListener)
@@ -89,7 +93,7 @@ class LibraryComponentRegistry(
 
         invokeLater {
             usedComponentIds = emptySet()
-            updateComponents(emptyList())
+            updateComponents(emptyList(), emptyList())
         }
     }
 
@@ -139,9 +143,14 @@ class LibraryComponentRegistry(
         }
 
         val loadedComponents = result.components ?: return
+        val loadedLibraries = result.libraries.orEmpty()
         reportFailures(result.failures.orEmpty())
         loadedRevision = result.revision
-        invokeLater { if (!executor.isShutdown) updateComponents(loadedComponents) }
+        invokeLater {
+            if (executor.isShutdown) return@invokeLater
+            ComponentIcons.setLibraryIcons(loadedLibraries.associate { it.path to it.icon })
+            updateComponents(loadedComponents, loadedLibraries)
+        }
     }
 
     private fun reportFailures(failures: List<ComponentFailure>) {
@@ -154,9 +163,13 @@ class LibraryComponentRegistry(
         workspace.notifyEvaluated()
     }
 
-    private fun updateComponents(loadedComponents: List<ComponentInfo>) {
-        val changed = loadedComponents != components
+    private fun updateComponents(
+        loadedComponents: List<ComponentInfo>,
+        loadedLibraries: List<ComponentLibraryInfo>,
+    ) {
+        val changed = loadedComponents != components || loadedLibraries != libraries
         components = loadedComponents
+        libraries = loadedLibraries
         registerComponents()
 
         if (changed) listeners.forEach { it() }
