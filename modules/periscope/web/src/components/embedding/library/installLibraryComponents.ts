@@ -9,6 +9,7 @@ import { waitForClientResourceStore } from '@/util'
 import { LibraryComponentDesignDelegate } from './design'
 import { LibraryComponentMeta } from './LibraryComponentMeta'
 import { DROP_ACTIVE, PLACEHOLDER } from './placement'
+import { ANIMATIONS_PAUSED } from './shared'
 
 const STYLES = `
 [${PLACEHOLDER}] {
@@ -28,6 +29,12 @@ const STYLES = `
 [${DROP_ACTIVE}] {
   outline: 2px solid var(--callToAction, #2e9cdb);
   outline-offset: -2px;
+}
+[${ANIMATIONS_PAUSED}],
+[${ANIMATIONS_PAUSED}] *,
+[${ANIMATIONS_PAUSED}] *::before,
+[${ANIMATIONS_PAUSED}] *::after {
+  animation-play-state: paused !important;
 }
 `
 
