@@ -19,12 +19,23 @@ internal object ComponentIcons {
 
     private val logger = this.getLoggerEx()
     private val icons = ConcurrentHashMap<String, ComponentIcon>()
+    private val libraryIcons = ConcurrentHashMap<String, ComponentIcon>()
     private val images = ConcurrentHashMap<String, CompletableFuture<BufferedImage?>>()
 
     @Volatile var onImageLoaded: () -> Unit = {}
 
     fun get(componentId: String): ComponentIcon {
         return icons.computeIfAbsent(componentId) { ComponentIcon() }
+    }
+
+    fun library(path: String): ComponentIcon {
+        return libraryIcons.computeIfAbsent(path) { ComponentIcon(PeriscopeIcons.componentLibrary) }
+    }
+
+    fun setLibraryIcons(iconNames: Map<String, String?>) {
+        for (path in libraryIcons.keys + iconNames.keys) {
+            library(path).iconName = iconNames[path]
+        }
     }
 
     fun loadImage(iconName: String): CompletableFuture<BufferedImage?> {
@@ -62,7 +73,7 @@ internal object ComponentIcons {
         }
     }
 
-    class ComponentIcon : Icon {
+    class ComponentIcon(private val fallback: Icon = PeriscopeIcons.tsx) : Icon {
 
         @Volatile private var image: BufferedImage? = null
         @Volatile private var loaded = false
@@ -95,7 +106,7 @@ internal object ComponentIcons {
         override fun paintIcon(c: Component?, g: Graphics, x: Int, y: Int) {
             val image = image
             if (image == null) {
-                PeriscopeIcons.tsx.paintIcon(c, g, x, y)
+                fallback.paintIcon(c, g, x, y)
                 return
             }
 
