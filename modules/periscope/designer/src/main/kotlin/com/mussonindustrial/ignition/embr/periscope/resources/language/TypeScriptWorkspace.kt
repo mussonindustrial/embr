@@ -9,6 +9,7 @@ import com.inductiveautomation.ignition.common.resourcecollection.ResourcePath
 import com.inductiveautomation.ignition.designer.model.DesignerContext
 import com.mussonindustrial.ignition.embr.periscope.resources.ClientResource
 import com.mussonindustrial.ignition.embr.periscope.resources.ClientResourceManager
+import com.mussonindustrial.ignition.embr.periscope.resources.ComponentLibraryResource
 import com.mussonindustrial.ignition.embr.periscope.resources.CssModuleResource
 import com.mussonindustrial.ignition.embr.periscope.resources.TypeScriptResource
 import java.util.concurrent.CompletableFuture
@@ -23,6 +24,7 @@ class TypeScriptWorkspace(
 
     private val openFiles = ConcurrentHashMap<String, ResourceFile>()
     private val changeListeners = CopyOnWriteArrayList<(String) -> Unit>()
+    private val evaluationListeners = CopyOnWriteArrayList<() -> Unit>()
 
     private val listener =
         object : ResourceListener {
@@ -52,6 +54,7 @@ class TypeScriptWorkspace(
             service.setFiles(savedFiles())
             openFiles.values.forEach(service::updateFile)
             service.warmUp()
+            changeListeners.forEach { it(ALL) }
         }
     }
 
@@ -65,6 +68,18 @@ class TypeScriptWorkspace(
 
     fun removeChangeListener(listener: (path: String) -> Unit) {
         changeListeners -= listener
+    }
+
+    fun addEvaluationListener(listener: () -> Unit) {
+        evaluationListeners += listener
+    }
+
+    fun removeEvaluationListener(listener: () -> Unit) {
+        evaluationListeners -= listener
+    }
+
+    fun notifyEvaluated() {
+        evaluationListeners.forEach { it() }
     }
 
     fun update(file: ResourceFile) {
@@ -115,10 +130,15 @@ class TypeScriptWorkspace(
         val kind =
             when (ClientResource.getType(this)) {
                 TypeScriptResource.type -> ResourceFile.TYPESCRIPT
+                ComponentLibraryResource.type -> ResourceFile.LIBRARY
                 CssModuleResource.type -> ResourceFile.CSS
                 else -> return null
             }
         val clientResource = clientResourceManager.fromResource(this) ?: return null
         return ResourceFile(resourcePath.path.toString(), kind, clientResource.fileContents.source)
+    }
+
+    companion object {
+        private const val ALL = ""
     }
 }

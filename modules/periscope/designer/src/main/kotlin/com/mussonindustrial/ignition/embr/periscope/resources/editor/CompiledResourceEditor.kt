@@ -160,9 +160,8 @@ abstract class CompiledResourceEditor<T : ClientResource>(
             runCatching { compileSource(source).get(SAVE_WAIT_SECONDS, TimeUnit.SECONDS) }
                 .onSuccess { record(source, it) }
         }
-        val output =
-            compilation?.takeIf { it.source == source && it.result.success }?.result?.output
-                ?: "/* Compilation failed */"
+        val compiled = compilation?.takeIf { it.source == source && it.result.success }?.result
+        val output = compiled?.output ?: "/* Compilation failed */"
         return descriptor.create(
             resource.fileLocations,
             CompiledResource.FileContents(source, output),

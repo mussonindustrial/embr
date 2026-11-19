@@ -1,35 +1,22 @@
 package com.mussonindustrial.ignition.embr.periscope.handlers
 
-import com.inductiveautomation.ignition.common.model.ApplicationScope
-import com.inductiveautomation.ignition.common.resourcecollection.ResourceFilter
 import com.inductiveautomation.ignition.common.resourcecollection.ResourcePath
-import com.inductiveautomation.ignition.gateway.dataroutes.HttpMethod
 import com.inductiveautomation.ignition.gateway.dataroutes.RequestContext
-import com.inductiveautomation.ignition.gateway.dataroutes.RouteGroup
-import com.inductiveautomation.ignition.gateway.dataroutes.RouteHandler
-import com.inductiveautomation.perspective.gateway.api.SessionScope
 import com.mussonindustrial.embr.common.logging.getLoggerEx
 import com.mussonindustrial.ignition.embr.periscope.PeriscopeGatewayContext
 import com.mussonindustrial.ignition.embr.periscope.js.ClientResourceImportRewriter
 import com.mussonindustrial.ignition.embr.periscope.resources.ClientResource
+import com.mussonindustrial.ignition.embr.periscope.utils.findClientResources
 import jakarta.servlet.http.HttpServletResponse
 import java.net.URLDecoder
-import java.util.EnumSet
+import kotlin.jvm.optionals.getOrNull
 
-class ClientResourceHandler(val context: PeriscopeGatewayContext) : RouteHandler {
+class ClientResourceHandler(context: PeriscopeGatewayContext) :
+    SessionRouteHandler(context, "text/javascript") {
 
     val logger = this.getLoggerEx()
 
-    fun mount(mounter: RouteGroup.RouteMounter) {
-        mounter
-            .method(HttpMethod.GET)
-            .type("text/javascript")
-            .accessControl(context.requireSession(EnumSet.allOf(SessionScope::class.java)))
-            .handler(this)
-            .mount()
-    }
-
-    override fun handle(request: RequestContext, response: HttpServletResponse) {
+    override fun respond(request: RequestContext, response: HttpServletResponse) {
         logger.trace("Client Resource request: $request")
 
         val hash =
@@ -49,12 +36,9 @@ class ClientResourceHandler(val context: PeriscopeGatewayContext) : RouteHandler
 
         val resource =
             context.projectManager
-                .find(
-                    projectName,
-                    ResourceFilter(ApplicationScope.ALL, listOf(ClientResource.type)),
-                )
-                .flatMap { it.getResource(ResourcePath(ClientResource.type, resourceName)) }
-                .orElse(null)
+                .findClientResources(projectName)
+                ?.getResource(ResourcePath(ClientResource.type, resourceName))
+                ?.getOrNull()
 
         if (resource == null) {
             response.sendError(
@@ -79,7 +63,7 @@ class ClientResourceHandler(val context: PeriscopeGatewayContext) : RouteHandler
         response.apply {
             contentType = clientResource.contentType
             characterEncoding = Charsets.UTF_8.name()
-            setHeader("Cache-Control", "public, max-age=604800, immutable")
+            cacheForever()
             writer.use { it.write(data) }
         }
     }

@@ -1,4 +1,5 @@
 import { completionDetails, completions } from './completions'
+import { describeComponents } from './components'
 import { codeFixes, diagnostics } from './diagnostics'
 import {
   formatOnType,
@@ -9,7 +10,6 @@ import {
 import { classifications, inlayHints, quickInfo, signatureHelp } from './hints'
 import {
   definition,
-  reactComponentNames,
   highlights,
   outline,
   references,
@@ -35,7 +35,6 @@ export const languageService = {
   warmUp,
   jsxClosingTag,
   outline,
-  reactComponentNames,
   symbols,
   inlayHints,
   classifications,
@@ -49,4 +48,5 @@ export const languageService = {
   signatureHelp,
   codeFixes,
   organizeImports,
+  describeComponents,
 }

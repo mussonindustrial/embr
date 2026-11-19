@@ -5,7 +5,6 @@ import { outlineOf } from './outline'
 import { files, service, sourceFileOf, textOf } from './workspace'
 import {
   DefinitionResult,
-  ExportsResult,
   FileRequest,
   HighlightsResult,
   OutlineResult,
@@ -16,7 +15,6 @@ import {
 } from './protocol'
 
 const MAX_SYMBOLS = 100
-const REACT_COMPONENT = 'ReactComponent'
 
 export async function definition({
   path,
@@ -72,35 +70,6 @@ export async function outline({ path }: FileRequest): Promise<OutlineResult> {
   const sourceFile = sourceFileOf(fileName)
   if (sourceFile == null) return { items: [] }
   return { items: outlineOf(service.getNavigationTree(fileName), sourceFile) }
-}
-
-export async function reactComponentNames({
-  path,
-}: FileRequest): Promise<ExportsResult> {
-  const checker = service.getProgram()?.getTypeChecker()
-  const sourceFile = sourceFileOf(files.fileNameOf(path))
-  const module = sourceFile && checker?.getSymbolAtLocation(sourceFile)
-  if (checker == null || module == null) return { names: [] }
-
-  const isReactComponent = (symbol: ts.Symbol) => {
-    const isAlias = symbol.flags & ts.SymbolFlags.Alias
-    const target = isAlias ? checker.getAliasedSymbol(symbol) : symbol
-    if (!(target.flags & ts.SymbolFlags.Value)) return false
-
-    const type = checker.getTypeOfSymbol(target).aliasSymbol
-    return (
-      type?.name === REACT_COMPONENT &&
-      type.declarations?.some(
-        (declaration) => !isResource(declaration.getSourceFile().fileName)
-      )
-    )
-  }
-  return {
-    names: checker
-      .getExportsOfModule(module)
-      .filter(isReactComponent)
-      .map((symbol) => symbol.name),
-  }
 }
 
 export async function symbols({
