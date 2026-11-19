@@ -16,9 +16,14 @@ import type { RootOptions } from '@/api/root'
 export type Values = Record<string, unknown>
 export type Perspective = ComponentProps<Values & { events?: ComponentEvents }>
 
+export const ANIMATIONS_PAUSED = 'data-embr-animations-paused'
+
 type RootRef = (element: HTMLElement | null) => void
 type ElementRef = NonNullable<Ref<HTMLElement>>
-type RootAttributes = HTMLAttributes<HTMLElement> & { ref?: RootRef }
+type RootAttributes = HTMLAttributes<HTMLElement> & {
+  ref?: RootRef
+  [ANIMATIONS_PAUSED]?: string
+}
 
 type DesignerState = {
   isPreviewing?: boolean
@@ -79,7 +84,11 @@ export function rootAttributes(
     style: options?.style ?? {},
   }) as HTMLAttributes<HTMLElement> & { ref?: Ref<HTMLElement> }
 
-  const { ref: ownRef, ...attributes } = emitted
+  const { ref: ownRef, ...emittedAttributes } = emitted
+  const attributes: RootAttributes =
+    currentMode() === 'design'
+      ? { ...emittedAttributes, [ANIMATIONS_PAUSED]: '' }
+      : emittedAttributes
   const givenRef = options?.ref
 
   if (ownRef == null && givenRef == null) {
