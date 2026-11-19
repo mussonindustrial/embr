@@ -1,7 +1,7 @@
 import { ResourceFile, ResourceKind } from './protocol'
 import { cssModuleDeclaration } from './cssModuleDeclaration'
 
-type ProjectFile = {
+export type ProjectFile = {
   path: string
   text: string
   version: number
@@ -11,6 +11,7 @@ const extensions: Record<ResourceKind, string> = {
   typescript: '.tsx',
   javascript: '.jsx',
   css: '.d.ts',
+  library: '.tsx',
 }
 
 export const RESOURCE_ROOT = '/src/'
@@ -35,10 +36,15 @@ function textOf({ kind, source }: ResourceFile) {
 export class WorkspaceFiles {
   private readonly files = new Map<string, ProjectFile>()
   private readonly fileNamesByPath = new Map<string, string>()
+  private readonly libraryPaths = new Set<string>()
   private nextVersion = 1
 
   get fileNames() {
     return [...this.files.keys()]
+  }
+
+  get libraries() {
+    return [...this.libraryPaths]
   }
 
   get(fileName: string) {
@@ -66,6 +72,7 @@ export class WorkspaceFiles {
     if (fileName == null) return
     this.files.delete(fileName)
     this.fileNamesByPath.delete(path)
+    this.libraryPaths.delete(path)
   }
 
   update(file: ResourceFile) {
@@ -75,6 +82,8 @@ export class WorkspaceFiles {
       this.remove(file.path)
     }
     this.fileNamesByPath.set(file.path, fileName)
+    if (file.kind === 'library') this.libraryPaths.add(file.path)
+    else this.libraryPaths.delete(file.path)
     const text = textOf(file)
     if (this.files.get(fileName)?.text === text) {
       return
