@@ -9,6 +9,7 @@ import com.inductiveautomation.ignition.designer.model.SaveContext
 import com.inductiveautomation.perspective.common.PerspectiveModule
 import com.inductiveautomation.perspective.designer.DesignerComponentRegistry
 import com.inductiveautomation.perspective.designer.api.PerspectiveDesignerInterface
+import com.jidesoft.docking.DockableFrame
 import com.mussonindustrial.embr.perspective.common.component.addResourcesTo
 import com.mussonindustrial.embr.perspective.common.component.removeResourcesFrom
 import com.mussonindustrial.ignition.embr.periscope.Meta.SHORT_MODULE_ID
@@ -55,6 +56,12 @@ class PeriscopeDesignerHook : AbstractDesignerModuleHook() {
 
         logger.debug("Starting TypeScript language service...")
         this.context.startTypeScriptWorkspace()
+
+        logger.debug("Starting library components...")
+        this.context.startLibraryComponents()
+
+        logger.debug("Starting component palette...")
+        this.context.startComponentPalette()
     }
 
     override fun notifyProjectSaveStart(save: SaveContext) {
@@ -77,8 +84,18 @@ class PeriscopeDesignerHook : AbstractDesignerModuleHook() {
         logger.debug("Removing AWT event listeners...")
         this.context.removeAWTEventListeners()
 
+        logger.debug("Stopping component palette...")
+        this.context.stopComponentPalette()
+
+        logger.debug("Stopping library components...")
+        this.context.stopLibraryComponents()
+
         logger.debug("Stopping TypeScript language service...")
         this.context.stopTypeScriptWorkspace()
+    }
+
+    override fun getFrames(): List<DockableFrame> {
+        return listOf(context.componentPalette)
     }
 
     override fun getResourceIcon(id: ResourceId): Icon? {

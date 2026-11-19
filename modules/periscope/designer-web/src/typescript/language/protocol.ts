@@ -1,6 +1,6 @@
 import { Diagnostic } from '../../compiler/protocol'
 
-export type ResourceKind = 'typescript' | 'javascript' | 'css'
+export type ResourceKind = 'typescript' | 'javascript' | 'css' | 'library'
 
 export type ResourceFile = {
   path: string
@@ -170,8 +170,30 @@ export type OutlineResult = {
   items: OutlineItem[]
 }
 
-export type ExportsResult = {
-  names: string[]
+export type ComponentsRequest = {
+  revision?: number
+}
+
+export type ComponentsRevision = {
+  revision: number
+}
+
+export type ComponentFailure = {
+  path: string
+  message: string
+}
+
+export type ComponentLibraryInfo = {
+  path: string
+  namespace: string
+  name?: string
+  icon?: string
+}
+
+export type ComponentsResult = ComponentsRevision & {
+  components: { id: string; library?: string }[]
+  libraries: ComponentLibraryInfo[]
+  failures: ComponentFailure[]
 }
 
 export type SymbolsRequest = {

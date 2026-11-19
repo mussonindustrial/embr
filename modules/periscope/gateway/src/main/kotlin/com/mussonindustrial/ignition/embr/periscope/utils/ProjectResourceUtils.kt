@@ -1,19 +1,30 @@
 package com.mussonindustrial.ignition.embr.periscope.utils
 
+import com.inductiveautomation.ignition.common.model.ApplicationScope
 import com.inductiveautomation.ignition.common.resourcecollection.Resource
 import com.inductiveautomation.ignition.common.resourcecollection.ResourceCollection
+import com.inductiveautomation.ignition.common.resourcecollection.ResourceFilter
+import com.inductiveautomation.ignition.common.resourcecollection.RuntimeResourceCollection
+import com.inductiveautomation.ignition.gateway.project.ProjectManager
 import com.mussonindustrial.ignition.embr.periscope.resources.ClientResource
 import java.security.MessageDigest
+import kotlin.jvm.optionals.getOrNull
 import kotlin.sequences.forEach
 import org.apache.commons.codec.binary.Hex
+
+fun ProjectManager.findClientResources(projectName: String): RuntimeResourceCollection? {
+    val filter = ResourceFilter(ApplicationScope.ALL, listOf(ClientResource.type))
+    return find(projectName, filter).getOrNull()
+}
 
 fun Resource.getHashKey(): String {
     return Hex.encodeHexString(resourceSignature.signature.bytes).substring(0, 20)
 }
 
-fun ResourceCollection.getClientResourceHash(): String {
+fun ResourceCollection.getClientResourceHash(runtimeHash: String): String {
     val resources = this.getResourcesOfType(ClientResource.type)
     val digest = MessageDigest.getInstance("SHA-256")
+    digest.update(runtimeHash.toByteArray())
 
     resources
         .asSequence()

@@ -14,7 +14,18 @@ class SystemModule(override val name: String, override val namedExports: List<St
     companion object {
         val all =
             listOf(
-                SystemModule("periscope", listOf("resource", "toast")),
+                SystemModule(
+                    "periscope",
+                    listOf(
+                        "defineComponent",
+                        "defineComponentLibrary",
+                        "event",
+                        "prop",
+                        "resource",
+                        "toast",
+                        "useComponent",
+                    ),
+                ),
                 SystemModule("perspective", listOf("context", "createView", "sendMessage")),
             )
     }

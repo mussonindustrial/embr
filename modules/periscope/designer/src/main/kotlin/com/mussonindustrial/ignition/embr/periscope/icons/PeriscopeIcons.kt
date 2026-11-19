@@ -8,6 +8,7 @@ object PeriscopeIcons {
 
     val tsx = icon("tsx.svg")
     val css = icon("css.svg")
+    val componentLibrary = icon("component-library.svg")
     val clientResourceFolderClosed = icon("client-resource-folder-closed.svg")
     val clientResourceFolderOpened = icon("client-resource-folder-opened.svg")
 }

@@ -1,6 +1,7 @@
 package com.mussonindustrial.ignition.embr.periscope
 
 import com.codahale.metrics.health.HealthCheckRegistry
+import com.inductiveautomation.ignition.common.resourcecollection.ResourceCollection
 import com.inductiveautomation.ignition.gateway.dataroutes.AccessControlStrategy
 import com.inductiveautomation.ignition.gateway.model.DiagnosticsManager
 import com.inductiveautomation.ignition.gateway.model.GatewayContext
@@ -23,13 +24,23 @@ import com.mussonindustrial.embr.perspective.gateway.component.removeComponent
 import com.mussonindustrial.embr.perspective.gateway.reflect.ViewLoader
 import com.mussonindustrial.embr.perspective.gateway.session.PerspectiveSessionMonitor
 import com.mussonindustrial.embr.servlets.ModuleServletManager
+import com.mussonindustrial.ignition.embr.periscope.component.LibraryComponentDefaults
+import com.mussonindustrial.ignition.embr.periscope.component.LibraryComponentTypes
 import com.mussonindustrial.ignition.embr.periscope.component.embedding.*
+import com.mussonindustrial.ignition.embr.periscope.handlers.AssetHandler
+import com.mussonindustrial.ignition.embr.periscope.js.modules.GlobalModule
+import com.mussonindustrial.ignition.embr.periscope.js.modules.SystemModule
 import com.mussonindustrial.ignition.embr.periscope.resources.ClientResourceChangeListener
 import com.mussonindustrial.ignition.embr.periscope.resources.ClientResourceManager
+import com.mussonindustrial.ignition.embr.periscope.resources.ClientResourceManifests
+import com.mussonindustrial.ignition.embr.periscope.resources.ComponentLibraryResource
 import com.mussonindustrial.ignition.embr.periscope.resources.CssModuleResource
 import com.mussonindustrial.ignition.embr.periscope.resources.TypeScriptResource
+import com.mussonindustrial.ignition.embr.periscope.utils.getClientResourceHash
+import java.security.MessageDigest
 import java.util.EnumSet
 import java.util.WeakHashMap
+import org.apache.commons.codec.binary.Hex
 
 class PeriscopeGatewayContext(private val context: GatewayContext) :
     EmbrGatewayContext by EmbrGatewayContextImpl(context) {
@@ -39,6 +50,7 @@ class PeriscopeGatewayContext(private val context: GatewayContext) :
 
     val servletManager = ModuleServletManager(context.webResourceManager, "/embr/periscope")
     val clientResourceManager = ClientResourceManager()
+    val clientResourceManifests = ClientResourceManifests(clientResourceManager)
 
     val perspectiveContext: GatewayHook.PerspectiveGatewayContext
     val sessionMonitor: PerspectiveSessionMonitor
@@ -53,7 +65,11 @@ class PeriscopeGatewayContext(private val context: GatewayContext) :
         )
 
     private val clientResourceDefinitions =
-        listOf(CssModuleResource.Descriptor, TypeScriptResource.Descriptor)
+        listOf(
+            CssModuleResource.Descriptor,
+            TypeScriptResource.Descriptor,
+            ComponentLibraryResource.Descriptor,
+        )
 
     init {
         instance = this
@@ -62,8 +78,30 @@ class PeriscopeGatewayContext(private val context: GatewayContext) :
         sessionMonitor = PerspectiveSessionMonitor(perspectiveContext)
     }
 
+    val componentDefaults = LibraryComponentDefaults(perspectiveContext)
+    val assets by lazy { AssetHandler(this) }
+
+    private val runtimeHash by lazy {
+        val version = moduleManager.getModule(Meta.MODULE_ID)?.info?.version?.toString()
+        val modules = (SystemModule.all + GlobalModule.all).map { it.emit() }
+        val digest = MessageDigest.getInstance("SHA-256")
+        (listOfNotNull(version) + assets.hashes + modules).forEach {
+            digest.update(it.toByteArray())
+            digest.update(0)
+        }
+        Hex.encodeHexString(digest.digest())
+    }
+
+    fun clientResourceHash(collection: ResourceCollection) =
+        collection.getClientResourceHash(runtimeHash)
+
+    private val libraryComponentTypes =
+        LibraryComponentTypes(perspectiveContext, componentDefaults, context.projectManager)
     private val projectLifecycles =
-        listOf(ClientResourceChangeListener(sessionMonitor, context.projectManager))
+        listOf(
+            ClientResourceChangeListener(sessionMonitor, context.projectManager),
+            libraryComponentTypes,
+        )
     private val viewLoaders = WeakHashMap<PageModel, ViewLoader>()
 
     fun getViewLoader(pageModel: PageModel): ViewLoader {
@@ -82,6 +120,10 @@ class PeriscopeGatewayContext(private val context: GatewayContext) :
 
     fun removeComponents() {
         components.forEach { perspectiveContext.removeComponent(it) }
+    }
+
+    fun versionAssets() {
+        assets.version(PeriscopeComponents.REQUIRED_RESOURCES)
     }
 
     fun injectResources() {
@@ -112,6 +154,18 @@ class PeriscopeGatewayContext(private val context: GatewayContext) :
         projectLifecycles.forEach { it.shutdown() }
     }
 
+    fun startupComponentDefaults() {
+        componentDefaults.startup()
+    }
+
+    fun shutdownComponentDefaults() {
+        componentDefaults.shutdown()
+    }
+
+    fun removeLibraryComponents() {
+        libraryComponentTypes.clear()
+    }
+
     fun removeServlets() {
         servletManager.removeAllServlets()
     }
@@ -128,8 +182,10 @@ class PeriscopeGatewayContext(private val context: GatewayContext) :
         return super.getDiagnosticsManager()
     }
 
-    fun requireSession(scopes: EnumSet<SessionScope>): AccessControlStrategy {
-        val internal = Routes::class.java.getPrivateMethod("requireSession", EnumSet::class.java)
-        return internal.invoke(Routes::class.java, scopes) as AccessControlStrategy
+    val anySession: AccessControlStrategy by lazy {
+        val requireSession =
+            Routes::class.java.getPrivateMethod("requireSession", EnumSet::class.java)
+        val allScopes = EnumSet.allOf(SessionScope::class.java)
+        requireSession.invoke(Routes::class.java, allScopes) as AccessControlStrategy
     }
 }
