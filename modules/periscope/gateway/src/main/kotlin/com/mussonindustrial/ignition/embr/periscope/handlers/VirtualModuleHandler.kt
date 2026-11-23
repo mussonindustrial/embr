@@ -1,32 +1,16 @@
 package com.mussonindustrial.ignition.embr.periscope.handlers
 
-import com.inductiveautomation.ignition.gateway.dataroutes.HttpMethod
 import com.inductiveautomation.ignition.gateway.dataroutes.RequestContext
-import com.inductiveautomation.ignition.gateway.dataroutes.RouteGroup
-import com.inductiveautomation.ignition.gateway.dataroutes.RouteHandler
-import com.inductiveautomation.perspective.gateway.api.SessionScope
 import com.mussonindustrial.embr.common.logging.getLoggerEx
-import com.mussonindustrial.ignition.embr.periscope.PeriscopeGatewayContext
+import com.mussonindustrial.embr.gateway.api.cacheForever
+import com.mussonindustrial.embr.perspective.gateway.routes.SessionRouteHandler
 import com.mussonindustrial.ignition.embr.periscope.js.modules.VirtualModule
 import java.net.URLDecoder
-import java.util.EnumSet
 import javax.servlet.http.HttpServletResponse
 
-class VirtualModuleHandler(
-    val context: PeriscopeGatewayContext,
-    val modules: List<VirtualModule>,
-) : RouteHandler {
+class VirtualModuleHandler(modules: List<VirtualModule>) : SessionRouteHandler("text/javascript") {
 
-    val logger = this.getLoggerEx()
-
-    fun mount(mounter: RouteGroup.RouteMounter) {
-        mounter
-            .method(HttpMethod.GET)
-            .type("text/javascript")
-            .restrict(context.requireSession(EnumSet.allOf(SessionScope::class.java)))
-            .handler(this)
-            .mount()
-    }
+    private val logger = this.getLoggerEx()
 
     val modulesByName = modules.associateBy { it.name }
 
@@ -35,17 +19,17 @@ class VirtualModuleHandler(
 
         response.apply {
             contentType = "text/javascript"
-            setHeader("Cache-Control", "public, max-age=604800, immutable")
+            cacheForever()
             writer.use { it.write(js) }
         }
     }
 
-    override fun handle(request: RequestContext, response: HttpServletResponse) {
+    override fun respond(request: RequestContext, response: HttpServletResponse) {
         logger.trace("Virtual module request: $request")
 
         val hash =
             request.getParameter("hash")
-                ?: return response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing hash")
+                ?: return response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing hash.")
 
         val moduleName = URLDecoder.decode(request.path.substringAfter("$hash/"), Charsets.UTF_8)
 
@@ -54,6 +38,6 @@ class VirtualModuleHandler(
             return
         }
 
-        response.sendError(HttpServletResponse.SC_NOT_FOUND, "Module not found: $moduleName")
+        response.sendError(HttpServletResponse.SC_NOT_FOUND, "Module '$moduleName' not found.")
     }
 }

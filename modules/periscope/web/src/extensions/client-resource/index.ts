@@ -1,5 +1,5 @@
 import { ClientStore } from '@inductiveautomation/perspective-client'
-import { installViewClientResourceSupport } from '@/extensions'
+import { installViewClientResourceSupport } from './viewClientResourceSupport'
 import { registerStore } from '@embr-js/perspective-client'
 import { ClientResourceStore } from '@/stores'
 
