@@ -35,3 +35,20 @@ fun String.sha512() = HashUtils.sha512(this)
 fun String.sha256() = HashUtils.sha256(this)
 
 fun String.sha1() = HashUtils.sha1(this)
+
+fun ByteArray.sha256(): ByteArray {
+    return MessageDigest.getInstance("SHA-256").digest(this)
+}
+
+fun Iterable<ByteArray>.sha256Delimited(): ByteArray {
+    val digest = MessageDigest.getInstance("SHA-256")
+    forEach {
+        digest.update(it)
+        digest.update(0)
+    }
+    return digest.digest()
+}
+
+fun ByteArray.toHex(): String {
+    return joinToString("") { "%02x".format(it) }
+}

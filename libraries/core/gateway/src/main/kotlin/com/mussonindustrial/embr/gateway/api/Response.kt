@@ -60,3 +60,27 @@ fun <T : HttpServletResponse> T.sendError(message: String) {
         writer.close()
     }
 }
+
+fun <T : HttpServletResponse> T.cacheForever() {
+    setHeader("Cache-Control", "public, max-age=31536000, immutable")
+}
+
+fun <T : HttpServletResponse> T.cacheNever() {
+    setHeader("Cache-Control", "no-store")
+}
+
+fun <T : HttpServletResponse> T.cacheRevalidate() {
+    setHeader("Cache-Control", "no-cache")
+}
+
+fun <T : JavaXHttpServletResponse> T.cacheForever() {
+    setHeader("Cache-Control", "public, max-age=31536000, immutable")
+}
+
+fun <T : JavaXHttpServletResponse> T.cacheNever() {
+    setHeader("Cache-Control", "no-store")
+}
+
+fun <T : JavaXHttpServletResponse> T.cacheRevalidate() {
+    setHeader("Cache-Control", "no-cache")
+}
