@@ -4,6 +4,24 @@ import { compiler } from '../../src/typescript/compiler'
 
 describe('TypeScript Compiler', () => {
   describe('compile()', () => {
+    it('compiles a resource that defines components to what was written', async () => {
+      const source = [
+        "import * as React from 'react'",
+        "import { defineComponent, prop } from 'system:periscope'",
+        'export const cardFor = (kind: string) =>',
+        '  defineComponent({',
+        '    props: { title: prop.string().default(kind) },',
+        '    render: ({ title }, { Root }) => <Root>{title}</Root>,',
+        '  })',
+      ].join('\n')
+
+      const result = await compiler.compile({ source, path: 'cards.tsx' })
+
+      expect(result.success).toBe(true)
+      expect(result.output).toContain('defineComponent({')
+      expect(result.output).toContain('export const cardFor = (kind) =>')
+    })
+
     it('compiles TypeScript and JSX to JavaScript', async () => {
       const source = [
         "const value: string = 'hello'",

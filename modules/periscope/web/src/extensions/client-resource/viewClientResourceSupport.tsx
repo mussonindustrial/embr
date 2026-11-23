@@ -1,6 +1,6 @@
 import { View } from '@inductiveautomation/perspective-client'
 import React, { ReactElement } from 'react'
-import { ClientResourceComponent } from '@/extensions'
+import { ClientResourceComponent } from './ClientResourceComponent'
 import { unDollarQualify } from '@/util'
 
 const SUPPORT_FLAG = Symbol.for('embr.client-resource-support')

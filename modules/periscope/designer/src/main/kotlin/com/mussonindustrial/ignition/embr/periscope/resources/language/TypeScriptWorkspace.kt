@@ -9,8 +9,10 @@ import com.inductiveautomation.ignition.common.resourcecollection.ResourcePath
 import com.inductiveautomation.ignition.designer.model.DesignerContext
 import com.mussonindustrial.ignition.embr.periscope.resources.ClientResource
 import com.mussonindustrial.ignition.embr.periscope.resources.ClientResourceManager
+import com.mussonindustrial.ignition.embr.periscope.resources.ComponentResource
 import com.mussonindustrial.ignition.embr.periscope.resources.CssModuleResource
 import com.mussonindustrial.ignition.embr.periscope.resources.TypeScriptResource
+import com.mussonindustrial.ignition.embr.periscope.resources.pathString
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.CopyOnWriteArrayList
@@ -21,8 +23,13 @@ class TypeScriptWorkspace(
     val service: TypeScriptLanguageService,
 ) {
 
+    companion object {
+        private const val ALL_PATHS = ""
+    }
+
     private val openFiles = ConcurrentHashMap<String, ResourceFile>()
     private val changeListeners = CopyOnWriteArrayList<(String) -> Unit>()
+    private val evaluationListeners = CopyOnWriteArrayList<() -> Unit>()
 
     private val listener =
         object : ResourceListener {
@@ -52,6 +59,7 @@ class TypeScriptWorkspace(
             service.setFiles(savedFiles())
             openFiles.values.forEach(service::updateFile)
             service.warmUp()
+            changeListeners.forEach { it(ALL_PATHS) }
         }
     }
 
@@ -65,6 +73,18 @@ class TypeScriptWorkspace(
 
     fun removeChangeListener(listener: (path: String) -> Unit) {
         changeListeners -= listener
+    }
+
+    fun addEvaluationListener(listener: () -> Unit) {
+        evaluationListeners += listener
+    }
+
+    fun removeEvaluationListener(listener: () -> Unit) {
+        evaluationListeners -= listener
+    }
+
+    fun notifyEvaluated() {
+        evaluationListeners.forEach { it() }
     }
 
     fun update(file: ResourceFile) {
@@ -115,10 +135,11 @@ class TypeScriptWorkspace(
         val kind =
             when (ClientResource.getType(this)) {
                 TypeScriptResource.type -> ResourceFile.TYPESCRIPT
+                ComponentResource.type -> ResourceFile.COMPONENT
                 CssModuleResource.type -> ResourceFile.CSS
                 else -> return null
             }
         val clientResource = clientResourceManager.fromResource(this) ?: return null
-        return ResourceFile(resourcePath.path.toString(), kind, clientResource.fileContents.source)
+        return ResourceFile(resourcePath.pathString, kind, clientResource.fileContents.source)
     }
 }
