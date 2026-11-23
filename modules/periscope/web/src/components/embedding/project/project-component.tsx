@@ -11,8 +11,10 @@ import {
   PlainObject,
 } from '@inductiveautomation/perspective-client'
 import {
+  ComponentDelegateJavaScriptProxy,
   ComponentEvents,
   getScriptTransform,
+  JavaScriptRunEvent,
   useComponentEvents,
 } from '@embr-js/perspective-client'
 import { transformProps } from '@embr-js/utils'
@@ -23,6 +25,7 @@ import {
   createDelegateEvents,
   detachedDelegate,
   HostedComponent,
+  JavaScriptProxyHost,
   ProjectComponent,
   replaceEqualDeep,
   rootWrite,
@@ -35,6 +38,7 @@ import { ChildSlot, useChildren, useSelectedChild } from './children'
 import { currentMode } from './designer-state'
 import { ErrorBoundary } from './error-boundary'
 import type { PerspectiveProps } from './types'
+import { proxyTargetOf } from './proxy-target'
 
 type PerspectiveRef = MutableRefObject<PerspectiveProps>
 
@@ -127,6 +131,18 @@ function delegateOf(perspective: PerspectiveProps): ComponentDelegate {
   return detachedDelegate
 }
 
+function proxyOf(
+  perspective: PerspectiveProps
+): JavaScriptProxyHost | undefined {
+  const delegate = perspective.store.delegate
+
+  if (delegate instanceof ProjectComponentDelegate) {
+    return delegate.proxyHost
+  }
+
+  return undefined
+}
+
 function ResolvedComponent({
   component,
   perspective,
@@ -160,6 +176,7 @@ function ResolvedComponent({
           ChildSlot,
           mode: currentMode(),
           delegate: delegateOf(perspective),
+          proxy: proxyOf(perspective),
           attributesKey: attributesKeyOf(
             attributes.className,
             attributes.style
@@ -235,13 +252,34 @@ export function createProjectComponent(id: string) {
 
 export class ProjectComponentDelegate extends ComponentStoreDelegate {
   private readonly events = createDelegateEvents()
+  private readonly javaScriptProxy =
+    new ComponentDelegateJavaScriptProxy<object>(this)
+  private element: Element | null = null
+  private target: unknown = undefined
 
   readonly componentDelegate: ComponentDelegate = {
     fireEvent: (name, event = {}) => this.fireEvent(name, event),
     onEvent: this.events.on,
   }
 
+  readonly proxyHost: JavaScriptProxyHost = {
+    setElement: (element) => {
+      this.element = element
+    },
+    setTarget: (target) => {
+      this.target = target
+    },
+  }
+
   handleEvent(eventName: string, eventObject: Values): void {
+    if (this.javaScriptProxy.handles(eventName)) {
+      this.javaScriptProxy.setRef(proxyTargetOf(this.target, this.element))
+      this.javaScriptProxy.handleEvent(
+        eventObject as unknown as JavaScriptRunEvent
+      )
+      return
+    }
+
     this.events.emit(eventName, eventObject)
   }
 }
