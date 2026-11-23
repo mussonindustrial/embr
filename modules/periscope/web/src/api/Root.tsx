@@ -27,6 +27,7 @@ export type RootOptions = {
 export type RootHost = {
   attributes(options: RootOptions): object
   mount(): () => void
+  element?: (element: Element | null) => void
 }
 
 type RootElementProps = {
@@ -95,7 +96,7 @@ export const Root = forwardRef<HTMLElement, RootElementProps>(
     } = (child?.props ?? {}) as RootElementProps
 
     const childRef = (child as { ref?: Ref<HTMLElement> } | null)?.ref
-    const ref = useMergedRef(forwardedRef, childRef)
+    const ref = useMergedRef<HTMLElement>(forwardedRef, childRef, host.element)
 
     const attributes = mergeProps(
       host.attributes({
