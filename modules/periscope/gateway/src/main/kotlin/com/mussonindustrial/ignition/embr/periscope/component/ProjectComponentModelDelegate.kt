@@ -34,7 +34,11 @@ class ProjectComponentModelDelegate(
     private val queue = session.queue()
     private val instance = AtomicReference<ProjectComponentDelegateInstance?>()
     private val started = AtomicBoolean(false)
-    private val scriptsListener: () -> Unit = { queue.submit { restartDelegate() } }
+    private val scriptsListener: () -> Unit = {
+        if (instance.get() != null || findScript() != null) {
+            queue.submit { restartDelegate() }
+        }
+    }
 
     init {
         defaultsManager.fillProps(component)
