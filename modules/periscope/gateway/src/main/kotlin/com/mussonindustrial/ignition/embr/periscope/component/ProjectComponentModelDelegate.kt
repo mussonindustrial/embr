@@ -5,8 +5,8 @@ import com.inductiveautomation.perspective.gateway.api.Component
 import com.inductiveautomation.perspective.gateway.api.ComponentModelDelegate
 import com.inductiveautomation.perspective.gateway.messages.EventFiredMsg
 import com.inductiveautomation.perspective.gateway.model.ComponentModel
+import com.mussonindustrial.embr.perspective.gateway.component.JavaScriptProxyableComponentModelDelegate
 import java.util.AbstractSet
-import java.util.Collections
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicReference
 import org.python.core.Py
@@ -16,13 +16,18 @@ class ProjectComponentModelDelegate(
     component: Component,
     private val defaultsManager: ProjectComponentDefaultsManager,
     private val delegateScriptManager: ProjectComponentDelegateScriptManager,
-) : ComponentModelDelegate(component) {
+) : JavaScriptProxyableComponentModelDelegate(component) {
 
     companion object {
         private val SCRIPT_CALLABLE_METHODS =
             ComponentModelDelegate::class.java.getDeclaredField("scriptCallableMethods").apply {
                 isAccessible = true
             }
+        private val JAVASCRIPT_PROXY_MESSAGES =
+            setOf(
+                JavaScriptProxyableComponentModelDelegate.MESSAGE_RESOLVE,
+                JavaScriptProxyableComponentModelDelegate.MESSAGE_ERROR,
+            )
     }
 
     private val session = component.session
@@ -33,7 +38,8 @@ class ProjectComponentModelDelegate(
 
     init {
         defaultsManager.fillProps(component)
-        SCRIPT_CALLABLE_METHODS.set(this, ScriptCallableMethods())
+        @Suppress("UNCHECKED_CAST") val builtIn = SCRIPT_CALLABLE_METHODS.get(this) as Set<String>
+        SCRIPT_CALLABLE_METHODS.set(this, ScriptCallableMethods(builtIn))
     }
 
     override fun onStartup() {
@@ -53,6 +59,11 @@ class ProjectComponentModelDelegate(
 
     override fun handleEvent(message: EventFiredMsg) {
         component.mdc { log.tracef("Received '%s' component message.", message.eventName) }
+        if (message.eventName in JAVASCRIPT_PROXY_MESSAGES) {
+            super.handleEvent(message)
+            return
+        }
+
         instance.get()?.handleEvent(message.eventName, message.event ?: JsonObject())
     }
 
@@ -93,16 +104,17 @@ class ProjectComponentModelDelegate(
         return instance.get()?.findScriptCallable(name)
     }
 
-    private inner class ScriptCallableMethods : AbstractSet<String>() {
+    private inner class ScriptCallableMethods(private val builtIn: Set<String>) :
+        AbstractSet<String>() {
         override val size: Int
-            get() = 0
+            get() = builtIn.size
 
         override fun iterator(): MutableIterator<String> {
-            return Collections.emptyIterator()
+            return builtIn.toMutableSet().iterator()
         }
 
         override fun contains(element: String): Boolean {
-            return findScriptCallable(element) != null
+            return element in builtIn || findScriptCallable(element) != null
         }
     }
 }

@@ -3,6 +3,7 @@ import React, {
   MutableRefObject,
   ReactElement,
   ReactNode,
+  useCallback,
   useEffect,
   useMemo,
   useRef,
@@ -21,12 +22,19 @@ import { Root, RootContext, RootHost, RootOptions } from './Root'
 import type { Values } from './types'
 import { createPropStore, PropContext, useProp } from './useProp'
 
+/** Where a component's JavaScript proxy finds what `this` is. */
+export type JavaScriptProxyHost = {
+  setElement(element: Element | null): void
+  setTarget(target: unknown): void
+}
+
 export type ComponentHost = {
   values: Values
   children: Child[]
   ChildSlot: ComponentContext['ChildSlot']
   mode: ComponentMode
   delegate: ComponentDelegate
+  proxy?: JavaScriptProxyHost
   attributesKey: unknown
   write(path: string, value: unknown): void
   attributes(options: RootOptions): object
@@ -43,6 +51,15 @@ type RenderedComponentProps = {
   values: Values
   context: ComponentContext
   roots: MutableRefObject<number>
+}
+
+function createJavaScriptProxyHook(latest: MutableRefObject<ComponentHost>) {
+  return function useJavaScriptProxy(target: unknown) {
+    useIsomorphicLayoutEffect(() => {
+      latest.current.proxy?.setTarget(target)
+      return () => latest.current.proxy?.setTarget(undefined)
+    }, [target])
+  }
 }
 
 export function attributesKeyOf(className: unknown, style: unknown) {
@@ -99,12 +116,23 @@ export function HostedComponent({
     []
   )
 
+  const element = useCallback(
+    (node: Element | null) => latest.current.proxy?.setElement(node),
+    []
+  )
+
+  const useJavaScriptProxy = useMemo(
+    () => createJavaScriptProxyHook(latest),
+    []
+  )
+
   const rootHost = useMemo<RootHost>(
     () => ({
       attributes: (options) => latest.current.attributes(options),
       mount,
+      element,
     }),
-    [mount, host.attributesKey]
+    [mount, element, host.attributesKey]
   )
 
   const context = useMemo<ComponentContext>(
@@ -113,13 +141,20 @@ export function HostedComponent({
       ChildSlot: host.ChildSlot,
       Root,
       useProp: useProp as ComponentContext['useProp'],
+      useJavaScriptProxy,
       mode: host.mode,
       delegate: host.delegate,
       get perspective() {
         return latest.current.perspective()
       },
     }),
-    [host.children, host.ChildSlot, host.mode, host.delegate]
+    [
+      host.children,
+      host.ChildSlot,
+      host.mode,
+      host.delegate,
+      useJavaScriptProxy,
+    ]
   )
 
   return (

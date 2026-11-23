@@ -353,6 +353,13 @@ export type ComponentContext<
   ): [PropValue<S[K]>, PropSetter<Infer<S[K]>>]
   useProp<T = unknown>(path: string): [T, PropSetter<T>]
   /**
+   * Sets what `this` is in JavaScript that scripts run with the component's
+   * JavaScript proxy, `getJavaScriptProxy()`, while the component is mounted.
+   * A React ref is read when the script runs. Without a target, `this` is the
+   * component's Root element.
+   */
+  useJavaScriptProxy(target: unknown): void
+  /**
    * Where the component is shown: in a session, in the Designer while it is
    * being designed, or in the Designer's preview.
    */
