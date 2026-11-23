@@ -56,9 +56,9 @@ class PeriscopeGatewayContext(private val context: GatewayContext) :
             EmbeddedView.asGatewayComponent { EmbeddedViewModelDelegate(it) },
             FlexRepeater.asGatewayComponent { FlexRepeaterModelDelegate(it) },
             JsonView.asGatewayComponent { JsonViewModelDelegate(it) },
-            Portal.asGatewayComponent(),
+            PortalLegacy.asGatewayComponent(),
             Swiper.asGatewayComponent { JavaScriptProxyableComponentModelDelegate(it) },
-            React.asGatewayComponent { JavaScriptProxyableComponentModelDelegate(it) },
+            ReactLegacy.asGatewayComponent { JavaScriptProxyableComponentModelDelegate(it) },
         )
 
     private val clientResourceDefinitions =

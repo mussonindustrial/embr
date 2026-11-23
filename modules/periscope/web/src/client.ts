@@ -11,10 +11,10 @@ import {
   EmbeddedViewComponentMeta,
   JsonViewComponent,
   JsonViewComponentMeta,
-  PortalComponent,
-  PortalComponentMeta,
-  ReactComponent,
-  ReactComponentMeta,
+  PortalLegacyComponent,
+  PortalLegacyComponentMeta,
+  ReactLegacyComponent,
+  ReactLegacyComponentMeta,
 } from './components'
 import {
   installExtensions,
@@ -30,8 +30,8 @@ export {
   SwiperComponent,
   EmbeddedViewComponent,
   JsonViewComponent,
-  PortalComponent,
-  ReactComponent,
+  PortalLegacyComponent,
+  ReactLegacyComponent,
 }
 
 prefetchClientBundle()
@@ -41,8 +41,8 @@ const components = [
   new SwiperComponentMeta(),
   new EmbeddedViewComponentMeta(),
   new JsonViewComponentMeta(),
-  new PortalComponentMeta(),
-  new ReactComponentMeta(),
+  new PortalLegacyComponentMeta(),
+  new ReactLegacyComponentMeta(),
 ]
 
 components.forEach((c) => ComponentRegistry.register(c))

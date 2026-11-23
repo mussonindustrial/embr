@@ -32,7 +32,7 @@ import { ClientResourceComponent } from '@/extensions'
 
 const COMPONENT_TYPE = 'embr.periscope.embedding.react'
 
-type ReactComponentProps = Record<string, never>
+type ReactLegacyComponentProps = Record<string, never>
 export type ClientResourceReference = {
   path: string
   export?: string
@@ -40,7 +40,7 @@ export type ClientResourceReference = {
 
 type ReactProps = {
   resource: ClientResourceReference
-  props: ReactComponentProps
+  props: ReactLegacyComponentProps
   events: ComponentEvents & {
     component: {
       lifecycle: ComponentLifecycleEvents
@@ -49,12 +49,12 @@ type ReactProps = {
   style: StyleObject
 }
 
-export function ReactComponent(props: ComponentProps<ReactProps>) {
+export function ReactLegacyComponent(props: ComponentProps<ReactProps>) {
   const ref: MutableRefObject<unknown> = useRef(undefined)
 
   // Register the reference with the component delegate
   useEffect(() => {
-    const delegate = props.store.delegate as ReactComponentDelegate
+    const delegate = props.store.delegate as ReactLegacyComponentDelegate
     delegate.setProxyRef(ref.current as never)
   }, [props.store.delegate, ref.current])
 
@@ -75,14 +75,14 @@ export function ReactComponent(props: ComponentProps<ReactProps>) {
   const innerProps = useDeepCompareMemo(() => {
     const transformedProps = transformProps(props.props.props, [
       getScriptTransform(props, props.store),
-    ]) as ReactComponentProps
+    ]) as ReactLegacyComponentProps
 
     return {
       ...transformedProps,
       ref,
       renderContext: props,
     } as unknown
-  }, [props.props.props, ref]) as ReactComponentProps
+  }, [props.props.props, ref]) as ReactLegacyComponentProps
 
   useComponentEvents(props.store, transformedProps.events, ref.current)
   useRefLifecycleEvents(
@@ -103,7 +103,7 @@ export function ReactComponent(props: ComponentProps<ReactProps>) {
   )
 }
 
-export class ReactComponentDelegate extends ComponentStoreDelegate {
+export class ReactLegacyComponentDelegate extends ComponentStoreDelegate {
   private proxy = new ComponentDelegateJavaScriptProxy(this)
 
   setProxyRef(ref?: object) {
@@ -121,7 +121,7 @@ export class ReactComponentDelegate extends ComponentStoreDelegate {
   }
 }
 
-export class ReactComponentMeta implements ComponentMeta {
+export class ReactLegacyComponentMeta implements ComponentMeta {
   getComponentType(): string {
     return COMPONENT_TYPE
   }
@@ -134,7 +134,7 @@ export class ReactComponentMeta implements ComponentMeta {
   }
 
   createDelegate(component: AbstractUIElementStore): ComponentStoreDelegate {
-    return new ReactComponentDelegate(component)
+    return new ReactLegacyComponentDelegate(component)
   }
 
   getPropsReducer(tree: PropertyTree): ReactProps {
@@ -147,6 +147,6 @@ export class ReactComponentMeta implements ComponentMeta {
   }
 
   getViewComponent(): PComponent {
-    return ReactComponent as PComponent
+    return ReactLegacyComponent as PComponent
   }
 }
