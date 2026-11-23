@@ -97,9 +97,9 @@ class PeriscopeDesignerContext(val context: DesignerContext) :
             EmbeddedView.asDesignerComponent(),
             FlexRepeater.asDesignerComponent(),
             JsonView.asDesignerComponent(),
-            Portal.asDesignerComponent(),
+            PortalLegacy.asDesignerComponent(),
             Swiper.asDesignerComponent(),
-            React.asDesignerComponent(),
+            ReactLegacy.asDesignerComponent(),
         )
 
     private val clientResourceWorkspace =

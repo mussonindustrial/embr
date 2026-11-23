@@ -34,7 +34,7 @@ import {
 
 const COMPONENT_TYPE = 'embr.periscope.embedding.portal'
 
-type PortalProps = {
+type PortalLegacyProps = {
   element: string | ((element: Element | void) => Element)
   events: ComponentEvents & {
     target: {
@@ -60,13 +60,15 @@ function MissingTarget({ emit }: { emit: Emitter }) {
   )
 }
 
-export function PortalComponent(props: ComponentProps<PortalProps>) {
+export function PortalLegacyComponent(
+  props: ComponentProps<PortalLegacyProps>
+) {
   const target = useRef<Element | null>()
 
   const transformedProps = useMemo(() => {
     return transformProps(props.props, [
       getScriptTransform(props, props.store),
-    ]) as PortalProps
+    ]) as PortalLegacyProps
   }, [props.props])
 
   if (typeof transformedProps.element === 'function') {
@@ -102,13 +104,13 @@ export function PortalComponent(props: ComponentProps<PortalProps>) {
   )
 }
 
-export class PortalComponentDelegate extends ComponentStoreDelegate {
+export class PortalLegacyComponentDelegate extends ComponentStoreDelegate {
   handleEvent(): void {
     return
   }
 }
 
-export class PortalComponentMeta implements ComponentMeta {
+export class PortalLegacyComponentMeta implements ComponentMeta {
   getComponentType(): string {
     return COMPONENT_TYPE
   }
@@ -121,10 +123,10 @@ export class PortalComponentMeta implements ComponentMeta {
   }
 
   createDelegate(component: AbstractUIElementStore): ComponentStoreDelegate {
-    return new PortalComponentDelegate(component)
+    return new PortalLegacyComponentDelegate(component)
   }
 
-  getPropsReducer(tree: PropertyTree): PortalProps {
+  getPropsReducer(tree: PropertyTree): PortalLegacyProps {
     return {
       element: tree.readString('element', ''),
       events: tree.readObject('events', {}),
@@ -133,11 +135,11 @@ export class PortalComponentMeta implements ComponentMeta {
   }
 
   getViewComponent(): PComponent {
-    return PortalComponent as PComponent
+    return PortalLegacyComponent as PComponent
   }
 }
 
-class PortalComponentDesignDelegate implements ContainerDesignDelegate {
+class PortalLegacyComponentDesignDelegate implements ContainerDesignDelegate {
   type = COMPONENT_TYPE
   isContainer = true as const
 
@@ -160,7 +162,7 @@ class PortalComponentDesignDelegate implements ContainerDesignDelegate {
 waitForClientStore().then((clientStore) => {
   if (clientStore.isDesigner) {
     InteractionRegistry.registerInteractionDelegates(
-      new PortalComponentDesignDelegate()
+      new PortalLegacyComponentDesignDelegate()
     )
   }
 })
