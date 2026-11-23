@@ -51,7 +51,7 @@ function getClientResourceComponent(
   return Component
 }
 
-function FailedToLoadComponent({ message }: { message: string }) {
+export function FailedToLoadComponent({ message }: { message: string }) {
   return (
     <div>
       <ViewStateDisplay

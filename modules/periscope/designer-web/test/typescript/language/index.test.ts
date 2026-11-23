@@ -235,11 +235,40 @@ describe('TypeScript Language Service', () => {
     it('completes the exports and types of each system module', async () => {
       const modules = {
         periscope: [
+          'Child',
+          'ChildRenderOptions',
+          'ChildSlotProps',
+          'ComponentContext',
+          'ComponentDefinition',
+          'ComponentDelegate',
+          'ComponentEvent',
+          'ComponentMetadata',
+          'ComponentMode',
+          'ComponentRender',
+          'ComponentVariant',
+          'defineComponent',
+          'ElementProps',
+          'event',
+          'EventSchema',
+          'Infer',
+          'InferEvents',
+          'InferProps',
+          'NumberProp',
+          'PlacedChild',
+          'PositionChange',
+          'ProjectComponent',
+          'ProjectComponentEvent',
+          'prop',
+          'Prop',
+          'PropSchema',
           'ReactComponent',
           'ReactComponentContext',
           'ReactComponentProps',
+          'ResizeHandle',
           'resource',
+          'RootProps',
           'toast',
+          'useComponent',
         ],
         perspective: [
           'context',
@@ -364,6 +393,31 @@ describe('TypeScript Language Service', () => {
   })
 
   describe('diagnostics()', () => {
+    it('reports what failed in the last evaluation without running one', async () => {
+      const broken = [
+        "import { defineComponent } from 'system:periscope'",
+        'const missing: { value: { text: string } } = undefined as never',
+        'export default defineComponent({ description: missing.value.text, render: () => null })',
+      ].join('\n')
+      const resource = (source: string) => ({
+        path: 'app/broken',
+        kind: 'component' as const,
+        source,
+      })
+      await language.setFiles({ files: [resource(broken)] })
+      const before = await language.describeComponents({})
+
+      await language.updateFile(resource(`${broken};export const more = 4`))
+      const { diagnostics } = await language.diagnostics({ path: 'app/broken' })
+
+      expect(
+        diagnostics.some((diagnostic) =>
+          diagnostic.message.includes('undefined')
+        )
+      ).toBe(true)
+      expect(await language.describeComponents({})).not.toBe(before)
+    })
+
     it('reports type errors across resources', async () => {
       const errors = await errorsOf(
         "import { add } from '@/shared/utils'\nadd('1', 2)\n"

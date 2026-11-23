@@ -30,7 +30,7 @@ class ClientResourceChangeNotifier(
                         "Skipped client resource refresh for a page without a channel: ${e.message}",
                     )
                 } catch (e: Exception) {
-                    logger.warn("Failed to send client resource refresh to a page", e)
+                    logger.warn("Failed to send a client resource refresh to a page.", e)
                 }
             }
         }

@@ -1,62 +1,81 @@
 import type { ESModule } from '@embr-js/utils/types'
-import { ClientStore } from '@inductiveautomation/perspective-client'
+import {
+  ClientState,
+  ClientStore,
+} from '@inductiveautomation/perspective-client'
 
-import { createPeriscopeApi } from '../api/periscopeApi'
+import { componentOf, createPeriscopeApi, ProjectComponent } from '@/api'
+import {
+  ClientBundle,
+  ClientResourceDefinition,
+  requestHash,
+  takeClientBundle,
+} from './clientBundle'
+import { routes } from './routes'
+
+const COMPONENT_RESOURCE_TYPE = 'component'
+const SYSTEM_PREFIX = 'system:'
 
 const PROTOCOL = {
   REFRESH: 'periscope-client-resource-refresh',
 }
 
-export type ClientResourceDefinition = {
-  path: string
-  hash: string
-  type: string
-}
-
-export type ResourceManifest = {
-  hash: string
-  resources: ClientResourceDefinition[]
-}
-
-export type ResourceManifestResponse = {
-  data: ResourceManifest
+function preloadModules(urls: string[]) {
+  urls.forEach((href) => {
+    const link = document.createElement('link')
+    link.rel = 'modulepreload'
+    link.href = href
+    document.head.appendChild(link)
+  })
 }
 
 export class ClientResourceStore {
-  private manifest?: ResourceManifest
-  private manifestPromise?: Promise<ResourceManifest>
+  private bundle?: Promise<ClientBundle>
+  private ready?: Promise<void>
+  private disconnected = false
 
   readonly resources = new Map<string, ESModule>()
   readonly systemModules = new Map<string, object>()
+  readonly components = new Map<string, ProjectComponent>()
 
   private readonly resourcePromises = new Map<
     string,
     Promise<ESModule | null>
   >()
 
-  urlBase = '/data/embr-periscope/client-resource'
-
   clientStore?: ClientStore
 
   async initialize(clientStore: ClientStore) {
     this.clientStore = clientStore
+    this.bundle = takeClientBundle(clientStore.projectName)
     this.installScriptingGlobals()
     this.setupSystemModules()
     this.installListener()
-    await this.preload()
+    this.ready = this.preload()
+    await this.ready
+  }
+
+  async getComponent(id: string): Promise<ProjectComponent | null> {
+    await this.ready
+    return this.components.get(id) ?? null
+  }
+
+  async getComponents(): Promise<Map<string, ProjectComponent>> {
+    await this.ready
+    return this.components
   }
 
   async resource(path: string): Promise<ESModule> {
     const resource = await this.getResource(path)
 
     if (resource == null) {
-      throw new Error(`Resource '${path}' not found`)
+      throw new Error(`Resource '${path}' not found.`)
     }
 
     return resource
   }
 
-  public getSystemModule(name: string): object | undefined {
+  getSystemModule(name: string): object {
     return this.systemModules.get(name) ?? {}
   }
 
@@ -77,41 +96,13 @@ export class ClientResourceStore {
     return promise
   }
 
-  private manifestPath() {
-    return `${this.urlBase}/${this.clientStore!.projectName}/manifest.json`
-  }
-
   private resourcePath(hash: string, path: string) {
-    return `${this.urlBase}/${this.clientStore!.projectName}/${hash}/${encodeURI(path)}`
-  }
-
-  private async getManifest(): Promise<ResourceManifest> {
-    if (this.manifest) {
-      return this.manifest
-    }
-
-    this.manifestPromise ??= this.fetchManifest()
-
-    return this.manifestPromise
-  }
-
-  private async fetchManifest(): Promise<ResourceManifest> {
-    const response = await fetch(this.manifestPath())
-
-    if (!response.ok) {
-      throw new Error(`Failed to fetch manifest: ${response.statusText}`)
-    }
-
-    const json = (await response.json()) as ResourceManifestResponse
-
-    this.manifest = json.data
-
-    return this.manifest
+    return routes.clientResource(this.clientStore!.projectName, hash, path)
   }
 
   private async fetchResource(path: string): Promise<ESModule | null> {
     try {
-      const manifest = await this.getManifest()
+      const { manifest, urls } = await this.bundle!
 
       const resource = manifest.resources.find(
         (resource) => resource.path === path
@@ -121,7 +112,9 @@ export class ClientResourceStore {
         return null
       }
 
-      const module = await import(this.resourcePath(manifest.hash, path))
+      const module = await import(
+        urls.get(path) ?? this.resourcePath(manifest.hash, path)
+      )
 
       this.resources.set(path, module)
 
@@ -135,39 +128,98 @@ export class ClientResourceStore {
     }
   }
 
-  private async preload() {
-    const manifest = await this.getManifest()
+  private importedUrls({ manifest, urls }: ClientBundle, paths: string[]) {
+    const resourcesByPath = new Map(
+      manifest.resources.map((resource) => [resource.path, resource])
+    )
+    const visited = new Set<string>()
+    const sharedUrls: string[] = []
+    const localUrls: string[] = []
 
-    await Promise.all(
-      manifest.resources.map((resource) => {
-        let promise = this.resourcePromises.get(resource.path)
+    const visit = (specifier: string) => {
+      if (visited.has(specifier)) {
+        return
+      }
 
-        if (promise == null) {
-          promise = this.fetchResource(resource.path)
-          this.resourcePromises.set(resource.path, promise)
+      visited.add(specifier)
+
+      const resource = resourcesByPath.get(specifier)
+
+      if (resource != null) {
+        if (!urls.has(specifier)) {
+          localUrls.push(this.resourcePath(manifest.hash, specifier))
         }
 
-        return promise
-      })
+        resource.imports?.forEach(visit)
+      } else if (specifier.startsWith(SYSTEM_PREFIX)) {
+        const name = specifier.slice(SYSTEM_PREFIX.length)
+        sharedUrls.push(routes.systemModule(manifest.hash, name))
+      } else {
+        sharedUrls.push(routes.globalModule(manifest.hash, specifier))
+      }
+    }
+
+    paths.forEach(visit)
+
+    return [...sharedUrls, ...localUrls]
+  }
+
+  private registerComponent(
+    { path, component }: ClientResourceDefinition,
+    module: ESModule | null
+  ) {
+    if (module == null || component == null || component.id === '') {
+      return
+    }
+
+    if (this.components.has(component.id)) {
+      console.warn(
+        `Cannot register component '${component.id}' from '${path}', it is already defined.`
+      )
+      return
+    }
+
+    try {
+      const projectComponent = componentOf(module)
+      projectComponent.displayName = component.name || component.id
+      this.components.set(component.id, projectComponent)
+    } catch (error) {
+      console.warn(`Cannot load component '${path}'.`, error)
+    }
+  }
+
+  private async preload() {
+    const bundle = await this.bundle!
+
+    const components = bundle.manifest.resources
+      .filter((resource) => resource.type === COMPONENT_RESOURCE_TYPE)
+      .sort((a, b) => a.path.localeCompare(b.path))
+
+    preloadModules(
+      this.importedUrls(
+        bundle,
+        components.map((resource) => resource.path)
+      )
     )
+
+    const modules = await Promise.all(
+      components.map((resource) => this.getResource(resource.path))
+    )
+    components.forEach((resource, index) => {
+      this.registerComponent(resource, modules[index])
+    })
+
+    bundle.manifest.resources.forEach((resource) => {
+      void this.getResource(resource.path)
+    })
   }
 
   /* TODO: Getting resources should be synchronous, or at least fully resolved by the first render.
      TODO: Until this is implemented, we should not expose a stable interface
   */
   private installScriptingGlobals() {
-    Embr.scripting.add(
-      'periscope',
-      'UNSTABLE_resource',
-      async (path: string) => {
-        const resource = await this.getResource(path)
-
-        if (resource == null) {
-          throw new Error(`Resource '${path}' not found`)
-        }
-
-        return resource
-      }
+    Embr.scripting.add('periscope', 'UNSTABLE_resource', (path: string) =>
+      this.resource(path)
     )
   }
 
@@ -182,9 +234,35 @@ export class ClientResourceStore {
   }
 
   private installListener() {
-    this.clientStore!.connection.handlers.set(PROTOCOL.REFRESH, async () => {
+    const clientStore = this.clientStore!
+
+    clientStore.connection.handlers.set(PROTOCOL.REFRESH, async () => {
       window.location.reload()
     })
+
+    clientStore.registerStateReaction(ClientState.RUNNING_DISCONNECTED, () => {
+      this.disconnected = true
+    })
+
+    clientStore.registerStateReaction(ClientState.RUNNING_CONNECTED, () => {
+      if (this.disconnected) {
+        this.disconnected = false
+        void this.reloadIfChanged()
+      }
+    })
+  }
+
+  private async reloadIfChanged() {
+    try {
+      const { manifest } = await this.bundle!
+      const hash = await requestHash(this.clientStore!.projectName)
+
+      if ((hash ?? '') !== manifest.hash) {
+        window.location.reload()
+      }
+    } catch (error) {
+      console.warn('Cannot check client resources after reconnecting.', error)
+    }
   }
 }
 

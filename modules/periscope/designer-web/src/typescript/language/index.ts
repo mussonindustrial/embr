@@ -1,4 +1,5 @@
 import { completionDetails, completions } from './completions'
+import { describeComponents } from './components'
 import { codeFixes, diagnostics } from './diagnostics'
 import {
   formatOnType,
@@ -49,4 +50,5 @@ export const languageService = {
   signatureHelp,
   codeFixes,
   organizeImports,
+  describeComponents,
 }

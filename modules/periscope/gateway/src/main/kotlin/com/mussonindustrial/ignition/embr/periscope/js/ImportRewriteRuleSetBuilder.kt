@@ -28,6 +28,15 @@ class ImportRewriteRuleSetBuilder() {
         }
     }
 
+    fun matching(predicate: (String) -> Boolean, rewrite: (String) -> String?) {
+        rules += ImportRewriteRule { spec ->
+            if (!predicate(spec)) {
+                return@ImportRewriteRule null
+            }
+            rewrite(spec) ?: spec
+        }
+    }
+
     fun regex(pattern: Regex, rewrite: (MatchResult) -> String) {
         rules += ImportRewriteRule { spec ->
             val match = pattern.matchEntire(spec) ?: return@ImportRewriteRule null

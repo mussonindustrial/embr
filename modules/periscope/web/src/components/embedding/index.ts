@@ -1,6 +1,7 @@
 export * from './flex-repeater'
 export * from './json-view'
 export * from './portal'
+export * from './project'
 export * from './react'
 export * from './swiper'
 export * from './view'

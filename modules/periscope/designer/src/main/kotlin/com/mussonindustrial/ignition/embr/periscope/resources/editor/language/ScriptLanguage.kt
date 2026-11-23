@@ -5,5 +5,6 @@ import org.fife.ui.rsyntaxtextarea.SyntaxConstants
 
 enum class ScriptLanguage(val kind: String, val syntaxStyle: String) {
     TYPESCRIPT(ResourceFile.TYPESCRIPT, SyntaxConstants.SYNTAX_STYLE_TYPESCRIPT),
+    COMPONENT(ResourceFile.COMPONENT, SyntaxConstants.SYNTAX_STYLE_TYPESCRIPT),
     JAVASCRIPT(ResourceFile.JAVASCRIPT, SyntaxConstants.SYNTAX_STYLE_JAVASCRIPT),
 }

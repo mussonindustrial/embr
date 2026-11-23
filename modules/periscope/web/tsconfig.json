@@ -1,6 +1,6 @@
 {
   "extends": "@embr-js/tsconfig/vite.json",
-  "include": ["src"],
+  "include": ["src", "test"],
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {

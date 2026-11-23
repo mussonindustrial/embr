@@ -1,0 +1,88 @@
+{
+    "name": "DelegateComponent",
+    "methods": [
+        {
+            "name": "fireEvent",
+            "location": "DelegateComponent",
+            "description": "Send an event to the component in the browser",
+            "kind": "INSTANCE_MEMBER",
+            "returnType": "None",
+            "parameters": [
+                {
+                    "name": "name",
+                    "type": "str",
+                    "location": "fireEvent"
+                },
+                {
+                    "name": "event",
+                    "type": "dict",
+                    "location": "fireEvent"
+                }
+            ]
+        },
+        {
+            "name": "onPropertyChange",
+            "location": "DelegateComponent",
+            "description": "Call handler(previousValue, currentValue, origin) each time the property at path changes, until the delegate shuts down",
+            "kind": "INSTANCE_MEMBER",
+            "returnType": "any",
+            "parameters": [
+                {
+                    "name": "path",
+                    "type": "str",
+                    "location": "onPropertyChange"
+                },
+                {
+                    "name": "handler",
+                    "type": "any",
+                    "location": "onPropertyChange"
+                }
+            ]
+        },
+        {
+            "name": "getPropertyConfig",
+            "location": "DelegateComponent",
+            "description": "Get the configuration of the property at path, such as its binding",
+            "kind": "INSTANCE_MEMBER",
+            "returnType": "any",
+            "parameters": [
+                {
+                    "name": "path",
+                    "type": "str",
+                    "location": "getPropertyConfig"
+                }
+            ]
+        },
+        {
+            "name": "findExtensionFunction",
+            "location": "DelegateComponent",
+            "description": "Get an extension function of this component by name",
+            "kind": "INSTANCE_MEMBER",
+            "returnType": "any",
+            "parameters": [
+                {
+                    "name": "name",
+                    "type": "str",
+                    "location": "findExtensionFunction"
+                }
+            ]
+        }
+    ],
+    "attributes": [
+        {
+            "name": "type",
+            "location": "DelegateComponent",
+            "description": "Type of this component",
+            "kind": "INSTANCE_MEMBER",
+            "type": "str"
+        },
+        {
+            "name": "addressPath",
+            "location": "DelegateComponent",
+            "description": "Address of this component within its view",
+            "kind": "INSTANCE_MEMBER",
+            "type": "str"
+        }
+    ],
+    "items": []
+}

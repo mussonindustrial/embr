@@ -1,6 +1,7 @@
 package com.mussonindustrial.ignition.embr.periscope.resources.language
 
 import com.inductiveautomation.ignition.common.gson.JsonElement
+import com.inductiveautomation.ignition.common.gson.JsonObject
 import com.mussonindustrial.ignition.embr.periscope.resources.compiler.Diagnostic
 
 data class ResourceFile(val path: String, val kind: String, val source: String) {
@@ -8,6 +9,7 @@ data class ResourceFile(val path: String, val kind: String, val source: String) 
         const val TYPESCRIPT = "typescript"
         const val JAVASCRIPT = "javascript"
         const val CSS = "css"
+        const val COMPONENT = "component"
     }
 }
 
@@ -117,6 +119,40 @@ data class OutlineItem(
 data class OutlineResult(val items: List<OutlineItem>)
 
 data class ExportsResult(val names: List<String>)
+
+data class ComponentSize(val width: Int, val height: Int)
+
+data class ComponentEvent(val name: String, val description: String?, val schema: JsonObject)
+
+data class ComponentVariant(
+    val name: String,
+    val description: String?,
+    val defaultSize: ComponentSize?,
+    val props: JsonObject,
+)
+
+data class ComponentDefinition(
+    val path: String,
+    val description: String?,
+    val icon: String?,
+    val defaultSize: ComponentSize?,
+    val events: List<ComponentEvent>?,
+    val diagnostics: List<String>?,
+    val position: JsonObject?,
+    val variants: List<ComponentVariant>?,
+    val defaults: JsonObject,
+    val schema: JsonObject,
+)
+
+data class ComponentFailure(val path: String, val message: String)
+
+data class ComponentsRequest(val revision: Int?)
+
+data class ComponentsResult(
+    val revision: Int,
+    val components: List<ComponentDefinition>?,
+    val failures: List<ComponentFailure>?,
+)
 
 data class SymbolsRequest(val query: String)
 
