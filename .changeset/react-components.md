@@ -14,3 +14,4 @@
 - A component can be rendered as a React element inside another.
 - A Component resource can have a delegate, written in Python, that runs on the Gateway for each instance. `create(component)` returns an object whose `onStartup`, `onShutdown` and `handleEvent` are called as a module's delegate would be, and whose other methods can be called from scripts. The component reaches it through `delegate`, with `fireEvent` and `onEvent`.
 - Client resources now load from a single cached bundle.
+- The existing React and Portal components are now labelled React (Legacy) and Portal (Legacy). They keep working in existing views and will be deprecated in favour of Component resources.
