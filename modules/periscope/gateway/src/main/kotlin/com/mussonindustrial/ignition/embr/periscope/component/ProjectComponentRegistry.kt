@@ -27,7 +27,7 @@ class ProjectComponentRegistry(
     private val resourceFilter =
         ResourceFilter(ApplicationScope.ALL, listOf(ProjectComponents.VIEWS, ClientResource.type))
     private val componentsByProject = ConcurrentHashMap<String, Set<String>>()
-    private var registeredComponents = emptySet<String>()
+    private val registrationsById = ConcurrentHashMap<String, Boolean>()
 
     override fun getResourceFilter(): ResourceFilter {
         return resourceFilter
@@ -42,23 +42,25 @@ class ProjectComponentRegistry(
         updateRegistry()
     }
 
-    @Synchronized
     private fun updateRegistry() {
-        val components = componentsByProject.values.flatten().toSet()
-        if (components == registeredComponents) {
-            return
-        }
+        val usedComponents = componentsByProject.values.flatten()
+        (usedComponents + registrationsById.keys).distinct().forEach { updateRegistration(it) }
+    }
 
-        (registeredComponents - components).forEach { removeComponent(it) }
+    private fun updateRegistration(id: String) {
+        registrationsById.compute(id) { _, registered ->
+            val isUsed = componentsByProject.values.any { id in it }
+            val isRegistered = registered != null
 
-        val added = mutableSetOf<String>()
-        (components - registeredComponents).forEach {
-            if (registerComponent(it)) {
-                added += it
+            when {
+                isUsed && !isRegistered -> if (registerComponent(id)) true else null
+                !isUsed && isRegistered -> {
+                    removeComponent(id)
+                    null
+                }
+                else -> registered
             }
         }
-
-        registeredComponents = (registeredComponents intersect components) + added
     }
 
     private fun registerComponent(id: String): Boolean {

@@ -22,12 +22,13 @@ class ComponentDelegatePanel(delegate: String, enabled: Boolean, onChanged: () -
         private val SIGNATURE_LINE =
             Regex("^def $DELEGATE_FACTORY\\($PARAMETER\\):[ \\t]*\\n", RegexOption.MULTILINE)
         private const val EMPTY_BODY = "\t"
+        private const val NO_HEADER = ""
         private const val COMPONENT_TYPE = "/descriptors/delegate-component.json"
     }
 
     private val editor = ExtensionFunctionPanel(ExtensionFunctionPanel.GATEWAY_HINTS)
     private val source = delegate.replace("\r\n", "\n")
-    private val header = findHeader(source)
+    private val header = findSignatureHeader(source)
 
     val delegate: String
         get() {
@@ -66,13 +67,12 @@ class ComponentDelegatePanel(delegate: String, enabled: Boolean, onChanged: () -
         component.components.filterIsInstance<Container>().forEach { setEnabledDeep(it, enabled) }
     }
 
-    /** Everything up to the function body, or nothing for a script written some other way. */
-    private fun findHeader(source: String): String {
+    private fun findSignatureHeader(source: String): String {
         if (source.isBlank()) {
             return SIGNATURE
         }
 
-        val signature = SIGNATURE_LINE.find(source) ?: return ""
+        val signature = SIGNATURE_LINE.find(source) ?: return NO_HEADER
         return source.substring(0, signature.range.last + 1)
     }
 

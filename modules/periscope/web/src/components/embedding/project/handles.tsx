@@ -12,8 +12,7 @@ import { dropZoneOf, slotOptions } from './placement'
 const ALL_HANDLES: ResizeHandle[] = ['n', 'ne', 'e', 'se', 's', 'sw', 'w', 'nw']
 const VIEW_HANDLES: ResizeHandle[] = ['e', 'se', 's']
 
-// Reads PerspectiveDesigner when called, as it does not exist in a session.
-function handleComponent(handle: ResizeHandle) {
+function findDesignerHandle(handle: ResizeHandle) {
   const components = {
     n: RectilinearHandles.North,
     ne: RectilinearHandles.NorthEast,
@@ -63,7 +62,7 @@ export function createHandles(
   resize: ResizeCallback
 ) {
   return handlesOf(selection).map((handle) => {
-    const Handle = handleComponent(handle)
+    const Handle = findDesignerHandle(handle)
 
     return <Handle key={handle} select={selection} resize={resize} />
   })
