@@ -1,10 +1,9 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg version="1.1" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
-  <rect x="2" y="2" width="28" height="28" rx="3" fill="#808080"/>
-  <g transform="translate(16 16)" fill="none" stroke="#e6e6e6" stroke-width="1.5">
-    <ellipse rx="10.5" ry="4"/>
-    <ellipse transform="rotate(60)" rx="10.5" ry="4"/>
-    <ellipse transform="rotate(120)" rx="10.5" ry="4"/>
+<svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+  <rect x="0.5" y="0.5" width="15" height="15" rx="2.5" fill="#808080"/>
+  <g transform="translate(8 8)" fill="none" stroke="#e6e6e6" stroke-width="1.1">
+    <ellipse rx="6.3" ry="2.4"/>
+    <ellipse transform="rotate(60)" rx="6.3" ry="2.4"/>
+    <ellipse transform="rotate(120)" rx="6.3" ry="2.4"/>
   </g>
-  <circle cx="16" cy="16" r="2.2" fill="#e6e6e6"/>
+  <circle cx="8" cy="8" r="1.3" fill="#e6e6e6"/>
 </svg>
