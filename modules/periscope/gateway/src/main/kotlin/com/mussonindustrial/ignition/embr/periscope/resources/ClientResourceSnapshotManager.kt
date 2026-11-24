@@ -44,7 +44,6 @@ class ClientResourceSnapshotManager(
         return snapshotsByProject[projectName]
     }
 
-    /** Listeners run while the project is locked for a change, so they must not wait on it. */
     fun addListener(projectName: String, listener: () -> Unit) {
         listenersByProject
             .computeIfAbsent(projectName) { ConcurrentHashMap.newKeySet() }
@@ -107,18 +106,17 @@ class ClientResourceSnapshotManager(
                 )
         }
 
-        /** The first resource by path owns a Component ID, as it does in the browser. */
         private fun compileDelegates(
             resources: List<Resource>,
             previous: Map<String, ProjectComponentDelegateScript>,
         ): Map<String, ProjectComponentDelegateScript> {
-            val componentsById =
+            val firstComponentsById =
                 resources
                     .filter { ClientResource.getType(it) == ComponentResource.type }
                     .groupBy { ComponentAttributes.fromResource(it).id }
                     .mapValues { (_, components) -> components.first() }
 
-            return componentsById
+            return firstComponentsById
                 .mapNotNull { (id, component) ->
                     compileDelegate(component, previous[id])?.let { id to it }
                 }

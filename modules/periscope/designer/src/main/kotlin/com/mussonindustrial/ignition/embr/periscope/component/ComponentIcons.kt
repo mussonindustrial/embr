@@ -7,7 +7,6 @@ import java.awt.image.BufferedImage
 import java.util.concurrent.CompletableFuture
 import javax.swing.SwingUtilities.invokeLater
 
-/** Component icons, for use on the event dispatch thread only. */
 object ComponentIcons {
     private const val ICON_PICKER =
         "com.inductiveautomation.perspective.designer.workspace.propertyeditor.IconPicker"
@@ -22,7 +21,6 @@ object ComponentIcons {
         return iconsByComponent.getOrPut(componentId) { ComponentIcon() }
     }
 
-    /** Calls back on the event dispatch thread, with no image when the icon cannot be found. */
     fun loadImage(iconName: String, onLoaded: (BufferedImage?) -> Unit) {
         imagesByName
             .getOrPut(iconName) { findImage(iconName) }

@@ -37,9 +37,9 @@ class EditorSection(
         }
     }
 
-    /** An open section keeps its full height when the editor below it wants the space. */
     override fun getMinimumSize(): Dimension {
-        val minimum = super.getMinimumSize()
-        return if (isCollapsed) minimum else Dimension(minimum.width, preferredSize.height)
+        val collapsedMinimum = super.getMinimumSize()
+        val fullHeightMinimum = Dimension(collapsedMinimum.width, preferredSize.height)
+        return if (isCollapsed) collapsedMinimum else fullHeightMinimum
     }
 }
