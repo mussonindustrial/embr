@@ -1,6 +1,5 @@
 package com.mussonindustrial.ignition.embr.periscope
 
-import com.inductiveautomation.ignition.common.project.Project
 import com.inductiveautomation.ignition.gateway.model.DiagnosticsManager
 import com.inductiveautomation.ignition.gateway.model.GatewayContext
 import com.inductiveautomation.ignition.gateway.model.TelemetryManager
@@ -23,7 +22,6 @@ import com.mussonindustrial.embr.perspective.gateway.routes.AssetHandler
 import com.mussonindustrial.embr.perspective.gateway.session.PerspectiveSessionMonitor
 import com.mussonindustrial.embr.servlets.ModuleServletManager
 import com.mussonindustrial.ignition.embr.periscope.component.ProjectComponentDefaultsManager
-import com.mussonindustrial.ignition.embr.periscope.component.ProjectComponentDelegateScriptManager
 import com.mussonindustrial.ignition.embr.periscope.component.ProjectComponentModelDelegate
 import com.mussonindustrial.ignition.embr.periscope.component.ProjectComponentRegistry
 import com.mussonindustrial.ignition.embr.periscope.component.embedding.*
@@ -32,10 +30,10 @@ import com.mussonindustrial.ignition.embr.periscope.js.modules.SystemModule
 import com.mussonindustrial.ignition.embr.periscope.resources.ClientResourceChangeListener
 import com.mussonindustrial.ignition.embr.periscope.resources.ClientResourceManager
 import com.mussonindustrial.ignition.embr.periscope.resources.ClientResourceManifestBuilder
+import com.mussonindustrial.ignition.embr.periscope.resources.ClientResourceSnapshotManager
 import com.mussonindustrial.ignition.embr.periscope.resources.ComponentResource
 import com.mussonindustrial.ignition.embr.periscope.resources.CssModuleResource
 import com.mussonindustrial.ignition.embr.periscope.resources.TypeScriptResource
-import com.mussonindustrial.ignition.embr.periscope.utils.getClientResourceHash
 import java.util.WeakHashMap
 
 class PeriscopeGatewayContext(private val context: GatewayContext) :
@@ -86,23 +84,23 @@ class PeriscopeGatewayContext(private val context: GatewayContext) :
             .toHex()
     }
 
-    private val delegateScriptManager =
-        ProjectComponentDelegateScriptManager(context.projectManager)
+    val clientResourceSnapshotManager =
+        ClientResourceSnapshotManager(context.projectManager) { runtimeHash }
     private val projectComponentRegistry =
         ProjectComponentRegistry(perspectiveContext, context.projectManager) {
-            ProjectComponentModelDelegate(it, componentDefaultsManager, delegateScriptManager)
+            ProjectComponentModelDelegate(
+                it,
+                componentDefaultsManager,
+                clientResourceSnapshotManager,
+            )
         }
     private val projectLifecycles =
         listOf(
             ClientResourceChangeListener(sessionMonitor, context.projectManager),
-            delegateScriptManager,
+            clientResourceSnapshotManager,
             projectComponentRegistry,
         )
     private val viewLoaders = WeakHashMap<PageModel, ViewLoader>()
-
-    fun getClientResourceHash(project: Project): String {
-        return project.getClientResourceHash(runtimeHash)
-    }
 
     fun getViewLoader(pageModel: PageModel): ViewLoader {
         viewLoaders[pageModel]?.apply {

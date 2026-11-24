@@ -2,9 +2,7 @@ package com.mussonindustrial.ignition.embr.periscope.resources
 
 import com.inductiveautomation.ignition.common.gson.JsonArray
 import com.inductiveautomation.ignition.common.gson.JsonObject
-import com.inductiveautomation.ignition.common.project.RuntimeProject
 import com.inductiveautomation.ignition.common.project.resource.ProjectResource
-import com.mussonindustrial.embr.common.cache.LruCache
 import com.mussonindustrial.ignition.embr.periscope.js.ClientResourceImportRewriter
 import com.mussonindustrial.ignition.embr.periscope.js.ClientResourceImportRewriter.Companion.PROJECT_PREFIX
 import com.mussonindustrial.ignition.embr.periscope.js.ClientResourceImportRewriter.Companion.SYSTEM_PREFIX
@@ -15,22 +13,16 @@ class ClientResourceManifestBuilder(private val clientResourceManager: ClientRes
 
     companion object {
         private val PACKAGE_NAME = Regex("""^[A-Za-z@][\w@/.-]*$""")
-        private const val MAX_CACHED_IMPORTS = 10_000
     }
 
-    private val cachedImports = LruCache<String, List<String>>(MAX_CACHED_IMPORTS)
-
-    fun createManifest(project: RuntimeProject, hash: String): JsonObject {
-        val resources =
-            project.getResourcesOfType(ClientResource.type).sortedBy {
-                it.resourcePath.pathString
+    fun createManifest(snapshot: ClientResourceSnapshot): JsonObject {
+        val resourcesArray =
+            JsonArray().apply {
+                snapshot.resources.mapNotNull { createEntry(it) }.forEach { add(it) }
             }
 
-        val resourcesArray =
-            JsonArray().apply { resources.mapNotNull { createEntry(it) }.forEach { add(it) } }
-
         return JsonObject().apply {
-            addProperty("hash", hash)
+            addProperty("hash", snapshot.hash)
             add("resources", resourcesArray)
         }
     }
@@ -42,7 +34,7 @@ class ClientResourceManifestBuilder(private val clientResourceManager: ClientRes
 
         val importsArray =
             JsonArray().apply {
-                findImports(path, hashKey, clientResource.fileContents.compiled).forEach { add(it) }
+                findImports(path, clientResource.fileContents.compiled).forEach { add(it) }
             }
 
         return JsonObject().apply {
@@ -63,13 +55,11 @@ class ClientResourceManifestBuilder(private val clientResourceManager: ClientRes
         }
     }
 
-    private fun findImports(path: String, hashKey: String, source: String): List<String> {
-        return cachedImports.getOrPut("$path:$hashKey") {
-            JavaScriptImportScanner(source)
-                .scan()
-                .mapNotNull { resolveImport(path, it.specifier) }
-                .distinct()
-        }
+    private fun findImports(path: String, source: String): List<String> {
+        return JavaScriptImportScanner(source)
+            .scan()
+            .mapNotNull { resolveImport(path, it.specifier) }
+            .distinct()
     }
 
     private fun resolveImport(path: String, specifier: String): String? {

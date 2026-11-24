@@ -8,8 +8,6 @@ import com.mussonindustrial.embr.gateway.api.sendSuccess
 import com.mussonindustrial.embr.perspective.gateway.reflect.PerspectiveRoutes
 import com.mussonindustrial.embr.perspective.gateway.routes.SessionRouteHandler
 import com.mussonindustrial.ignition.embr.periscope.PeriscopeGatewayContext
-import com.mussonindustrial.ignition.embr.periscope.resources.ClientResource
-import com.mussonindustrial.ignition.embr.periscope.utils.findClientResources
 import javax.servlet.http.HttpServletResponse
 import kotlin.jvm.optionals.getOrNull
 
@@ -28,8 +26,8 @@ class ClientResourceHashHandler(private val context: PeriscopeGatewayContext) :
                     "Missing project name.",
                 )
 
-        val project =
-            context.projectManager.findClientResources(projectName)
+        val snapshot =
+            context.clientResourceSnapshotManager.find(projectName)
                 ?: return response.sendError(
                     HttpServletResponse.SC_NOT_FOUND,
                     "Project '$projectName' not found.",
@@ -38,8 +36,8 @@ class ClientResourceHashHandler(private val context: PeriscopeGatewayContext) :
         addComponentDefaultsHandler(request, projectName)
 
         val json = JsonObject()
-        if (project.getResourcesOfType(ClientResource.type).isNotEmpty()) {
-            json.addProperty("hash", context.getClientResourceHash(project))
+        if (snapshot.resources.isNotEmpty()) {
+            json.addProperty("hash", snapshot.hash)
         }
 
         response.cacheNever()

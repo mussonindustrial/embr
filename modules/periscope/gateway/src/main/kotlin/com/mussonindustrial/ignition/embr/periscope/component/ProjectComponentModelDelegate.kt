@@ -6,6 +6,7 @@ import com.inductiveautomation.perspective.gateway.api.ComponentModelDelegate
 import com.inductiveautomation.perspective.gateway.messages.EventFiredMsg
 import com.inductiveautomation.perspective.gateway.model.ComponentModel
 import com.mussonindustrial.embr.perspective.gateway.component.JavaScriptProxyableComponentModelDelegate
+import com.mussonindustrial.ignition.embr.periscope.resources.ClientResourceSnapshotManager
 import java.util.AbstractSet
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicReference
@@ -15,7 +16,7 @@ import org.python.core.PyObject
 class ProjectComponentModelDelegate(
     component: Component,
     private val defaultsManager: ProjectComponentDefaultsManager,
-    private val delegateScriptManager: ProjectComponentDelegateScriptManager,
+    private val snapshotManager: ClientResourceSnapshotManager,
 ) : JavaScriptProxyableComponentModelDelegate(component) {
 
     companion object {
@@ -49,14 +50,14 @@ class ProjectComponentModelDelegate(
     override fun onStartup() {
         component.mdc { log.debugf("Startup") }
         defaultsManager.fillPositions(component)
-        delegateScriptManager.addListener(session.projectName, scriptsListener)
+        snapshotManager.addListener(session.projectName, scriptsListener)
         started.set(true)
         startupDelegate()
     }
 
     override fun onShutdown() {
         component.mdc { log.debugf("Shutdown") }
-        delegateScriptManager.removeListener(session.projectName, scriptsListener)
+        snapshotManager.removeListener(session.projectName, scriptsListener)
         started.set(false)
         shutdownDelegate()
     }
@@ -78,10 +79,8 @@ class ProjectComponentModelDelegate(
     }
 
     private fun findScript(): ProjectComponentDelegateScript? {
-        return delegateScriptManager.find(
-            session.projectName,
-            ProjectComponents.getId(component.type),
-        )
+        val snapshot = snapshotManager.find(session.projectName) ?: return null
+        return snapshot.delegateScriptsByComponent[ProjectComponents.getId(component.type)]
     }
 
     private fun startupDelegate() {
