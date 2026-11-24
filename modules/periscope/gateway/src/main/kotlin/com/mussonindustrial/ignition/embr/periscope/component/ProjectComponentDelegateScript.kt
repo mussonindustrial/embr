@@ -8,7 +8,7 @@ import org.python.core.Py
 import org.python.core.PyCode
 import org.python.core.PyObject
 
-class ProjectComponentDelegateScript(val path: String, source: String) {
+class ProjectComponentDelegateScript(val path: String, val source: String) {
 
     private val code: PyCode =
         Py.compile_flags(source, "<delegate:$path>", CompileMode.exec, CompilerFlags())
