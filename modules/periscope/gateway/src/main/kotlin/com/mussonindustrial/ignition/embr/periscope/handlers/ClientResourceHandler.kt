@@ -1,6 +1,5 @@
 package com.mussonindustrial.ignition.embr.periscope.handlers
 
-import com.inductiveautomation.ignition.common.resourcecollection.ResourcePath
 import com.inductiveautomation.ignition.gateway.dataroutes.RequestContext
 import com.mussonindustrial.embr.common.logging.getLoggerEx
 import com.mussonindustrial.embr.gateway.api.cacheForever
@@ -8,11 +7,8 @@ import com.mussonindustrial.embr.gateway.api.cacheNever
 import com.mussonindustrial.embr.perspective.gateway.routes.SessionRouteHandler
 import com.mussonindustrial.ignition.embr.periscope.PeriscopeGatewayContext
 import com.mussonindustrial.ignition.embr.periscope.js.ClientResourceImportRewriter
-import com.mussonindustrial.ignition.embr.periscope.resources.ClientResource
-import com.mussonindustrial.ignition.embr.periscope.utils.findClientResources
 import jakarta.servlet.http.HttpServletResponse
 import java.net.URLDecoder
-import kotlin.jvm.optionals.getOrNull
 
 class ClientResourceHandler(private val context: PeriscopeGatewayContext) :
     SessionRouteHandler("text/javascript") {
@@ -37,12 +33,12 @@ class ClientResourceHandler(private val context: PeriscopeGatewayContext) :
         val resourceName = URLDecoder.decode(resourcePath, Charsets.UTF_8)
         logger.trace("Project: $projectName, Resource: $resourceName")
 
-        val collection = context.projectManager.findClientResources(projectName)
-        val resource =
-            collection?.getResource(ResourcePath(ClientResource.type, resourceName))?.getOrNull()
-
+        val snapshot = context.clientResourceSnapshotManager.find(projectName)
         val clientResource =
-            resource?.let(context.clientResourceManager::fromResource)
+            snapshot
+                ?.resourcesByPath
+                ?.get(resourceName)
+                ?.let(context.clientResourceManager::fromResource)
                 ?: return response.sendError(
                     HttpServletResponse.SC_NOT_FOUND,
                     "Resource '$resourceName' not found.",
@@ -54,7 +50,7 @@ class ClientResourceHandler(private val context: PeriscopeGatewayContext) :
         response.apply {
             contentType = clientResource.contentType
             characterEncoding = Charsets.UTF_8.name()
-            if (context.getClientResourceHash(collection) == hash) {
+            if (snapshot.hash == hash) {
                 cacheForever()
             } else {
                 cacheNever()
