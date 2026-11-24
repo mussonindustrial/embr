@@ -5,35 +5,38 @@ import com.mussonindustrial.embr.common.reflect.getPrivateMethod
 import com.mussonindustrial.embr.common.reflect.getPrivateProperty
 import java.awt.image.BufferedImage
 import java.util.concurrent.CompletableFuture
-import java.util.concurrent.ConcurrentHashMap
-import java.util.concurrent.atomic.AtomicReference
+import javax.swing.SwingUtilities.invokeLater
 
+/** Component icons, for use on the event dispatch thread only. */
 object ComponentIcons {
     private const val ICON_PICKER =
         "com.inductiveautomation.perspective.designer.workspace.propertyeditor.IconPicker"
 
     private val logger = this.getLoggerEx()
-    private val iconsByComponent = ConcurrentHashMap<String, ComponentIcon>()
-    private val imagesByName = ConcurrentHashMap<String, CompletableFuture<BufferedImage?>>()
+    private val iconsByComponent = mutableMapOf<String, ComponentIcon>()
+    private val imagesByName = mutableMapOf<String, CompletableFuture<BufferedImage?>>()
 
-    val onImageLoaded = AtomicReference<() -> Unit> {}
+    var onImageLoaded: () -> Unit = {}
 
     fun get(componentId: String): ComponentIcon {
-        return iconsByComponent.computeIfAbsent(componentId) { ComponentIcon() }
+        return iconsByComponent.getOrPut(componentId) { ComponentIcon() }
     }
 
-    fun loadImage(iconName: String): CompletableFuture<BufferedImage?> {
-        return imagesByName.computeIfAbsent(iconName) {
-            val parts = iconName.split('/', limit = 2)
-            if (parts.size != 2) {
-                return@computeIfAbsent CompletableFuture.completedFuture(null)
-            }
+    /** Calls back on the event dispatch thread, with no image when the icon cannot be found. */
+    fun loadImage(iconName: String, onLoaded: (BufferedImage?) -> Unit) {
+        imagesByName
+            .getOrPut(iconName) { findImage(iconName) }
+            .thenAccept { image -> invokeLater { onLoaded(image) } }
+    }
 
-            val (library, name) = parts
-            loadSprites(library).thenApply { sprites ->
-                sprites[name]?.let(::imageOf)
-            }
+    private fun findImage(iconName: String): CompletableFuture<BufferedImage?> {
+        val parts = iconName.split('/', limit = 2)
+        if (parts.size != 2) {
+            return CompletableFuture.completedFuture(null)
         }
+
+        val (library, name) = parts
+        return loadSprites(library).thenApply { sprites -> sprites[name]?.let(::imageOf) }
     }
 
     private fun loadSprites(library: String): CompletableFuture<Map<String, Any>> {

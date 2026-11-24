@@ -6,8 +6,6 @@ import java.awt.Graphics
 import java.awt.Graphics2D
 import java.awt.RenderingHints
 import java.awt.image.BufferedImage
-import java.util.concurrent.atomic.AtomicBoolean
-import java.util.concurrent.atomic.AtomicReference
 import javax.swing.Icon
 
 class ComponentIcon : Icon {
@@ -16,28 +14,29 @@ class ComponentIcon : Icon {
         private const val SIZE = 16
     }
 
-    private val name = AtomicReference<String?>()
-    private val image = AtomicReference<BufferedImage?>()
-    private val loaded = AtomicBoolean(false)
+    private var name: String? = null
+    private var image: BufferedImage? = null
+    private var loaded = false
 
     val missing: Boolean
-        get() = name.get() != null && loaded.get() && image.get() == null
+        get() = name != null && loaded && image == null
 
     fun show(iconName: String?) {
-        if (name.getAndSet(iconName) == iconName) {
+        if (name == iconName) {
             return
         }
-        image.set(null)
-        loaded.set(false)
+        name = iconName
+        image = null
+        loaded = false
 
         if (iconName == null) {
             return
         }
-        ComponentIcons.loadImage(iconName).thenAccept { loadedImage ->
-            if (name.get() == iconName) {
-                image.set(loadedImage)
-                loaded.set(true)
-                ComponentIcons.onImageLoaded.get().invoke()
+        ComponentIcons.loadImage(iconName) { loadedImage ->
+            if (name == iconName) {
+                image = loadedImage
+                loaded = true
+                ComponentIcons.onImageLoaded()
             }
         }
     }
@@ -51,7 +50,7 @@ class ComponentIcon : Icon {
     }
 
     override fun paintIcon(c: Component?, g: Graphics, x: Int, y: Int) {
-        val loadedImage = image.get()
+        val loadedImage = image
         if (loadedImage == null) {
             PeriscopeIcons.component.paintIcon(c, g, x, y)
             return
