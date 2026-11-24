@@ -8,9 +8,13 @@ import com.mussonindustrial.ignition.embr.periscope.i18n
 import com.mussonindustrial.ignition.embr.periscope.resources.ComponentResource.Descriptor.DELEGATE_FACTORY
 import com.mussonindustrial.ignition.embr.periscope.resources.editor.SimpleDocumentListener
 import java.awt.BorderLayout
+import java.awt.Container
+import javax.swing.JCheckBox
 import javax.swing.JPanel
+import net.miginfocom.swing.MigLayout
 
-class ComponentDelegatePanel(delegate: String, onChanged: () -> Unit) : JPanel(BorderLayout()) {
+class ComponentDelegatePanel(delegate: String, enabled: Boolean, onChanged: () -> Unit) :
+    JPanel(BorderLayout()) {
 
     companion object {
         private const val PARAMETER = "component"
@@ -31,12 +35,35 @@ class ComponentDelegatePanel(delegate: String, onChanged: () -> Unit) : JPanel(B
             return if (body.isBlank()) "" else header + body
         }
 
+    private val enabledBox =
+        JCheckBox(i18n("component.delegate.enabled"), enabled).apply {
+            toolTipText = i18n("component.delegate.enabled.tooltip")
+        }
+
+    val isDelegateEnabled: Boolean
+        get() = enabledBox.isSelected
+
     init {
         editor.descriptor = createDescriptor()
         editor.userScript = source.removePrefix(header).ifBlank { EMPTY_BODY }
         editor.document.addDocumentListener(SimpleDocumentListener { onChanged() })
+        enabledBox.addActionListener {
+            showEnabled()
+            onChanged()
+        }
+        showEnabled()
 
+        add(JPanel(MigLayout("ins 0 0 8 0")).apply { add(enabledBox) }, BorderLayout.NORTH)
         add(editor, BorderLayout.CENTER)
+    }
+
+    private fun showEnabled() {
+        setEnabledDeep(editor, enabledBox.isSelected)
+    }
+
+    private fun setEnabledDeep(component: Container, enabled: Boolean) {
+        component.isEnabled = enabled
+        component.components.filterIsInstance<Container>().forEach { setEnabledDeep(it, enabled) }
     }
 
     /** Everything up to the function body, or nothing for a script written some other way. */
