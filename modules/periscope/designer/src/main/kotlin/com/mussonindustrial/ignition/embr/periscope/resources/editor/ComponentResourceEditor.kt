@@ -1,6 +1,5 @@
 package com.mussonindustrial.ignition.embr.periscope.resources.editor
 
-import com.inductiveautomation.ignition.client.util.gui.AntialiasLabel
 import com.inductiveautomation.ignition.client.util.gui.HeaderLabel
 import com.inductiveautomation.ignition.common.BundleUtil
 import com.inductiveautomation.ignition.common.project.resource.ProjectResource
@@ -15,6 +14,7 @@ import com.mussonindustrial.ignition.embr.periscope.resources.editor.components.
 import com.mussonindustrial.ignition.embr.periscope.resources.editor.components.ComponentDelegatePanel
 import com.mussonindustrial.ignition.embr.periscope.resources.editor.components.EditorSection
 import com.mussonindustrial.ignition.embr.periscope.resources.editor.components.EditorTabs
+import com.mussonindustrial.ignition.embr.periscope.resources.editor.components.WrappingLabel
 import com.mussonindustrial.ignition.embr.periscope.resources.editor.language.ScriptLanguage
 import com.mussonindustrial.ignition.embr.periscope.resources.findComponentResources
 import com.mussonindustrial.ignition.embr.periscope.resources.pathString
@@ -103,7 +103,7 @@ class ComponentResourceEditor(workspace: TabbedResourceWorkspace, path: Resource
 
     private fun createComponentPanel(editor: JComponent): JComponent {
         val description =
-            AntialiasLabel("<html>${i18n("component.desc")}").apply {
+            WrappingLabel(i18n("component.desc")).apply {
                 border = BorderFactory.createEmptyBorder(6, 6, 6, 6)
             }
 
