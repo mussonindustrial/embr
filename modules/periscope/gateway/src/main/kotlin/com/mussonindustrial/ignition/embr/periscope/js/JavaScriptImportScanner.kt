@@ -49,7 +49,7 @@ class JavaScriptImportScanner(private val source: String) {
                 char.isWhitespace() -> position++
                 char == '/' && peekNext() == '/' -> skipLineComment()
                 char == '/' && peekNext() == '*' -> skipBlockComment()
-                char == '/' && isRegexAllowed() -> readRegex()
+                char == '/' && !followsValue() -> readRegex()
                 char == '\'' || char == '"' -> readString(char)
                 char == '`' -> {
                     position++
@@ -205,22 +205,21 @@ class JavaScriptImportScanner(private val source: String) {
         return token.kind == TokenKind.IDENTIFIER && textOf(token) in CONDITION_KEYWORDS
     }
 
-    /** A slash starts a regex where a value cannot end, and divides where one can. */
-    private fun isRegexAllowed(): Boolean {
-        val last = tokens.lastOrNull() ?: return true
+    private fun followsValue(): Boolean {
+        val last = tokens.lastOrNull() ?: return false
 
         return when (last.kind) {
-            TokenKind.IDENTIFIER -> textOf(last) in REGEX_KEYWORDS
+            TokenKind.IDENTIFIER -> textOf(last) !in REGEX_KEYWORDS
             TokenKind.STRING,
-            TokenKind.LITERAL -> false
+            TokenKind.LITERAL -> true
             TokenKind.PUNCTUATION ->
                 when (source[last.start]) {
-                    ')' -> last.endsCondition
+                    ')' -> !last.endsCondition
                     ']',
-                    '}' -> false
+                    '}' -> true
                     '+',
-                    '-' -> !isIncrement(last)
-                    else -> true
+                    '-' -> isIncrement(last)
+                    else -> false
                 }
         }
     }

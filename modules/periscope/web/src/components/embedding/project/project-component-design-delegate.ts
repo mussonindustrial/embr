@@ -46,8 +46,8 @@ type Resize = {
   boxes: Map<DesignerComponentStore, Bounds>
 }
 
-// The Designer changes the selection again after a drop, so it is restored twice.
-const RESELECT_DELAYS = [0, 100]
+const AFTER_DROP_MS = 0
+const AFTER_DESIGNER_RESELECT_MS = 100
 
 function restoreSelection(
   selection: SelectionStore,
@@ -65,18 +65,33 @@ function restoreSelection(
     }
   }
 
-  RESELECT_DELAYS.forEach((delay) => setTimeout(restore, delay))
+  setTimeout(restore, AFTER_DROP_MS)
+  setTimeout(restore, AFTER_DESIGNER_RESELECT_MS)
 }
 
-// The bounds are measured from the DOM, which React updates a frame after the stores change.
+function afterReactCommit(callback: () => void) {
+  requestAnimationFrame(() => requestAnimationFrame(callback))
+}
+
 function refreshSelectionBounds(selection: SelectionStore) {
-  requestAnimationFrame(() => {
-    requestAnimationFrame(() => selection.forceUpdateSelectionDimensions())
-  })
+  afterReactCommit(() => selection.forceUpdateSelectionDimensions())
 }
 
 function childrenOf(container: DesignerComponentStore) {
   return container.children as DesignerComponentStore[]
+}
+
+function reorderOnceAdded(
+  container: DesignerComponentStore,
+  addressPaths: string[],
+  index: number
+) {
+  setTimeout(() => {
+    const added = childrenOf(container).filter((child) =>
+      addressPaths.includes(child.addressPathString)
+    )
+    container.reorderChildren(added, index, false)
+  }, 0)
 }
 
 function shiftBox(box: Bounds, x: number, y: number): Bounds {
@@ -221,15 +236,8 @@ export class ProjectComponentDesignDelegate implements ContainerDesignDelegate {
     })
 
     if (index != null && index < siblings.length) {
-      const paths = added.map(({ addressPath }) => addressPath)
-
-      // The added components only appear among the container's children after this action.
-      setTimeout(() => {
-        const stores = childrenOf(container).filter((child) =>
-          paths.includes(child.addressPathString)
-        )
-        container.reorderChildren(stores, index, false)
-      }, 0)
+      const addressPaths = added.map(({ addressPath }) => addressPath)
+      reorderOnceAdded(container, addressPaths, index)
     }
 
     return added
