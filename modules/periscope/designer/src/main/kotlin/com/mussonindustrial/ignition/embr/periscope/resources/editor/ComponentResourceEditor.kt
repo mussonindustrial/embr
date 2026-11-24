@@ -76,7 +76,8 @@ class ComponentResourceEditor(workspace: TabbedResourceWorkspace, path: Resource
     }
 
     override fun createBodyPanel(resource: ComponentResource, editor: JComponent): JComponent {
-        delegatePanel = ComponentDelegatePanel(resource.delegate, ::delegateChanged)
+        delegatePanel =
+            ComponentDelegatePanel(resource.delegate, resource.delegateEnabled, ::delegateChanged)
 
         tabs =
             EditorTabs().apply {
@@ -97,7 +98,7 @@ class ComponentResourceEditor(workspace: TabbedResourceWorkspace, path: Resource
     override fun getObjectForSave(): ComponentResource {
         return super.getObjectForSave()
             .withAttributes(attributesPanel.attributes)
-            .withDelegate(delegatePanel.delegate)
+            .withDelegate(delegatePanel.delegate, delegatePanel.isDelegateEnabled)
     }
 
     private fun createComponentPanel(editor: JComponent): JComponent {
@@ -133,7 +134,9 @@ class ComponentResourceEditor(workspace: TabbedResourceWorkspace, path: Resource
     private fun showDelegateMarker() {
         tabs.mark(
             DELEGATE_TAB,
-            EditorTabs.Marker.CONFIGURED.takeIf { delegatePanel.delegate.isNotEmpty() },
+            EditorTabs.Marker.CONFIGURED.takeIf {
+                delegatePanel.isDelegateEnabled && delegatePanel.delegate.isNotEmpty()
+            },
         )
     }
 
