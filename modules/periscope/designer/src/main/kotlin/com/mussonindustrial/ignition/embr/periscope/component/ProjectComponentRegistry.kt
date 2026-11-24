@@ -278,7 +278,7 @@ class ProjectComponentRegistry(
             return
         }
 
-        applyChanges(registry, changes)
+        applyChangesWithOneNotification(registry, changes)
         context.frame.repaint()
     }
 
@@ -301,16 +301,15 @@ class ProjectComponentRegistry(
         return filter { (id, info) -> !other.containsKey(id) || other[id] != info }
     }
 
-    private fun applyChanges(registry: DesignerComponentRegistry, changes: List<() -> Unit>) {
-        // Each change makes the Designer rebuild its palette, so only the last one notifies it.
-        @Suppress("UNCHECKED_CAST")
-        val registryListeners =
-            try {
-                registry.getSuperPrivateProperty("listeners") as MutableCollection<Any>
-            } catch (e: Exception) {
-                changes.forEach { it() }
-                return
-            }
+    private fun applyChangesWithOneNotification(
+        registry: DesignerComponentRegistry,
+        changes: List<() -> Unit>,
+    ) {
+        val registryListeners = findRegistryListeners(registry)
+        if (registryListeners == null) {
+            changes.forEach { it() }
+            return
+        }
 
         val heldListeners = registryListeners.toList()
         registryListeners.clear()
@@ -320,6 +319,17 @@ class ProjectComponentRegistry(
             registryListeners.addAll(heldListeners)
         }
         changes.last()()
+    }
+
+    private fun findRegistryListeners(
+        registry: DesignerComponentRegistry,
+    ): MutableCollection<Any>? {
+        return try {
+            @Suppress("UNCHECKED_CAST")
+            registry.getSuperPrivateProperty("listeners") as MutableCollection<Any>
+        } catch (e: Exception) {
+            null
+        }
     }
 
     private fun createDescriptor(id: String, info: ComponentInfo?): ComponentDescriptor {

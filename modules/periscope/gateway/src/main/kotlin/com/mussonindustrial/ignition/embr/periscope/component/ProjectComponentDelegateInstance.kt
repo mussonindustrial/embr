@@ -46,9 +46,10 @@ class ProjectComponentDelegateInstance(
         call(HANDLE_EVENT, Py.newUnicode(name), TypeUtilities.gsonToPy(event))
     }
 
-    /** A method component scripts can call: public, and not part of the lifecycle. */
     fun findScriptCallable(name: String): PyObject? {
-        if (name.startsWith("_") || name in LIFECYCLE_METHODS) {
+        val isPrivate = name.startsWith("_")
+        val isLifecycleMethod = name in LIFECYCLE_METHODS
+        if (isPrivate || isLifecycleMethod) {
             return null
         }
 
@@ -65,16 +66,15 @@ class ProjectComponentDelegateInstance(
     }
 
     private fun create(script: ProjectComponentDelegateScript): PyObject? {
-        var created: PyObject? = null
-        run(DELEGATE_FACTORY) { created = script.create(scriptManager, wrapper) }
-        return created
+        return run(DELEGATE_FACTORY) { script.create(scriptManager, wrapper) }
     }
 
-    private fun run(name: String, block: () -> Unit) {
-        try {
+    private fun <T> run(name: String, block: () -> T): T? {
+        return try {
             withThreadContext(component.threadContext, block)
         } catch (e: Exception) {
             component.mdc { logger.warn("Failed to run '$name' of the component's delegate.", e) }
+            null
         }
     }
 }

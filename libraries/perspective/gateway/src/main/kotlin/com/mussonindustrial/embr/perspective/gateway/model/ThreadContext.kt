@@ -30,9 +30,9 @@ class ThreadContext(session: InternalSession?, page: PageModel?, view: ViewModel
     }
 }
 
-fun withThreadContext(threadContext: ThreadContext, block: () -> Unit) {
+fun <T> withThreadContext(threadContext: ThreadContext, block: () -> T): T {
     val previous = get()
-    try {
+    return try {
         set(threadContext)
         block()
     } finally {
