@@ -68,13 +68,13 @@ class ComponentResource(
             return resource.getData(DELEGATE_FILE)?.decodeToString().orEmpty()
         }
 
-        /** Resources saved before the flag existed have a delegate exactly when they have the file. */
         fun isDelegateEnabled(resource: ProjectResource): Boolean {
-            val settings = resource.getAttribute(DELEGATE_KEY).orElse(null)
-            if (settings == null || !settings.isJsonObject) {
-                return getDelegate(resource).isNotBlank()
+            val savedSettings = resource.getAttribute(DELEGATE_KEY).orElse(null)
+            if (savedSettings == null || !savedSettings.isJsonObject) {
+                val hasDelegateFile = getDelegate(resource).isNotBlank()
+                return hasDelegateFile
             }
-            return settings.asJsonObject.get(ENABLED_KEY)?.asBoolean ?: false
+            return savedSettings.asJsonObject.get(ENABLED_KEY)?.asBoolean ?: false
         }
     }
 

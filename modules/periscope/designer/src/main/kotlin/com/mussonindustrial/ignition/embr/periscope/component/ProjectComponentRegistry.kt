@@ -87,12 +87,10 @@ class ProjectComponentRegistry(
     private val stopped = AtomicBoolean(false)
     private val scheduledLoad = AtomicReference<ScheduledFuture<*>?>()
 
-    // Only the loader thread touches these.
     private var loadedRevision: Int? = null
     private var reportedFailures: List<ComponentFailure>? = null
     private var definitions = emptyList<ComponentDefinition>()
 
-    // Only the event dispatch thread touches these, and the components.
     private var registeredComponentsById = emptyMap<String, ComponentInfo?>()
     private var usedComponentIds = emptySet<String>()
 

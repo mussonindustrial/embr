@@ -5,7 +5,6 @@ import java.awt.Dimension
 import javax.swing.plaf.basic.BasicHTML
 import javax.swing.text.View
 
-/** An HTML label that wraps to its width and asks for the height its wrapped text needs. */
 class WrappingLabel(html: String) : AntialiasLabel("<html>$html") {
 
     override fun getPreferredSize(): Dimension {
