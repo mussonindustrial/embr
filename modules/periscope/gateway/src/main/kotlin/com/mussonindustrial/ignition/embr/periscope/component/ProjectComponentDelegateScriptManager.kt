@@ -96,7 +96,7 @@ class ProjectComponentDelegateScriptManager(projectManager: ProjectManager) :
             val resource = findComponent(componentId) ?: return null
             val path = resource.resourcePath.pathString
             val source = ComponentResource.getDelegate(resource)
-            if (source.isBlank()) {
+            if (!ComponentResource.isDelegateEnabled(resource) || source.isBlank()) {
                 return null
             }
 
