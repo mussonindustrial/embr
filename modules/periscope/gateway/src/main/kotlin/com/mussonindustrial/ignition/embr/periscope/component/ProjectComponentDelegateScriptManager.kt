@@ -14,9 +14,7 @@ import com.mussonindustrial.ignition.embr.periscope.resources.ClientResource
 import com.mussonindustrial.ignition.embr.periscope.resources.ComponentAttributes
 import com.mussonindustrial.ignition.embr.periscope.resources.ComponentResource
 import com.mussonindustrial.ignition.embr.periscope.resources.pathString
-import java.util.Optional
 import java.util.concurrent.ConcurrentHashMap
-import kotlin.jvm.optionals.getOrNull
 
 class ProjectComponentDelegateScriptManager(projectManager: ProjectManager) :
     ProjectLifecycleFactory<ProjectLifecycle>(projectManager) {
@@ -56,8 +54,7 @@ class ProjectComponentDelegateScriptManager(projectManager: ProjectManager) :
     private inner class ScriptCache(private val project: RuntimeProject) :
         ProjectLifecycle(project) {
 
-        private val scriptsByComponent =
-            ConcurrentHashMap<String, Optional<ProjectComponentDelegateScript>>()
+        private val scripts = ProjectComponentDelegateScriptCache { compile(it) }
 
         override fun onStartup(resources: List<ProjectResource>) {
             cachesByProject[project.name] = this
@@ -80,13 +77,11 @@ class ProjectComponentDelegateScriptManager(projectManager: ProjectManager) :
         }
 
         fun find(componentId: String): ProjectComponentDelegateScript? {
-            return scriptsByComponent
-                .computeIfAbsent(componentId) { Optional.ofNullable(compile(it)) }
-                .getOrNull()
+            return scripts.find(componentId)
         }
 
         private fun onChanged() {
-            scriptsByComponent.clear()
+            scripts.clear()
             listenersByProject[project.name]?.forEach { it() }
         }
 
