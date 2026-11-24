@@ -85,11 +85,15 @@ class ProjectComponentRegistry(
 
     private val workspaceListener: (String) -> Unit = { scheduleLoad(SETTLE_WAIT_MS) }
 
-    private val loadedRevision = AtomicReference<Int?>()
     private val stopped = AtomicBoolean(false)
     private val scheduledLoad = AtomicReference<ScheduledFuture<*>?>()
-    private val reportedFailures = AtomicReference<List<ComponentFailure>?>()
-    private val definitions = AtomicReference(emptyList<ComponentDefinition>())
+
+    // Only the loader thread touches these.
+    private var loadedRevision: Int? = null
+    private var reportedFailures: List<ComponentFailure>? = null
+    private var definitions = emptyList<ComponentDefinition>()
+
+    // Only the event dispatch thread touches these, and the components.
     private var registeredComponentsById = emptyMap<String, ComponentInfo?>()
     private var usedComponentIds = emptySet<String>()
 
@@ -97,7 +101,7 @@ class ProjectComponentRegistry(
         private set
 
     fun startup() {
-        ComponentIcons.onImageLoaded.set { invokeLater { context.frame.repaint() } }
+        invokeLater { ComponentIcons.onImageLoaded = { context.frame.repaint() } }
         context.project?.addResourceListener(resourceListener)
         scheduleUsedComponentIds()
 
@@ -110,9 +114,9 @@ class ProjectComponentRegistry(
         workspace.removeChangeListener(workspaceListener)
         stopped.set(true)
         executionManager.shutdown()
-        ComponentIcons.onImageLoaded.set {}
 
         invokeLater {
+            ComponentIcons.onImageLoaded = {}
             usedComponentIds = emptySet()
             updateComponents(emptyList())
         }
@@ -173,11 +177,11 @@ class ProjectComponentRegistry(
         }
 
         result.components?.let {
-            definitions.set(it)
+            definitions = it
             reportFailures(result.failures.orEmpty())
-            loadedRevision.set(result.revision)
+            loadedRevision = result.revision
         }
-        val loadedComponents = componentsOf(definitions.get())
+        val loadedComponents = componentsOf(definitions)
 
         invokeLater {
             if (stopped.get()) {
@@ -227,7 +231,7 @@ class ProjectComponentRegistry(
     private fun describeComponents(): ComponentsResult? {
         return try {
             workspace.service
-                .describeComponents(loadedRevision.get())
+                .describeComponents(loadedRevision)
                 .get(EVALUATE_WAIT_SECONDS, TimeUnit.SECONDS)
         } catch (e: Exception) {
             logger.debug("Failed to describe components.", e)
@@ -236,9 +240,10 @@ class ProjectComponentRegistry(
     }
 
     private fun reportFailures(failures: List<ComponentFailure>) {
-        if (reportedFailures.getAndSet(failures) == failures) {
+        if (failures == reportedFailures) {
             return
         }
+        reportedFailures = failures
 
         failures.forEach {
             logger.warn("Failed to evaluate client resource '${it.path}': ${it.message}")
