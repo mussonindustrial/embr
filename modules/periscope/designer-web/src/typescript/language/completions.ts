@@ -7,9 +7,9 @@ import {
   formatSettings,
   preferencesFor,
   service,
-  sourceFileOf,
+  findSourceFile,
   systemModules,
-  textOf,
+  getText,
 } from './workspace'
 import {
   CompletionDetailsRequest,
@@ -25,7 +25,7 @@ export async function completions({
   offset,
   prefix = '',
 }: PositionRequest & { prefix?: string }): Promise<CompletionsResult> {
-  const fileName = files.fileNameOf(path)
+  const fileName = files.toFileName(path)
   const result = service.getCompletionsAtPosition(
     fileName,
     offset,
@@ -35,13 +35,13 @@ export async function completions({
     return { entries: [] }
   }
 
-  const text = textOf(fileName)
+  const text = getText(fileName)
   const enteredText = (entry: ts.CompletionEntry) =>
     entry.replacementSpan
       ? text.slice(entry.replacementSpan.start, offset)
       : prefix
 
-  const sourceFile = sourceFileOf(fileName)
+  const sourceFile = findSourceFile(fileName)
   const available = sourceFile
     ? importCompletions(sourceFile, offset, result.entries, systemModules())
     : result.entries
@@ -60,7 +60,7 @@ export async function completionDetails({
   source,
   data,
 }: CompletionDetailsRequest): Promise<CompletionDetailsResult | null> {
-  const fileName = files.fileNameOf(path)
+  const fileName = files.toFileName(path)
   const details = service.getCompletionEntryDetails(
     fileName,
     offset,
@@ -107,7 +107,7 @@ function humpStarts(name: string) {
     .filter((i) => i > 0)
 }
 
-function initialsOf(name: string) {
+function getInitials(name: string) {
   return (
     name[0] +
     humpStarts(name)
@@ -120,7 +120,7 @@ function compareEntries(prefix: string) {
   const lowerPrefix = prefix.toLowerCase()
   const rank = ({ name }: ts.CompletionEntry) => {
     if (name.toLowerCase().startsWith(lowerPrefix)) return 0
-    if (initialsOf(name).toLowerCase().startsWith(lowerPrefix)) return 1
+    if (getInitials(name).toLowerCase().startsWith(lowerPrefix)) return 1
     return 2
   }
   return (a: ts.CompletionEntry, b: ts.CompletionEntry) =>

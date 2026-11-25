@@ -34,8 +34,8 @@ export function createHost(
 
   const getChildren = (directory: string) =>
     fileNames()
-      .filter((fileName) => fileName.startsWith(prefixOf(directory)))
-      .map((fileName) => fileName.slice(prefixOf(directory).length))
+      .filter((fileName) => fileName.startsWith(toPrefix(directory)))
+      .map((fileName) => fileName.slice(toPrefix(directory).length))
 
   return {
     getCompilationSettings: () => ({ ...compilerOptions, lib: typings.libs }),
@@ -51,7 +51,7 @@ export function createHost(
     fileExists: (fileName) => readFile(fileName) != null,
     readFile,
     directoryExists: (directory) =>
-      fileNames().some((fileName) => fileName.startsWith(prefixOf(directory))),
+      fileNames().some((fileName) => fileName.startsWith(toPrefix(directory))),
     getDirectories: (directory) => [
       ...new Set(
         getChildren(directory)
@@ -65,10 +65,10 @@ export function createHost(
         .filter(
           (child) => !extensions || extensions.some((e) => child.endsWith(e))
         )
-        .map((child) => prefixOf(directory) + child),
+        .map((child) => toPrefix(directory) + child),
   }
 }
 
-function prefixOf(directory: string) {
+function toPrefix(directory: string) {
   return directory.replace(/\/*$/, '/')
 }
