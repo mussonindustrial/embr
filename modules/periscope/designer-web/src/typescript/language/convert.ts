@@ -13,7 +13,7 @@ export function toLocation(
   const lineText = source?.text.slice(lineStarts[line], lineStarts[line + 1])
 
   return {
-    path: files.pathOf(fileName),
+    path: files.findPath(fileName),
     start: span.start,
     length: span.length,
     line: line + 1,
@@ -31,7 +31,7 @@ export function toTextEdit(change: ts.TextChange): TextEdit {
 
 function toFileEdits(changes: readonly ts.FileTextChanges[]): FileEdits[] {
   return changes.flatMap((change) => {
-    const path = files.pathOf(change.fileName)
+    const path = files.findPath(change.fileName)
     return path == null
       ? []
       : [{ path, edits: change.textChanges.map(toTextEdit) }]

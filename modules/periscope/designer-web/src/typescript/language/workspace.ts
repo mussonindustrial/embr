@@ -52,7 +52,7 @@ export function preferencesFor(fileName: string) {
   return isResource(fileName) ? preferences : embeddedPreferences
 }
 
-export function textOf(fileName: string) {
+export function getText(fileName: string) {
   return files.get(fileName)?.text ?? ''
 }
 
@@ -64,7 +64,7 @@ export function systemModules() {
     .map((name) => name.slice(0, -'.d.ts'.length))
 }
 
-export function sourceFileOf(fileName: string) {
+export function findSourceFile(fileName: string) {
   return service.getProgram()?.getSourceFile(fileName)
 }
 

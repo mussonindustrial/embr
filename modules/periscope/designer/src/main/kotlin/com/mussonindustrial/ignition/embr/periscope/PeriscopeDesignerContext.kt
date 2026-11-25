@@ -1,5 +1,7 @@
 package com.mussonindustrial.ignition.embr.periscope
 
+import com.inductiveautomation.ignition.common.project.resource.ResourcePath
+import com.inductiveautomation.ignition.designer.IgnitionDesigner
 import com.inductiveautomation.ignition.designer.model.DesignerContext
 import com.inductiveautomation.perspective.designer.DesignerHook
 import com.inductiveautomation.perspective.designer.PerspectiveNavNode
@@ -12,19 +14,25 @@ import com.mussonindustrial.embr.perspective.designer.component.registerComponen
 import com.mussonindustrial.embr.perspective.designer.component.removeComponent
 import com.mussonindustrial.ignition.embr.periscope.action.JavaScriptActionDesignDelegate
 import com.mussonindustrial.ignition.embr.periscope.component.ComponentIdSuggestionSource
+import com.mussonindustrial.ignition.embr.periscope.component.ComponentPaletteFrame
+import com.mussonindustrial.ignition.embr.periscope.component.ProjectComponentRegistry
 import com.mussonindustrial.ignition.embr.periscope.component.TypeScriptResourceExportSuggestionSource
 import com.mussonindustrial.ignition.embr.periscope.component.TypeScriptResourceSuggestionSource
 import com.mussonindustrial.ignition.embr.periscope.component.embedding.*
 import com.mussonindustrial.ignition.embr.periscope.event.PeriscopeComponentEvents
 import com.mussonindustrial.ignition.embr.periscope.icons.PeriscopeIcons
 import com.mussonindustrial.ignition.embr.periscope.js.PeriscopeDesignerBridge
+import com.mussonindustrial.ignition.embr.periscope.navtree.model.ComponentResourceNode
 import com.mussonindustrial.ignition.embr.periscope.navtree.model.CssModuleResourceNode
 import com.mussonindustrial.ignition.embr.periscope.navtree.model.TypeScriptResourceNode
+import com.mussonindustrial.ignition.embr.periscope.resources.ClientResource
 import com.mussonindustrial.ignition.embr.periscope.resources.ClientResourceManager
 import com.mussonindustrial.ignition.embr.periscope.resources.ClientResourceWorkspace
+import com.mussonindustrial.ignition.embr.periscope.resources.ComponentResource
 import com.mussonindustrial.ignition.embr.periscope.resources.CssModuleResource
 import com.mussonindustrial.ignition.embr.periscope.resources.TypeScriptResource
 import com.mussonindustrial.ignition.embr.periscope.resources.asDesignerDescriptor
+import com.mussonindustrial.ignition.embr.periscope.resources.editor.ComponentResourceEditor
 import com.mussonindustrial.ignition.embr.periscope.resources.editor.CssModuleResourceEditor
 import com.mussonindustrial.ignition.embr.periscope.resources.editor.TypeScriptResourceEditor
 import com.mussonindustrial.ignition.embr.periscope.resources.language.TypeScriptLanguageService
@@ -78,18 +86,26 @@ class PeriscopeDesignerContext(val context: DesignerContext) :
             TypeScriptLanguageService(bridge),
         )
 
+    private val projectComponentRegistry =
+        ProjectComponentRegistry(context, perspectiveDesignerInterface, typeScriptWorkspace)
+
+    val componentPalette =
+        ComponentPaletteFrame(context, projectComponentRegistry, ::openClientResource)
+
     private val components =
         listOf(
             EmbeddedView.asDesignerComponent(),
             FlexRepeater.asDesignerComponent(),
             JsonView.asDesignerComponent(),
-            Portal.asDesignerComponent(),
+            PortalLegacy.asDesignerComponent(),
             Swiper.asDesignerComponent(),
-            React.asDesignerComponent(),
+            ReactLegacy.asDesignerComponent(),
         )
 
-    private val workspaces =
-        listOf(ClientResourceWorkspace(context, perspectiveNavNode, clientResourceManager))
+    private val clientResourceWorkspace =
+        ClientResourceWorkspace(context, perspectiveNavNode, clientResourceManager)
+
+    private val workspaces = listOf(clientResourceWorkspace)
 
     private val clientResourceDefinitions =
         listOf(
@@ -102,6 +118,11 @@ class PeriscopeDesignerContext(val context: DesignerContext) :
                 PeriscopeIcons.tsx,
                 TypeScriptResourceNode.factory,
                 TypeScriptResourceEditor.factory,
+            ),
+            ComponentResource.asDesignerDescriptor(
+                PeriscopeIcons.component,
+                ComponentResourceNode.factory,
+                ComponentResourceEditor.factory,
             ),
         )
 
@@ -125,13 +146,29 @@ class PeriscopeDesignerContext(val context: DesignerContext) :
         clientResourceDefinitions.forEach { clientResourceManager.register(it) }
     }
 
-    fun startTypeScriptWorkspace() {
+    fun startupTypeScriptWorkspace() {
         typeScriptWorkspace.startup()
     }
 
-    fun stopTypeScriptWorkspace() {
+    fun shutdownTypeScriptWorkspace() {
         typeScriptWorkspace.shutdown()
         bridge.close()
+    }
+
+    fun startupProjectComponents() {
+        projectComponentRegistry.startup()
+    }
+
+    fun shutdownProjectComponents() {
+        projectComponentRegistry.shutdown()
+    }
+
+    fun startupComponentPalette() {
+        componentPalette.startup()
+    }
+
+    fun shutdownComponentPalette() {
+        componentPalette.shutdown()
     }
 
     fun registerAWTEventListeners() {
@@ -141,5 +178,10 @@ class PeriscopeDesignerContext(val context: DesignerContext) :
 
     fun removeAWTEventListeners() {
         Toolkit.getDefaultToolkit().removeAWTEventListener(PeriscopeComponentEvents)
+    }
+
+    private fun openClientResource(path: String) {
+        clientResourceWorkspace.open(ResourcePath(ClientResource.type, path))
+        (frame as IgnitionDesigner).workspace.setSelectedWorkspace(clientResourceWorkspace.key)
     }
 }

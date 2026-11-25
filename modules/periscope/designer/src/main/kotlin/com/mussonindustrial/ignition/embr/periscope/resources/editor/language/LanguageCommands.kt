@@ -38,7 +38,7 @@ class LanguageCommands(
             command("Go to Symbol...", SYMBOL_KEY) { symbolSearch.show(editor) }
         }
         command("Quick Fix...", QUICK_FIX_KEY, ::showQuickFixes)
-        if (session.language == ScriptLanguage.TYPESCRIPT) {
+        if (session.language != ScriptLanguage.JAVASCRIPT) {
             command("Organize Imports", ORGANIZE_IMPORTS_KEY, ::organizeImports)
         }
         editor.bindKey(SIGNATURE_HELP_KEY) { signatureHelp.show() }

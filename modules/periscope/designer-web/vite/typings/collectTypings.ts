@@ -55,7 +55,7 @@ export function collectTypings(
   const globalEntries = Object.entries(manifest.globals).map(
     ([pkg, global]) => {
       const entry = resolve(pkg, projectFile)
-      if (!packages.has(packageNameOf(entry))) {
+      if (!packages.has(getPackageName(entry))) {
         throw new Error(`Package '${pkg}' isn't in the typings manifest.`)
       }
       if (ts.sys.readFile(entry)?.includes(`export as namespace ${global}`)) {
@@ -78,7 +78,7 @@ export function collectTypings(
       .map(({ fileName }) => resolve(fileName, source))
   })
   systemEntries
-    .map(packageNameOf)
+    .map(getPackageName)
     .filter((name) => !packages.has(name))
     .forEach((name) => packages.set(name, { name }))
 
@@ -87,7 +87,7 @@ export function collectTypings(
     literals.map(({ text }) => {
       const resolved = ts.resolveModuleName(text, containingFile, options, host)
       const file = resolved.resolvedModule?.resolvedFileName
-      return file != null && packages.has(packageNameOf(file))
+      return file != null && packages.has(getPackageName(file))
         ? resolved
         : { resolvedModule: undefined }
     })
@@ -103,7 +103,7 @@ export function collectTypings(
       files.set(`/lib/${basename(fileName)}`, compactTypings(text, true))
       return
     }
-    const pkg = packages.get(packageNameOf(fileName))
+    const pkg = packages.get(getPackageName(fileName))
     if (pkg == null) return
     putFirst(virtualPath(fileName), () =>
       compactTypings(text, pkg.docs ?? true)
@@ -151,7 +151,7 @@ function virtualPath(file: string) {
   return normalize(file).slice(normalize(file).lastIndexOf(NODE_MODULES))
 }
 
-function packageNameOf(file: string) {
+function getPackageName(file: string) {
   const [first = '', second] = virtualPath(file)
     .slice(NODE_MODULES.length)
     .split('/')

@@ -72,6 +72,9 @@ class TypeScriptLanguageService(private val bridge: DesignerWebBridge) {
     fun reactComponentNames(path: String) =
         call<ExportsResult>("reactComponentNames", FileRequest(path))
 
+    fun describeComponents(revision: Int?) =
+        call<ComponentsResult>("describeComponents", ComponentsRequest(revision))
+
     fun symbols(query: String) = call<SymbolsResult>("symbols", SymbolsRequest(query))
 
     fun inlayHints(path: String) = call<InlayHintsResult>("inlayHints", FileRequest(path))

@@ -5,7 +5,9 @@ import com.inductiveautomation.ignition.common.project.RuntimeProject
 import com.inductiveautomation.ignition.common.project.resource.ProjectResource
 import com.inductiveautomation.ignition.common.project.resource.ProjectResourceId
 import com.inductiveautomation.ignition.gateway.project.ProjectLifecycle
+import com.mussonindustrial.embr.common.logging.getLoggerEx
 import com.mussonindustrial.embr.perspective.gateway.session.PerspectiveSessionMonitor
+import java.io.IOException
 
 class ClientResourceChangeNotifier(
     val sessionMonitor: PerspectiveSessionMonitor,
@@ -16,9 +18,21 @@ class ClientResourceChangeNotifier(
         const val PROTOCOL = "periscope-client-resource-refresh"
     }
 
+    private val logger = this.getLoggerEx()
+
     fun notifyClients() {
-        sessionMonitor.getSessionsForProject(project.name).forEach {
-            it.pages.forEach { page -> page.send(PROTOCOL, JsonObject()) }
+        sessionMonitor.getSessionsForProject(project.name).forEach { session ->
+            session.pages.forEach { page ->
+                try {
+                    page.send(PROTOCOL, JsonObject())
+                } catch (e: IOException) {
+                    logger.debug(
+                        "Skipped client resource refresh for a page without a channel: ${e.message}",
+                    )
+                } catch (e: Exception) {
+                    logger.warn("Failed to send a client resource refresh to a page.", e)
+                }
+            }
         }
     }
 

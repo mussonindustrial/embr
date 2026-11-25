@@ -24,11 +24,11 @@ async function setProject(main: string) {
   })
 }
 
-function offsetOf(source: string, marker: string) {
+function findOffset(source: string, marker: string) {
   return source.indexOf(marker) + marker.length
 }
 
-async function errorsOf(main: string) {
+async function findErrors(main: string) {
   await setProject(main)
   const { diagnostics } = await language.diagnostics({ path: 'app/main' })
   return diagnostics.filter((d) => d.severity === 'error')
@@ -235,11 +235,40 @@ describe('TypeScript Language Service', () => {
     it('completes the exports and types of each system module', async () => {
       const modules = {
         periscope: [
+          'Child',
+          'ChildRenderOptions',
+          'ChildSlotProps',
+          'ComponentContext',
+          'ComponentDefinition',
+          'ComponentDelegate',
+          'ComponentEvent',
+          'ComponentMetadata',
+          'ComponentMode',
+          'ComponentRender',
+          'ComponentVariant',
+          'defineComponent',
+          'ElementProps',
+          'event',
+          'EventSchema',
+          'Infer',
+          'InferEvents',
+          'InferProps',
+          'NumberProp',
+          'PlacedChild',
+          'PositionChange',
+          'ProjectComponent',
+          'ProjectComponentEvent',
+          'prop',
+          'Prop',
+          'PropSchema',
           'ReactComponent',
           'ReactComponentContext',
           'ReactComponentProps',
+          'ResizeHandle',
           'resource',
+          'RootProps',
           'toast',
+          'useComponent',
         ],
         perspective: [
           'context',
@@ -323,7 +352,7 @@ describe('TypeScript Language Service', () => {
 
       const { entries } = await language.completions({
         path: action.path,
-        offset: offsetOf(source, 'useMemo'),
+        offset: findOffset(source, 'useMemo'),
         prefix: 'useMemo',
       })
 
@@ -338,7 +367,7 @@ describe('TypeScript Language Service', () => {
 
       const result = await language.definition({
         path: 'app/main',
-        offset: offsetOf(main, '\nad'),
+        offset: findOffset(main, '\nad'),
       })
 
       expect(result?.definitions[0]).toMatchObject({
@@ -353,7 +382,7 @@ describe('TypeScript Language Service', () => {
 
       const result = await language.definition({
         path: 'app/main',
-        offset: offsetOf(main, '@/sha'),
+        offset: findOffset(main, '@/sha'),
       })
 
       expect(result?.definitions[0]).toMatchObject({
@@ -364,8 +393,33 @@ describe('TypeScript Language Service', () => {
   })
 
   describe('diagnostics()', () => {
+    it('reports what failed in the last evaluation without running one', async () => {
+      const broken = [
+        "import { defineComponent } from 'system:periscope'",
+        'const missing: { value: { text: string } } = undefined as never',
+        'export default defineComponent({ description: missing.value.text, render: () => null })',
+      ].join('\n')
+      const resource = (source: string) => ({
+        path: 'app/broken',
+        kind: 'component' as const,
+        source,
+      })
+      await language.setFiles({ files: [resource(broken)] })
+      const before = await language.describeComponents({})
+
+      await language.updateFile(resource(`${broken};export const more = 4`))
+      const { diagnostics } = await language.diagnostics({ path: 'app/broken' })
+
+      expect(
+        diagnostics.some((diagnostic) =>
+          diagnostic.message.includes('undefined')
+        )
+      ).toBe(true)
+      expect(await language.describeComponents({})).not.toBe(before)
+    })
+
     it('reports type errors across resources', async () => {
-      const errors = await errorsOf(
+      const errors = await findErrors(
         "import { add } from '@/shared/utils'\nadd('1', 2)\n"
       )
 
@@ -414,7 +468,7 @@ describe('TypeScript Language Service', () => {
         '',
       ].join('\n')
 
-      expect(await errorsOf(main)).toEqual([])
+      expect(await findErrors(main)).toEqual([])
     })
 
     it('documents CSS module members', async () => {
@@ -497,11 +551,11 @@ describe('TypeScript Language Service', () => {
 
       const { entries } = await language.completions({
         path: action.path,
-        offset: offsetOf(source, 'self.'),
+        offset: findOffset(source, 'self.'),
       })
       const info = await language.quickInfo({
         path: action.path,
-        offset: offsetOf(source, 'runAction(sel'),
+        offset: findOffset(source, 'runAction(sel'),
       })
 
       expect(entries.map((e) => e.name)).toContain('view')
@@ -548,7 +602,7 @@ describe('TypeScript Language Service', () => {
         'export const Wrong: ReactComponent<{ label: string }> = ({ missing }) => missing',
       ].join('\n')
 
-      const errors = await errorsOf(main)
+      const errors = await findErrors(main)
 
       expect(errors.map((error) => error.message)).toEqual([
         expect.stringContaining("Property 'missing' does not exist"),
@@ -569,7 +623,7 @@ describe('TypeScript Language Service', () => {
         'export const component: number = store.Component',
       ].join('\n')
 
-      expect(await errorsOf(main)).toEqual([])
+      expect(await findErrors(main)).toEqual([])
     })
 
     it('imports the global modules', async () => {
@@ -590,7 +644,7 @@ describe('TypeScript Language Service', () => {
         ')',
       ].join('\n')
 
-      expect(await errorsOf(main)).toEqual([])
+      expect(await findErrors(main)).toEqual([])
     })
 
     it('allows type-only imports of packages the browser cannot load', async () => {
@@ -600,7 +654,7 @@ describe('TypeScript Language Service', () => {
         "export const style: Properties = { color: 'red' as Property.Color }",
       ].join('\n')
 
-      expect(await errorsOf(main)).toEqual([])
+      expect(await findErrors(main)).toEqual([])
     })
 
     it('allows imports the editor has no typings for, and reports a missing resource', async () => {
@@ -611,7 +665,7 @@ describe('TypeScript Language Service', () => {
         'export const used = [handler, confetti, missing]',
       ].join('\n')
 
-      const errors = await errorsOf(main)
+      const errors = await findErrors(main)
 
       expect(errors.map((d) => [d.code, d.range?.start.line])).toEqual([
         ['2307', 3],
@@ -625,7 +679,7 @@ describe('TypeScript Language Service', () => {
         "export const later = import('lodash')",
       ].join('\n')
 
-      const errors = await errorsOf(main)
+      const errors = await findErrors(main)
 
       expect(errors.map((d) => [d.code, d.range?.start.line])).toEqual([
         ['99001', 1],
@@ -642,7 +696,7 @@ describe('TypeScript Language Service', () => {
 
       const info = await language.quickInfo({
         path: 'app/main',
-        offset: offsetOf(main, '\nANS'),
+        offset: findOffset(main, '\nANS'),
       })
 
       expect(info).toMatchObject({
@@ -769,7 +823,7 @@ describe('TypeScript Language Service', () => {
       const { actions } = await language.codeFixes({
         path: action.path,
         start: source.indexOf('useMemo'),
-        end: offsetOf(source, 'useMemo'),
+        end: findOffset(source, 'useMemo'),
       })
 
       expect(actions).toEqual([])
@@ -807,7 +861,7 @@ describe('TypeScript Language Service', () => {
 
       const { references } = await language.references({
         path: 'shared/utils',
-        offset: offsetOf(utils, 'function a'),
+        offset: findOffset(utils, 'function a'),
       })
 
       expect(references.map((r) => r.path)).toEqual(
@@ -837,7 +891,7 @@ describe('TypeScript Language Service', () => {
 
       const { ranges } = await language.linkedEditing({
         path: 'app/main',
-        offset: offsetOf(main, '<di'),
+        offset: findOffset(main, '<di'),
       })
 
       expect(ranges).toEqual([

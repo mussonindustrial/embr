@@ -29,6 +29,7 @@ export default defineConfig(({ mode }) => ({
         '@inductiveautomation/perspective-designer',
         'react',
         'react-dom',
+        'react-dom/client',
         'mobx-react-lite',
         'moment',
       ],
@@ -40,6 +41,7 @@ export default defineConfig(({ mode }) => ({
           '@inductiveautomation/perspective-designer': 'PerspectiveDesigner',
           react: 'React',
           'react-dom': 'ReactDOM',
+          'react-dom/client': 'ReactDOM',
           'mobx-react-lite': 'mobxReactLite',
           moment: 'moment',
         },
@@ -51,10 +53,7 @@ export default defineConfig(({ mode }) => ({
     fileParallelism: mode !== 'benchmark',
     globals: true,
     environment: 'node',
-    include: [
-      'src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}',
-      '__tests__/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}',
-    ],
+    include: ['test/**/*.test.{ts,tsx}'],
     reporters: ['default'],
     coverage: {
       reportsDirectory: '../coverage/js/periscope-web',

@@ -16,4 +16,8 @@ dependencies {
     compileOnly(libs.jetty.servlet)
     compileOnly(libs.jetty.servlets)
     modlImplementation(projects.libraries.core.servlets)
+    testImplementation(libs.kotest.junit)
+    testImplementation(libs.kotest.assertions.core)
 }
+
+tasks.withType<Test>().configureEach { useJUnitPlatform() }

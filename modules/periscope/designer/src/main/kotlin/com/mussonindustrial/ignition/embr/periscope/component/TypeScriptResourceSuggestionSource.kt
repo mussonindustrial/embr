@@ -8,6 +8,7 @@ import com.inductiveautomation.perspective.designer.api.SuggestionSource
 import com.mussonindustrial.ignition.embr.periscope.PeriscopeDesignerContext
 import com.mussonindustrial.ignition.embr.periscope.resources.ClientResource
 import com.mussonindustrial.ignition.embr.periscope.resources.TypeScriptResource
+import com.mussonindustrial.ignition.embr.periscope.resources.pathString
 import java.util.concurrent.CompletableFuture
 
 class TypeScriptResourceSuggestionSource(private val context: PeriscopeDesignerContext) :
@@ -32,8 +33,8 @@ class TypeScriptResourceSuggestionSource(private val context: PeriscopeDesignerC
             resources
                 .filter { ClientResource.getType(it) == TypeScriptResource.type }
                 .associate {
-                    it.resourcePath.path.toString() to
-                        JsonPrimitive(it.resourcePath.path.toString()) as JsonElement
+                    it.resourcePath.pathString to
+                        JsonPrimitive(it.resourcePath.pathString) as JsonElement
                 }
                 .toSortedMap()
                 .toMutableMap()

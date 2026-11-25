@@ -1,0 +1,285 @@
+import React, {
+  ComponentType,
+  lazy,
+  MutableRefObject,
+  Suspense,
+  useMemo,
+  useRef,
+} from 'react'
+import {
+  ComponentStoreDelegate,
+  PlainObject,
+} from '@inductiveautomation/perspective-client'
+import {
+  ComponentDelegateJavaScriptProxy,
+  ComponentEvents,
+  getScriptTransform,
+  JavaScriptRunEvent,
+  useComponentEvents,
+} from '@embr-js/perspective-client'
+import { transformProps } from '@embr-js/utils'
+
+import {
+  createAttributesKey,
+  ComponentDelegate,
+  createDelegateEvents,
+  detachedDelegate,
+  HostedComponent,
+  JavaScriptProxyHost,
+  ProjectComponent,
+  replaceEqualDeep,
+  rootWrite,
+  Values,
+} from '@/api'
+import { FailedToLoadComponent } from '@/extensions/client-resource'
+import { waitForClientResourceStore } from '@/util'
+import { rootAttributes } from './attributes'
+import { ChildSlot, useChildren, useSelectedChild } from './children'
+import { currentMode } from './designer-state'
+import { ErrorBoundary } from './error-boundary'
+import type { PerspectiveProps } from './types'
+import { findProxyTarget } from './proxy-target'
+
+type PerspectiveRef = MutableRefObject<PerspectiveProps>
+
+type ProjectComponentViewProps = {
+  perspective: PerspectiveProps
+  values: Values
+}
+
+type ResolvedComponentProps = ProjectComponentViewProps & {
+  component: ProjectComponent
+}
+
+type FailedComponentProps = {
+  perspective: PerspectiveProps
+  message: string
+}
+
+type EventFunctions = Record<string, (event?: PlainObject) => void>
+
+function FailedComponent({ perspective, message }: FailedComponentProps) {
+  return (
+    <div {...rootAttributes(perspective)}>
+      <FailedToLoadComponent message={message} />
+    </div>
+  )
+}
+
+function useEventFunctions(
+  component: ProjectComponent,
+  perspective: PerspectiveRef
+): EventFunctions {
+  return useMemo(
+    () =>
+      Object.fromEntries(
+        component.periscope.events.map(({ name }) => [
+          name,
+          (event?: PlainObject) => {
+            const { componentEvents } = perspective.current
+            return componentEvents.fireComponentEvent(name, event ?? {})
+          },
+        ])
+      ),
+    [component, perspective]
+  )
+}
+
+function usePerspectiveChildren(
+  component: ProjectComponent,
+  perspective: PerspectiveProps
+) {
+  const children = useChildren(
+    perspective.store,
+    component.periscope.position?.defaults
+  )
+  const selectedChild = useSelectedChild(children)
+
+  return useMemo(
+    () =>
+      children.items.map((child) =>
+        child === selectedChild ? { ...child, selected: true } : child
+      ),
+    [children, selectedChild]
+  )
+}
+
+function writeProp(
+  component: ProjectComponent,
+  perspective: PerspectiveProps,
+  values: Values,
+  path: string,
+  value: unknown
+) {
+  const props = perspective.store.props
+  const [name, written] = rootWrite(component.periscope.defaults, path, value)
+
+  if (name in values) {
+    props.write(path, value)
+  } else {
+    props.write(name, written)
+  }
+}
+
+function getDelegate(perspective: PerspectiveProps): ComponentDelegate {
+  const delegate = perspective.store.delegate
+
+  if (delegate instanceof ProjectComponentDelegate) {
+    return delegate.componentDelegate
+  }
+
+  return detachedDelegate
+}
+
+function findProxy(
+  perspective: PerspectiveProps
+): JavaScriptProxyHost | undefined {
+  const delegate = perspective.store.delegate
+
+  if (delegate instanceof ProjectComponentDelegate) {
+    return delegate.proxyHost
+  }
+
+  return undefined
+}
+
+function ResolvedComponent({
+  component,
+  perspective,
+  values,
+}: ResolvedComponentProps) {
+  const latest = useRef(perspective)
+  latest.current = perspective
+
+  const children = usePerspectiveChildren(component, perspective)
+  const eventFunctions = useEventFunctions(component, latest)
+
+  const props = useMemo(
+    () => ({ ...component.periscope.defaults, ...values, ...eventFunctions }),
+    [component, values, eventFunctions]
+  )
+
+  const attributes = rootAttributes(perspective)
+
+  return (
+    <ErrorBoundary
+      resetKey={props}
+      fallback={(message) => (
+        <FailedComponent perspective={perspective} message={message} />
+      )}
+    >
+      <HostedComponent
+        component={component}
+        host={{
+          values: props,
+          children,
+          ChildSlot,
+          mode: currentMode(),
+          delegate: getDelegate(perspective),
+          proxy: findProxy(perspective),
+          attributesKey: createAttributesKey(
+            attributes.className,
+            attributes.style
+          ),
+          write: (path, value) =>
+            writeProp(component, latest.current, values, path, value),
+          attributes: (options) => rootAttributes(latest.current, options),
+          perspective: () => latest.current,
+        }}
+      />
+    </ErrorBoundary>
+  )
+}
+
+function resolveComponent(
+  id: string
+): ComponentType<ProjectComponentViewProps> {
+  return lazy(async () => {
+    const store = await waitForClientResourceStore()
+    const component = await store.getComponent(id)
+
+    if (component == null) {
+      return {
+        default: ({ perspective }: ProjectComponentViewProps) => (
+          <FailedComponent
+            perspective={perspective}
+            message={`Component '${id}' not found.`}
+          />
+        ),
+      }
+    }
+
+    return {
+      default: (props: ProjectComponentViewProps) => (
+        <ResolvedComponent component={component} {...props} />
+      ),
+    }
+  }) as ComponentType<ProjectComponentViewProps>
+}
+
+export function createProjectComponent(id: string) {
+  const Resolved = resolveComponent(id)
+
+  return function ProjectViewComponent(props: PerspectiveProps) {
+    const transformed = useMemo(
+      () =>
+        transformProps(props.props, [
+          getScriptTransform(props, props.store),
+        ]) as Values & { events?: ComponentEvents },
+      [props.props]
+    )
+
+    useComponentEvents(props.store, transformed.events ?? {}, undefined)
+
+    const previousValues = useRef<Values>({})
+
+    const values = useMemo(() => {
+      const next: Values = { ...transformed }
+      delete next.events
+      delete next.style
+
+      previousValues.current = replaceEqualDeep(previousValues.current, next)
+      return previousValues.current
+    }, [transformed])
+
+    return (
+      <Suspense fallback={<div {...rootAttributes(props)} />}>
+        <Resolved perspective={props} values={values} />
+      </Suspense>
+    )
+  }
+}
+
+export class ProjectComponentDelegate extends ComponentStoreDelegate {
+  private readonly events = createDelegateEvents()
+  private readonly javaScriptProxy =
+    new ComponentDelegateJavaScriptProxy<object>(this)
+  private element: Element | null = null
+  private target: unknown = undefined
+
+  readonly componentDelegate: ComponentDelegate = {
+    fireEvent: (name, event = {}) => this.fireEvent(name, event),
+    onEvent: this.events.on,
+  }
+
+  readonly proxyHost: JavaScriptProxyHost = {
+    setElement: (element) => {
+      this.element = element
+    },
+    setTarget: (target) => {
+      this.target = target
+    },
+  }
+
+  handleEvent(eventName: string, eventObject: Values): void {
+    if (this.javaScriptProxy.handles(eventName)) {
+      this.javaScriptProxy.setRef(findProxyTarget(this.target, this.element))
+      this.javaScriptProxy.handleEvent(
+        eventObject as unknown as JavaScriptRunEvent
+      )
+      return
+    }
+
+    this.events.emit(eventName, eventObject)
+  }
+}

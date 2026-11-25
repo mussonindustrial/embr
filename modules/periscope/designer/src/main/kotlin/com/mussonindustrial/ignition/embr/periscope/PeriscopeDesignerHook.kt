@@ -9,6 +9,7 @@ import com.inductiveautomation.ignition.designer.model.SaveContext
 import com.inductiveautomation.perspective.common.PerspectiveModule
 import com.inductiveautomation.perspective.designer.DesignerComponentRegistry
 import com.inductiveautomation.perspective.designer.api.PerspectiveDesignerInterface
+import com.jidesoft.docking.DockableFrame
 import com.mussonindustrial.embr.perspective.common.component.addResourcesTo
 import com.mussonindustrial.embr.perspective.common.component.removeResourcesFrom
 import com.mussonindustrial.ignition.embr.periscope.Meta.SHORT_MODULE_ID
@@ -29,8 +30,8 @@ class PeriscopeDesignerHook : AbstractDesignerModuleHook() {
 
     override fun startup(context: DesignerContext, activationState: LicenseState) {
         logger.debug("Embr-Periscope module started.")
-        this.context = PeriscopeDesignerContext(context)
         BundleUtil.get().addBundle(Meta.BUNDLE_PREFIX, this::class.java.classLoader, "localization")
+        this.context = PeriscopeDesignerContext(context)
 
         val pdi: PerspectiveDesignerInterface = PerspectiveDesignerInterface.get(context)
 
@@ -54,7 +55,13 @@ class PeriscopeDesignerHook : AbstractDesignerModuleHook() {
         this.context.registerAWTEventListeners()
 
         logger.debug("Starting TypeScript language service...")
-        this.context.startTypeScriptWorkspace()
+        this.context.startupTypeScriptWorkspace()
+
+        logger.debug("Starting React Components...")
+        this.context.startupProjectComponents()
+
+        logger.debug("Starting component palette...")
+        this.context.startupComponentPalette()
     }
 
     override fun notifyProjectSaveStart(save: SaveContext) {
@@ -77,8 +84,18 @@ class PeriscopeDesignerHook : AbstractDesignerModuleHook() {
         logger.debug("Removing AWT event listeners...")
         this.context.removeAWTEventListeners()
 
+        logger.debug("Stopping component palette...")
+        this.context.shutdownComponentPalette()
+
+        logger.debug("Stopping React Components...")
+        this.context.shutdownProjectComponents()
+
         logger.debug("Stopping TypeScript language service...")
-        this.context.stopTypeScriptWorkspace()
+        this.context.shutdownTypeScriptWorkspace()
+    }
+
+    override fun getFrames(): List<DockableFrame> {
+        return listOf(context.componentPalette)
     }
 
     override fun getResourceIcon(id: ProjectResourceId): Icon? {
