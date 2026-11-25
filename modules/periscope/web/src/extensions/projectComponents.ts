@@ -4,7 +4,7 @@ import {
 } from '@inductiveautomation/perspective-client'
 import { InteractionRegistry } from '@inductiveautomation/perspective-designer'
 
-import { COMPONENT_TYPE_PREFIX, componentTypeOf } from '@/api'
+import { COMPONENT_TYPE_PREFIX, toComponentType } from '@/api'
 import {
   ANIMATIONS_PAUSED,
   DROP_ACTIVE,
@@ -77,7 +77,7 @@ export async function installProjectComponentDesign() {
   components.forEach((component, id) => {
     if (component.periscope.position != null) {
       InteractionRegistry.registerInteractionDelegates(
-        new ProjectComponentDesignDelegate(componentTypeOf(id))
+        new ProjectComponentDesignDelegate(toComponentType(id))
       )
     }
   })

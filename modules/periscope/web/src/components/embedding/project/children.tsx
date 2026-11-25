@@ -22,7 +22,7 @@ import {
 } from '@/api'
 import { isDesigning, isPreviewing, selectedPaths } from './designer-state'
 import { DROP_ZONE, PLACEHOLDER, SlotOptions, slotOptions } from './placement'
-import { onPreviewPosition, previewPositionOf } from './position-previews'
+import { onPreviewPosition, findPreviewPosition } from './position-previews'
 
 export type Children = { stores: ComponentStore[]; items: Child[] }
 
@@ -91,7 +91,7 @@ export const ChildSlot = forwardRef<HTMLElement, ChildSlotProps>(
   }
 ) as ComponentContext['ChildSlot']
 
-function nameOf(store: ComponentStore): string {
+function getName(store: ComponentStore): string {
   return String(store.meta.read('name') ?? '')
 }
 
@@ -105,7 +105,7 @@ function createChild(
   return {
     key,
     index,
-    name: nameOf(store),
+    name: getName(store),
     type: store.def.type,
     position,
     selected: false,
@@ -133,11 +133,11 @@ function updateEntry(
     {
       ...defaults,
       ...(store.position.read() as Values),
-      ...previewPositionOf(store),
+      ...findPreviewPosition(store),
     }
   )
 
-  const isSameName = previous?.child.name === nameOf(store)
+  const isSameName = previous?.child.name === getName(store)
 
   if (isSameStore && isSameName && previous?.position === position) {
     return previous

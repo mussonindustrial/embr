@@ -73,7 +73,7 @@ export function createEvent<T>(
   }
 }
 
-export function defaultsOf(properties: Record<string, JsonSchema>) {
+export function readDefaults(properties: Record<string, JsonSchema>) {
   return Object.fromEntries(
     Object.entries(properties)
       .filter(([, schema]) => schema.default !== undefined)

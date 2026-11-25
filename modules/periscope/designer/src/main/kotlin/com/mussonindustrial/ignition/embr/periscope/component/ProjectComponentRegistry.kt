@@ -178,7 +178,7 @@ class ProjectComponentRegistry(
             reportFailures(result.failures.orEmpty())
             loadedRevision = result.revision
         }
-        val loadedComponents = componentsOf(definitions)
+        val loadedComponents = readComponents(definitions)
 
         invokeLater {
             if (stopped.get()) {
@@ -188,7 +188,7 @@ class ProjectComponentRegistry(
         }
     }
 
-    private fun componentsOf(definitions: List<ComponentDefinition>): List<ComponentInfo> {
+    private fun readComponents(definitions: List<ComponentDefinition>): List<ComponentInfo> {
         val attributesByPath = findComponentAttributes()
         val identified =
             definitions
@@ -202,11 +202,15 @@ class ProjectComponentRegistry(
         val firstPathsById = mutableMapOf<String, String>()
         return identified.map { (definition, attributes) ->
             val firstPath = firstPathsById.getOrPut(attributes.id) { definition.path }
-            ComponentInfo(attributes, definition, diagnosticsOf(definition, attributes, firstPath))
+            ComponentInfo(
+                attributes,
+                definition,
+                readDiagnostics(definition, attributes, firstPath),
+            )
         }
     }
 
-    private fun diagnosticsOf(
+    private fun readDiagnostics(
         definition: ComponentDefinition,
         attributes: ComponentAttributes,
         firstPath: String,
@@ -333,11 +337,12 @@ class ProjectComponentRegistry(
 
     private fun createDescriptor(id: String, info: ComponentInfo?): ComponentDescriptor {
         val descriptor =
-            if (info == null) ProjectComponents.createDescriptor(id) else descriptorOf(info)
+            if (info == null) ProjectComponents.createDescriptor(id)
+            else createDefinedDescriptor(info)
         return IconComponentDescriptor(descriptor, ComponentIcons.get(id))
     }
 
-    private fun descriptorOf(info: ComponentInfo): ComponentDescriptor {
+    private fun createDefinedDescriptor(info: ComponentInfo): ComponentDescriptor {
         val events =
             info.definition.events.orEmpty().map {
                 ComponentEventDescriptor(it.name, it.description.orEmpty(), parseSchema(it.schema))

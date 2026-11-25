@@ -41,11 +41,11 @@ class ClientBundleHandler(private val context: PeriscopeGatewayContext) :
                 ?: return response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing hash.")
 
         val bundle =
-            cachedBundles[keyOf(projectName, hash)]
+            cachedBundles[createKey(projectName, hash)]
                 ?: buildBundle(projectName, hash)
                 ?: return response.sendError(
                     HttpServletResponse.SC_NOT_FOUND,
-                    "Bundle '${keyOf(projectName, hash)}' not found.",
+                    "Bundle '${createKey(projectName, hash)}' not found.",
                 )
 
         response.apply {
@@ -72,7 +72,7 @@ class ClientBundleHandler(private val context: PeriscopeGatewayContext) :
             }
 
         val bundle = gzip(json.toString())
-        cachedBundles[keyOf(projectName, hash)] = bundle
+        cachedBundles[createKey(projectName, hash)] = bundle
         return bundle
     }
 
@@ -112,7 +112,7 @@ class ClientBundleHandler(private val context: PeriscopeGatewayContext) :
         }
     }
 
-    private fun keyOf(projectName: String, hash: String): String {
+    private fun createKey(projectName: String, hash: String): String {
         return "$projectName/$hash"
     }
 

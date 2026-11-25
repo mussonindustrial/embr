@@ -1,8 +1,8 @@
 import * as React from 'react'
-import { messageOf } from '@embr-js/utils'
+import { toMessage } from '@embr-js/utils'
 import ts from 'typescript'
 import {
-  componentOf,
+  readComponent,
   createPeriscopeApi,
   describeComponent,
   ProjectComponent,
@@ -73,7 +73,7 @@ const api = createPeriscopeApi({
   source: () => executingPath,
 })
 
-function resourcePathOf(specifier: string): string | undefined {
+function findResourcePath(specifier: string): string | undefined {
   if (specifier.startsWith(RESOURCE_IMPORT)) {
     return specifier.slice(RESOURCE_IMPORT.length)
   }
@@ -88,7 +88,7 @@ function importModule(specifier: string): unknown {
   if (specifier === 'react') return React
   if (specifier === 'system:periscope') return api
 
-  const path = resourcePathOf(specifier)
+  const path = findResourcePath(specifier)
   return path == null ? placeholder : loadModule(path).module.exports
 }
 
@@ -111,7 +111,7 @@ function execute(path: string, loaded: LoadedModule, output: string) {
     const run = new Function('require', 'module', 'exports', output)
     run(importModule, loaded.module, loaded.module.exports)
   } catch (error) {
-    loaded.error = messageOf(error)
+    loaded.error = toMessage(error)
   } finally {
     executingPath = previousPath
   }
@@ -197,7 +197,7 @@ function workspaceSignature() {
     .join('|')
 }
 
-function descriptionOf(component: ProjectComponent) {
+function readDescription(component: ProjectComponent) {
   const cached = descriptions.get(component)
   if (cached != null) return cached
 
@@ -214,10 +214,10 @@ function evaluateComponents(paths: string[]): Evaluation {
     if (loaded.error != null) return []
 
     try {
-      const component = componentOf(loaded.module.exports)
-      return [{ ...descriptionOf(component), path }]
+      const component = readComponent(loaded.module.exports)
+      return [{ ...readDescription(component), path }]
     } catch (error) {
-      failures.push({ path, message: messageOf(error) })
+      failures.push({ path, message: toMessage(error) })
       return []
     }
   })
@@ -256,7 +256,7 @@ function evaluate(): ComponentsResult {
   return lastEvaluation.result
 }
 
-export function evaluationFailuresOf(path: string): ComponentFailure[] {
+export function findEvaluationFailures(path: string): ComponentFailure[] {
   const failures = lastEvaluation?.result.failures ?? []
   return failures.filter((failure) => failure.path === path)
 }

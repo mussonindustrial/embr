@@ -7,14 +7,14 @@ import {
   SizeObject,
 } from '@inductiveautomation/perspective-client'
 
-import { componentIdOf, ProjectComponent, Values } from '@/api'
+import { toComponentId, ProjectComponent, Values } from '@/api'
 import {
   createProjectComponent,
   ProjectComponentDelegate,
 } from './project-component'
 
 export function findProjectComponent(type: string): ProjectComponent | null {
-  return Embr?.clientResources?.components.get(componentIdOf(type)) ?? null
+  return Embr?.clientResources?.components.get(toComponentId(type)) ?? null
 }
 
 export class ProjectComponentMeta implements ComponentMeta {
@@ -23,7 +23,7 @@ export class ProjectComponentMeta implements ComponentMeta {
 
   constructor(type: string) {
     this.type = type
-    this.component = createProjectComponent(componentIdOf(type)) as PComponent
+    this.component = createProjectComponent(toComponentId(type)) as PComponent
   }
 
   getComponentType(): string {

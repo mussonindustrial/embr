@@ -10,12 +10,12 @@ export type BundledModule = {
 type BundledModules = {
   manifest: ResourceManifest
   modules: Record<string, BundledModule>
-  urlOf: (path: string) => string
+  toUrl: (path: string) => string
 }
 
 type Dependencies = (path: string) => string[]
 
-function dependenciesOf(manifest: ResourceManifest): Dependencies {
+function readDependencies(manifest: ResourceManifest): Dependencies {
   const resourcesByPath = new Map(
     manifest.resources.map((resource) => [resource.path, resource])
   )
@@ -56,16 +56,16 @@ function importOrder(manifest: ResourceManifest, dependencies: Dependencies) {
 }
 
 function addDependencies(paths: Set<string>, dependencies: Dependencies) {
-  const addDependenciesOf = (path: string) => {
+  const addImported = (path: string) => {
     dependencies(path).forEach((dependency) => {
       if (!paths.has(dependency)) {
         paths.add(dependency)
-        addDependenciesOf(dependency)
+        addImported(dependency)
       }
     })
   }
 
-  ;[...paths].forEach(addDependenciesOf)
+  ;[...paths].forEach(addImported)
 }
 
 export function replaceImports(
@@ -86,7 +86,7 @@ export function replaceImports(
 }
 
 function blobUrl(
-  { modules, urlOf }: BundledModules,
+  { modules, toUrl }: BundledModules,
   path: string,
   dependencies: Dependencies,
   urls: ModuleUrls
@@ -96,7 +96,7 @@ function blobUrl(
   const bundledUrls = new Map<string, string>()
 
   dependencies(path).forEach((dependency) => {
-    const dependencyUrl = urlOf(dependency)
+    const dependencyUrl = toUrl(dependency)
     const bundledUrl = urls.get(dependency) ?? origin + dependencyUrl
 
     bundledUrls.set(dependencyUrl, bundledUrl)
@@ -115,7 +115,7 @@ function blobUrl(
 
   const blob = new Blob(
     [
-      `${replaceImports(source, imports, resolve)}\n//# sourceURL=${origin}${urlOf(path)}\n`,
+      `${replaceImports(source, imports, resolve)}\n//# sourceURL=${origin}${toUrl(path)}\n`,
     ],
     { type: 'text/javascript' }
   )
@@ -124,7 +124,7 @@ function blobUrl(
 }
 
 export function moduleUrls(bundled: BundledModules): ModuleUrls {
-  const dependencies = dependenciesOf(bundled.manifest)
+  const dependencies = readDependencies(bundled.manifest)
   const { order, cyclic } = importOrder(bundled.manifest, dependencies)
 
   const unbundled = new Set(cyclic)

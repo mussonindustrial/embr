@@ -19,18 +19,18 @@ import type { Bounds, ProjectComponent, Values } from '@/api'
 import { createHandles } from './handles'
 import {
   childPositionAt,
-  clientBoxesOf,
-  clientBoxOf,
+  measureClientBoxes,
+  measureClientBox,
   dropIndexAt,
   dropZoneAt,
-  dropZoneOf,
-  elementOf,
+  findDropZone,
+  findElement,
   highlightDropZone,
   isInFlow,
-  scaleOf,
+  measureScale,
   writePosition,
 } from './placement'
-import { previewPositionOf, setPreviewPosition } from './position-previews'
+import { findPreviewPosition, setPreviewPosition } from './position-previews'
 import { findProjectComponent } from './project-component-meta'
 
 type PositionProps = ProjectComponent['periscope']['position']
@@ -77,7 +77,7 @@ function refreshSelectionBounds(selection: SelectionStore) {
   afterReactCommit(() => selection.forceUpdateSelectionDimensions())
 }
 
-function childrenOf(container: DesignerComponentStore) {
+function getChildren(container: DesignerComponentStore) {
   return container.children as DesignerComponentStore[]
 }
 
@@ -87,7 +87,7 @@ function reorderOnceAdded(
   index: number
 ) {
   setTimeout(() => {
-    const added = childrenOf(container).filter((child) =>
+    const added = getChildren(container).filter((child) =>
       addressPaths.includes(child.addressPathString)
     )
     container.reorderChildren(added, index, false)
@@ -108,7 +108,7 @@ function flowDropIndex(
   }
 
   const siblingInZone = siblings
-    .map(elementOf)
+    .map(findElement)
     .find((element) => element != null && zone.contains(element))
 
   if (!isInFlow(zone, siblingInZone)) {
@@ -132,7 +132,7 @@ function newChildPosition(
   )
 
   const size = ComponentRegistry.getMeta(definition.type)?.getDefaultSize()
-  const scale = zone == null ? 1 : scaleOf(zone)
+  const scale = zone == null ? 1 : measureScale(zone)
 
   let client: Bounds | null = null
 
@@ -188,13 +188,13 @@ export class ProjectComponentDesignDelegate implements ContainerDesignDelegate {
     const key = JSON.stringify(move.origin)
 
     if (this.resize?.key !== key) {
-      this.resize = { key, boxes: clientBoxesOf(components) }
+      this.resize = { key, boxes: measureClientBoxes(components) }
     }
 
     const { boxes } = this.resize
 
     components.forEach((component) => {
-      const zone = dropZoneOf(container, component)
+      const zone = findDropZone(container, component)
       const start = boxes.get(component)
       const original = originals.get(component.path)
       const next = bounds.get(component.path)
@@ -223,7 +223,7 @@ export class ProjectComponentDesignDelegate implements ContainerDesignDelegate {
   ): ComponentInstanceDef[] {
     const positionProps = findProjectComponent(this.type)?.periscope.position
     const zone = location == null ? null : dropZoneAt(container, location)
-    const siblings = [...childrenOf(container)]
+    const siblings = [...getChildren(container)]
     const index = flowDropIndex(zone, siblings, location)
 
     const added = definitions.map((definition) => {
@@ -280,7 +280,7 @@ export class ProjectComponentDesignDelegate implements ContainerDesignDelegate {
     this.gesture = undefined
 
     components.forEach((component) => {
-      const position = previewPositionOf(component)
+      const position = findPreviewPosition(component)
 
       if (position != null) {
         setPreviewPosition(component)
@@ -312,14 +312,14 @@ export class ProjectComponentDesignDelegate implements ContainerDesignDelegate {
     move: Move
   ) {
     selected.forEach((component) => {
-      const zone = dropZoneOf(container, component)
-      const box = clientBoxOf(component)
+      const zone = findDropZone(container, component)
+      const box = measureClientBox(component)
 
       if (zone == null || box == null) {
         return
       }
 
-      const scale = scaleOf(zone)
+      const scale = measureScale(zone)
       const moved = shiftBox(box, move.delta.x * scale, move.delta.y * scale)
 
       writePosition(component, childPositionAt(zone, moved, 'move'))
@@ -334,7 +334,7 @@ export class ProjectComponentDesignDelegate implements ContainerDesignDelegate {
   ) {
     this.gesture ??= {
       components,
-      boxes: clientBoxesOf(components),
+      boxes: measureClientBoxes(components),
       indexes: [...container.childrenIndexes],
     }
 
@@ -356,7 +356,7 @@ export class ProjectComponentDesignDelegate implements ContainerDesignDelegate {
           : shiftBox(start, target.x - origin.x, target.y - origin.y)
 
       const position = childPositionAt(zone, client, 'move')
-      const current = JSON.stringify(previewPositionOf(component))
+      const current = JSON.stringify(findPreviewPosition(component))
 
       if (current !== JSON.stringify(position)) {
         setPreviewPosition(component, position)
@@ -365,7 +365,7 @@ export class ProjectComponentDesignDelegate implements ContainerDesignDelegate {
 
     refreshSelectionBounds(selection)
 
-    if (isInFlow(zone, elementOf(components[0]))) {
+    if (isInFlow(zone, findElement(components[0]))) {
       this.reorder(container, components, zone, target)
     }
   }
@@ -376,7 +376,7 @@ export class ProjectComponentDesignDelegate implements ContainerDesignDelegate {
     zone: Element,
     target: Point
   ) {
-    const children = childrenOf(container)
+    const children = getChildren(container)
     const siblings = children.filter((child) => !components.includes(child))
     const index = dropIndexAt(zone, siblings, target)
 

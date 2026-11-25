@@ -10,7 +10,7 @@ import React, {
 
 import { ComponentReactContext, ElementSlot } from './context'
 import { detachedDelegate } from './delegateEvents'
-import { attributesKeyOf, HostedComponent } from './HostedComponent'
+import { createAttributesKey, HostedComponent } from './HostedComponent'
 import type {
   Child,
   ElementProps,
@@ -60,7 +60,7 @@ function withoutUndefined(values: Values): Values {
   )
 }
 
-function silentEventsOf(events: ProjectComponentEvent[]): Values {
+function readSilentEvents(events: ProjectComponentEvent[]): Values {
   return Object.fromEntries(events.map((event) => [event.name, () => {}]))
 }
 
@@ -104,7 +104,7 @@ export function useElement(
   previousProps.current = replaceEqualDeep(previousProps.current, givenProps)
   const values = previousProps.current
 
-  const silentEvents = useMemo(() => silentEventsOf(events), [events])
+  const silentEvents = useMemo(() => readSilentEvents(events), [events])
 
   const mergedValues = useMemo(() => {
     const next: Values = {
@@ -136,7 +136,7 @@ export function useElement(
         ChildSlot: ElementSlot,
         mode: outerContext?.mode ?? 'session',
         delegate: detachedDelegate,
-        attributesKey: attributesKeyOf(className, style),
+        attributesKey: createAttributesKey(className, style),
         write: (path, value) => {
           const [name, written] = rootWrite(mergedValues, path, value)
 

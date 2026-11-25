@@ -62,14 +62,14 @@ class AssetHandler(source: Class<*>, private val resources: Collection<BrowserRe
                 logger.warn("Failed to load asset '${resource.fileName}'.")
             } else {
                 stream.use {
-                    assets[resource.fileName] = Asset(it.readBytes(), contentTypeOf(resource))
+                    assets[resource.fileName] = Asset(it.readBytes(), getContentType(resource))
                 }
             }
         }
         return assets
     }
 
-    private fun contentTypeOf(resource: BrowserResource): String {
+    private fun getContentType(resource: BrowserResource): String {
         return when (resource.type) {
             BrowserResource.ResourceType.CSS -> "text/css"
             else -> "text/javascript"
