@@ -32,7 +32,7 @@ class CompilationStatusLabel : JLabel() {
     }
 
     companion object {
-        private val RED = Color(194, 40, 57)
+        val RED = Color(194, 40, 57)
         private val GREEN = Color(46, 139, 87)
     }
 }

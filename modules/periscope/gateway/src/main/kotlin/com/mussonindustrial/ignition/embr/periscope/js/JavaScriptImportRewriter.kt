@@ -4,20 +4,27 @@ interface JavaScriptImportRewriter {
 
     val rules: List<ImportRewriteRule>
 
-    companion object {
-        private val importExportRegex =
-            """(\b(?:import|export)\b(?:\s+[\w\s{},*$]*?\s+from)?\s*)(['"])([^'"]+)\2""".toRegex()
+    fun rewrite(source: String): String {
+        return rewriteModule(source).source
     }
 
-    fun rewrite(source: String): String {
-        return importExportRegex.replace(source) { match ->
-            val prefix = match.groupValues[1]
-            val quote = match.groupValues[2]
-            val spec = match.groupValues[3]
+    fun rewriteModule(source: String): RewrittenModule {
+        val output = StringBuilder()
+        val imports = mutableListOf<IntRange>()
+        var position = 0
 
-            val rewritten = rewriteSpecifier(spec)
-            Regex.escapeReplacement("$prefix$quote$rewritten$quote")
+        JavaScriptImportScanner(source).scan().forEach { found ->
+            output.append(source, position, found.range.first)
+
+            val start = output.length
+            output.append(rewriteSpecifier(found.specifier))
+            imports += start until output.length
+
+            position = found.range.last + 1
         }
+        output.append(source, position, source.length)
+
+        return RewrittenModule(output.toString(), imports)
     }
 
     private fun rewriteSpecifier(spec: String): String {

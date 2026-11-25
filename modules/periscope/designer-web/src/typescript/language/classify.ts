@@ -106,7 +106,7 @@ export function classify(
 
   const kinds: TokenKind[] = []
   const tokens: number[] = []
-  const indexOf = (kind: TokenKind) =>
+  const findOrAddIndex = (kind: TokenKind) =>
     kinds.includes(kind) ? kinds.indexOf(kind) : kinds.push(kind) - 1
   let docCommentEnd = -1
 
@@ -132,7 +132,7 @@ export function classify(
         syntacticKinds[type as ts.ClassificationType] ??
         'TEXT'
     }
-    tokens.push(start, length, indexOf(kind))
+    tokens.push(start, length, findOrAddIndex(kind))
   }
 
   return { kinds, tokens }

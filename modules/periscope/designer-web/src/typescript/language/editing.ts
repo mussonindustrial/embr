@@ -5,7 +5,7 @@ import {
   formatSettings,
   preferences,
   service,
-  textOf,
+  getText,
 } from './workspace'
 import {
   EditsResult,
@@ -21,7 +21,7 @@ export async function formatOnType({
   offset,
   key,
 }: FormatOnTypeRequest): Promise<EditsResult> {
-  const fileName = files.fileNameOf(path)
+  const fileName = files.toFileName(path)
   const edits = service.getFormattingEditsAfterKeystroke(
     fileName,
     offset,
@@ -33,7 +33,7 @@ export async function formatOnType({
 }
 
 function indentLine(fileName: string, offset: number): ts.TextChange {
-  const text = textOf(fileName)
+  const text = getText(fileName)
   const lineStart = text.lastIndexOf('\n', offset - 1) + 1
   const indentEnd = lineStart + /^[ \t]*/.exec(text.slice(lineStart))![0].length
   const indentation = service.getIndentationAtPosition(
@@ -51,7 +51,7 @@ export async function linkedEditing({
   path,
   offset,
 }: PositionRequest): Promise<LinkedEditingResult> {
-  const fileName = files.fileNameOf(path)
+  const fileName = files.toFileName(path)
   const linked = service.getLinkedEditingRangeAtPosition(fileName, offset)
   return { ranges: linked?.ranges ?? [] }
 }
@@ -61,14 +61,14 @@ export async function jsxClosingTag({
   offset,
 }: PositionRequest): Promise<JsxClosingTagResult | null> {
   return (
-    service.getJsxClosingTagAtPosition(files.fileNameOf(path), offset) ?? null
+    service.getJsxClosingTagAtPosition(files.toFileName(path), offset) ?? null
   )
 }
 
 export async function organizeImports({
   path,
 }: FileRequest): Promise<EditsResult> {
-  const fileName = files.fileNameOf(path)
+  const fileName = files.toFileName(path)
   const changes = service.organizeImports(
     { type: 'file', fileName },
     formatSettings,

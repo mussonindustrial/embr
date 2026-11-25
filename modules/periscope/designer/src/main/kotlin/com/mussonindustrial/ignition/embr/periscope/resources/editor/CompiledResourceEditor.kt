@@ -1,10 +1,12 @@
 package com.mussonindustrial.ignition.embr.periscope.resources.editor
 
+import com.inductiveautomation.ignition.client.IgnitionLookAndFeel
 import com.inductiveautomation.ignition.common.resourcecollection.Resource
 import com.inductiveautomation.ignition.common.resourcecollection.ResourceBuilder
 import com.inductiveautomation.ignition.common.resourcecollection.ResourcePath
 import com.inductiveautomation.ignition.designer.tabbedworkspace.ResourceEditor
 import com.inductiveautomation.ignition.designer.tabbedworkspace.TabbedResourceWorkspace
+import com.inductiveautomation.perspective.designer.ui.AbstractEditorFrame
 import com.jidesoft.swing.JideSplitPane
 import com.mussonindustrial.ignition.embr.periscope.resources.ClientResource
 import com.mussonindustrial.ignition.embr.periscope.resources.ClientResourceDescriptor
@@ -20,14 +22,17 @@ import com.mussonindustrial.ignition.embr.periscope.resources.editor.components.
 import com.mussonindustrial.ignition.embr.periscope.resources.editor.components.ScriptEditor.Companion.menuItem
 import com.mussonindustrial.ignition.embr.periscope.resources.editor.components.ScriptTextArea
 import com.mussonindustrial.ignition.embr.periscope.resources.language.Location
+import com.mussonindustrial.ignition.embr.periscope.resources.pathString
 import java.awt.Font
 import java.awt.event.InputEvent
 import java.awt.event.KeyEvent
 import java.util.concurrent.TimeUnit
+import javax.swing.BorderFactory
 import javax.swing.Icon
 import javax.swing.JComponent
 import javax.swing.JLabel
 import javax.swing.JMenuItem
+import javax.swing.JPanel
 import javax.swing.KeyStroke
 import javax.swing.SwingUtilities.invokeLater
 import javax.swing.Timer
@@ -51,6 +56,7 @@ abstract class CompiledResourceEditor<T : ClientResource>(
         private set
 
     private lateinit var status: CompilationStatusLabel
+    private lateinit var titleDetail: JLabel
     private lateinit var editorSplit: JideSplitPane
     private lateinit var compilationDebounce: Timer
     private var compilation: Compilation? = null
@@ -61,35 +67,71 @@ abstract class CompiledResourceEditor<T : ClientResource>(
 
     private val virtualFilePath: String
         get() =
-            resourcePath.path.toString().let {
+            resourcePath.pathString.let {
                 if (it.endsWith(virtualFileType)) it else it + virtualFileType
             }
 
     override fun init(resource: T) {
-        if (::compilationDebounce.isInitialized) compilationDebounce.stop()
+        if (::compilationDebounce.isInitialized) {
+            compilationDebounce.stop()
+        }
         compilationDebounce = Timer(500) { compile() }.apply { isRepeats = false }
 
         removeAll()
-        layout = MigLayout("ins 8, fill")
+        layout = MigLayout("ins 0, fill, gap 0")
         status = CompilationStatusLabel()
 
-        add(
-            JLabel(tabTitle, headerIcon, JLabel.LEFT).apply {
-                font = Font(Font.MONOSPACED, Font.PLAIN, 14)
-                iconTextGap = 6
-            },
-        )
-        add(status, "right, wrap")
-        add(createEditorPanel(resource), "push, grow, spanx")
+        add(createTitlePanel(), "growx, wrap")
+        createHeaderPanel(resource)?.let { add(it, "growx, gap 16 16 12 12, wrap") }
+        add(createBodyPanel(resource, createEditorPanel(resource)), "push, grow")
 
-        textArea.document.addDocumentListener(
-            SimpleDocumentListener {
-                updateStatus()
-                compilationDebounce.restart()
-            },
-        )
+        textArea.document.addDocumentListener(SimpleDocumentListener { notifyChanged() })
         editor.bindKey(FORMAT_KEY) { format() }
         invokeLater { compile() }
+    }
+
+    private fun createTitlePanel(): JComponent {
+        val title =
+            JLabel(tabTitle, headerIcon, JLabel.LEFT).apply {
+                font = AbstractEditorFrame.TITLE
+                iconTextGap = 8
+            }
+
+        titleDetail =
+            JLabel().apply {
+                font = Font(Font.MONOSPACED, Font.PLAIN, font.size)
+                foreground = IgnitionLookAndFeel.Colors.DisabledForeground
+            }
+
+        return JPanel(MigLayout("ins 0, fillx, gapx 12", "[][grow][]")).apply {
+            border =
+                BorderFactory.createCompoundBorder(
+                    BorderFactory.createMatteBorder(0, 0, 1, 0, IgnitionLookAndFeel.Colors.Base400),
+                    BorderFactory.createEmptyBorder(16, 16, 15, 16),
+                )
+            add(title)
+            add(titleDetail, "aligny baseline")
+            add(status)
+        }
+    }
+
+    protected fun showTitleDetail(detail: String) {
+        titleDetail.text = detail
+    }
+
+    protected open fun onStatusChanged(hasErrors: Boolean) {}
+
+    protected open fun createHeaderPanel(resource: T): JComponent? {
+        return null
+    }
+
+    protected open fun createBodyPanel(resource: T, editor: JComponent): JComponent {
+        return JPanel(MigLayout(BODY_LAYOUT)).apply { add(editor, "push, grow") }
+    }
+
+    protected fun notifyChanged() {
+        updateStatus()
+        compilationDebounce.restart()
     }
 
     private fun createEditorPanel(resource: T): JComponent {
@@ -125,7 +167,7 @@ abstract class CompiledResourceEditor<T : ClientResource>(
     fun format() {
         val source = textArea.text
         compiler
-            .format(FormatRequest(source, resourcePath.path.toString(), textArea.caretPosition))
+            .format(FormatRequest(source, resourcePath.pathString, textArea.caretPosition))
             .thenAccept { result ->
                 invokeLater {
                     if (source != textArea.text) return@invokeLater
@@ -160,9 +202,8 @@ abstract class CompiledResourceEditor<T : ClientResource>(
             runCatching { compileSource(source).get(SAVE_WAIT_SECONDS, TimeUnit.SECONDS) }
                 .onSuccess { record(source, it) }
         }
-        val output =
-            compilation?.takeIf { it.source == source && it.result.success }?.result?.output
-                ?: "/* Compilation failed */"
+        val compiled = compilation?.takeIf { it.source == source && it.result.success }?.result
+        val output = compiled?.output ?: "/* Compilation failed */"
         return descriptor.create(
             resource.fileLocations,
             CompiledResource.FileContents(source, output),
@@ -196,11 +237,13 @@ abstract class CompiledResourceEditor<T : ClientResource>(
     private fun updateStatus() {
         val errors = editor.diagnostics.count { it.severity == DiagnosticSeverity.ERROR }
         status.update(compiled, errors)
+        onStatusChanged(compiled == false || errors > 0)
     }
 
     private class Compilation(val source: String, val result: CompileResult)
 
     companion object {
+        const val BODY_LAYOUT = "ins 12 16 16 16, fill, wrap 1"
         private const val DIVIDER_SIZE = 6
         private const val SAVE_WAIT_SECONDS = 10L
         private val FORMAT_KEY: KeyStroke =

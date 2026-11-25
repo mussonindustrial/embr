@@ -34,6 +34,10 @@ class LanguageSession(
         if (changed != path) SwingUtilities.invokeLater { restart { it.onOtherResources } }
     }
 
+    private val evaluationListener: () -> Unit = {
+        SwingUtilities.invokeLater { restart { it.onOtherResources } }
+    }
+
     private val documentListener =
         object : DocumentListener {
             override fun insertUpdate(event: DocumentEvent) {
@@ -59,6 +63,7 @@ class LanguageSession(
         (textArea.document as RSyntaxDocument).setSyntaxStyle(tokenMaker)
         textArea.document.addDocumentListener(documentListener)
         workspace.addChangeListener(workspaceListener)
+        workspace.addEvaluationListener(evaluationListener)
         installed = true
         refreshes.forEach { it.refresh() }
     }
@@ -67,6 +72,7 @@ class LanguageSession(
         installed = false
         refreshes.forEach { it.timer.stop() }
         workspace.removeChangeListener(workspaceListener)
+        workspace.removeEvaluationListener(evaluationListener)
         textArea.document.removeDocumentListener(documentListener)
         workspace.close(path)
         syncedVersion = -1
