@@ -37,20 +37,20 @@ export function systemModuleFiles(
   }))
   const declarations = declarationsFrom(entries.map((entry) => entry.source))
   const root = commonDirectory([...declarations.keys()])
-  const pathOf = (source: string) =>
+  const toDeclarationPath = (source: string) =>
     DECLARATIONS + normalize(relative(root, source)).replace(/\.tsx?$/, '.d.ts')
 
   const files = [...declarations].map(([source, text]) => ({
-    path: pathOf(source),
-    text: linkImports(text, source, declarations, pathOf),
+    path: toDeclarationPath(source),
+    text: linkImports(text, source, declarations, toDeclarationPath),
     source,
   }))
   const moduleFiles = entries.map(({ name, source }) => ({
     path: `${SYSTEM_MODULES}${name}.d.ts`,
     text: moduleDeclaration(
       name,
-      specifierOf(posix.relative(SYSTEM_MODULES, pathOf(source))),
-      typeAliasesOf(declarations.get(source)!)
+      toSpecifier(posix.relative(SYSTEM_MODULES, toDeclarationPath(source))),
+      readTypeAliases(declarations.get(source)!)
     ),
     source,
   }))
@@ -95,9 +95,9 @@ function linkImports(
   text: string,
   source: string,
   declarations: Map<string, string>,
-  pathOf: (source: string) => string
+  toDeclarationPath: (source: string) => string
 ) {
-  const directory = posix.dirname(pathOf(source))
+  const directory = posix.dirname(toDeclarationPath(source))
   return ts
     .preProcessFile(text, true, true)
     .importedFiles.reverse()
@@ -107,13 +107,13 @@ function linkImports(
       const start = linked.indexOf(fileName, pos)
       return (
         linked.slice(0, start) +
-        specifierOf(posix.relative(directory, pathOf(target))) +
+        toSpecifier(posix.relative(directory, toDeclarationPath(target))) +
         linked.slice(start + fileName.length)
       )
     }, text)
 }
 
-function specifierOf(path: string) {
+function toSpecifier(path: string) {
   return (path.startsWith('.') ? path : `./${path}`).replace(/\.d\.ts$/, '')
 }
 
@@ -144,13 +144,14 @@ function moduleDeclaration(
   ].join('\n')
 }
 
-function typeAliasesOf(declaration: string) {
+function readTypeAliases(declaration: string) {
   const isExported = (statement: ts.Statement) =>
     ts.canHaveModifiers(statement) &&
     ts
       .getModifiers(statement)
       ?.some((modifier) => modifier.kind === ts.SyntaxKind.ExportKeyword)
-  const textOf = (node: ts.Node) => declaration.slice(node.pos, node.end).trim()
+  const getText = (node: ts.Node) =>
+    declaration.slice(node.pos, node.end).trim()
 
   return ts
     .createSourceFile('declaration.d.ts', declaration, ts.ScriptTarget.Latest)
@@ -161,9 +162,9 @@ function typeAliasesOf(declaration: string) {
         ts.isInterfaceDeclaration(statement)
     )
     .map(({ name, typeParameters = [] }) => {
-      const parameters = typeParameters.map(textOf)
+      const parameters = typeParameters.map(getText)
       const typeArguments = typeParameters.map((parameter) =>
-        textOf(parameter.name)
+        getText(parameter.name)
       )
       const generic = (items: string[]) =>
         items.length > 0 ? `<${items.join(', ')}>` : ''

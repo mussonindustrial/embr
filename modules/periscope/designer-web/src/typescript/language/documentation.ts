@@ -19,7 +19,7 @@ export function documentationHtml(
   )
 
   return [
-    blockHtml(markdownOf(documentation)),
+    blockHtml(toMarkdown(documentation)),
     parametersHtml(parameters),
     returns ? returnsHtml(returns) : '',
     ...others.map(tagHtml),
@@ -32,23 +32,23 @@ function parametersHtml(parameters: ts.JSDocTagInfo[]) {
   if (parameters.length === 0) return ''
   const items = parameters.map(({ text = [] }) => {
     const [name, ...description] = text
-    return `<li><b>${escapeHtml(name?.text ?? '')}</b> ${inlineHtml(markdownOf(description))}</li>`
+    return `<li><b>${escapeHtml(name?.text ?? '')}</b> ${inlineHtml(toMarkdown(description))}</li>`
   })
   return `<p><b>Parameters</b></p><ul>${items.join('')}</ul>`
 }
 
 function returnsHtml(returns: ts.JSDocTagInfo) {
-  return `<p><b>Returns: </b>${inlineHtml(markdownOf(returns.text))}</p>`
+  return `<p><b>Returns: </b>${inlineHtml(toMarkdown(returns.text))}</p>`
 }
 
 function tagHtml(tag: ts.JSDocTagInfo) {
-  const text = markdownOf(tag.text)
+  const text = toMarkdown(tag.text)
   const name = `<i>@${escapeHtml(tag.name)}</i>`
   if (text.includes('\n')) return `<p>${name}</p>${blockHtml(text)}`
   return `<p>${name} ${inlineHtml(text)}</p>`
 }
 
-function markdownOf(parts: ts.SymbolDisplayPart[] = []) {
+function toMarkdown(parts: ts.SymbolDisplayPart[] = []) {
   return parts
     .map((part) => {
       if (part.kind === 'link') return ''
