@@ -34,7 +34,7 @@ object ComponentIcons {
         }
 
         val (library, name) = parts
-        return loadSprites(library).thenApply { sprites -> sprites[name]?.let(::imageOf) }
+        return loadSprites(library).thenApply { sprites -> sprites[name]?.let(::createImage) }
     }
 
     private fun loadSprites(library: String): CompletableFuture<Map<String, Any>> {
@@ -49,7 +49,7 @@ object ComponentIcons {
         }
     }
 
-    private fun imageOf(sprite: Any): BufferedImage? {
+    private fun createImage(sprite: Any): BufferedImage? {
         return try {
             sprite.getPrivateProperty("image") as BufferedImage
         } catch (e: Exception) {

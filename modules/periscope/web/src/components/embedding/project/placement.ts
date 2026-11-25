@@ -31,7 +31,7 @@ export function highlightDropZone(zone: Element | null) {
   activeDropZone = zone
 }
 
-export function elementOf(component: DesignerComponentStore): Element | null {
+export function findElement(component: DesignerComponentStore): Element | null {
   return component.element ?? null
 }
 
@@ -43,7 +43,7 @@ export function dropZoneAt(
   container: DesignerComponentStore,
   point: Point
 ): Element | null {
-  const root = elementOf(container)
+  const root = findElement(container)
 
   if (root == null) {
     return null
@@ -66,17 +66,17 @@ export function dropZoneAt(
   }
 
   const [firstChild] = container.children as DesignerComponentStore[]
-  const firstElement = firstChild == null ? null : elementOf(firstChild)
+  const firstElement = firstChild == null ? null : findElement(firstChild)
 
   return firstElement?.parentElement ?? root
 }
 
-export function dropZoneOf(
+export function findDropZone(
   container: DesignerComponentStore,
   component: DesignerComponentStore
 ): Element | null {
-  const root = elementOf(container)
-  let zone = elementOf(component)?.parentElement?.closest(`[${DROP_ZONE}]`)
+  const root = findElement(container)
+  let zone = findElement(component)?.parentElement?.closest(`[${DROP_ZONE}]`)
 
   while (zone != null && !isOwnedBy(root, zone)) {
     zone = zone.parentElement?.closest(`[${DROP_ZONE}]`)
@@ -93,7 +93,7 @@ function declaredPosition(zone: Element | null): Values {
   }
 }
 
-export function scaleOf(zone: Element): number {
+export function measureScale(zone: Element): number {
   const width = (zone as HTMLElement).offsetWidth
   return width > 0 ? zone.getBoundingClientRect().width / width : 1
 }
@@ -101,7 +101,7 @@ export function scaleOf(zone: Element): number {
 function boxInZone(zone: Element, client: Bounds): Bounds {
   const element = zone as HTMLElement
   const frame = zone.getBoundingClientRect()
-  const scale = scaleOf(zone)
+  const scale = measureScale(zone)
 
   const x = (client.x - frame.left) / scale - element.clientLeft
   const y = (client.y - frame.top) / scale - element.clientTop
@@ -114,8 +114,10 @@ function boxInZone(zone: Element, client: Bounds): Bounds {
   }
 }
 
-export function clientBoxOf(component: DesignerComponentStore): Bounds | null {
-  const rect = elementOf(component)?.getBoundingClientRect()
+export function measureClientBox(
+  component: DesignerComponentStore
+): Bounds | null {
+  const rect = findElement(component)?.getBoundingClientRect()
 
   if (rect == null) {
     return null
@@ -124,12 +126,12 @@ export function clientBoxOf(component: DesignerComponentStore): Bounds | null {
   return { x: rect.left, y: rect.top, width: rect.width, height: rect.height }
 }
 
-export function clientBoxesOf(
+export function measureClientBoxes(
   components: DesignerComponentStore[]
 ): Map<DesignerComponentStore, Bounds> {
   return new Map(
     components.flatMap((component): [DesignerComponentStore, Bounds][] => {
-      const box = clientBoxOf(component)
+      const box = measureClientBox(component)
       return box == null ? [] : [[component, box]]
     })
   )
@@ -183,7 +185,7 @@ export function dropIndexAt(
   point: Point
 ): number {
   const placed = siblings.flatMap((sibling, index): PlacedSibling[] => {
-    const element = elementOf(sibling)
+    const element = findElement(sibling)
 
     if (element == null || !zone.contains(element)) {
       return []

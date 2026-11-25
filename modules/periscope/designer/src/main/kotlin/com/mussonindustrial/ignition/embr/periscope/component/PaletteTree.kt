@@ -77,7 +77,7 @@ class PaletteTree(
         } else {
             restoreExpanded(expanded)
         }
-        knownFolders = folderNodes().map { keyOf(it) }.toSet()
+        knownFolders = folderNodes().map { createKey(it) }.toSet()
     }
 
     fun expandAll() {
@@ -161,7 +161,7 @@ class PaletteTree(
         return nodes().filter { it.userObject is PaletteFolder || it.userObject is PaletteSection }
     }
 
-    private fun keyOf(node: DefaultMutableTreeNode): String {
+    private fun createKey(node: DefaultMutableTreeNode): String {
         return node.path.drop(1).joinToString("/") {
             when (val value = (it as DefaultMutableTreeNode).userObject) {
                 is ComponentInfo -> value.id
@@ -177,7 +177,7 @@ class PaletteTree(
         val expanded = getExpandedDescendants(TreePath(root)) ?: return emptySet()
         return expanded
             .asSequence()
-            .map { keyOf(it.lastPathComponent as DefaultMutableTreeNode) }
+            .map { createKey(it.lastPathComponent as DefaultMutableTreeNode) }
             .toSet()
     }
 
@@ -186,7 +186,7 @@ class PaletteTree(
         nodes()
             .filter { it.childCount > 0 }
             .forEach { node ->
-                val key = keyOf(node)
+                val key = createKey(node)
                 val newFolder = node in folders && key !in knownFolders
                 if (key in expanded || newFolder) {
                     expandPath(TreePath(node.path))

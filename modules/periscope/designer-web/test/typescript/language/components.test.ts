@@ -66,20 +66,20 @@ const project = {
   'equipment/valve': valve,
 }
 
-function resourceOf(path: string, source: string) {
+function createResource(path: string, source: string) {
   return { path, kind: kinds[path] ?? 'typescript', source }
 }
 
 async function setProject(files: Record<string, string>) {
   await language.setFiles({
     files: Object.entries(files).map(([path, source]) =>
-      resourceOf(path, source)
+      createResource(path, source)
     ),
   })
 }
 
 async function updateResource(path: string, source: string) {
-  await language.updateFile(resourceOf(path, source))
+  await language.updateFile(createResource(path, source))
 }
 
 async function describeAll() {
@@ -87,7 +87,7 @@ async function describeAll() {
   return result as ComponentsResult
 }
 
-function pathsOf({ components }: ComponentsResult) {
+function getPaths({ components }: ComponentsResult) {
   return components.map((component) => component.path)
 }
 
@@ -99,7 +99,7 @@ describe('Components', () => {
       const result = await describeAll()
 
       expect(result.failures).toEqual([])
-      expect(pathsOf(result)).toEqual(['equipment/pump', 'equipment/valve'])
+      expect(getPaths(result)).toEqual(['equipment/pump', 'equipment/valve'])
       expect(result.components[0]).toMatchObject({
         path: 'equipment/pump',
         description: 'A pump card',
@@ -237,7 +237,7 @@ describe('Components', () => {
       const result = await describeAll()
 
       expect({ ...tally.runs }).toEqual({ shared: 2, cards: 2, other: 1 })
-      expect(pathsOf(result)).toEqual([
+      expect(getPaths(result)).toEqual([
         'equipment/other',
         'equipment/pump',
         'equipment/valve',

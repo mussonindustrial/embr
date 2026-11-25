@@ -130,7 +130,7 @@ async function loadClientBundle(project: string): Promise<ClientBundle> {
 
     const urls = moduleUrls({
       ...bundle,
-      urlOf: (path) => routes.clientResource(project, hash, path),
+      toUrl: (path) => routes.clientResource(project, hash, path),
     })
 
     return { manifest: bundle.manifest, urls }

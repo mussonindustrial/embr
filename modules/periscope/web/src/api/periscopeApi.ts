@@ -19,7 +19,7 @@ import type { PropSetter } from './useProp'
 import {
   createEvent,
   createProp,
-  defaultsOf,
+  readDefaults,
   JsonSchema,
   objectSchema,
   STYLE_SCHEMA,
@@ -28,7 +28,7 @@ import type { Bounds, Size } from './types'
 
 export type { PropSetter } from './useProp'
 export { describeComponent } from './defineProjectComponent'
-export { componentOf } from './component'
+export { readComponent } from './component'
 
 /**
  * A prop of a React Component: its type, and how the Designer edits it.
@@ -179,7 +179,7 @@ export const prop = {
     const schema = objectSchema(properties)
     return createProp<Prop<InferShape<S>> & Defaulted>({
       ...schema,
-      default: defaultsOf(schema.properties),
+      default: readDefaults(schema.properties),
     })
   },
   /** A value that matches any one of the given props. */

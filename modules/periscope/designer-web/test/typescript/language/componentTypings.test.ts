@@ -99,7 +99,7 @@ defineComponent({
 })
 `
 
-async function errorsOf(source: string) {
+async function findErrors(source: string) {
   await language.setFiles({
     files: [{ path: 'equipment/card', kind: 'typescript', source }],
   })
@@ -116,19 +116,19 @@ describe('React Components', () => {
   }, 60_000)
 
   it('types props, events, the context and its hook from the definition', async () => {
-    expect(await errorsOf(card)).toEqual([])
+    expect(await findErrors(card)).toEqual([])
   })
 
   it('reports a misused prop', async () => {
-    expect(await errorsOf(card.replace('count + 1', 'count.length'))).toEqual([
-      expect.stringContaining("'length' does not exist on type 'number'"),
-    ])
+    expect(await findErrors(card.replace('count + 1', 'count.length'))).toEqual(
+      [expect.stringContaining("'length' does not exist on type 'number'")]
+    )
   })
 
   it('reports an event fired with the wrong object', async () => {
     const source = card.replace('onPick({ kind, count })', 'onPick({ kind })')
 
-    expect(await errorsOf(source)).toEqual([
+    expect(await findErrors(source)).toEqual([
       expect.stringContaining('is not assignable to parameter of type'),
     ])
   })
@@ -139,13 +139,13 @@ describe('React Components', () => {
       "item.tone === 'warn'"
     )
 
-    expect(await errorsOf(source)).toEqual([
+    expect(await findErrors(source)).toEqual([
       expect.stringContaining('no overlap'),
     ])
   })
 
   it('accepts a container that places its children', async () => {
-    expect(await errorsOf(panel)).toEqual([])
+    expect(await findErrors(panel)).toEqual([])
   })
 
   it('types the props a container declares for its children', async () => {
@@ -154,7 +154,7 @@ describe('React Components', () => {
       "child.position.slot === 'footer'"
     )
 
-    expect(await errorsOf(source)).toEqual([
+    expect(await findErrors(source)).toEqual([
       expect.stringContaining('no overlap'),
     ])
   })
@@ -165,9 +165,9 @@ describe('React Components', () => {
       '{ctx.children.find((child) => child.selected)?.position.slot}'
     )
 
-    expect(await errorsOf(source)).toEqual([])
+    expect(await findErrors(source)).toEqual([])
     expect(
-      await errorsOf(
+      await findErrors(
         source.replace(
           'ctx.children.find',
           'ctx.selectedChild; ctx.children.find'
@@ -177,7 +177,7 @@ describe('React Components', () => {
   })
 
   it('accepts a container that places its children in child slots', async () => {
-    expect(await errorsOf(slots)).toEqual([])
+    expect(await findErrors(slots)).toEqual([])
   })
 
   it('reports a child slot with a value the children cannot have', async () => {
@@ -186,7 +186,7 @@ describe('React Components', () => {
       "where={{ slot: 'footer' }}"
     )
 
-    expect(await errorsOf(source)).toHaveLength(1)
+    expect(await findErrors(source)).toHaveLength(1)
   })
 
   it('makes an optional prop possibly undefined', async () => {
@@ -195,7 +195,7 @@ describe('React Components', () => {
       'title: prop.string().optional()'
     )
 
-    expect(await errorsOf(source)).toEqual([
+    expect(await findErrors(source)).toEqual([
       expect.stringContaining("'title' is possibly 'undefined'"),
     ])
   })
@@ -206,7 +206,7 @@ describe('React Components', () => {
       'title: prop.string()'
     )
 
-    expect(await errorsOf(source)).toEqual([
+    expect(await findErrors(source)).toEqual([
       expect.stringContaining("'title' is possibly 'undefined'"),
     ])
   })
@@ -226,7 +226,7 @@ describe('React Components', () => {
         "const width: number | 'auto' | null = ctx.useProp('width')[0]\n      const danger ="
       )
 
-    expect(await errorsOf(source)).toEqual([])
+    expect(await findErrors(source)).toEqual([])
   })
 
   it('reports a variant with a value the prop cannot have', async () => {
@@ -235,16 +235,18 @@ describe('React Components', () => {
       "variants: [{ name: 'Filled', props: { variant: 'filled' } }],\n    events: {"
     )
 
-    expect(await errorsOf(valid)).toEqual([])
+    expect(await findErrors(valid)).toEqual([])
     expect(
-      await errorsOf(valid.replace("variant: 'filled' }", "variant: 'solid' }"))
+      await findErrors(
+        valid.replace("variant: 'filled' }", "variant: 'solid' }")
+      )
     ).toHaveLength(1)
   })
 
   it('reports an event with the name of a prop', async () => {
     const source = card.replace('onReset: event()', 'title: event()')
 
-    expect((await errorsOf(source)).length).toBeGreaterThan(0)
+    expect((await findErrors(source)).length).toBeGreaterThan(0)
   })
 
   it('types where a child slot places and resizes its children', async () => {
@@ -253,21 +255,23 @@ describe('React Components', () => {
       "as=\"ul\" resize={['e', 's']} positionChild={({ bounds, slot, reason }) => ({ slot: reason === 'move' && bounds.x > slot.width / 2 && title ? 'header' : 'content' })}"
     )
 
-    expect(await errorsOf(source)).toEqual([])
+    expect(await findErrors(source)).toEqual([])
     expect(
-      await errorsOf(
+      await findErrors(
         source.replace("? 'header' : 'content'", "? 'header' : 'side'")
       )
     ).toHaveLength(1)
     expect(
-      await errorsOf(source.replace("resize={['e', 's']}", "resize={['east']}"))
+      await findErrors(
+        source.replace("resize={['e', 's']}", "resize={['east']}")
+      )
     ).toHaveLength(1)
   })
 
   it('types the hook from the prop it names', async () => {
     const source = card.replace('setCount(count + 1)', "setCount('one')")
 
-    expect(await errorsOf(source)).toEqual([
+    expect(await findErrors(source)).toEqual([
       expect.stringContaining(
         "'string' is not assignable to parameter of type 'number'"
       ),

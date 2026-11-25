@@ -5,7 +5,7 @@ type PreviewPositionListener = () => void
 const previewPositions = new WeakMap<object, Values>()
 const previewPositionListeners = new Set<PreviewPositionListener>()
 
-export function previewPositionOf(component: object): Values | undefined {
+export function findPreviewPosition(component: object): Values | undefined {
   return previewPositions.get(component)
 }
 

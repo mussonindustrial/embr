@@ -136,7 +136,7 @@ export function replaceEqualDeep<T>(previous: unknown, next: T): T {
   return (isSame ? previous : result) as T
 }
 
-function signatureOf(value: unknown) {
+function createSignature(value: unknown) {
   return JSON.stringify(value) ?? 'undefined'
 }
 
@@ -176,7 +176,7 @@ export function useProp<T = unknown>(path: string): [T, PropSetter<T>] {
       const base = latestValue.current
       clearTimeout(echoTimeout.current)
 
-      if (signatureOf(value) === signatureOf(base)) {
+      if (createSignature(value) === createSignature(base)) {
         setDraft(null)
         return
       }

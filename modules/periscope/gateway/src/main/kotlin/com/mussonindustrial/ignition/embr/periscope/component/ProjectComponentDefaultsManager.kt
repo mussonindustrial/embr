@@ -61,12 +61,12 @@ class ProjectComponentDefaultsManager(private val perspectiveContext: Perspectiv
     }
 
     fun fillProps(component: Component) {
-        val defaults = definitionOf(component)?.defaults ?: return
+        val defaults = findDefinition(component)?.defaults ?: return
         component.getPropertyTreeOf(PropertyType.props)?.let { fillMissing(it, defaults) }
     }
 
     fun fillPositions(component: Component) {
-        val defaults = definitionOf(component)?.positionDefaults ?: return
+        val defaults = findDefinition(component)?.positionDefaults ?: return
         component.children.forEach { child ->
             child.getPropertyTreeOf(PropertyType.position)?.let { fillMissing(it, defaults) }
         }
@@ -111,7 +111,7 @@ class ProjectComponentDefaultsManager(private val perspectiveContext: Perspectiv
         }
     }
 
-    private fun definitionOf(component: Component): Definition? {
+    private fun findDefinition(component: Component): Definition? {
         val key = PageKey(component.session.sessionId, component.page.id)
         return definitionsByPage[key]?.get(ProjectComponents.getId(component.type))
     }
