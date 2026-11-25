@@ -125,7 +125,7 @@ function loadModule(path: string): LoadedModule {
   const cached = loadedModules.get(path)
   if (cached != null) return cached
 
-  const fileName = files.fileNameOf(path)
+  const fileName = files.toFileName(path)
   const file = files.get(fileName)
   const loaded: LoadedModule = {
     module: { exports: {} },
@@ -171,7 +171,7 @@ function removeChangedModules() {
   const isRemoved = (path: string) =>
     removed.has(path) || !loadedModules.has(path)
   const isChanged = (loaded: LoadedModule, path: string) =>
-    loaded.file !== files.get(files.fileNameOf(path)) ||
+    loaded.file !== files.get(files.toFileName(path)) ||
     [...loaded.imports].some(isRemoved)
 
   let foundChanges = true

@@ -24,7 +24,7 @@ async function setProject(main: string) {
   })
 }
 
-function offsetOf(source: string, marker: string) {
+function findOffset(source: string, marker: string) {
   return source.indexOf(marker) + marker.length
 }
 
@@ -352,7 +352,7 @@ describe('TypeScript Language Service', () => {
 
       const { entries } = await language.completions({
         path: action.path,
-        offset: offsetOf(source, 'useMemo'),
+        offset: findOffset(source, 'useMemo'),
         prefix: 'useMemo',
       })
 
@@ -367,7 +367,7 @@ describe('TypeScript Language Service', () => {
 
       const result = await language.definition({
         path: 'app/main',
-        offset: offsetOf(main, '\nad'),
+        offset: findOffset(main, '\nad'),
       })
 
       expect(result?.definitions[0]).toMatchObject({
@@ -382,7 +382,7 @@ describe('TypeScript Language Service', () => {
 
       const result = await language.definition({
         path: 'app/main',
-        offset: offsetOf(main, '@/sha'),
+        offset: findOffset(main, '@/sha'),
       })
 
       expect(result?.definitions[0]).toMatchObject({
@@ -551,11 +551,11 @@ describe('TypeScript Language Service', () => {
 
       const { entries } = await language.completions({
         path: action.path,
-        offset: offsetOf(source, 'self.'),
+        offset: findOffset(source, 'self.'),
       })
       const info = await language.quickInfo({
         path: action.path,
-        offset: offsetOf(source, 'runAction(sel'),
+        offset: findOffset(source, 'runAction(sel'),
       })
 
       expect(entries.map((e) => e.name)).toContain('view')
@@ -696,7 +696,7 @@ describe('TypeScript Language Service', () => {
 
       const info = await language.quickInfo({
         path: 'app/main',
-        offset: offsetOf(main, '\nANS'),
+        offset: findOffset(main, '\nANS'),
       })
 
       expect(info).toMatchObject({
@@ -823,7 +823,7 @@ describe('TypeScript Language Service', () => {
       const { actions } = await language.codeFixes({
         path: action.path,
         start: source.indexOf('useMemo'),
-        end: offsetOf(source, 'useMemo'),
+        end: findOffset(source, 'useMemo'),
       })
 
       expect(actions).toEqual([])
@@ -861,7 +861,7 @@ describe('TypeScript Language Service', () => {
 
       const { references } = await language.references({
         path: 'shared/utils',
-        offset: offsetOf(utils, 'function a'),
+        offset: findOffset(utils, 'function a'),
       })
 
       expect(references.map((r) => r.path)).toEqual(
@@ -891,7 +891,7 @@ describe('TypeScript Language Service', () => {
 
       const { ranges } = await language.linkedEditing({
         path: 'app/main',
-        offset: offsetOf(main, '<di'),
+        offset: findOffset(main, '<di'),
       })
 
       expect(ranges).toEqual([

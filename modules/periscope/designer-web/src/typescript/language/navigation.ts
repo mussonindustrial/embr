@@ -1,8 +1,8 @@
 import ts from 'typescript'
 import { toLocation } from './convert'
 import { isResource } from './files'
-import { outlineOf } from './outline'
-import { files, service, sourceFileOf, textOf } from './workspace'
+import { createOutline } from './outline'
+import { files, service, findSourceFile, getText } from './workspace'
 import {
   DefinitionResult,
   ExportsResult,
@@ -23,7 +23,7 @@ export async function definition({
   offset,
 }: PositionRequest): Promise<DefinitionResult | null> {
   const result = service.getDefinitionAndBoundSpan(
-    files.fileNameOf(path),
+    files.toFileName(path),
     offset
   )
   if (result?.definitions == null || result.definitions.length === 0)
@@ -43,7 +43,7 @@ export async function references({
   offset,
 }: PositionRequest): Promise<ReferencesResult> {
   const references =
-    service.getReferencesAtPosition(files.fileNameOf(path), offset) ?? []
+    service.getReferencesAtPosition(files.toFileName(path), offset) ?? []
   const program = service.getProgram()
   return {
     references: references.map((r) =>
@@ -56,7 +56,7 @@ export async function highlights({
   path,
   offset,
 }: PositionRequest): Promise<HighlightsResult> {
-  const fileName = files.fileNameOf(path)
+  const fileName = files.toFileName(path)
   const highlights =
     service.getDocumentHighlights(fileName, offset, [fileName]) ?? []
   return {
@@ -68,17 +68,19 @@ export async function highlights({
 }
 
 export async function outline({ path }: FileRequest): Promise<OutlineResult> {
-  const fileName = files.fileNameOf(path)
-  const sourceFile = sourceFileOf(fileName)
+  const fileName = files.toFileName(path)
+  const sourceFile = findSourceFile(fileName)
   if (sourceFile == null) return { items: [] }
-  return { items: outlineOf(service.getNavigationTree(fileName), sourceFile) }
+  return {
+    items: createOutline(service.getNavigationTree(fileName), sourceFile),
+  }
 }
 
 export async function reactComponentNames({
   path,
 }: FileRequest): Promise<ExportsResult> {
   const checker = service.getProgram()?.getTypeChecker()
-  const sourceFile = sourceFileOf(files.fileNameOf(path))
+  const sourceFile = findSourceFile(files.toFileName(path))
   const module = sourceFile && checker?.getSymbolAtLocation(sourceFile)
   if (checker == null || module == null) return { names: [] }
 
@@ -116,13 +118,13 @@ export async function symbols({
       name: item.name,
       kind: item.kind,
       containerName: item.containerName,
-      location: toLocation(program, item.fileName, nameSpanOf(item)),
+      location: toLocation(program, item.fileName, findNameSpan(item)),
     })),
   }
 }
 
-function nameSpanOf(item: ts.NavigateToItem): ts.TextSpan {
-  const start = textOf(item.fileName).indexOf(item.name, item.textSpan.start)
+function findNameSpan(item: ts.NavigateToItem): ts.TextSpan {
+  const start = getText(item.fileName).indexOf(item.name, item.textSpan.start)
   const inDeclaration = start >= 0 && start < ts.textSpanEnd(item.textSpan)
   return inDeclaration ? { start, length: item.name.length } : item.textSpan
 }

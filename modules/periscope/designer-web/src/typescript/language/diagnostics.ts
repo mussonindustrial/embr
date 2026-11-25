@@ -8,8 +8,8 @@ import {
   formatSettings,
   preferencesFor,
   service,
-  sourceFileOf,
-  textOf,
+  findSourceFile,
+  getText,
 } from './workspace'
 import {
   CodeFixesRequest,
@@ -21,8 +21,8 @@ import {
 export async function diagnostics({
   path,
 }: FileRequest): Promise<DiagnosticsResult> {
-  const fileName = files.fileNameOf(path)
-  const sourceFile = sourceFileOf(fileName)
+  const fileName = files.toFileName(path)
+  const sourceFile = findSourceFile(fileName)
   const unnecessary = service
     .getSuggestionDiagnostics(fileName)
     .filter((d) => d.reportsUnnecessary || d.reportsDeprecated)
@@ -42,7 +42,7 @@ export async function diagnostics({
   )
 
   const typeScriptDiagnostics = [...syntactic, ...imports, ...unnecessary].map(
-    (d) => toDiagnostic(textOf(fileName), d)
+    (d) => toDiagnostic(getText(fileName), d)
   )
 
   return {
@@ -55,7 +55,7 @@ export async function codeFixes({
   start,
   end,
 }: CodeFixesRequest): Promise<CodeFixesResult> {
-  const fileName = files.fileNameOf(path)
+  const fileName = files.toFileName(path)
   const errorCodes = [
     ...service.getSyntacticDiagnostics(fileName),
     ...service.getSemanticDiagnostics(fileName),

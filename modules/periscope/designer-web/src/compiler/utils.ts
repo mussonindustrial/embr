@@ -16,7 +16,7 @@ export function readPosition(source: string, offset: number): Position {
   }
 }
 
-function severityOf(diagnostic: ts.Diagnostic): Diagnostic['severity'] {
+function toSeverity(diagnostic: ts.Diagnostic): Diagnostic['severity'] {
   switch (diagnostic.category) {
     case ts.DiagnosticCategory.Error:
       return 'error'
@@ -35,7 +35,7 @@ export function toDiagnostic(
   const length = diagnostic.length ?? 0
 
   return {
-    severity: severityOf(diagnostic),
+    severity: toSeverity(diagnostic),
     message: ts.flattenDiagnosticMessageText(diagnostic.messageText, '\n'),
     code: String(diagnostic.code),
     source: 'typescript',

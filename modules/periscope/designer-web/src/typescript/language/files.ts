@@ -29,7 +29,7 @@ export function isResource(fileName: string) {
   return fileName.startsWith(RESOURCE_ROOT)
 }
 
-function textOf({ kind, source }: ResourceFile) {
+function toText({ kind, source }: ResourceFile) {
   return kind === 'css' ? cssModuleDeclaration(source) : source
 }
 
@@ -51,11 +51,11 @@ export class WorkspaceFiles {
     return this.files.get(fileName)
   }
 
-  fileNameOf(path: string) {
+  toFileName(path: string) {
     return this.fileNamesByPath.get(path) ?? fileNameFor(path, 'typescript')
   }
 
-  pathOf(fileName: string): string | null {
+  findPath(fileName: string): string | null {
     return this.files.get(fileName)?.path ?? null
   }
 
@@ -87,7 +87,7 @@ export class WorkspaceFiles {
     } else {
       this.components.delete(file.path)
     }
-    const text = textOf(file)
+    const text = toText(file)
     if (this.files.get(fileName)?.text === text) {
       return
     }
