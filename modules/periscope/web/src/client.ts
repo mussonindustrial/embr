@@ -11,37 +11,43 @@ import {
   EmbeddedViewComponentMeta,
   JsonViewComponent,
   JsonViewComponentMeta,
-  PortalComponent,
-  PortalComponentMeta,
-  ReactComponent,
-  ReactComponentMeta,
+  PortalLegacyComponent,
+  PortalLegacyComponentMeta,
+  ReactLegacyComponent,
+  ReactLegacyComponentMeta,
 } from './components'
 import {
   installExtensions,
   installLifecycleEvents,
+  installProjectComponents,
   JavaScriptActionFactory,
 } from './extensions'
 import { waitForClientStore } from '@embr-js/perspective-client'
+import { prefetchClientBundle } from './stores'
 
 export {
   FlexRepeaterComponent,
   SwiperComponent,
   EmbeddedViewComponent,
   JsonViewComponent,
-  PortalComponent,
-  ReactComponent,
+  PortalLegacyComponent,
+  ReactLegacyComponent,
 }
+
+prefetchClientBundle()
 
 const components = [
   new FlexRepeaterComponentMeta(),
   new SwiperComponentMeta(),
   new EmbeddedViewComponentMeta(),
   new JsonViewComponentMeta(),
-  new PortalComponentMeta(),
-  new ReactComponentMeta(),
+  new PortalLegacyComponentMeta(),
+  new ReactLegacyComponentMeta(),
 ]
 
 components.forEach((c) => ComponentRegistry.register(c))
+
+installProjectComponents()
 
 const actions = [JavaScriptActionFactory]
 actions.forEach((a) => ActionRegistry.register(a))

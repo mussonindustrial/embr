@@ -15,7 +15,7 @@ const MEMBER_KINDS: string[] = [
   ts.ScriptElementKind.memberSetAccessorElement,
 ]
 
-export function outlineOf(
+export function createOutline(
   parent: ts.NavigationTree,
   sourceFile: ts.SourceFile
 ): OutlineItem[] {
@@ -32,10 +32,10 @@ function toOutlineItem(
 ): OutlineItem {
   return {
     text: item.text,
-    detail: parametersOf(item, sourceFile),
+    detail: readParameters(item, sourceFile),
     kind: item.kind,
     span: item.nameSpan ?? item.spans[0],
-    children: outlineOf(item, sourceFile),
+    children: createOutline(item, sourceFile),
   }
 }
 
@@ -45,7 +45,7 @@ function isDeclaration(item: ts.NavigationTree) {
   return item.kind !== 'alias' && !callback
 }
 
-function parametersOf(item: ts.NavigationTree, sourceFile: ts.SourceFile) {
+function readParameters(item: ts.NavigationTree, sourceFile: ts.SourceFile) {
   const declaration = functionAt(sourceFile, item.spans[0])
   if (declaration == null) return ''
   const names = declaration.parameters.map(
@@ -61,14 +61,14 @@ function functionAt(sourceFile: ts.SourceFile, span: ts.TextSpan) {
   let found: ts.SignatureDeclaration | undefined
   const visit = (node: ts.Node) => {
     if (found || node.pos > span.start || node.end < end) return
-    if (node.getStart(sourceFile) === span.start) found = functionOf(node)
+    if (node.getStart(sourceFile) === span.start) found = findFunction(node)
     if (found == null) ts.forEachChild(node, visit)
   }
   visit(sourceFile)
   return found
 }
 
-function functionOf(node: ts.Node): ts.SignatureDeclaration | undefined {
+function findFunction(node: ts.Node): ts.SignatureDeclaration | undefined {
   if (ts.isFunctionLike(node)) return node
   const initializer = ts.isVariableDeclaration(node) ? node.initializer : null
   return initializer && ts.isFunctionLike(initializer) ? initializer : undefined

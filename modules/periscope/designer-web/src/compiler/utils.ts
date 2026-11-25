@@ -3,7 +3,7 @@ import * as prettier from 'prettier/standalone'
 import ts from 'typescript'
 import { CompilerRequest, Diagnostic, FormatResult, Position } from './protocol'
 
-export function positionOf(source: string, offset: number): Position {
+export function readPosition(source: string, offset: number): Position {
   const lines = source.slice(0, offset).split('\n')
 
   const line = lines.length
@@ -16,7 +16,7 @@ export function positionOf(source: string, offset: number): Position {
   }
 }
 
-function severityOf(diagnostic: ts.Diagnostic): Diagnostic['severity'] {
+function toSeverity(diagnostic: ts.Diagnostic): Diagnostic['severity'] {
   switch (diagnostic.category) {
     case ts.DiagnosticCategory.Error:
       return 'error'
@@ -35,13 +35,13 @@ export function toDiagnostic(
   const length = diagnostic.length ?? 0
 
   return {
-    severity: severityOf(diagnostic),
+    severity: toSeverity(diagnostic),
     message: ts.flattenDiagnosticMessageText(diagnostic.messageText, '\n'),
     code: String(diagnostic.code),
     source: 'typescript',
     range: {
-      start: positionOf(source, start),
-      end: positionOf(source, start + length),
+      start: readPosition(source, start),
+      end: readPosition(source, start + length),
     },
   }
 }

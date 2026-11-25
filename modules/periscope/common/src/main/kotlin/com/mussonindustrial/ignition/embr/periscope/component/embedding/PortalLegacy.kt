@@ -8,12 +8,18 @@ import com.mussonindustrial.embr.perspective.common.component.addPaletteEntry
 import com.mussonindustrial.ignition.embr.periscope.Meta.MODULE_ID
 import com.mussonindustrial.ignition.embr.periscope.PeriscopeComponents
 
-class React {
+class PortalLegacy {
     companion object : PerspectiveComponent {
-        override val id: String = "embr.periscope.embedding.react"
+        override val id: String = "embr.periscope.embedding.portal"
 
         private val VARIANT_BASE =
-            PaletteEntry(this::class.java, id, "base", "React", "React component.")
+            PaletteEntry(
+                this::class.java,
+                id,
+                "base",
+                "Portal (Legacy)",
+                "Legacy Portal component. Use createPortal in a React Component resource instead.",
+            )
 
         override val descriptor: ComponentDescriptor =
             ComponentDescriptorImpl.ComponentBuilder.newBuilder()
@@ -21,9 +27,9 @@ class React {
                 .setId(id)
                 .setModuleId(MODULE_ID)
                 .setSchema(schema)
-                .setName("React")
+                .setName("Portal (Legacy)")
                 .addPaletteEntry(VARIANT_BASE)
-                .setDefaultMetaName("React")
+                .setDefaultMetaName("PortalLegacy")
                 .setResources(PeriscopeComponents.BROWSER_RESOURCES)
                 .build()
     }

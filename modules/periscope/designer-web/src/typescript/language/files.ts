@@ -1,7 +1,7 @@
 import { ResourceFile, ResourceKind } from './protocol'
 import { cssModuleDeclaration } from './cssModuleDeclaration'
 
-type ProjectFile = {
+export type ProjectFile = {
   path: string
   text: string
   version: number
@@ -11,6 +11,7 @@ const extensions: Record<ResourceKind, string> = {
   typescript: '.tsx',
   javascript: '.jsx',
   css: '.d.ts',
+  component: '.tsx',
 }
 
 export const RESOURCE_ROOT = '/src/'
@@ -28,28 +29,33 @@ export function isResource(fileName: string) {
   return fileName.startsWith(RESOURCE_ROOT)
 }
 
-function textOf({ kind, source }: ResourceFile) {
+function toText({ kind, source }: ResourceFile) {
   return kind === 'css' ? cssModuleDeclaration(source) : source
 }
 
 export class WorkspaceFiles {
   private readonly files = new Map<string, ProjectFile>()
   private readonly fileNamesByPath = new Map<string, string>()
+  private readonly components = new Set<string>()
   private nextVersion = 1
 
   get fileNames() {
     return [...this.files.keys()]
   }
 
+  get componentPaths() {
+    return [...this.components]
+  }
+
   get(fileName: string) {
     return this.files.get(fileName)
   }
 
-  fileNameOf(path: string) {
+  toFileName(path: string) {
     return this.fileNamesByPath.get(path) ?? fileNameFor(path, 'typescript')
   }
 
-  pathOf(fileName: string): string | null {
+  findPath(fileName: string): string | null {
     return this.files.get(fileName)?.path ?? null
   }
 
@@ -66,6 +72,7 @@ export class WorkspaceFiles {
     if (fileName == null) return
     this.files.delete(fileName)
     this.fileNamesByPath.delete(path)
+    this.components.delete(path)
   }
 
   update(file: ResourceFile) {
@@ -75,7 +82,12 @@ export class WorkspaceFiles {
       this.remove(file.path)
     }
     this.fileNamesByPath.set(file.path, fileName)
-    const text = textOf(file)
+    if (file.kind === 'component') {
+      this.components.add(file.path)
+    } else {
+      this.components.delete(file.path)
+    }
+    const text = toText(file)
     if (this.files.get(fileName)?.text === text) {
       return
     }
