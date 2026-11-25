@@ -18,7 +18,7 @@ const PROTOCOL = {
 
 const HELD_UNTIL_LOADED = new Set(['view-start', 'view-restart'])
 
-function componentDefaultsOf(
+function readComponentDefaults(
   components: Map<string, ProjectComponent>
 ): ComponentDefaults {
   return Object.fromEntries(
@@ -42,7 +42,7 @@ async function loadComponentDefaults(): Promise<ComponentDefaults | null> {
     return null
   }
 
-  return componentDefaultsOf(components)
+  return readComponentDefaults(components)
 }
 
 export function installComponentDefaults(clientStore: ClientStore) {

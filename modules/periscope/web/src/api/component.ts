@@ -11,15 +11,15 @@ function isProjectComponent(value: unknown): value is ProjectComponent {
   )
 }
 
-export function componentTypeOf(id: string) {
+export function toComponentType(id: string) {
   return COMPONENT_TYPE_PREFIX + id
 }
 
-export function componentIdOf(type: string) {
+export function toComponentId(type: string) {
   return type.slice(COMPONENT_TYPE_PREFIX.length)
 }
 
-export function componentOf(exports: unknown): ProjectComponent {
+export function readComponent(exports: unknown): ProjectComponent {
   const component = (exports as { default?: unknown } | null)?.default
 
   if (!isProjectComponent(component)) {

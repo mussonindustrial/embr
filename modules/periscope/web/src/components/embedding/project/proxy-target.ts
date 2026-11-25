@@ -8,7 +8,7 @@ function isRefObject(target: unknown): target is { current: unknown } {
 }
 
 /** What `this` is in proxied JavaScript: the target, a ref's current value, or the Root element. */
-export function proxyTargetOf(
+export function findProxyTarget(
   target: unknown,
   element: Element | null
 ): object | undefined {

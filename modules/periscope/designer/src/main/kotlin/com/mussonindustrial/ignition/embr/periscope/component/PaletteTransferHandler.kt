@@ -22,8 +22,8 @@ class PaletteTransferHandler(
 
     override fun createTransferable(c: JComponent): Transferable? {
         return when (val value = tree.selectedValue) {
-            is ComponentInfo -> transferableOf(value, null)
-            is PaletteVariant -> transferableOf(value.info, value.variant)
+            is ComponentInfo -> createDropTransferable(value, null)
+            is PaletteVariant -> createDropTransferable(value.info, value.variant)
             else -> null
         }
     }
@@ -36,7 +36,7 @@ class PaletteTransferHandler(
         onDropped(info)
     }
 
-    private fun transferableOf(
+    private fun createDropTransferable(
         info: ComponentInfo,
         variant: ComponentVariant?,
     ): Transferable {

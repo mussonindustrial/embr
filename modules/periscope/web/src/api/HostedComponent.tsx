@@ -62,7 +62,7 @@ function createJavaScriptProxyHook(latest: MutableRefObject<ComponentHost>) {
   }
 }
 
-export function attributesKeyOf(className: unknown, style: unknown) {
+export function createAttributesKey(className: unknown, style: unknown) {
   return JSON.stringify([className, style])
 }
 

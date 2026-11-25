@@ -1,4 +1,4 @@
-import { messageOf } from '@embr-js/utils'
+import { toMessage } from '@embr-js/utils'
 import { compiler as cssCompiler } from './css/compiler'
 import { compiler as typescriptCompiler } from './typescript/compiler'
 import { languageService } from './typescript/language'
@@ -48,7 +48,7 @@ export const dispatch = function (
     sendReply?.(id, true, result)
   }
   const onFailure = (error: Error) => {
-    sendReply?.(id, false, messageOf(error))
+    sendReply?.(id, false, toMessage(error))
   }
 
   invoke(service, method, payloadJson).then(onSuccess, onFailure)

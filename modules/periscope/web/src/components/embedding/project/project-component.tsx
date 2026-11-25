@@ -20,7 +20,7 @@ import {
 import { transformProps } from '@embr-js/utils'
 
 import {
-  attributesKeyOf,
+  createAttributesKey,
   ComponentDelegate,
   createDelegateEvents,
   detachedDelegate,
@@ -38,7 +38,7 @@ import { ChildSlot, useChildren, useSelectedChild } from './children'
 import { currentMode } from './designer-state'
 import { ErrorBoundary } from './error-boundary'
 import type { PerspectiveProps } from './types'
-import { proxyTargetOf } from './proxy-target'
+import { findProxyTarget } from './proxy-target'
 
 type PerspectiveRef = MutableRefObject<PerspectiveProps>
 
@@ -121,7 +121,7 @@ function writeProp(
   }
 }
 
-function delegateOf(perspective: PerspectiveProps): ComponentDelegate {
+function getDelegate(perspective: PerspectiveProps): ComponentDelegate {
   const delegate = perspective.store.delegate
 
   if (delegate instanceof ProjectComponentDelegate) {
@@ -131,7 +131,7 @@ function delegateOf(perspective: PerspectiveProps): ComponentDelegate {
   return detachedDelegate
 }
 
-function proxyOf(
+function findProxy(
   perspective: PerspectiveProps
 ): JavaScriptProxyHost | undefined {
   const delegate = perspective.store.delegate
@@ -175,9 +175,9 @@ function ResolvedComponent({
           children,
           ChildSlot,
           mode: currentMode(),
-          delegate: delegateOf(perspective),
-          proxy: proxyOf(perspective),
-          attributesKey: attributesKeyOf(
+          delegate: getDelegate(perspective),
+          proxy: findProxy(perspective),
+          attributesKey: createAttributesKey(
             attributes.className,
             attributes.style
           ),
@@ -273,7 +273,7 @@ export class ProjectComponentDelegate extends ComponentStoreDelegate {
 
   handleEvent(eventName: string, eventObject: Values): void {
     if (this.javaScriptProxy.handles(eventName)) {
-      this.javaScriptProxy.setRef(proxyTargetOf(this.target, this.element))
+      this.javaScriptProxy.setRef(findProxyTarget(this.target, this.element))
       this.javaScriptProxy.handleEvent(
         eventObject as unknown as JavaScriptRunEvent
       )

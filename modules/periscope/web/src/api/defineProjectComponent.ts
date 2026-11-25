@@ -8,9 +8,9 @@ import type {
   ProjectComponentEvent,
   PropSchema,
 } from './periscopeApi'
-import { defaultsOf, propsSchema, STYLE_SCHEMA } from './schema'
+import { readDefaults, propsSchema, STYLE_SCHEMA } from './schema'
 
-function eventsOf(events: EventSchema): ProjectComponentEvent[] {
+function readEvents(events: EventSchema): ProjectComponentEvent[] {
   return Object.entries(events).map(([name, event]) => ({
     name,
     description: event.description,
@@ -18,13 +18,13 @@ function eventsOf(events: EventSchema): ProjectComponentEvent[] {
   }))
 }
 
-function positionOf(position: PropSchema | undefined) {
+function readPosition(position: PropSchema | undefined) {
   if (position == null) {
     return {}
   }
 
   const schema = propsSchema(position)
-  return { position: { schema, defaults: defaultsOf(schema.properties) } }
+  return { position: { schema, defaults: readDefaults(schema.properties) } }
 }
 
 export function defineProjectComponent(
@@ -43,9 +43,9 @@ export function defineProjectComponent(
     periscope: {
       ...metadata,
       schema,
-      defaults: defaultsOf(schema.properties),
-      ...positionOf(position),
-      events: eventsOf(events as EventSchema),
+      defaults: readDefaults(schema.properties),
+      ...readPosition(position),
+      events: readEvents(events as EventSchema),
       diagnostics: clashes.map(
         (name) => `'${name}' is both a prop and an event.`
       ),

@@ -28,7 +28,7 @@ function offsetOf(source: string, marker: string) {
   return source.indexOf(marker) + marker.length
 }
 
-async function errorsOf(main: string) {
+async function findErrors(main: string) {
   await setProject(main)
   const { diagnostics } = await language.diagnostics({ path: 'app/main' })
   return diagnostics.filter((d) => d.severity === 'error')
@@ -419,7 +419,7 @@ describe('TypeScript Language Service', () => {
     })
 
     it('reports type errors across resources', async () => {
-      const errors = await errorsOf(
+      const errors = await findErrors(
         "import { add } from '@/shared/utils'\nadd('1', 2)\n"
       )
 
@@ -468,7 +468,7 @@ describe('TypeScript Language Service', () => {
         '',
       ].join('\n')
 
-      expect(await errorsOf(main)).toEqual([])
+      expect(await findErrors(main)).toEqual([])
     })
 
     it('documents CSS module members', async () => {
@@ -602,7 +602,7 @@ describe('TypeScript Language Service', () => {
         'export const Wrong: ReactComponent<{ label: string }> = ({ missing }) => missing',
       ].join('\n')
 
-      const errors = await errorsOf(main)
+      const errors = await findErrors(main)
 
       expect(errors.map((error) => error.message)).toEqual([
         expect.stringContaining("Property 'missing' does not exist"),
@@ -623,7 +623,7 @@ describe('TypeScript Language Service', () => {
         'export const component: number = store.Component',
       ].join('\n')
 
-      expect(await errorsOf(main)).toEqual([])
+      expect(await findErrors(main)).toEqual([])
     })
 
     it('imports the global modules', async () => {
@@ -644,7 +644,7 @@ describe('TypeScript Language Service', () => {
         ')',
       ].join('\n')
 
-      expect(await errorsOf(main)).toEqual([])
+      expect(await findErrors(main)).toEqual([])
     })
 
     it('allows type-only imports of packages the browser cannot load', async () => {
@@ -654,7 +654,7 @@ describe('TypeScript Language Service', () => {
         "export const style: Properties = { color: 'red' as Property.Color }",
       ].join('\n')
 
-      expect(await errorsOf(main)).toEqual([])
+      expect(await findErrors(main)).toEqual([])
     })
 
     it('allows imports the editor has no typings for, and reports a missing resource', async () => {
@@ -665,7 +665,7 @@ describe('TypeScript Language Service', () => {
         'export const used = [handler, confetti, missing]',
       ].join('\n')
 
-      const errors = await errorsOf(main)
+      const errors = await findErrors(main)
 
       expect(errors.map((d) => [d.code, d.range?.start.line])).toEqual([
         ['2307', 3],
@@ -679,7 +679,7 @@ describe('TypeScript Language Service', () => {
         "export const later = import('lodash')",
       ].join('\n')
 
-      const errors = await errorsOf(main)
+      const errors = await findErrors(main)
 
       expect(errors.map((d) => [d.code, d.range?.start.line])).toEqual([
         ['99001', 1],

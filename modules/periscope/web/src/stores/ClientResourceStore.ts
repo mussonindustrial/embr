@@ -4,7 +4,7 @@ import {
   ClientStore,
 } from '@inductiveautomation/perspective-client'
 
-import { componentOf, createPeriscopeApi, ProjectComponent } from '@/api'
+import { readComponent, createPeriscopeApi, ProjectComponent } from '@/api'
 import {
   ClientBundle,
   ClientResourceDefinition,
@@ -180,7 +180,7 @@ export class ClientResourceStore {
     }
 
     try {
-      const projectComponent = componentOf(module)
+      const projectComponent = readComponent(module)
       projectComponent.displayName = component.name || component.id
       this.components.set(component.id, projectComponent)
     } catch (error) {

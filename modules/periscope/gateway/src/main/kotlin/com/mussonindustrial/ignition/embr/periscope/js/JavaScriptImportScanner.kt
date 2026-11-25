@@ -202,14 +202,14 @@ class JavaScriptImportScanner(private val source: String) {
 
     private fun isConditionKeyword(index: Int): Boolean {
         val token = tokens.getOrNull(index) ?: return false
-        return token.kind == TokenKind.IDENTIFIER && textOf(token) in CONDITION_KEYWORDS
+        return token.kind == TokenKind.IDENTIFIER && getText(token) in CONDITION_KEYWORDS
     }
 
     private fun followsValue(): Boolean {
         val last = tokens.lastOrNull() ?: return false
 
         return when (last.kind) {
-            TokenKind.IDENTIFIER -> textOf(last) !in REGEX_KEYWORDS
+            TokenKind.IDENTIFIER -> getText(last) !in REGEX_KEYWORDS
             TokenKind.STRING,
             TokenKind.LITERAL -> true
             TokenKind.PUNCTUATION ->
@@ -229,7 +229,7 @@ class JavaScriptImportScanner(private val source: String) {
         return previous.end == token.start && source[previous.start] == source[token.start]
     }
 
-    private fun textOf(token: Token): String {
+    private fun getText(token: Token): String {
         return source.substring(token.start, token.end)
     }
 

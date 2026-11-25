@@ -55,29 +55,31 @@ class PaletteCellRenderer : DefaultTreeCellRenderer() {
         text = item.variant.name
         icon = ComponentIcons.get(item.info.id)
         toolTipText =
-            tooltipOf(
+            createTooltip(
                 listOfNotNull("${item.info.name} - ${item.variant.name}", item.variant.description),
             )
     }
 
     private fun renderComponent(info: ComponentInfo, selected: Boolean) {
-        val diagnostics = diagnosticsOf(info)
+        val diagnostics = readDiagnostics(info)
         text = if (diagnostics.isEmpty()) info.name else "${info.name}  (!)"
         icon = ComponentIcons.get(info.id)
 
         toolTipText =
-            tooltipOf(listOfNotNull(info.definition.description, info.id, info.path) + diagnostics)
+            createTooltip(
+                listOfNotNull(info.definition.description, info.id, info.path) + diagnostics,
+            )
 
         if (diagnostics.isNotEmpty() && !selected) {
             foreground = ORANGE
         }
     }
 
-    private fun tooltipOf(lines: List<String>): String {
+    private fun createTooltip(lines: List<String>): String {
         return lines.joinToString("<br>", "<html>", "</html>")
     }
 
-    private fun diagnosticsOf(info: ComponentInfo): List<String> {
+    private fun readDiagnostics(info: ComponentInfo): List<String> {
         val diagnostics = info.diagnostics.toMutableList()
         val icon = info.definition.icon
         if (icon != null && ComponentIcons.get(info.id).missing) {

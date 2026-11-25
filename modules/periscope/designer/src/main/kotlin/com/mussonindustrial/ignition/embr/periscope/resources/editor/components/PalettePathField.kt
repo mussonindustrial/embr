@@ -18,10 +18,10 @@ class PalettePathField(
     palettePaths: List<List<String>>,
     initialPath: String,
     onChanged: () -> Unit,
-) : TreeComboBox(DefaultTreeModel(rootOf(palettePaths), true)) {
+) : TreeComboBox(DefaultTreeModel(createRoot(palettePaths), true)) {
 
     companion object {
-        private fun rootOf(palettePaths: List<List<String>>): DefaultMutableTreeNode {
+        private fun createRoot(palettePaths: List<List<String>>): DefaultMutableTreeNode {
             val root = DefaultMutableTreeNode()
             palettePaths
                 .sortedBy { it.joinToString("/").lowercase() }
@@ -33,7 +33,7 @@ class PalettePathField(
             return root
         }
 
-        private fun pathOf(value: Any?): String {
+        private fun getPath(value: Any?): String {
             return when (value) {
                 is TreePath -> value.path.drop(1).joinToString("/")
                 null -> ""
@@ -44,7 +44,7 @@ class PalettePathField(
 
     private object PathConverter : ObjectConverter {
         override fun toString(value: Any?, context: ConverterContext?): String {
-            return pathOf(value)
+            return getPath(value)
         }
 
         override fun supportToString(value: Any?, context: ConverterContext?): Boolean {
@@ -61,14 +61,14 @@ class PalettePathField(
     }
 
     val palettePath: String
-        get() = pathOf(editor.item).trim()
+        get() = getPath(editor.item).trim()
 
     init {
         isEditable = true
         setConverter(PathConverter)
         selectedItem = initialPath
 
-        textComponentsOf(editor.editorComponent).forEach {
+        findTextComponents(editor.editorComponent).forEach {
             it.document.addDocumentListener(SimpleDocumentListener { onChanged() })
         }
         addItemListener { onChanged() }
@@ -89,13 +89,13 @@ class PalettePathField(
     }
 
     override fun convertElementToString(value: Any?): String {
-        return pathOf(value)
+        return getPath(value)
     }
 
-    private fun textComponentsOf(component: Component): List<JTextComponent> {
+    private fun findTextComponents(component: Component): List<JTextComponent> {
         return when (component) {
             is JTextComponent -> listOf(component)
-            is Container -> component.components.flatMap { textComponentsOf(it) }
+            is Container -> component.components.flatMap { findTextComponents(it) }
             else -> emptyList()
         }
     }
